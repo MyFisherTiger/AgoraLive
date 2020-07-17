@@ -131,14 +131,14 @@ extension SingleBroadcasterViewController {
         case .localUser(let user):
             ownerView.label.text = user.info.name
             ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
-            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
+            playerVM.startRenderLocalVideoStream(id: user.agUId,
                                                  view: self.renderView)
             deviceVM.camera = .on
             deviceVM.mic = .on
         case .otherUser(let remote):
             ownerView.label.text = remote.info.name
             ownerView.imageView.image = images.getHead(index: remote.info.imageIndex)
-            playerVM.startRenderRemoteVideoStream(id: remote.agoraUserId,
+            playerVM.startRenderRemoteVideoStream(id: remote.agUId,
                                              view: self.renderView)
             deviceVM.camera = .off
             deviceVM.mic = .off
@@ -164,7 +164,7 @@ extension SingleBroadcasterViewController {
             switch session.owner {
             case .otherUser(let remote):
                 let media = ALCenter.shared().centerProvideMediaHelper()
-                media.player.renderRemoteVideoStream(id: remote.agoraUserId,
+                media.player.renderRemoteVideoStream(id: remote.agUId,
                                                      superResolution: vc.superRenderButton.isSelected ? .on : .off)
             default:
                 assert(false)

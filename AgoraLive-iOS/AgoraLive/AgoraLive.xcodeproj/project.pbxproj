@@ -22,7 +22,7 @@
 		A71AAF18243354C500820096 /* MusicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF17243354C500820096 /* MusicViewController.swift */; };
 		A71AAF1A24335CD600820096 /* MusicVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF1924335CD600820096 /* MusicVM.swift */; };
 		A71AAF232434C09500820096 /* ExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF222434C09500820096 /* ExtensionViewController.swift */; };
-		A71AAF282435D7A900820096 /* StatisticsInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF272435D7A900820096 /* StatisticsInfo.swift */; };
+		A71AAF282435D7A900820096 /* RTCStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF272435D7A900820096 /* RTCStatistics.swift */; };
 		A71AAF2A2435D8BE00820096 /* RealDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF292435D8BE00820096 /* RealDataViewController.swift */; };
 		A71AAF88243D740F00820096 /* UIImage+CSClipToCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF87243D740F00820096 /* UIImage+CSClipToCycle.m */; };
 		A72B7BE42444161400E965FB /* SingleBroadcasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE32444161400E965FB /* SingleBroadcasterViewController.swift */; };
@@ -168,7 +168,7 @@
 		A71AAF17243354C500820096 /* MusicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicViewController.swift; sourceTree = "<group>"; };
 		A71AAF1924335CD600820096 /* MusicVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicVM.swift; sourceTree = "<group>"; };
 		A71AAF222434C09500820096 /* ExtensionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionViewController.swift; sourceTree = "<group>"; };
-		A71AAF272435D7A900820096 /* StatisticsInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatisticsInfo.swift; sourceTree = "<group>"; };
+		A71AAF272435D7A900820096 /* RTCStatistics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTCStatistics.swift; sourceTree = "<group>"; };
 		A71AAF292435D8BE00820096 /* RealDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealDataViewController.swift; sourceTree = "<group>"; };
 		A71AAF86243D740F00820096 /* UIImage+CSClipToCycle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+CSClipToCycle.h"; sourceTree = "<group>"; };
 		A71AAF87243D740F00820096 /* UIImage+CSClipToCycle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CSClipToCycle.m"; sourceTree = "<group>"; };
@@ -725,8 +725,8 @@
 			isa = PBXGroup;
 			children = (
 				A7952A6424162C1000479811 /* RTMProtocols.swift */,
-				A7952AA524162C1000479811 /* RTMExtension.swift */,
 				A7952A6024162C1000479811 /* RTMClient.swift */,
+				A7952AA524162C1000479811 /* RTMExtension.swift */,
 				A7952A6D24162C1000479811 /* RTMHelper.swift */,
 			);
 			name = Socket;
@@ -739,7 +739,7 @@
 				A7952A5F24162C1000479811 /* MediaSubs.swift */,
 				A7952A7224162C1000479811 /* MediaModels.swift */,
 				A7952A7624162C1000479811 /* RTCExtension.swift */,
-				A71AAF272435D7A900820096 /* StatisticsInfo.swift */,
+				A71AAF272435D7A900820096 /* RTCStatistics.swift */,
 				A75A56CF24A054C100D0089E /* FUClient.h */,
 				A75A56D024A054C100D0089E /* FUClient.m */,
 			);
@@ -1074,7 +1074,7 @@
 				A7952AB524162C1000479811 /* DictionaryGetable.swift in Sources */,
 				A77E579224AE10FE00DD7670 /* NetworkMonitor.swift in Sources */,
 				A791F33E2428B121008D8BC9 /* LiveSeatViewController.swift in Sources */,
-				A71AAF282435D7A900820096 /* StatisticsInfo.swift in Sources */,
+				A71AAF282435D7A900820096 /* RTCStatistics.swift in Sources */,
 				A72B7BEA24445D5B00E965FB /* PKVM.swift in Sources */,
 				A7952AB324162C1000479811 /* ZipTool.swift in Sources */,
 				A7952ABA24162C1000479811 /* RTCExtension.swift in Sources */,

@@ -36,7 +36,7 @@ struct BasicUserInfo {
     }
 }
 
-class CurrentUser: NSObject, UserInfoProtocol {
+class CurrentUser: NSObject {
     struct UpdateInfo: InfoDic {
         var userName: String?
         var headURL: String?
@@ -54,13 +54,7 @@ class CurrentUser: NSObject, UserInfoProtocol {
         }
     }
     
-    var info: BasicUserInfo {
-        didSet {
-            publicInfo.accept(info)
-        }
-    }
-    
-    var publicInfo = BehaviorRelay(value: BasicUserInfo(userId: "", name: "", headURL: ""))
+    private(set) var info: BehaviorRelay<BasicUserInfo>
     
     static func local() -> CurrentUser? {
         guard let userId = UserDefaults.standard.string(forKey: "UserId") else {
@@ -79,8 +73,7 @@ class CurrentUser: NSObject, UserInfoProtocol {
     }
     
     init(info: BasicUserInfo) {
-        self.info = info
-        self.publicInfo.accept(info)
+        self.info = BehaviorRelay(value: info)
         super.init()
         self.localStorage()
     }
@@ -88,7 +81,7 @@ class CurrentUser: NSObject, UserInfoProtocol {
     func updateInfo(_ new: UpdateInfo, success: Completion, fail: Completion = nil) {
         let client = ALCenter.shared().centerProvideRequestHelper()
         
-        let url = URLGroup.userUpdateInfo(userId: self.info.userId)
+        let url = URLGroup.userUpdateInfo(userId: self.info.value.userId)
         let event = RequestEvent(name: "user-updateInfo")
         let task = RequestTask(event: event,
                                type: .http(.post, url: url),
@@ -96,7 +89,7 @@ class CurrentUser: NSObject, UserInfoProtocol {
                                header: ["token": ALKeys.ALUserToken],
                                parameters: new.dic())
         let successCallback: Completion = { [unowned self] in
-            var newInfo = self.info
+            var newInfo = self.info.value
             
             if let newName = new.userName {
                 newInfo.name = newName
@@ -106,7 +99,7 @@ class CurrentUser: NSObject, UserInfoProtocol {
                 newInfo.headURL = newHeadURL
             }
             
-            self.info = newInfo
+            self.info.accept(newInfo)
             self.localStorage()
             if let success = success {
                 success()
@@ -127,13 +120,13 @@ class CurrentUser: NSObject, UserInfoProtocol {
 
 private extension CurrentUser {
     func localStorage() {
-        UserDefaults.standard.setValue(self.info.userId, forKey: "UserId")
+        UserDefaults.standard.setValue(self.info.value.userId, forKey: "UserId")
         let userHelper = ALCenter.shared().centerProvideUserDataHelper()
         
-        if let _ = userHelper.fetch(self.info.userId) {
-            userHelper.modify(self)
+        if let _ = userHelper.fetch(self.info.value.userId) {
+            userHelper.modify(self.info.value)
         } else {
-            userHelper.insert(self)
+            userHelper.insert(self.info.value)
         }
     }
 }

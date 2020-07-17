@@ -328,18 +328,18 @@ class LiveSeatViewController: UIViewController {
                 }
                 
                 // audio
-                view.renderView.audioSilenceTag.isHidden = user.status.contains(.mic)
+                view.renderView.audioSilenceTag.isHidden = user.permission.contains(.mic)
                 userAudioSilence.accept(user)
                 
-                if !user.status.contains(.mic) {
+                if !user.permission.contains(.mic) {
                     view.commands.accept([.unban, .forceToAudience, .close])
                 }
                 
                 // video
-                view.renderView.imageView.isHidden = user.status.contains(.camera)
+                view.renderView.imageView.isHidden = user.permission.contains(.camera)
                 view.renderView.imageView.image = ALCenter.shared().centerProvideImagesHelper().getOrigin(index: user.info.imageIndex)
                 
-                if user.status.contains(.camera) {
+                if user.permission.contains(.camera) {
                     userRender.accept((view.renderView.renderView, user))
                 }
             }
@@ -379,7 +379,7 @@ class LiveSeatViewController: UIViewController {
         
         switch speaker {
         case .local:
-            guard let uid = ALCenter.shared().liveSession?.role?.agoraUserId else {
+            guard let uid = ALCenter.shared().liveSession?.role?.agUId else {
                 return
             }
             agoraUid = UInt(uid)
@@ -389,7 +389,7 @@ class LiveSeatViewController: UIViewController {
         
         for item in seats where item.user != nil {
             let seatView = self.seatViews[item.index - 1]
-            if let user = item.user, user.agoraUserId == agoraUid {
+            if let user = item.user, user.agUId == agoraUid {
                 seatView.renderView.startSpeakerAnimating()
             }
         }

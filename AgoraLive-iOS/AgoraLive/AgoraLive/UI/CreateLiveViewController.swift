@@ -74,9 +74,9 @@ class CreateLiveViewController: MaskViewController {
         
         // workaround: make local preview render scale to 16:9
         let media = ALCenter.shared().centerProvideMediaHelper()
-        media.setupVideo(resolution: CGSize.AgoraVideoDimension720x1280,
-                         frameRate: .fps15,
-                         bitRate: 1000)
+        media.setupVideoStream(resolution: CGSize.AgoraVideoDimension720x1280,
+                               frameRate: .fps15,
+                               bitRate: 1000)
         
         playerVM.startRenderLocalVideoStream(id: 0,
                                              view: self.cameraPreview)

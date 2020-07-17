@@ -59,6 +59,8 @@ class LiveSession: NSObject {
     var role: LiveRole?
     var owner: Owner!
     
+    private let bag = DisposeBag()
+    
     var rtcChannelReport: BehaviorRelay<ChannelReport>?
     var end = PublishRelay<()>()
     var ownerInfoUpdate = PublishRelay<RemoteOwner>()
@@ -121,7 +123,7 @@ class LiveSession: NSObject {
                                timeout: .low,
                                header: ["token": ALKeys.ALUserToken])
         
-        let successCallback: DicEXCompletion = { [unowned self] (json) in
+        let response = ACResponse.json { [unowned self] (json) in
             let data = try json.getDataObject()
             
             // Local User
@@ -138,17 +140,16 @@ class LiveSession: NSObject {
             let channel = try liveRoom.getStringValue(of: "channelName")
             
             let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-            let agoraUserId = try localUserJson.getIntValue(of: "uid")
-            self.setupMediaSettings(self.settings.media)
+            let agUId = try localUserJson.getIntValue(of: "uid")
+            self.setupVideoStream(self.settings.media)
             
-            mediaKit.join(channel: channel, token: ALKeys.AgoraRtcToken, streamId: agoraUserId) { [unowned self] in
-                mediaKit.addEvent(.channelStats({ (stats) in
-                    if self.rtcChannelReport == nil {
-                        self.rtcChannelReport = BehaviorRelay(value: stats)
-                    } else {
-                        self.rtcChannelReport?.accept(stats)
+            mediaKit.join(channel: channel, token: ALKeys.AgoraRtcToken, streamId: agUId) { [unowned self] in
+                mediaKit.channelReport.subscribe(onNext: { [weak self] (statistic) in
+                    guard let strongSelf = self else {
+                        return
                     }
-                }), observer: self)
+                    strongSelf.rtcChannelReport = BehaviorRelay(value: statistic)
+                }).disposed(by: self.bag)
             }
             
             let rtm = ALCenter.shared().centerProvideRTMHelper()
@@ -189,7 +190,6 @@ class LiveSession: NSObject {
                 return .resign
             }
         }
-        let response = ACResponse.json(successCallback)
         
         let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
             if let fail = fail {
@@ -209,15 +209,15 @@ class LiveSession: NSObject {
         let media = ALCenter.shared().centerProvideMediaHelper()
         media.capture.audio = .on
         try! media.capture.video(.on)
-        var status = audience.status
-        status.insert(.camera)
-        status.insert(.mic)
+        var permission = audience.permission
+        permission.insert(.camera)
+        permission.insert(.mic)
         let role = LiveBroadcaster(info: audience.info,
-                                         status: status,
-                                         agoraUserId: audience.agoraUserId,
+                                         permission: permission,
+                                         agUId: audience.agUId,
                                          giftRank: audience.giftRank)
         self.role = role
-        self.setupMediaSettings(settings.media)
+        self.setupVideoStream(settings.media)
         return role
     }
     
@@ -230,17 +230,17 @@ class LiveSession: NSObject {
         media.capture.audio = .off
         try! media.capture.video(.off)
         let role = LiveAudience(info: broadcaster.info,
-                                agoraUserId: broadcaster.agoraUserId,
+                                agUId: broadcaster.agUId,
                                 giftRank: broadcaster.giftRank)
         
         self.role = role
         return role
     }
     
-    func setupMediaSettings(_ settings: LocalLiveSettings.Media) {
+    func setupVideoStream(_ settings: LocalLiveSettings.VideoConfiguration) {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
         
-        mediaKit.setupVideo(resolution: settings.resolution,
+        mediaKit.setupVideoStream(resolution: settings.resolution,
                             frameRate: settings.frameRate,
                             bitRate: settings.bitRate)
     }
@@ -273,20 +273,20 @@ private extension LiveSession {
     func joinAndInitRoleWith(info: StringAnyDic) throws {
         // Local User
         let userInfo = try BasicUserInfo(dic: info)
-        let status = try UserStatus.initWith(dic: info)
+        let permission = try LivePermission.permission(dic: info)
         let roleType = try info.getEnum(of: "role", type: LiveRoleType.self)
         
         let giftRank = try info.getIntValue(of: "rank")
-        let agoraUserId = try info.getIntValue(of: "uid")
+        let agUId = try info.getIntValue(of: "uid")
         
         // Create Live role
         switch roleType {
         case .owner:
-            self.role = LiveOwner(info: userInfo, status: status, agoraUserId: agoraUserId)
+            self.role = LiveOwner(info: userInfo, permission: permission, agUId: agUId)
         case .broadcaster:
-            self.role = LiveBroadcaster(info: userInfo, status: status, agoraUserId: agoraUserId, giftRank: giftRank)
+            self.role = LiveBroadcaster(info: userInfo, permission: permission, agUId: agUId, giftRank: giftRank)
         case .audience:
-            self.role = LiveAudience(info: userInfo, agoraUserId: agoraUserId, giftRank: giftRank)
+            self.role = LiveAudience(info: userInfo, agUId: agUId, giftRank: giftRank)
         }
     }
     
@@ -300,7 +300,7 @@ private extension LiveSession {
             fatalError()
         }
         
-        if ownerObj.info.userId == current.publicInfo.value.userId {
+        if ownerObj.info.userId == current.info.value.userId {
             self.owner = .localUser(ownerObj)
         } else {
             self.owner = .otherUser(ownerObj)

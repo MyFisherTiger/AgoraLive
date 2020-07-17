@@ -17,26 +17,26 @@ class UserDataHelper: NSObject {
         createSqlite()
     }
     
-    func insert(_ user: UserInfoProtocol) {
+    func insert(_ user: BasicUserInfo) {
         let userData = NSEntityDescription.insertNewObject(forEntityName: "UserData",
                                                            into: coreDataContext) as! UserData
         
-        userData.name = user.info.name
-        userData.userId = user.info.userId
+        userData.name = user.name
+        userData.userId = user.userId
         
         try! coreDataContext.save()
     }
     
-    func modify(_ user: UserInfoProtocol) {
+    func modify(_ user: BasicUserInfo) {
         let request: NSFetchRequest<UserData> = UserData.fetchRequest()
-        let predicate = NSPredicate(format: "%K == %@", "userId", user.info.userId)
+        let predicate = NSPredicate(format: "%K == %@", "userId", user.userId)
         request.predicate = predicate
         
         do {
             let result = try coreDataContext.fetch(request)
             
             for item in result {
-                item.name = user.info.name
+                item.name = user.name
             }
             
             try coreDataContext.save()

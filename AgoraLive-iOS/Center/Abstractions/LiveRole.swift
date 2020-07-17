@@ -15,54 +15,54 @@ enum LiveRoleType: Int {
     case owner = 1, broadcaster, audience
 }
 
-struct UserStatus: OptionSet {
+struct LivePermission: OptionSet {
     let rawValue: Int
     
-    static let camera = UserStatus(rawValue: 1)
-    static let mic = UserStatus(rawValue: 1 << 1)
-    static let chat = UserStatus(rawValue: 1 << 2)
+    static let camera = LivePermission(rawValue: 1)
+    static let mic = LivePermission(rawValue: 1 << 1)
+    static let chat = LivePermission(rawValue: 1 << 2)
     
-    static func initWith(dic: StringAnyDic) throws -> UserStatus {
-        var status = UserStatus(rawValue: 0)
+    static func permission(dic: StringAnyDic) throws -> LivePermission {
+        var permission = LivePermission(rawValue: 0)
         
         let enableMic = try dic.getBoolInfoValue(of: "enableAudio")
         let enableCamera = try dic.getBoolInfoValue(of: "enableVideo")
         let enableChat = try? dic.getBoolInfoValue(of: "enableChat")
         
         if enableMic {
-            status.insert(.mic)
+            permission.insert(.mic)
         }
         
         if enableCamera {
-            status.insert(.camera)
+            permission.insert(.camera)
         }
         
         if let chat = enableChat, chat {
-            status.insert(.chat)
+            permission.insert(.chat)
         } else if enableChat == nil {
-            status.insert(.chat)
+            permission.insert(.chat)
         }
         
-        return status
+        return permission
     }
 }
 
 protocol LiveRole: UserInfoProtocol {
     var type: LiveRoleType {get set}
-    var status: UserStatus {get set}
-    var agoraUserId: Int {get set}
+    var permission: LivePermission {get set}
+    var agUId: Int {get set}
     
-    mutating func updateLocal(status: UserStatus, of roomId: String, success: Completion, fail: ErrorCompletion)
+    mutating func updateLocal(permission: LivePermission, of roomId: String, success: Completion, fail: ErrorCompletion)
 }
 
 extension LiveRole {
-    mutating func updateLocal(status: UserStatus, of roomId: String, success: Completion = nil, fail: ErrorCompletion = nil) {
-        self.status = status
+    mutating func updateLocal(permission: LivePermission, of roomId: String, success: Completion = nil, fail: ErrorCompletion = nil) {
+        self.permission = permission
         
         let url = URLGroup.userCommand(userId: self.info.userId, roomId: roomId)
-        let parameters = ["enableAudio": status.contains(.mic) ? 1 : 0,
-                          "enableVideo": status.contains(.camera) ? 1 : 0,
-                          "enableChat": status.contains(.chat) ? 1 : 0]
+        let parameters = ["enableAudio": permission.contains(.mic) ? 1 : 0,
+                          "enableVideo": permission.contains(.camera) ? 1 : 0,
+                          "enableChat": permission.contains(.chat) ? 1 : 0]
         
         let client = ALCenter.shared().centerProvideRequestHelper()
         let event = RequestEvent(name: "local-update-status")
@@ -99,15 +99,15 @@ extension LiveRole {
 class LiveAudience: NSObject, LiveRole {
     var type: LiveRoleType = .audience
     var info: BasicUserInfo
-    var status: UserStatus
-    var agoraUserId: Int
+    var permission: LivePermission
+    var agUId: Int
     
     var giftRank: Int
     
-    init(info: BasicUserInfo, agoraUserId: Int, giftRank: Int = 0) {
+    init(info: BasicUserInfo, agUId: Int, giftRank: Int = 0) {
         self.info = info
-        self.status = UserStatus(rawValue: 0)
-        self.agoraUserId = agoraUserId
+        self.permission = LivePermission(rawValue: 0)
+        self.agUId = agUId
         self.giftRank = giftRank
     }
 }
@@ -116,15 +116,15 @@ class LiveAudience: NSObject, LiveRole {
 class LiveBroadcaster: NSObject, LiveRole {
     var type: LiveRoleType = .broadcaster
     var info: BasicUserInfo
-    var status: UserStatus
-    var agoraUserId: Int
+    var permission: LivePermission
+    var agUId: Int
     
     var giftRank: Int
     
-    init(info: BasicUserInfo, status: UserStatus, agoraUserId: Int, giftRank: Int = 0) {
+    init(info: BasicUserInfo, permission: LivePermission, agUId: Int, giftRank: Int = 0) {
         self.info = info
-        self.status = status
-        self.agoraUserId = agoraUserId
+        self.permission = permission
+        self.agUId = agUId
         self.giftRank = giftRank
     }
 }
@@ -133,78 +133,78 @@ class LiveBroadcaster: NSObject, LiveRole {
 class LiveOwner: NSObject, LiveRole {
     var type: LiveRoleType = .owner
     var info: BasicUserInfo
-    var status: UserStatus
-    var agoraUserId: Int
+    var permission: LivePermission
+    var agUId: Int
     
-    init(info: BasicUserInfo, status: UserStatus, agoraUserId: Int) {
+    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
         self.info = info
-        self.status = status
-        self.agoraUserId = agoraUserId
+        self.permission = permission
+        self.agUId = agUId
     }
 }
 
 // MARK: - Remote
 class RemoteOwner: NSObject, LiveRole {
     var type: LiveRoleType = .owner
-    var status: UserStatus
+    var permission: LivePermission
     var info: BasicUserInfo
-    var agoraUserId: Int
+    var agUId: Int
     
     init(dic: StringAnyDic) throws {
-        self.status = try UserStatus.initWith(dic: dic)
+        self.permission = try LivePermission.permission(dic: dic)
         self.info = try BasicUserInfo(dic: dic)
-        self.agoraUserId = try dic.getIntValue(of: "uid")
+        self.agUId = try dic.getIntValue(of: "uid")
     }
     
-    init(info: BasicUserInfo, status: UserStatus, agoraUserId: Int) {
+    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
         self.info = info
-        self.status = status
-        self.agoraUserId = agoraUserId
+        self.permission = permission
+        self.agUId = agUId
     }
 }
 
 class RemoteBroadcaster: NSObject, LiveRole {
     var type: LiveRoleType = .broadcaster
-    var status: UserStatus
+    var permission: LivePermission
     var info: BasicUserInfo
-    var agoraUserId: Int
+    var agUId: Int
     
     init(dic: StringAnyDic) throws {
-        self.status = try UserStatus.initWith(dic: dic)
+        self.permission = try LivePermission.permission(dic: dic)
         self.info = try BasicUserInfo(dic: dic)
-        self.agoraUserId = try dic.getIntValue(of: "uid")
+        self.agUId = try dic.getIntValue(of: "uid")
     }
     
-    init(info: BasicUserInfo, status: UserStatus, agoraUserId: Int) {
+    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
         self.info = info
-        self.status = status
-        self.agoraUserId = agoraUserId
+        self.permission = permission
+        self.agUId = agUId
     }
 }
 
 class RemoteAudience: NSObject, LiveRole {
     var type: LiveRoleType = .audience
-    var status: UserStatus
+    var permission: LivePermission
     var info: BasicUserInfo
-    var agoraUserId: Int
+    var agUId: Int
     var giftRank: Int
     
     init(dic: StringAnyDic) throws {
-        self.status = UserStatus(rawValue: 0)
+        self.permission = LivePermission(rawValue: 0)
         self.info = try BasicUserInfo(dic: dic)
         self.giftRank = 0
         
         if let uid = try? dic.getIntValue(of: "uid") {
-            self.agoraUserId = uid
+            self.agUId = uid
         } else {
-            self.agoraUserId = -1
+            self.agUId = -1
         }
     }
     
-    init(info: BasicUserInfo, agoraUserId: Int) {
+    init(info: BasicUserInfo, agUId: Int) {
         self.info = info
-        self.status = UserStatus(rawValue: 0)
-        self.agoraUserId = agoraUserId
+        self.permission = LivePermission(rawValue: 0)
+        self.agUId = agUId
         self.giftRank = 0
     }
 }

@@ -49,7 +49,7 @@ private extension MineVM {
         
         let images = ALCenter.shared().centerProvideImagesHelper()
         
-        abstraction.publicInfo.subscribe(onNext: { [weak self] (newInfo) in
+        abstraction.info.subscribe(onNext: { [weak self] (newInfo) in
             guard let strongSelf = self else {
                 return
             }

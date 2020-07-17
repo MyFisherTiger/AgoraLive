@@ -42,7 +42,7 @@ extension ALCenter {
     func registerAndLogin() {
         if let current = CurrentUser.local() {
             self.current = current
-            self.login(userId: current.info.userId) {
+            self.login(userId: current.info.value.userId) {
                 self.isWorkNormally.accept(true)
             }
             return

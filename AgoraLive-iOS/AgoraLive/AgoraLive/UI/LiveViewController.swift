@@ -515,14 +515,14 @@ extension LiveViewController {
                 return
             }
             
-            var status = role.status
+            var permission = role.permission
             switch self.deviceVM.camera {
             case .on:
-                status.insert(.camera)
+                permission.insert(.camera)
             case .off:
-                status.remove(.camera)
+                permission.remove(.camera)
             }
-            role.updateLocal(status: status, of: session.roomId)
+            role.updateLocal(permission: permission, of: session.roomId)
         }).disposed(by: bag)
         
         extensionVC.micButton.isSelected = !self.deviceVM.mic.boolValue
@@ -537,15 +537,15 @@ extension LiveViewController {
                 return
             }
             
-            var status = role.status
+            var permission = role.permission
             switch self.deviceVM.mic {
             case .on:
-                status.insert(.mic)
+                permission.insert(.mic)
             case .off:
-                status.remove(.mic)
+                permission.remove(.mic)
             }
             
-            role.updateLocal(status: status, of: session.roomId)
+            role.updateLocal(permission: permission, of: session.roomId)
         }).disposed(by: bag)
         
         extensionVC.audioLoopButton.rx.tap.subscribe(onNext: { [unowned extensionVC, unowned self] in
@@ -582,7 +582,7 @@ extension LiveViewController {
             newSettings.media = newMedia
             session.settings = newSettings
             
-            session.setupMediaSettings(newMedia)
+            session.setupVideoStream(newMedia)
         }).disposed(by: bag)
         
         mediaSettingsVC.view.cornerRadius(5)

@@ -8,10 +8,12 @@
 
 import Foundation
 import AgoraRtcKit
+import RxSwift
+import RxRelay
 import AGECamera
 
 typealias AudioOutputRouting = AgoraAudioOutputRouting
-typealias ChannelReport = StatisticsInfo
+typealias ChannelReport = RTCStatistics
 
 class MediaKit: NSObject, AGELogBase {
     enum Speaker {
@@ -19,7 +21,7 @@ class MediaKit: NSObject, AGELogBase {
     }
     
     enum Event {
-        case channelStats(((ChannelReport) -> Void)?), activeSpeaker(((Speaker) -> Void)?)
+        case activeSpeaker(((Speaker) -> Void)?)
     }
     
     static var rtcKit = AgoraRtcEngineKit.sharedEngine(withAppId: ALKeys.AgoraAppId,
@@ -30,24 +32,7 @@ class MediaKit: NSObject, AGELogBase {
     
     private lazy var eventObservers = [NSObject: Event]()
     
-    private(set) var channelReport: StatisticsInfo? {
-        didSet {
-            guard let channelReport = channelReport else {
-                return
-            }
-            
-            for (_, event) in eventObservers {
-                switch event {
-                case .channelStats(let callback):
-                    if let tCallback = callback {
-                        tCallback(channelReport)
-                    }
-                default:
-                    continue
-                }
-            }
-        }
-    }
+    private(set) var channelReport = BehaviorRelay(value: RTCStatistics(type: .local(RTCStatistics.Local(stats: AgoraChannelStats()))))
     
     private(set) var channelStatus: AGEChannelStatus = .out
     private var cameraStreamQueue = DispatchQueue(label: "CameraStreamQueue")
@@ -100,7 +85,7 @@ class MediaKit: NSObject, AGELogBase {
         agoraKit.leaveChannel(nil)
     }
     
-    func setupVideo(resolution: CGSize, frameRate: AgoraVideoFrameRate, bitRate: Int) {
+    func setupVideoStream(resolution: CGSize, frameRate: AgoraVideoFrameRate, bitRate: Int) {
         log(info: "setup video",
             extra: "resolution: \(resolution.debugDescription), frameRate: \(frameRate.rawValue), bitRate: \(bitRate)")
         agoraKit.setupVideo(resolution: resolution, frameRate: frameRate, bitRate: bitRate)
@@ -214,9 +199,16 @@ extension MediaKit: AgoraRtcEngineDelegate {
         player.audioRoute = routing
     }
     
+    func rtcEngine(_ engine: AgoraRtcEngineKit, firstLocalVideoFrameWith size: CGSize, elapsed: Int) {
+        var new = self.channelReport.value
+        new.dimension = size
+        channelReport.accept(new)
+    }
+    
     func rtcEngine(_ engine: AgoraRtcEngineKit, reportRtcStats stats: AgoraChannelStats) {
-        let info = StatisticsInfo(type: .local(StatisticsInfo.LocalInfo(stats: stats)))
-        channelReport = info
+        var new = self.channelReport.value
+        new.updateChannelStats(stats)
+        channelReport.accept(new)
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didReceive event: AgoraChannelMediaRelayEvent) {

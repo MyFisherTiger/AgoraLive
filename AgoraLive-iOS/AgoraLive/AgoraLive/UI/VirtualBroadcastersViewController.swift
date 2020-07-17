@@ -281,10 +281,10 @@ extension VirtualBroadcastersViewController {
             // Owner RenderView
             switch owner {
             case .localUser(let user):
-                self.playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
+                self.playerVM.startRenderLocalVideoStream(id: user.agUId,
                                                           view: self.ownerRenderView)
             case .otherUser(let user):
-                self.playerVM.startRenderRemoteVideoStream(id: user.agoraUserId,
+                self.playerVM.startRenderRemoteVideoStream(id: user.agUId,
                                                            view: self.ownerRenderView)
             }
             
@@ -293,10 +293,10 @@ extension VirtualBroadcastersViewController {
             case .multi(let users):
                 for item in users where item.info.userId != owner.user.info.userId {
                     if item.info.userId == local.info.userId {
-                        self.playerVM.startRenderLocalVideoStream(id: local.agoraUserId,
+                        self.playerVM.startRenderLocalVideoStream(id: local.agUId,
                                                                   view: self.broadcasterRenderView)
                     } else {
-                        self.playerVM.startRenderRemoteVideoStream(id: item.agoraUserId,
+                        self.playerVM.startRenderRemoteVideoStream(id: item.agUId,
                                                                    view: self.broadcasterRenderView)
                     }
                 }

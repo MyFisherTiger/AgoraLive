@@ -9,18 +9,18 @@
 import Foundation
 import AgoraRtcKit
 
-struct StatisticsInfo {
-    struct LocalInfo {
+struct RTCStatistics {
+    struct Local {
         var stats = AgoraChannelStats()
     }
     
-    struct RemoteInfo {
+    struct Remote {
         var videoStats = AgoraRtcRemoteVideoStats()
         var audioStats = AgoraRtcRemoteAudioStats()
     }
     
     enum StatisticsType {
-        case local(LocalInfo), remote(RemoteInfo)
+        case local(Local), remote(Remote)
         
         var isLocal: Bool {
             switch self {
@@ -46,7 +46,7 @@ struct StatisticsInfo {
         guard self.type.isLocal else {
             return
         }
-        let info = LocalInfo(stats: stats)
+        let info = Local(stats: stats)
         self.type = .local(info)
     }
     
@@ -81,7 +81,7 @@ struct StatisticsInfo {
         return full
     }
     
-    func localDescription(info: LocalInfo) -> String {
+    func localDescription(info: Local) -> String {
         let join = "\n"
         
         let dimensionFps = "\(Int(dimension.width))×\(Int(dimension.height)), \(fps)fps"
@@ -96,7 +96,7 @@ struct StatisticsInfo {
         return dimensionFps + join + lastmile + join + videoSendRecv + join + audioSendRecv + join + cpu + join + quality +  join + sendRecvLoss
     }
     
-    func remoteDescription(info: RemoteInfo) -> String {
+    func remoteDescription(info: Remote) -> String {
         let join = "\n"
         
         let dimensionFpsBit = "\(Int(dimension.width))×\(Int(dimension.height)), \(fps)fps, \(info.videoStats.receivedBitrate)kbps"

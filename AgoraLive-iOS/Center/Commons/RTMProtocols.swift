@@ -10,8 +10,6 @@ import Foundation
 import AlamoClient
 
 protocol SocketProtocol {
-    var connectStatus: AGESocketState {set get}
-        
     func connect(rtmId: String, token: String?, success: Completion, failRetry: ACErrorRetryCompletion) throws
     func disconnect()
     func write(message: String, of event: ACRequestEvent, to: String, success: Completion, fail: ErrorCompletion) throws
@@ -22,12 +20,6 @@ protocol SocketProtocol {
 
     func addReceivedChannelMessage(observer: NSObject, subscribe: DicEXCompletion)
     func removeReceivedChannelMessage(observer: NSObject)
-
-    func addConnectStatusChnage(observer: NSObject, subscribe: ((AGESocketState) -> Void)?)
-    func removeConnectStatusChnage(observer: NSObject)
-
-    func addOccurError(observer: NSObject, subscribe: ErrorCompletion)
-    func removeOccurError(observer: NSObject)
 }
 
 struct ChannelUser {
@@ -43,7 +35,4 @@ protocol RTMChannelProtocol {
     func joinChannel(_ channel: String, success: Completion, failRetry: ACErrorRetryCompletion)
     func leaveChannel()
     func writeChannel(message: String, of event: ACRequestEvent, success: Completion, fail: ErrorCompletion) throws
-
-    func addUserOfChannel(observer: NSObject, subscribe: ((ChannelUser) -> Void)?)
-    func removeUserOfChannel(observer: NSObject)
 }

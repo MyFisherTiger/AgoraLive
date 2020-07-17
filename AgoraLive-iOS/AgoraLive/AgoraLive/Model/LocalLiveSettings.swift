@@ -16,7 +16,7 @@ struct LocalLiveSettings {
         var rednessLevel: CGFloat = 0.1
     }
     
-    struct Media {
+    struct VideoConfiguration {
         var resolution: CGSize = AgoraVideoDimension640x360
         var frameRate: AgoraVideoFrameRate = .fps15
         var bitRate: Int = AgoraVideoBitrateStandard
@@ -24,5 +24,5 @@ struct LocalLiveSettings {
     
     var title: String
     var beauty = Beauty()
-    var media = Media()
+    var media = VideoConfiguration()
 }

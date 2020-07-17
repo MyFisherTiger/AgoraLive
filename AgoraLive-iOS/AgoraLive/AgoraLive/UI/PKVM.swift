@@ -181,7 +181,6 @@ class PKVM: NSObject {
     
     deinit {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedChannelMessage(observer: self)
         rtm.removeReceivedPeerMessage(observer: self)
     }
 }
@@ -189,6 +188,9 @@ class PKVM: NSObject {
 private extension PKVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
+        
+        
+        
         rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
             guard let strongSelf = self else {
                 return
@@ -283,7 +285,7 @@ private extension PKVM {
                                     command: isInvite ? .invitePK(fromRoom: localRoomId) : .rejectPK(fromRoom: localRoomId),
                                     userName: localUser.info.name,
                                     userId: localUser.info.userId,
-                                    agoraUid: localUser.agoraUserId)
+                                    agoraUid: localUser.agUId)
         
         do {
             let jsonString = try message.json().jsonString()

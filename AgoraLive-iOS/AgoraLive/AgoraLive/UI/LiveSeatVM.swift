@@ -128,7 +128,7 @@ private extension LiveSeatVM {
             let agoraUid = try data.getIntValue(of: "agoraUid")
             
             let info = BasicUserInfo(userId: userId, name: userName)
-            let role = LiveAudience(info: info, agoraUserId: agoraUid)
+            let role = LiveAudience(info: info, agUId: agoraUid)
             
             switch cmd {
             case  101: //.applyForBroadcasting:
@@ -182,13 +182,13 @@ extension LiveSeatVM {
                                         command: .inviteBroadcasting(seatIndex: seat.index),
                                         userName: local.info.name,
                                         userId: local.info.userId,
-                                        agoraUid: local.agoraUserId)
+                                        agoraUid: local.agUId)
             
             do {
                 let jsonString = try message.json().jsonString()
                 try rtm.write(message: jsonString,
                               of: RequestEvent(name: "apply_for_broadcasting"),
-                              to: "\(user.agoraUserId)",
+                              to: "\(user.agUId)",
                               fail: fail)
             } catch let error as ACError {
                 if let fail = fail {
@@ -223,8 +223,8 @@ extension LiveSeatVM {
             }
             url = URLGroup.userCommand(userId: user.info.userId, roomId: roomId)
             parameters = ["enableAudio": command == .ban ? 0 : 1,
-                          "enableVideo": user.status.contains(.camera) ? 1 : 0,
-                          "enableChat": user.status.contains(.chat) ? 1 : 0]
+                          "enableVideo": user.permission.contains(.camera) ? 1 : 0,
+                          "enableChat": user.permission.contains(.chat) ? 1 : 0]
         default:
             return
         }
@@ -299,7 +299,7 @@ extension LiveSeatVM {
                                     command: .rejectBroadcasting,
                                     userName: local.info.name,
                                     userId: local.info.userId,
-                                    agoraUid: local.agoraUserId)
+                                    agoraUid: local.agUId)
         
         do {
             let jsonString = try message.json().jsonString()
@@ -360,13 +360,13 @@ extension LiveSeatVM {
                                     command: .applyForBroadcasting(seatIndex: seat.index),
                                     userName: local.info.name,
                                     userId: local.info.userId,
-                                    agoraUid: local.agoraUserId)
+                                    agoraUid: local.agUId)
         
         do {
             let jsonString = try message.json().jsonString()
             try rtm.write(message: jsonString,
                           of: RequestEvent(name: "apply_for_broadcasting"),
-                          to: "\(owner.agoraUserId)",
+                          to: "\(owner.agUId)",
                           fail: fail)
         } catch {
             if let fail = fail {
@@ -422,13 +422,13 @@ extension LiveSeatVM {
                                     command: .rejectInviteBroadcasting,
                                     userName: local.info.name,
                                     userId: local.info.userId,
-                                    agoraUid: local.agoraUserId)
+                                    agoraUid: local.agUId)
         
         do {
             let jsonString = try message.json().jsonString()
             try rtm.write(message: jsonString,
                           of: RequestEvent(name: "apply_for_broadcasting"),
-                          to: "\(owner.agoraUserId)",
+                          to: "\(owner.agUId)",
                           fail: fail)
         } catch {
             if let fail = fail {

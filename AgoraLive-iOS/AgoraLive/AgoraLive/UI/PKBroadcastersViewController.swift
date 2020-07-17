@@ -413,11 +413,11 @@ private extension PKBroadcastersViewController {
         
         switch (owner, statistics.state.isDuring) {
         case (.localUser(let user), false):
-            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
+            playerVM.startRenderLocalVideoStream(id: user.agUId,
                                                  view: renderView)
             pkButton.isHidden = false
         case (.otherUser(let user), false):
-            playerVM.startRenderRemoteVideoStream(id: user.agoraUserId,
+            playerVM.startRenderRemoteVideoStream(id: user.agUId,
                                              view: renderView)
             pkButton.isHidden = true
         case (.localUser(let user), true):
@@ -429,10 +429,10 @@ private extension PKBroadcastersViewController {
             let leftRenderView = pkView.leftRenderView
             let rightRenderView = pkView.rightRenderView
             
-            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
+            playerVM.startRenderLocalVideoStream(id: user.agUId,
                                                  view: leftRenderView!)
             
-            let opponentUser = statistics.opponentOwner!.agoraUserId
+            let opponentUser = statistics.opponentOwner!.agUId
             playerVM.startRenderRemoteVideoStream(id: opponentUser,
                                              view: rightRenderView!)
             pkButton.isHidden = true
@@ -445,10 +445,10 @@ private extension PKBroadcastersViewController {
             let leftRenderView = pkView.leftRenderView
             let rightRenderView = pkView.rightRenderView
             
-            playerVM.startRenderRemoteVideoStream(id: user.agoraUserId,
+            playerVM.startRenderRemoteVideoStream(id: user.agUId,
                                              view: leftRenderView!)
             
-            let opponentUser = statistics.opponentOwner!.agoraUserId
+            let opponentUser = statistics.opponentOwner!.agUId
             playerVM.startRenderRemoteVideoStream(id: opponentUser,
                                              view: rightRenderView!)
             pkButton.isHidden = true

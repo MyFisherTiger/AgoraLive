@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import RxSwift
+import RxRelay
 import AgoraRtmKit
 import AlamoClient
 
@@ -27,14 +29,12 @@ class RTMClient: NSObject, AGELogBase {
     private lazy var loginWorkerId = Date.millisecondTimestamp
     private lazy var joinChannelId = Date.millisecondTimestamp
     
-    private lazy var connectObservers = [NSObject: ((AGESocketState) -> Void)?]()
     private lazy var peerMessageObservers = [NSObject: DicEXCompletion]()
     private lazy var channelMessageObservers = [NSObject: DicEXCompletion]()
     
-    private lazy var errorObservers = [NSObject: ErrorCompletion]()
-    private lazy var channelUserObserver = [NSObject: ((ChannelUser) -> Void)?]()
+    private(set) var joinedChannel: String?
     
-    private(set) var everJoinChannel: String?
+    private let bag = DisposeBag()
     
     private var currentQueue: DispatchQueue {
         if Thread.isMainThread {
@@ -43,24 +43,13 @@ class RTMClient: NSObject, AGELogBase {
             return DispatchQueue.main
         }
     }
-
+    
     private var isNeedCache: Bool {
         return true
     }
     
-    var connectStatus: AGESocketState = .disconnected {
-        didSet {
-            guard oldValue != connectStatus else {
-                return
-            }
-
-            for (_, callback) in connectObservers {
-                if let callback = callback {
-                    callback(connectStatus)
-                }
-            }
-        }
-    }
+    private(set) var connectStatus = BehaviorRelay(value: AGESocketState.disconnected)
+    private(set) var channelMessage = BehaviorRelay(value: "")
     
     var logTube: LogTube
     
@@ -105,6 +94,7 @@ extension RTMClient: SocketProtocol {
     func addReceivedPeerMessage(observer: NSObject, subscribe: DicEXCompletion) {
         peerMessageObservers[observer] = subscribe
     }
+    
     func removeReceivedPeerMessage(observer: NSObject) {
         peerMessageObservers.removeValue(forKey: observer)
     }
@@ -116,28 +106,12 @@ extension RTMClient: SocketProtocol {
     func removeReceivedChannelMessage(observer: NSObject) {
         channelMessageObservers.removeValue(forKey: observer)
     }
-    
-    func addConnectStatusChnage(observer: NSObject, subscribe: ((AGESocketState) -> Void)?) {
-        connectObservers[observer] = subscribe
-    }
-    
-    func removeConnectStatusChnage(observer: NSObject) {
-        connectObservers.removeValue(forKey: observer)
-    }
-    
-    func addOccurError(observer: NSObject, subscribe: ErrorCompletion) {
-        errorObservers[observer] = subscribe
-    }
-    
-    func removeOccurError(observer: NSObject) {
-        errorObservers.removeValue(forKey: observer)
-    }
 }
 
 extension RTMClient: RTMChannelProtocol {
     func joinChannel(_ channel: String, success: Completion, failRetry: ACErrorRetryCompletion) {
         kit.joinChannel(channel, delegate: self, success: { [unowned self] in
-            self.everJoinChannel = channel
+            self.joinedChannel = channel
             
             if let success = success {
                 success()
@@ -162,7 +136,7 @@ extension RTMClient: RTMChannelProtocol {
     }
     
     func leaveChannel() {
-        guard let channel = everJoinChannel else {
+        guard let channel = joinedChannel else {
             return
         }
         
@@ -170,29 +144,16 @@ extension RTMClient: RTMChannelProtocol {
     }
     
     func writeChannel(message: String, of event: ACRequestEvent, success: Completion = nil, fail: ErrorCompletion) throws {
-        guard let channel = everJoinChannel else {
+        guard let channel = joinedChannel else {
             return
         }
         
         do {
             let rtmChannel = try kit.getChannel(id: channel)
             rtmChannel.send(message: message, of: event, success: success, fail: fail)
-        } catch let error as AGEError {
-            log(error: error, extra: "get channel fail")
         } catch {
-            log(error: AGEError.unknown(), extra: "get channel fail")
+            log(error: error, extra: "get channel fail")
         }
-    }
-    
-    func addUserOfChannel(observer: NSObject, subscribe: ((ChannelUser) -> Void)?) {
-        guard let callback = subscribe else {
-            return
-        }
-        channelUserObserver[observer] = callback
-    }
-    
-    func removeUserOfChannel(observer: NSObject) {
-        channelUserObserver.removeValue(forKey: observer)
     }
 }
 
@@ -217,8 +178,6 @@ extension RTMClient: RequestClientProtocol {
                     break
                 }
             }
-        } catch let error as AGEError {
-            log(error: error, extra: task.event.description)
         } catch {
             log(error: AGEError.unknown(), extra: task.event.description)
         }
@@ -318,8 +277,6 @@ private extension RTMClient {
                 }
             }
             // task id, call back
-        } catch let error as AGEError {
-            log(error: error)
         } catch let error {
             log(error: error)
         }
@@ -334,7 +291,7 @@ extension RTMClient: AgoraRtmDelegate {
 
     func rtmKit(_ kit: AgoraRtmKit, connectionStateChanged state: AgoraRtmConnectionState, reason: AgoraRtmConnectionChangeReason) {
         log(info: "rtmkit connect state: \(state.description), reason: \(reason.description)")
-        self.connectStatus = state
+        self.connectStatus.accept(state)
     }
 
     func rtmKitTokenDidExpire(_ kit: AgoraRtmKit) {
@@ -349,19 +306,11 @@ extension RTMClient: AgoraRtmChannelDelegate {
     }
 
     func channel(_ channel: AgoraRtmChannel, memberJoined member: AgoraRtmMember) {
-        for (_, callback) in channelUserObserver {
-            if let callback = callback {
-                callback(ChannelUser(uid: member.userId, state: .enter))
-            }
-        }
+        
     }
     
     func channel(_ channel: AgoraRtmChannel, memberLeft member: AgoraRtmMember) {
-        for (_, callback) in channelUserObserver {
-            if let callback = callback {
-                callback(ChannelUser(uid: member.userId, state: .left))
-            }
-        }
+        
     }
 }
 

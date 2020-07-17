@@ -141,7 +141,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
             case (.local, .localUser):
                 strongSelf.ownerRenderView.startSpeakerAnimating()
             case (.other(agoraUid: let uid), .otherUser(let user)):
-                if uid == user.agoraUserId {
+                if uid == user.agUId {
                     strongSelf.ownerRenderView.startSpeakerAnimating()
                 } else {
                     fallthrough
@@ -165,11 +165,11 @@ extension MultiBroadcastersViewController {
                     return
             }
             
-            if local.agoraUserId == viewUser.1.agoraUserId {
-                self.playerVM.startRenderLocalVideoStream(id: viewUser.1.agoraUserId,
+            if local.agUId == viewUser.1.agUId {
+                self.playerVM.startRenderLocalVideoStream(id: viewUser.1.agUId,
                                                           view: viewUser.0)
             } else {
-                self.playerVM.startRenderRemoteVideoStream(id: viewUser.1.agoraUserId,
+                self.playerVM.startRenderRemoteVideoStream(id: viewUser.1.agUId,
                                                            view: viewUser.0)
             }
         }).disposed(by: bag)
@@ -177,11 +177,11 @@ extension MultiBroadcastersViewController {
         seatVC?.userAudioSilence.subscribe(onNext: { [unowned self] (user) in
             guard let session = ALCenter.shared().liveSession,
                 let local = session.role,
-                local.agoraUserId == user.agoraUserId else {
+                local.agUId == user.agUId else {
                     return
             }
             
-            self.deviceVM.mic = user.status.contains(.mic) ? .on : .off
+            self.deviceVM.mic = user.permission.contains(.mic) ? .on : .off
         }).disposed(by: bag)
         
         // Live Seat List
@@ -350,7 +350,7 @@ private extension MultiBroadcastersViewController {
             
             ownerRenderView.imageView.image = images.getOrigin(index: user.info.imageIndex)
             ownerRenderView.label.text = user.info.name
-            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
+            playerVM.startRenderLocalVideoStream(id: user.agUId,
                                                  view: self.ownerRenderView.renderView)
             deviceVM.camera = .on
             deviceVM.mic = .on
@@ -358,7 +358,7 @@ private extension MultiBroadcastersViewController {
             let images = ALCenter.shared().centerProvideImagesHelper()
             ownerRenderView.imageView.image = images.getOrigin(index: remote.info.imageIndex)
             ownerRenderView.label.text  = remote.info.name
-            playerVM.startRenderRemoteVideoStream(id: remote.agoraUserId,
+            playerVM.startRenderRemoteVideoStream(id: remote.agUId,
                                              view: self.ownerRenderView.renderView)
             deviceVM.camera = .off
             deviceVM.mic = .off
@@ -388,7 +388,7 @@ private extension MultiBroadcastersViewController {
                                action2: NSLocalizedString("Confirm"), handler1: { [unowned session] (_) in
                                 let role = session.role as! LiveOwner
                                 
-                                self.seatVM.localOwner(role, rejectBroadcastingAudience: userSeat.user.agoraUserId)
+                                self.seatVM.localOwner(role, rejectBroadcastingAudience: userSeat.user.agUId)
                 }) {[unowned self] (_) in
                     self.seatVM.localOwnerAcceptBroadcasting(audience: userSeat.user,
                                                              seatIndex: userSeat.seatIndex,
@@ -419,8 +419,8 @@ private extension MultiBroadcastersViewController {
         }
         
         session.ownerInfoUpdate.subscribe(onNext: {[unowned self] (owner) in
-            self.ownerRenderView.imageView.isHidden = owner.status.contains(.camera)
-            self.ownerRenderView.audioSilenceTag.isHidden = owner.status.contains(.mic)
+            self.ownerRenderView.imageView.isHidden = owner.permission.contains(.camera)
+            self.ownerRenderView.audioSilenceTag.isHidden = owner.permission.contains(.mic)
         }).disposed(by: bag)
     }
 }
