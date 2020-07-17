@@ -1,10 +1,12 @@
 parameters:
   displayName: ''
   mode: ''
+  upload: 0
 
 jobs:
   - job: ${{ parameters.displayName }}Build
     displayName: ${{ parameters.displayName }}
+    timeoutInMinutes: 30
 
     pool:
       vmImage: 'macOS-10.14'
@@ -25,12 +27,12 @@ jobs:
           
       - task: InstallAppleCertificate@2
         inputs:
-          certSecureFile: 'AgoraCertificate2.p12'
+          certSecureFile: 'AgoraLab.p12'
           certPwd: $(agora.password)
 
       - task: InstallAppleProvisioningProfile@1
         inputs:
-          provProfileSecureFile: 'AgoraTest2020.mobileprovision'
+          provProfileSecureFile: 'AgoraLab2020.mobileprovision'
           
       - task: DownloadSecureFile@1
         name: downloadAuthpack
@@ -44,9 +46,9 @@ jobs:
 
       - script: cd 'AgoraLive-iOS/Build/shell' && chmod +x build.sh && ./build.sh AgoraLive ${{ parameters.mode }}
       
-      - script: echo ${{ parameters.mode }}
-      
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: AgoraLive-iOS/Build/product/app
-          ArtifactName: AgoraLiveiOS
+          ArtifactName: ${{ parameters.displayName }}
+      
+      - script: cd 'AgoraLive-iOS/Build/shell' && gem install fir-cli && chmod +x upload_fir.sh && ./upload_fir.sh ${{ parameters.upload }} $(firtoken) ../product/app/AgoraLive.ipa
