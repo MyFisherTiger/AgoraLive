@@ -49,4 +49,4 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: AgoraLive-iOS/Build/product/app
-          ArtifactName: AgoraLiveiOS
+          ArtifactName: ${{ parameters.displayName }}

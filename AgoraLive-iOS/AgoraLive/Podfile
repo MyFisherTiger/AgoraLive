@@ -20,6 +20,7 @@ target 'AgoraLive' do
   pod 'AGECamera', '~> 1.0.1'
   pod 'Nama-lite', '~> 6.4.0'
   pod 'AlamoClient', '~> 1.0.2' 
+  pod 'AliyunOSSiOS'
 
   source 'https://github.com/CocoaPods/Specs.git'
 end
