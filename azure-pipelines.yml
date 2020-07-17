@@ -19,6 +19,11 @@ jobs:
     
 - template: AgoraLive-iOS/Build/azure/build.yml
   parameters:
-    displayName: 'AgoraLiveiOS'
-    mode: $(AgoraiOSMode)
-  
+    displayName: 'AgoraLive_iOS_Debug'
+    mode: 'Debug'
+    
+- template: AgoraLive-iOS/Build/azure/build.yml
+  parameters:
+    displayName: 'AgoraLive_iOS_QA_Dev'
+    mode: 'QA-Dev'
+    
