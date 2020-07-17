@@ -60,7 +60,7 @@ class LiveSession: NSObject {
     var owner: Owner!
     
     var rtcChannelReport: BehaviorRelay<ChannelReport>?
-    var end = PublishRelay<Bool>()
+    var end = PublishRelay<()>()
     var ownerInfoUpdate = PublishRelay<RemoteOwner>()
     
     init(roomId: String, settings: LocalLiveSettings, type: LiveType) {
@@ -329,7 +329,7 @@ private extension LiveSession {
             
             switch cmd {
             case .liveEnd:
-                strongSelf.end.accept(true)
+                strongSelf.end.accept(())
             case .owner:
                 let data = try json.getDataObject()
                 let owner = try RemoteOwner(dic: data)

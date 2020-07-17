@@ -639,7 +639,6 @@
 			isa = PBXGroup;
 			children = (
 				A7952AD424162CF600479811 /* Media */,
-				A7952AD224162C7300479811 /* Request */,
 				A7952AD324162CB300479811 /* Socket */,
 				A7952ADF24162E2800479811 /* Tools */,
 				A7952ADE24162E0900479811 /* Log */,
@@ -720,13 +719,6 @@
 				A7952A9D24162C1000479811 /* fileenc.h */,
 			);
 			path = aes;
-			sourceTree = "<group>";
-		};
-		A7952AD224162C7300479811 /* Request */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Request;
 			sourceTree = "<group>";
 		};
 		A7952AD324162CB300479811 /* Socket */ = {
