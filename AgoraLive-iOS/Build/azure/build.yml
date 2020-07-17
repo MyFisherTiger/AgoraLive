@@ -6,6 +6,7 @@ parameters:
 jobs:
   - job: ${{ parameters.displayName }}Build
     displayName: ${{ parameters.displayName }}
+    timeoutInMinutes: 30
 
     pool:
       vmImage: 'macOS-10.14'
