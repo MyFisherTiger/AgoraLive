@@ -1,6 +1,7 @@
 parameters:
   displayName: ''
   mode: ''
+  upload: 0
 
 jobs:
   - job: ${{ parameters.displayName }}Build
@@ -44,7 +45,7 @@ jobs:
 
       - script: cd 'AgoraLive-iOS/Build/shell' && chmod +x build.sh && ./build.sh AgoraLive ${{ parameters.mode }}
       
-      - script: echo ${{ parameters.mode }}
+      - script: cd 'AgoraLive-iOS/Build/shell' && gem install fir-cli && chmod +x upload_fir.sh && ./upload_fir.sh ${{ parameters.upload }} $(firtoken) ../product/app/AgoraLive.ipa
       
       - task: PublishBuildArtifacts@1
         inputs:
