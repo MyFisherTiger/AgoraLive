@@ -1695,6 +1695,54 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="WSH-lw-ceg">
+                                        <rect key="frame" x="0.0" y="289" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WSH-lw-ceg" id="Kjq-Uv-F0e">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i63-Hh-Lii">
+                                                    <rect key="frame" x="15" y="12.666666666666664" width="200" height="19"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="200" id="eUK-Mf-mfN"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="hexTextColor" value="#333333"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </label>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YD1-tb-hZg">
+                                                    <rect key="frame" x="10" y="42" width="394" height="1"/>
+                                                    <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="1" id="ysH-Ts-7VZ"/>
+                                                    </constraints>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="hexBackgroundColor" value="#EEEEEE"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </view>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-enter" translatesAutoresizingMaskIntoConstraints="NO" id="j0u-AI-eSA">
+                                                    <rect key="frame" x="371" y="8" width="28" height="28"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="28" id="7YW-a1-lzP"/>
+                                                        <constraint firstAttribute="height" constant="28" id="glv-TP-vuo"/>
+                                                    </constraints>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="j0u-AI-eSA" firstAttribute="centerY" secondItem="Kjq-Uv-F0e" secondAttribute="centerY" id="1W9-Ex-ln3"/>
+                                                <constraint firstAttribute="trailing" secondItem="YD1-tb-hZg" secondAttribute="trailing" constant="10" id="ADX-px-2V7"/>
+                                                <constraint firstItem="i63-Hh-Lii" firstAttribute="centerY" secondItem="Kjq-Uv-F0e" secondAttribute="centerY" id="QIN-QF-U52"/>
+                                                <constraint firstItem="i63-Hh-Lii" firstAttribute="leading" secondItem="Kjq-Uv-F0e" secondAttribute="leading" constant="15" id="SiJ-d1-HoS"/>
+                                                <constraint firstItem="YD1-tb-hZg" firstAttribute="leading" secondItem="Kjq-Uv-F0e" secondAttribute="leading" constant="10" id="Yxq-Wh-RbJ"/>
+                                                <constraint firstAttribute="bottom" secondItem="YD1-tb-hZg" secondAttribute="bottom" constant="1" id="nuf-FZ-whO"/>
+                                                <constraint firstAttribute="trailing" secondItem="j0u-AI-eSA" secondAttribute="trailing" constant="15" id="sdh-Pq-6sT"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -1713,6 +1761,7 @@
                         <outlet property="releaseDateValueLabel" destination="pu4-Ge-uVQ" id="1Mq-hE-s4T"/>
                         <outlet property="sdkLabel" destination="zvS-gf-Rms" id="UzV-ao-N6h"/>
                         <outlet property="sdkValueLabel" destination="OdI-zn-kSf" id="BZQ-qs-qIf"/>
+                        <outlet property="uploadLogLabel" destination="i63-Hh-Lii" id="fxt-8t-h5B"/>
                         <outlet property="versionLabel" destination="557-Hd-NLJ" id="QPe-h3-SfK"/>
                     </connections>
                 </tableViewController>

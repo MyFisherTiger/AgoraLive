@@ -29,7 +29,7 @@ class DisclaimerViewController: UIViewController {
     }
 }
 
-class AboutViewController: UITableViewController {
+class AboutViewController: MaskTableViewController {
     @IBOutlet weak var privacyLabel: UILabel!
     @IBOutlet weak var disclaimerLabel: UILabel!
     @IBOutlet weak var registerLabel: UILabel!
@@ -40,6 +40,8 @@ class AboutViewController: UITableViewController {
     @IBOutlet weak var releaseDateValueLabel: UILabel!
     @IBOutlet weak var sdkValueLabel: UILabel!
     @IBOutlet weak var alValueLabel: UILabel!
+    
+    @IBOutlet weak var uploadLogLabel: UILabel!
     
     private let agoraLabel = UILabel(frame: CGRect.zero)
     
@@ -68,6 +70,8 @@ class AboutViewController: UITableViewController {
         sdkValueLabel.text = "Ver \(ALCenter.shared().centerProvideMediaHelper().rtcVersion)"
         
         releaseDateValueLabel.text = "2020.6.18"
+        
+        uploadLogLabel.text = NSLocalizedString("Upload_Log")
         
         agoraLabel.text = "www.agora.io"
         agoraLabel.font = UIFont.systemFont(ofSize: 10)
@@ -124,6 +128,21 @@ class AboutViewController: UITableViewController {
             }
             
             UIApplication.shared.openURL(url)
+        case 6:
+            self.showHUD()
+            let log = ALCenter.shared().centerProvideFilesGroup().logs
+            log.upload(success: { [weak self] (logId) in
+                self?.hiddenHUD()
+                
+                let pasteboard = UIPasteboard.general
+                pasteboard.string = logId
+                
+                let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
+                view.text = "LogId 已经复制"
+                self?.showToastView(view, duration: 1)
+            }) { [weak self] (_) in
+                self?.hiddenHUD()
+            }
         default:
             break
         }

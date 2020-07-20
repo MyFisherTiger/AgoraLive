@@ -12,3 +12,4 @@
 #import "UIColor+Hex.h"
 #import "UIImage+CSClipToCycle.h"
 #import "FUClient.h"
+#import "AGOSSClient.h"

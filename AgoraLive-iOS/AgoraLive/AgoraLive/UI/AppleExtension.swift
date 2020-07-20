@@ -358,3 +358,11 @@ class MaskViewController: UIViewController, ShowAlertProtocol, PresentChildProto
 class MaskTabBarController: UITabBarController, ShowHudProtocol {
     var hud: MBProgressHUD?
 }
+
+class MaskTableViewController: UITableViewController, ShowHudProtocol, ShowToastProtocol {
+    var toastView: ToastView?
+    
+    var toastWork: AfterWorker?
+    
+    var hud: MBProgressHUD?
+}

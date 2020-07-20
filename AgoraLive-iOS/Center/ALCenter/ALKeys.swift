@@ -13,4 +13,5 @@ struct ALKeys {
     static var AgoraRtcToken: String = ""
     static var AgoraRtmToken: String = ""
     static var ALUserToken: String = ""
+    static var BuglyId: String = ""
 }

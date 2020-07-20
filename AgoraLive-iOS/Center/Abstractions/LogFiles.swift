@@ -12,6 +12,7 @@ import UIKit
 import Cocoa
 #endif
 import AlamoClient
+import AliyunOSSiOS
 
 class LogFiles: NSObject {
     private let fileName: String = {
@@ -34,7 +35,7 @@ class LogFiles: NSObject {
         createFile()
     }
     
-    func upload(success: Completion, fail: ErrorCompletion) {
+    func upload(success: StringCompletion, fail: ErrorCompletion) {
         do {
             try privateUpload(success: success, fail: fail)
         } catch {
@@ -46,12 +47,72 @@ class LogFiles: NSObject {
 }
 
 private extension LogFiles {
-    func privateUpload(success: Completion, fail: ErrorCompletion) throws {
+    func privateUpload(success: StringCompletion, fail: ErrorCompletion) throws {
         let zipPath = try ZipTool.work(destination: folderPath, to: FilesGroup.cacheDirectory)
+        let fileName = zipPath.components(separatedBy: "/").last!
         let url = URL(fileURLWithPath: zipPath)
-        let _ = try Data(contentsOf: url)
+        let fileData = try Data(contentsOf: url)
         
-        let _ = ALCenter.shared().centerProvideRequestHelper()
+        let client = ALCenter.shared().centerProvideRequestHelper()
+        let parameters: StringAnyDic = ["appId": ALKeys.AgoraAppId,
+                                        "osType": 1,
+                                        "appVersion": AppAssistant.version,
+                                        "appCode": "ent-super",
+                                        "fileExt": "zip"]
+        
+        let event = RequestEvent(name: "upload-oss-parameters")
+        let task = RequestTask(event: event,
+                               type: .http(.get, url: URLGroup.ossUpload),
+                               timeout: .medium,
+                               parameters: parameters)
+        
+        let successCallback: DicEXCompletion = { [weak self] (json: ([String: Any])) in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            let data = try json.getDataObject()
+            let bucketName = try data.getStringValue(of: "bucketName")
+            let callbackBody = try data.getStringValue(of: "callbackBody")
+            let callbackContentType = try data.getStringValue(of: "callbackContentType")
+            let ossEndpoint = try data.getStringValue(of: "ossEndpoint")
+            
+            let object = AGOSSObject()
+            object.bucket = bucketName
+            object.fileData = fileData
+            object.objectKey = fileName
+            object.callbackParam = ["callbackUrl": URLGroup.ossUploadCallback,
+                                    "callbackBody": callbackBody,
+                                    "callbackBodyType": callbackContentType]
+            
+            let oss = ALCenter.shared().centerProvideOSSClient()
+            oss.updateAuthServerURL(URLGroup.ossSTS, endpoint: ossEndpoint)
+            
+            oss.upload(with: object, success: { (logId) in
+                DispatchQueue.main.async {
+                    if let success = success {
+                        success(logId)
+                    }
+                }
+            }) { (error) in
+                DispatchQueue.main.async {
+                    if let fail = fail {
+                        fail(error)
+                    }
+                }
+            }
+        }
+        
+        let response = ACResponse.json(successCallback)
+        
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
+            if let fail = fail {
+                fail(error)
+            }
+            return .resign
+        }
+        
+        client.request(task: task, success: response, failRetry: retry)
     }
     
     func checkEarliestFile() {

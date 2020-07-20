@@ -25,17 +25,22 @@ class ALCenter: NSObject {
     private(set) var current: CurrentUser?
     
     lazy var appAssistant = AppAssistant()
+    
     var liveSession: LiveSession?
     
     // Commons
-    private let log = LogTube()
     private lazy var mediaKit = MediaKit(log: log)
     
     private lazy var alamo = AlamoClient(delegate: nil,
                                          logTube: self)
     
+    private lazy var oss = AGOSSClient()
+    
     private lazy var rtm = RTMClient(logTube: log)
+    
     private lazy var userDataHelper = UserDataHelper()
+    
+    private let log = LogTube()
 }
 
 extension ALCenter {
@@ -156,6 +161,10 @@ extension ALCenter: CenterHelper {
     func centerProvideUserDataHelper() -> UserDataHelper {
         return userDataHelper
     }
+    
+    func centerProvideOSSClient() -> AGOSSClient {
+        return oss
+    }
 }
 
 extension ALCenter: ACLogTube {
@@ -176,7 +185,14 @@ extension ALCenter: ACLogTube {
     }
     
     func log(from: AnyClass, error: Error, extral: String?, funcName: String) {
-        let fromatter = AGELogFormatter(type: .error(error.localizedDescription),
+        var description: String
+        if let cError = error as? ACError {
+            description = cError.localizedDescription
+        } else {
+            description = error.localizedDescription
+        }
+        
+        let fromatter = AGELogFormatter(type: .error(description),
                                         className: NSStringFromClass(from),
                                         funcName: funcName,
                                         extra: extral)

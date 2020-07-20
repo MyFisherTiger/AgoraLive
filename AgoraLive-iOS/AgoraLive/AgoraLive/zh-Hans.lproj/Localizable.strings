@@ -20,6 +20,8 @@ Lost_Connection_Description="当前网络连接错误，请稍后再试";
 Lost_Connection_Retry="网络不给力，请稍后再试";
 Use_Cellular_Data="当前网络无WIFI，继续使用可能产生流量费用";
 
+Upload_Log="上传日志";
+
 // Main Page
 Multi_Broadcasters="多人连麦直播";
 Multi_Broadcasters_Description="观众与主播连麦互动直播";

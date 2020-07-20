@@ -34,16 +34,28 @@ struct URLGroup {
         return URLGroup.host + URLGroup.mainPath + "musics"
     }
     
-    static func userUpdateInfo(userId: String) -> String {
-        return URLGroup.host + URLGroup.mainPath + "user/\(userId)"
+    static var ossSTS: String {
+        return URLGroup.host +  "edu/v1/log/sts"
     }
-        
+    
+    static var ossUpload: String {
+        return URLGroup.host + "edu/v1/log/params"
+    }
+    
+    static var ossUploadCallback: String {
+        return URLGroup.host + "edu/v1/log/sts/callback"
+    }
+    
     static var roomPage: String {
         return URLGroup.host + URLGroup.mainPath + "room/page"
     }
     
     static var liveCreate: String {
         return URLGroup.host + URLGroup.mainPath + "room"
+    }
+    
+    static func userUpdateInfo(userId: String) -> String {
+        return URLGroup.host + URLGroup.mainPath + "user/\(userId)"
     }
     
     static func joinLive(roomId: String) -> String {

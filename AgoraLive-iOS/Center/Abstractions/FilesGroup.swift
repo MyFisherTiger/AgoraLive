@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AliyunOSSiOS
 
 // MARK: - FilesGroup
 class FilesGroup: NSObject {
@@ -18,6 +19,8 @@ class FilesGroup: NSObject {
         #endif
         return path
     }()
+    
+    private var ossClient: OSSClient!
     
     var images = ImageFiles()
     var logs = LogFiles()
@@ -58,5 +61,45 @@ class FilesGroup: NSObject {
         for item in zipsList {
             removeUselessZip(item)
         }
+    }
+}
+
+private extension FilesGroup {
+    func createOssClient(authServerURL: String, endPoint: String) {
+        let provider = OSSAuthCredentialProvider(authServerUrl: authServerURL)
+        let configuration = OSSClientConfiguration()
+        self.ossClient = OSSClient(endpoint: endPoint, credentialProvider: provider, clientConfiguration: configuration)
+    }
+    
+    func ossClientUpload(filePath: String, success: Completion, fail: ErrorCompletion) {
+        let request = OSSPutObjectRequest()
+        request.bucketName = ""
+        
+        let pathArray = filePath.components(separatedBy: "/")
+        request.objectKey = pathArray.last!
+        
+        request.uploadingFileURL = URL(string: filePath)!
+        
+        let callbackURL = "https://api.agora.io/scenario/meeting/v1/log/sts/callback"
+        let callbackParameters = ["callbackUrl": callbackURL,
+                                  "callbackBody": "",
+                                  "callbackBodyType": ""]
+        
+        request.callbackParam = callbackParameters
+        
+        let task = ossClient.putObject(request)
+        task.continue({ (task) -> Any? in
+            if let error = task.error {
+                
+            } else {
+                guard let uploadResult = task.result else {
+                    return nil
+                }
+                
+                
+            }
+            
+            return nil
+        }, cancellationToken: nil)
     }
 }

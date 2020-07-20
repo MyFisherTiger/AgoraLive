@@ -17,4 +17,5 @@ protocol CenterHelper where Self: ALCenter {
     func centerProvideRTMHelper() -> RTMClient
     func centerProvideLogTubeHelper() -> LogTube
     func centerProvideUserDataHelper() -> UserDataHelper
+    func centerProvideOSSClient() -> AGOSSClient
 }

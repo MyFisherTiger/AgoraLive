@@ -133,6 +133,7 @@
 		A7D2D36C2417AA6100D327B5 /* MineVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36B2417AA6100D327B5 /* MineVM.swift */; };
 		A7D2D36F2418D0B600D327B5 /* CenterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */; };
 		A7D89D4C247E79060048B7EC /* VirtualAppearanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */; };
+		A7E3340A24C57213003DCA49 /* AGOSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E3340924C57213003DCA49 /* AGOSSClient.m */; };
 		A7EA40BC2459825000301AE3 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EA40BB2459825000301AE3 /* ToastView.swift */; };
 		A7FDB59B23FD07B600487FB9 /* TabSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */; };
 		A7FDB59D23FD0E3C00487FB9 /* AppleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */; };
@@ -318,6 +319,8 @@
 		A7D2D36B2417AA6100D327B5 /* MineVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineVM.swift; sourceTree = "<group>"; };
 		A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterHelper.swift; path = ../Center/ALCenter/CenterHelper.swift; sourceTree = "<group>"; };
 		A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualAppearanceViewController.swift; sourceTree = "<group>"; };
+		A7E3340824C57213003DCA49 /* AGOSSClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AGOSSClient.h; sourceTree = "<group>"; };
+		A7E3340924C57213003DCA49 /* AGOSSClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AGOSSClient.m; sourceTree = "<group>"; };
 		A7EA40BB2459825000301AE3 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSelectView.swift; sourceTree = "<group>"; };
 		A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleExtension.swift; sourceTree = "<group>"; };
@@ -768,6 +771,8 @@
 				A7952A6524162C1000479811 /* Convert.swift */,
 				A7952A6F24162C1000479811 /* ZipTool.swift */,
 				A7952A7424162C1000479811 /* AGELock.swift */,
+				A7E3340824C57213003DCA49 /* AGOSSClient.h */,
+				A7E3340924C57213003DCA49 /* AGOSSClient.m */,
 			);
 			name = Tools;
 			sourceTree = "<group>";
@@ -1078,6 +1083,7 @@
 				A7952AB524162C1000479811 /* DictionaryGetable.swift in Sources */,
 				A77E579224AE10FE00DD7670 /* NetworkMonitor.swift in Sources */,
 				A791F33E2428B121008D8BC9 /* LiveSeatViewController.swift in Sources */,
+				A7E3340A24C57213003DCA49 /* AGOSSClient.m in Sources */,
 				A71AAF282435D7A900820096 /* RTCStatistics.swift in Sources */,
 				A72B7BEA24445D5B00E965FB /* PKVM.swift in Sources */,
 				A7952AB324162C1000479811 /* ZipTool.swift in Sources */,
