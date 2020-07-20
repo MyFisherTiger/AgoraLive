@@ -6,6 +6,8 @@ BundleId=$4
 APP_KEY=$5
 APP_ID=$6
 
+cd ${Product_Path}
+
 for I in `ls`
 do
     echo "product ls" $I
@@ -17,7 +19,7 @@ done
 
 cd ${ArchiveFolder}/dSYMs
 
-mv $ArchiveFolder/dSYMs/${Scheme_Name}.app.dSYM ${App_Name}.dSYM
+echo `pwd`
 
 for I in `ls`
 do
