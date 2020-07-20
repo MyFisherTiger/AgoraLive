@@ -9,6 +9,8 @@
 import AgoraRtcKit
 import Foundation
 import AGECamera
+import RxSwift
+import RxRelay
 
 class Capture: NSObject {
     private var agoraKit: AgoraRtcEngineKit {
@@ -119,29 +121,12 @@ class Player: NSObject, AGELogBase {
         }
     }
     
-    enum Event {
-        case audioOutputRouting(((AudioOutputRouting) -> Void)? = nil)
-    }
-    
     typealias Priority = AgoraUserPriority
     typealias RenderMode = AgoraVideoRenderMode
     typealias VideoStreamType = AgoraVideoStreamType
     
-    private lazy var observers = [NSObject: Event]()
     private(set) var isLocalAudioLoop = false
-    
-    var audioRoute: AudioOutputRouting = .default {
-        didSet {
-            for (_, event) in observers {
-                switch event {
-                case .audioOutputRouting(let callback):
-                    if let tCallback = callback {
-                        tCallback(audioRoute)
-                    }
-                }
-            }
-        }
-    }
+    var audioOutputRouting = BehaviorRelay(value: AudioOutputRouting.default)
     
     var mixFileAudioFinish: (() -> Void)? = nil
     
@@ -206,14 +191,6 @@ class Player: NSObject, AGELogBase {
     func localInputAudioLoop(_ action: AGESwitch) {
         agoraKit.enable(inEarMonitoring: action.boolValue)
         isLocalAudioLoop = action.boolValue
-    }
-    
-    func addEvent(_ event: Event, observer: NSObject) {
-        self.observers[observer] = event
-    }
-    
-    func removeObserver(_ observer: NSObject) {
-        self.observers.removeValue(forKey: observer)
     }
 }
 

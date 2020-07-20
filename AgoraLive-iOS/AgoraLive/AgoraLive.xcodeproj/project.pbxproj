@@ -69,6 +69,7 @@
 		A77E574F24A8955700DD7670 /* sound.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E574024A8955600DD7670 /* sound.gif */; };
 		A77E579224AE10FE00DD7670 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77E579124AE10FE00DD7670 /* NetworkMonitor.swift */; };
 		A7847F992458216600469187 /* VideoEnhancementVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7847F982458216600469187 /* VideoEnhancementVM.swift */; };
+		A787ED7124C540D20094552D /* RxObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A787ED7024C540D20094552D /* RxObject.swift */; };
 		A791F33A242898DC008D8BC9 /* MultiBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F339242898DC008D8BC9 /* MultiBroadcastersViewController.swift */; };
 		A791F33C2428A014008D8BC9 /* GiftAudienceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F33B2428A014008D8BC9 /* GiftAudienceViewController.swift */; };
 		A791F33E2428B121008D8BC9 /* LiveSeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F33D2428B121008D8BC9 /* LiveSeatViewController.swift */; };
@@ -226,6 +227,7 @@
 		A77E574024A8955600DD7670 /* sound.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = sound.gif; sourceTree = "<group>"; };
 		A77E579124AE10FE00DD7670 /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		A7847F982458216600469187 /* VideoEnhancementVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEnhancementVM.swift; sourceTree = "<group>"; };
+		A787ED7024C540D20094552D /* RxObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxObject.swift; sourceTree = "<group>"; };
 		A791F339242898DC008D8BC9 /* MultiBroadcastersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiBroadcastersViewController.swift; sourceTree = "<group>"; };
 		A791F33B2428A014008D8BC9 /* GiftAudienceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftAudienceViewController.swift; sourceTree = "<group>"; };
 		A791F33D2428B121008D8BC9 /* LiveSeatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSeatViewController.swift; sourceTree = "<group>"; };
@@ -547,6 +549,7 @@
 				A7FDB5A623FFB49300487FB9 /* UIColor+Hex.m */,
 				A76BD14723F299D900B2732B /* ViewFrame.swift */,
 				A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */,
+				A787ED7024C540D20094552D /* RxObject.swift */,
 			);
 			name = Utils;
 			path = UI;
@@ -995,6 +998,7 @@
 				A71AAF1624331B9C00820096 /* ChatInputView.swift in Sources */,
 				A711AB89243F218A00C2A3FD /* GiftVM.swift in Sources */,
 				A773BD4E24090426003ECBFD /* MineViewController.swift in Sources */,
+				A787ED7124C540D20094552D /* RxObject.swift in Sources */,
 				A7588528242E01C10011FCCF /* BottomToolsViewController.swift in Sources */,
 				A7952A5C24162BF600479811 /* ImageFiles.swift in Sources */,
 				A7952A5D24162BF600479811 /* LogFiles.swift in Sources */,

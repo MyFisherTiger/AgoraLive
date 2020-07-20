@@ -12,7 +12,7 @@ import RxRelay
 
 typealias Speaker = MediaKit.Speaker
 
-class PlayerVM: NSObject {
+class PlayerVM: RxObject {
     var activeSpeaker = PublishRelay<Speaker>()
     
     override init() {
@@ -34,25 +34,11 @@ class PlayerVM: NSObject {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
         mediaKit.player.renderRemoteVideoStream(id: id, superResolution: action)
     }
-    
-    func startListenSpeakerReport() {
-        self.observe()
-    }
-    
-    deinit {
-        let media = ALCenter.shared().centerProvideMediaHelper()
-        media.removeObserver(self)
-    }
 }
 
 private extension PlayerVM {
     func observe() {
         let media = ALCenter.shared().centerProvideMediaHelper()
-        media.addEvent(.activeSpeaker({ [weak self] (speaker) in
-            guard let strongSelf = self else {
-                return
-            }
-            strongSelf.activeSpeaker.accept(speaker)
-        }), observer: self)
+        media.activeSpeaker.bind(to: self.activeSpeaker).disposed(by: bag)
     }
 }

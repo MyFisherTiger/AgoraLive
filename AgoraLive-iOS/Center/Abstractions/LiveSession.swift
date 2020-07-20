@@ -128,20 +128,19 @@ class LiveSession: NSObject {
             
             // Local User
             let localUserJson = try data.getDictionaryValue(of: "user")
-            try self.joinAndInitRoleWith(info: localUserJson)
+            try self.initRoleiWhenJoiningWith(info: localUserJson)
             
             // Live Room
             let liveRoom = try data.getDictionaryValue(of: "room")
-            try self.joinAndUpdateLiveRoomInfo(info: liveRoom)
+            try self.updateLiveRoomInfoWhenJoingWith(info: liveRoom)
             
             // join rtc, rtm channel
             ALKeys.AgoraRtcToken = try localUserJson.getStringValue(of: "rtcToken")
             
             let channel = try liveRoom.getStringValue(of: "channelName")
-            
-            let mediaKit = ALCenter.shared().centerProvideMediaHelper()
             let agUId = try localUserJson.getIntValue(of: "uid")
-            self.setupVideoStream(self.settings.media)
+            let mediaKit = ALCenter.shared().centerProvideMediaHelper()
+            self.setupPublishedVideoStream(self.settings.media)
             
             mediaKit.join(channel: channel, token: ALKeys.AgoraRtcToken, streamId: agUId) { [unowned self] in
                 mediaKit.channelReport.subscribe(onNext: { [weak self] (statistic) in
@@ -217,7 +216,7 @@ class LiveSession: NSObject {
                                          agUId: audience.agUId,
                                          giftRank: audience.giftRank)
         self.role = role
-        self.setupVideoStream(settings.media)
+        self.setupPublishedVideoStream(settings.media)
         return role
     }
     
@@ -237,12 +236,12 @@ class LiveSession: NSObject {
         return role
     }
     
-    func setupVideoStream(_ settings: LocalLiveSettings.VideoConfiguration) {
+    func setupPublishedVideoStream(_ settings: LocalLiveSettings.VideoConfiguration) {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
         
-        mediaKit.setupVideoStream(resolution: settings.resolution,
-                            frameRate: settings.frameRate,
-                            bitRate: settings.bitRate)
+        mediaKit.setupPublishedVideoStream(resolution: settings.resolution,
+                                           frameRate: settings.frameRate,
+                                           bitRate: settings.bitRate)
     }
     
     func leave() {
@@ -250,7 +249,6 @@ class LiveSession: NSObject {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         let client = ALCenter.shared().centerProvideRequestHelper()
         role = nil
-        mediaKit.removeObserver(self)
         mediaKit.leaveChannel()
         try? mediaKit.capture.video(.off)
         mediaKit.capture.audio = .off
@@ -270,7 +268,7 @@ class LiveSession: NSObject {
 }
 
 private extension LiveSession {
-    func joinAndInitRoleWith(info: StringAnyDic) throws {
+    func initRoleiWhenJoiningWith(info: StringAnyDic) throws {
         // Local User
         let userInfo = try BasicUserInfo(dic: info)
         let permission = try LivePermission.permission(dic: info)
@@ -290,7 +288,7 @@ private extension LiveSession {
         }
     }
     
-    func joinAndUpdateLiveRoomInfo(info: StringAnyDic) throws {
+    func updateLiveRoomInfoWhenJoingWith(info: StringAnyDic) throws {
         // Live room owner
         var ownerJson = try info.getDictionaryValue(of: "owner")
         ownerJson["avatar"] = "Fake"

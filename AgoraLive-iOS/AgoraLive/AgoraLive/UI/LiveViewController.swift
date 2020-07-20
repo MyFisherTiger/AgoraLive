@@ -582,7 +582,7 @@ extension LiveViewController {
             newSettings.media = newMedia
             session.settings = newSettings
             
-            session.setupVideoStream(newMedia)
+            session.setupPublishedVideoStream(newMedia)
         }).disposed(by: bag)
         
         mediaSettingsVC.view.cornerRadius(5)

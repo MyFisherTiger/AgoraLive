@@ -11,7 +11,7 @@ import RxSwift
 import RxRelay
 import AGECamera
 
-class MediaDeviceVM: NSObject {
+class MediaDeviceVM: RxObject {
     var camera: AGESwitch {
         get {
             let mediaKit = ALCenter.shared().centerProvideMediaHelper()
@@ -72,20 +72,14 @@ class MediaDeviceVM: NSObject {
         try? mediaKit.capture.switchCamera()
     }
     
-    func cameraResolution(_ resolution: AVCaptureSession.Preset) {
+    func cameraCaptureResolution(_ resolution: AVCaptureSession.Preset) {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
         mediaKit.capture.videoResolution(.high)
     }
     
     override init() {
         super.init()
-        
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        mediaKit.player.addEvent(.audioOutputRouting({ [weak self] (route) in
-            guard let strongSelf = self else {
-                return
-            }
-            strongSelf.audioOutput.accept(route)
-        }), observer: self)
+        mediaKit.player.audioOutputRouting.bind(to: audioOutput).disposed(by: bag)
     }
 }

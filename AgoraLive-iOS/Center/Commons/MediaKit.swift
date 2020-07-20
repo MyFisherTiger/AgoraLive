@@ -20,21 +20,16 @@ class MediaKit: NSObject, AGELogBase {
         case local, other(agoraUid: UInt)
     }
     
-    enum Event {
-        case activeSpeaker(((Speaker) -> Void)?)
-    }
-    
     static var rtcKit = AgoraRtcEngineKit.sharedEngine(withAppId: ALKeys.AgoraAppId,
                                                        delegate: nil)
     
     fileprivate let agoraKit = rtcKit
     fileprivate var channelProfile: AgoraChannelProfile = .liveBroadcasting
     
-    private lazy var eventObservers = [NSObject: Event]()
-    
     private(set) var channelReport = BehaviorRelay(value: RTCStatistics(type: .local(RTCStatistics.Local(stats: AgoraChannelStats()))))
-    
+    private(set) var activeSpeaker = PublishRelay<Speaker>()
     private(set) var channelStatus: AGEChannelStatus = .out
+    
     private var cameraStreamQueue = DispatchQueue(label: "CameraStreamQueue")
     
     lazy var capture = Capture(parent: self)
@@ -85,21 +80,16 @@ class MediaKit: NSObject, AGELogBase {
         agoraKit.leaveChannel(nil)
     }
     
-    func setupVideoStream(resolution: CGSize, frameRate: AgoraVideoFrameRate, bitRate: Int) {
+    func setupPublishedVideoStream(resolution: CGSize, frameRate: AgoraVideoFrameRate, bitRate: Int) {
         log(info: "setup video",
             extra: "resolution: \(resolution.debugDescription), frameRate: \(frameRate.rawValue), bitRate: \(bitRate)")
         agoraKit.setupVideo(resolution: resolution, frameRate: frameRate, bitRate: bitRate)
+        var new = self.channelReport.value
+        new.fps = frameRate.rawValue
+        channelReport.accept(new)
     }
     
-    func addEvent(_ event: Event, observer: NSObject) {
-        eventObservers[observer] = event
-    }
-    
-    func removeObserver(_ observer: NSObject) {
-        eventObservers.removeValue(forKey: observer)
-    }
-    
-    func mediaStreamSend(_ action: AGESwitch) {
+    func publishMediaStream(_ action: AGESwitch) {
         agoraKit.muteLocalAudioStream(action.boolValue)
         agoraKit.muteLocalVideoStream(action.boolValue)
     }
@@ -196,7 +186,7 @@ extension MediaKit: AgoraRtcEngineDelegate {
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, didAudioRouteChanged routing: AgoraAudioOutputRouting) {
-        player.audioRoute = routing
+        player.audioOutputRouting.accept(routing)
     }
     
     func rtcEngine(_ engine: AgoraRtcEngineKit, firstLocalVideoFrameWith size: CGSize, elapsed: Int) {
@@ -224,19 +214,10 @@ extension MediaKit: AgoraRtcEngineDelegate {
     func rtcEngine(_ engine: AgoraRtcEngineKit, reportAudioVolumeIndicationOfSpeakers speakers: [AgoraRtcAudioVolumeInfo], totalVolume: Int) {
         for user in speakers {
             let speakerUid = user.uid
-            for (_, event) in eventObservers {
-                switch event {
-                case .activeSpeaker(let callback):
-                    if let tCallback = callback {
-                        if speakerUid == 0 {
-                            tCallback(Speaker.local)
-                        } else {
-                            tCallback(Speaker.other(agoraUid: speakerUid))
-                        }
-                    }
-                default:
-                    continue
-                }
+            if speakerUid == 0 {
+                activeSpeaker.accept(.local)
+            } else {
+                activeSpeaker.accept(.other(agoraUid: speakerUid))
             }
         }
     }
