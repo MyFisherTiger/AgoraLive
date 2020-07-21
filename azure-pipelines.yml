@@ -25,6 +25,13 @@ jobs:
   parameters:
     displayName: 'AgoraLive_iOS_QA_Dev'
     mode: 'QA-Dev'
+    upload: 0
+    bugly: 0
+    
+- template: AgoraLive-iOS/Build/azure/build.yml
+  parameters:
+    displayName: 'AgoraLive_iOS_QA_Dev'
+    mode: 'QA-Pre'
     upload: 1
     bugly: 1
     
