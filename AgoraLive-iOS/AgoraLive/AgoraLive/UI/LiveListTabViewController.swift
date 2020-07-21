@@ -120,9 +120,9 @@ class LiveListTabViewController: MaskViewController {
             
             if seatVM.list.value.count == 1,
                 let remote = seatVM.list.value[0].user {
-                broadcasting = .multi([session.owner.user, remote])
+                broadcasting = .multi([session.owner.value.user, remote])
             } else {
-                broadcasting = .single(session.owner.user)
+                broadcasting = .single(session.owner.value.user)
             }
             
             if let virtualAppearance = info.virtualAppearance {
@@ -251,9 +251,16 @@ private extension LiveListTabViewController {
             
             settings.media = media
             
+            let local = ALCenter.shared().centerProvideLocalUser()
+            let role = LiveLocalUser(type: .audience,
+                                     info: local.info.value,
+                                     permission: [],
+                                     agUId: 0)
             let session = LiveSession(roomId: room.roomId,
                                       settings: settings,
-                                      type: type)
+                                      type: type,
+                                      owner: LiveSession.Owner.otherUser(room.owner),
+                                      role: role)
             self.joinLiving(session: session)
         }).disposed(by: bag)
         

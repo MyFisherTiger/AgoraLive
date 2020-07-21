@@ -17,15 +17,15 @@ struct RoomBrief {
     var imageURL: String
     var personCount: Int
     var imageIndex: Int
-    var ownerAgoraUid: Int
+    var owner: LiveOwner
     
-    init(name: String = "", roomId: String, imageURL: String = "", personCount: Int = 0, ownerAgoraUid: Int = 0) {
+    init(name: String = "", roomId: String, imageURL: String = "", personCount: Int = 0, owner: LiveOwner) {
         self.name = name
         self.roomId = roomId
         self.imageURL = imageURL
         self.personCount = personCount
         self.imageIndex = Int(Int64(self.roomId)! % 12)
-        self.ownerAgoraUid = ownerAgoraUid
+        self.owner = owner
     }
     
     init(dic: StringAnyDic) throws {
@@ -33,7 +33,12 @@ struct RoomBrief {
         self.roomId = try dic.getStringValue(of: "roomId")
         self.imageURL = try dic.getStringValue(of: "thumbnail")
         self.personCount = try dic.getIntValue(of: "currentUsers")
-        self.ownerAgoraUid = try dic.getIntValue(of: "ownerUid")
+        let ownerAgoraUid = try dic.getIntValue(of: "ownerUid")
+        
+        let info = BasicUserInfo(userId: "", name: "")
+        let owner = LiveOwner(info: info, permission: [.camera, .mic, .chat], agUId: ownerAgoraUid)
+        self.owner = owner
+        
         #warning("next version")
         self.imageIndex = Int(Int64(self.roomId)! % 12)
     }

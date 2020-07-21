@@ -52,12 +52,123 @@ protocol LiveRole {
     var type: LiveRoleType {get set}
     var permission: LivePermission {get set}
     var agUId: Int {get set}
-    
-    mutating func updateLocal(permission: LivePermission, of roomId: String, success: Completion, fail: ErrorCompletion)
 }
 
-extension LiveRole {
-    mutating func updateLocal(permission: LivePermission, of roomId: String, success: Completion = nil, fail: ErrorCompletion = nil) {
+// MARK: - Object
+// MARK: - Audience
+class LiveAudience: NSObject, LiveRole {
+    var type: LiveRoleType = .audience
+    var permission: LivePermission
+    var info: BasicUserInfo
+    var agUId: Int
+    
+    var giftRank: Int
+    
+    init(info: BasicUserInfo, agUId: Int, giftRank: Int = 0) {
+        self.info = info
+        self.permission = LivePermission(rawValue: 0)
+        self.agUId = agUId
+        self.giftRank = giftRank
+    }
+    
+    init(dic: StringAnyDic) throws {
+        self.permission = LivePermission(rawValue: 0)
+        self.info = try BasicUserInfo(dic: dic)
+        self.giftRank = 0
+        
+        if let uid = try? dic.getIntValue(of: "uid") {
+            self.agUId = uid
+        } else {
+            self.agUId = -1
+        }
+        
+        if let rank = try? dic.getIntValue(of: "rank") {
+            self.giftRank = rank
+        } else {
+            self.giftRank = 0
+        }
+    }
+}
+
+// MARK: - Broadcaster
+class LiveBroadcaster: NSObject, LiveRole {
+    var type: LiveRoleType = .broadcaster
+    var permission: LivePermission
+    var info: BasicUserInfo
+    var agUId: Int
+    
+    var giftRank: Int
+    
+    init(info: BasicUserInfo, permission: LivePermission, agUId: Int, giftRank: Int = 0) {
+        self.permission = permission
+        self.info = info
+        self.agUId = agUId
+        self.giftRank = giftRank
+    }
+    
+    init(dic: StringAnyDic) throws {
+        self.permission = try LivePermission.permission(dic: dic)
+        self.info = try BasicUserInfo(dic: dic)
+        self.agUId = try dic.getIntValue(of: "uid")
+        
+        if let rank = try? dic.getIntValue(of: "rank") {
+            self.giftRank = rank
+        } else {
+            self.giftRank = 0
+        }
+    }
+}
+
+// MARK: - Owner
+class LiveOwner: NSObject, LiveRole {
+    var type: LiveRoleType = .owner
+    var permission: LivePermission
+    var info: BasicUserInfo
+    var agUId: Int
+    
+    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
+        self.permission = permission
+        self.info = info
+        self.agUId = agUId
+    }
+    
+    init(dic: StringAnyDic) throws {
+        self.permission = try LivePermission.permission(dic: dic)
+        self.info = try BasicUserInfo(dic: dic)
+        self.agUId = try dic.getIntValue(of: "uid")
+    }
+}
+
+class LiveLocalUser : NSObject, LiveRole {
+    var type: LiveRoleType = .broadcaster
+    var permission: LivePermission
+    var info: BasicUserInfo
+    var agUId: Int
+    
+    var giftRank: Int
+    
+    init(type: LiveRoleType, info: BasicUserInfo, permission: LivePermission, agUId: Int, giftRank: Int = 0) {
+        self.permission = permission
+        self.info = info
+        
+        self.agUId = agUId
+        self.giftRank = 0
+    }
+    
+    init(dic: StringAnyDic) throws {
+        self.permission = try LivePermission.permission(dic: dic)
+        self.type = try dic.getEnum(of: "role", type: LiveRoleType.self)
+        self.info = try BasicUserInfo(dic: dic)
+        self.agUId = try dic.getIntValue(of: "uid")
+        
+        if let rank = try? dic.getIntValue(of: "rank") {
+            self.giftRank = rank
+        } else {
+            self.giftRank = 0
+        }
+    }
+    
+    func updateLocal(permission: LivePermission, of roomId: String, success: Completion = nil, fail: ErrorCompletion = nil) {
         self.permission = permission
         
         let url = URLGroup.userCommand(userId: self.info.userId, roomId: roomId)
@@ -92,79 +203,5 @@ extension LiveRole {
         }
         
         client.request(task: task, success: response, failRetry: fail)
-    }
-}
-
-// MARK: - Object
-// MARK: - Audience
-class LiveAudience: NSObject, LiveRole {
-    var type: LiveRoleType = .audience
-    var permission: LivePermission
-    var info: BasicUserInfo
-    var agUId: Int
-    
-    var giftRank: Int
-    
-    init(info: BasicUserInfo, agUId: Int, giftRank: Int = 0) {
-        self.info = info
-        self.permission = LivePermission(rawValue: 0)
-        self.agUId = agUId
-        self.giftRank = giftRank
-    }
-    
-    init(dic: StringAnyDic) throws {
-        self.permission = LivePermission(rawValue: 0)
-        self.info = try BasicUserInfo(dic: dic)
-        self.giftRank = 0
-        
-        if let uid = try? dic.getIntValue(of: "uid") {
-            self.agUId = uid
-        } else {
-            self.agUId = -1
-        }
-    }
-}
-
-// MARK: - Broadcaster
-class LiveBroadcaster: NSObject, LiveRole {
-    var type: LiveRoleType = .broadcaster
-    var permission: LivePermission
-    var info: BasicUserInfo
-    var agUId: Int
-    
-    var giftRank: Int
-    
-    init(info: BasicUserInfo, permission: LivePermission, agUId: Int, giftRank: Int = 0) {
-        self.permission = permission
-        self.info = info
-        self.agUId = agUId
-        self.giftRank = giftRank
-    }
-    
-    init(dic: StringAnyDic) throws {
-        self.permission = try LivePermission.permission(dic: dic)
-        self.info = try BasicUserInfo(dic: dic)
-        self.agUId = try dic.getIntValue(of: "uid")
-        self.giftRank = 0
-    }
-}
-
-// MARK: - Owner
-class LiveOwner: NSObject, LiveRole {
-    var type: LiveRoleType = .owner
-    var permission: LivePermission
-    var info: BasicUserInfo
-    var agUId: Int
-    
-    init(dic: StringAnyDic) throws {
-        self.permission = try LivePermission.permission(dic: dic)
-        self.info = try BasicUserInfo(dic: dic)
-        self.agUId = try dic.getIntValue(of: "uid")
-    }
-    
-    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
-        self.info = info
-        self.permission = permission
-        self.agUId = agUId
     }
 }

@@ -189,8 +189,6 @@ private extension PKVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         
-        
-        
         rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
             guard let strongSelf = self else {
                 return
@@ -203,11 +201,11 @@ private extension PKVM {
                 return
             }
             
-            guard let session = ALCenter.shared().liveSession,
-                let owner = session.owner else {
+            guard let session = ALCenter.shared().liveSession else {
                 return
             }
             
+            let owner = session.owner
             let data = try json.getDataObject()
             let statistics = try PKStatistics(dic: data)
             
@@ -215,13 +213,13 @@ private extension PKVM {
             
             switch statistics.state {
             case .none:
-                guard owner.isLocal else {
+                guard owner.value.isLocal else {
                     return
                 }
                 
                 strongSelf.stopRelayingMediaStream()
             case .during:
-                guard owner.isLocal else {
+                guard owner.value.isLocal else {
                     return
                 }
                 
@@ -230,7 +228,7 @@ private extension PKVM {
                     strongSelf.startRelayingMediaStream(relayInfo)
                 }
             case .start:
-                guard owner.isLocal else {
+                guard owner.value.isLocal else {
                     return
                 }
                 
@@ -239,7 +237,7 @@ private extension PKVM {
                     strongSelf.startRelayingMediaStream(relayInfo)
                 }
             case .end:
-                guard owner.isLocal else {
+                guard owner.value.isLocal else {
                     return
                 }
                 
@@ -263,15 +261,17 @@ private extension PKVM {
             let data = try json.getDataObject()
             let cmd = try data.getIntValue(of: "operate")
             let agoraUid = try data.getIntValue(of: "agoraUid")
+            let info = BasicUserInfo(userId: "", name: "")
+            let owner = LiveOwner(info: info, permission: [.camera, .mic, .chat], agUId: agoraUid)
             
             switch cmd {
             case ALPeerMessage.Command.invitePK(fromRoom: "").rawValue:
                 let fromRoom = try data.getStringValue(of: "pkRoomId")
-                let room = RoomBrief(roomId: fromRoom, ownerAgoraUid: agoraUid)
+                let room = RoomBrief(roomId: fromRoom, owner: owner)
                 strongSelf.receivedPKInvite.accept(room)
             case ALPeerMessage.Command.rejectPK(fromRoom: "").rawValue:
                 let fromRoom = try data.getStringValue(of: "pkRoomId")
-                let room = RoomBrief(roomId: fromRoom, ownerAgoraUid: agoraUid)
+                let room = RoomBrief(roomId: fromRoom, owner: owner)
                 strongSelf.receivedPKReject.accept(room)
             default:
                 break
@@ -291,7 +291,7 @@ private extension PKVM {
             let jsonString = try message.json().jsonString()
             try rtm.write(message: jsonString,
                           of: RequestEvent(name: isInvite ? "invite-pk" : "reject-pk"),
-                          to: "\(inviteRoom.ownerAgoraUid)",
+                          to: "\(inviteRoom.owner.agUId)",
                           fail: fail)
         } catch let error as ACError {
             if let fail = fail {

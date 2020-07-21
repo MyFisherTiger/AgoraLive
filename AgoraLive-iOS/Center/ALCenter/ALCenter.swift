@@ -22,7 +22,7 @@ class ALCenter: NSObject {
     // Abstractions
     private var files = FilesGroup()
     
-    private(set) var current: CurrentUser?
+    private var current: CurrentUser!
     
     lazy var appAssistant = AppAssistant()
     
@@ -134,6 +134,10 @@ private extension ALCenter {
 }
 
 extension ALCenter: CenterHelper {
+    func centerProvideLocalUser() -> CurrentUser {
+        return current
+    }
+    
     func centerProvideRequestHelper() -> AlamoClient {
         return alamo
     }

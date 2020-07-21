@@ -219,12 +219,11 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
             let vc = segue.destination as! GiftAudienceViewController
             self.giftAudienceVC = vc
         case "BottomToolsViewController":
-            guard let session = ALCenter.shared().liveSession,
-                let role = session.role else {
+            guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
-            
+            let role = session.role
             let vc = segue.destination as! BottomToolsViewController
             vc.perspective = role.type
             vc.liveType = session.type
@@ -245,10 +244,7 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
 extension PKBroadcastersViewController {
     // MARK: - Live Room
     func liveRoom(session: LiveSession) {
-        guard let owner = session.owner else {
-            assert(false)
-            return
-        }
+        let owner = session.owner
         
         let images = ALCenter.shared().centerProvideImagesHelper()
         
@@ -258,22 +254,24 @@ extension PKBroadcastersViewController {
         ownerView.label.font = UIFont.systemFont(ofSize: 11)
         ownerView.backgroundColor = tintColor
         
-        switch owner {
-        case .localUser(let user):
-            ownerView.label.text = user.info.name
-            ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
-            deviceVM.camera = .on
-            deviceVM.mic = .on
-            pkView?.intoOtherButton.isHidden = true
-            pkButton.isHidden = false
-        case .otherUser(let remote):
-            ownerView.label.text = remote.info.name
-            ownerView.imageView.image = images.getHead(index: remote.info.imageIndex)
-            deviceVM.camera = .off
-            deviceVM.mic = .off
-            pkView?.intoOtherButton.isHidden = false
-            pkButton.isHidden = true
-        }
+        owner.subscribe(onNext: { [unowned self] (owner) in
+            switch owner {
+            case .localUser(let user):
+                self.ownerView.label.text = user.info.name
+                self.ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
+                self.deviceVM.camera = .on
+                self.deviceVM.mic = .on
+                self.pkView?.intoOtherButton.isHidden = true
+                self.pkButton.isHidden = false
+            case .otherUser(let remote):
+                self.ownerView.label.text = remote.info.name
+                self.ownerView.imageView.image = images.getHead(index: remote.info.imageIndex)
+                self.deviceVM.camera = .off
+                self.deviceVM.mic = .off
+                self.pkView?.intoOtherButton.isHidden = false
+                self.pkButton.isHidden = true
+            }
+        }).disposed(by: bag)
         
         bottomToolsVC?.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
             if self.pkVM.statistics.value.state.isDuring {
@@ -355,7 +353,23 @@ extension PKBroadcastersViewController {
         }
         
         let settings = LocalLiveSettings(title: "")
-        let newSession = LiveSession(roomId: pkVM.statistics.value.opponentRoomId, settings: settings, type: .pk)
+        
+        
+        let info = BasicUserInfo(userId: "", name: "")
+        let owner = LiveOwner(info: info,
+                              permission: [.camera, .mic, .chat],
+                              agUId: 0)
+        let role = LiveLocalUser(type: .audience,
+                                 info: info,
+                                 permission: [],
+                                 agUId: 0)
+        
+        let newSession = LiveSession(roomId: pkVM.statistics.value.opponentRoomId,
+                                     settings: settings,
+                                     type: .pk,
+                                     owner: .otherUser(owner),
+                                     role: role)
+        
         newSession.join(success: { [unowned newSession, unowned self] (joinedInfo) in
             ALCenter.shared().liveSession = newSession
             let newPk = UIStoryboard.initViewController(of: "PKBroadcastersViewController",
@@ -403,15 +417,15 @@ private extension PKBroadcastersViewController {
     }
     
     func updateViewsWith(statistics: PKStatistics) {
-        guard let session = ALCenter.shared().liveSession,
-            let owner = session.owner else {
+        guard let session = ALCenter.shared().liveSession else {
                 return
         }
         
+        let owner = session.owner
         renderView.isHidden = statistics.state.isDuring
         pkContainerView.isHidden = !statistics.state.isDuring
         
-        switch (owner, statistics.state.isDuring) {
+        switch (owner.value, statistics.state.isDuring) {
         case (.localUser(let user), false):
             playerVM.startRenderLocalVideoStream(id: user.agUId,
                                                  view: renderView)
@@ -470,12 +484,12 @@ private extension PKBroadcastersViewController {
     }
     
     func presentInviteList() {
-        guard let session = ALCenter.shared().liveSession,
-            let role = session.role else {
+        guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
         }
         
+        let role = session.role
         let roomId = session.roomId
         
         let inviteVC = UIStoryboard.initViewController(of: "UserListViewController",

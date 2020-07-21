@@ -11,8 +11,10 @@ import RxSwift
 import RxRelay
 
 class MineVM: NSObject {
-    private var abstraction: CurrentUser? {
-        return ALCenter.shared().current
+    private var abstraction: CurrentUser {
+        get {
+            ALCenter.shared().centerProvideLocalUser()
+        }
     }
     
     private let bag = DisposeBag()
@@ -33,9 +35,7 @@ class MineVM: NSObject {
     }
     
     func updateNewName(_ new: String, completion: Completion) {
-        guard let abstraction = self.abstraction else {
-            fatalError()
-        }
+        let abstraction = self.abstraction
         let info = CurrentUser.UpdateInfo(userName: new)
         abstraction.updateInfo(info, success: completion, fail: completion)
     }
@@ -43,10 +43,7 @@ class MineVM: NSObject {
 
 private extension MineVM {
     func observe() {
-        guard let abstraction = self.abstraction else {
-            fatalError()
-        }
-        
+        let abstraction = self.abstraction
         let images = ALCenter.shared().centerProvideImagesHelper()
         
         abstraction.info.subscribe(onNext: { [weak self] (newInfo) in

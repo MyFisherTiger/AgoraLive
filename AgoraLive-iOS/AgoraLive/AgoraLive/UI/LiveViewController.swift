@@ -170,9 +170,8 @@ extension LiveViewController {
 extension LiveViewController {
     // MARK: - Bottom Tools
     func bottomTools(session: LiveSession, tintColor: UIColor = .black) {
-        guard let perspective = session.role?.type else {
-            fatalError()
-        }
+        let perspective = session.role.type
+        
         bottomToolsVC?.liveType = session.type
         bottomToolsVC?.perspective = perspective
         bottomToolsVC?.tintColor = tintColor
@@ -276,12 +275,12 @@ extension LiveViewController {
                 }
                 self.view.endEditing(true)
                 
-                guard let session = ALCenter.shared().liveSession,
-                    let role = session.role else {
+                guard let session = ALCenter.shared().liveSession else {
                         assert(false)
                         return
                 }
                 
+                let role = session.role
                 if let text = self.chatInputView.textView.text, text.count > 0 {
                     self.chatInputView.textView.text = nil
                     self.chatVM.sendMessage(text, local: role.info) { [weak self] (_) in
@@ -439,12 +438,12 @@ extension LiveViewController {
     
     // MARK: - ExtensionFunctions
     func presentExtensionFunctions() {
-        guard let session = ALCenter.shared().liveSession,
-            let perspective = session.role?.type else {
+        guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
         }
         
+        let perspective = session.role.type
         let extensionVC = UIStoryboard.initViewController(of: "ExtensionViewController",
                                                           class: ExtensionViewController.self)
         extensionVC.perspective = perspective
@@ -509,12 +508,12 @@ extension LiveViewController {
             extensionVC.cameraButton.isSelected.toggle()
             self.deviceVM.camera = extensionVC.cameraButton.isSelected ? .off : .on
             
-            guard let session = ALCenter.shared().liveSession,
-                var role = session.role else {
+            guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
             
+            var role = session.role
             var permission = role.permission
             switch self.deviceVM.camera {
             case .on:
@@ -531,12 +530,12 @@ extension LiveViewController {
             extensionVC.micButton.isSelected.toggle()
             self.deviceVM.mic = extensionVC.micButton.isSelected ? .off : .on
             
-            guard let session = ALCenter.shared().liveSession,
-                var role = session.role else {
+            guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
             
+            var role = session.role
             var permission = role.permission
             switch self.deviceVM.mic {
             case .on:
@@ -652,12 +651,12 @@ extension LiveViewController {
                           presentedFrame: presentedFrame)
         
         giftVC.selectGift.subscribe(onNext: { [unowned self] (gift) in
-            guard let session = ALCenter.shared().liveSession,
-                let owner = session.owner else {
+            guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
             
+            let owner = session.owner.value
             self.hiddenMaskView()
             if let giftVC = self.giftVC {
                 self.dismissChild(giftVC, animated: true)
@@ -668,7 +667,7 @@ extension LiveViewController {
             case .otherUser(let remote):
                 self.giftVM.present(gift: gift,
                                     to: remote.info,
-                                    from: session.role!.info,
+                                    from: session.role.info,
                                     of: session.roomId) {
                                         self.showAlert(message: NSLocalizedString("Present_Gift_Fail"))
                 }

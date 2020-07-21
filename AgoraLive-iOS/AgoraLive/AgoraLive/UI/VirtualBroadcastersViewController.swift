@@ -100,14 +100,13 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
             let vc = segue.destination as! GiftAudienceViewController
             self.giftAudienceVC = vc
         case "BottomToolsViewController":
-            guard let session = ALCenter.shared().liveSession,
-                let role = session.role else {
+            guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
             
             let vc = segue.destination as! BottomToolsViewController
-            vc.perspective = role.type
+            vc.perspective = session.role.type
             vc.liveType = session.type
             self.bottomToolsVC = vc
         case "ChatViewController":
@@ -150,24 +149,20 @@ extension VirtualBroadcastersViewController {
     
     // MARK: - Live Room
     func liveRoom(session: LiveSession) {
-        guard let owner = session.owner,
-            let role = session.role else {
-            assert(false)
-            return
-        }
-        
         let images = ALCenter.shared().centerProvideImagesHelper()
         
-        switch owner {
-        case .localUser(let user):
-            ownerView.label.text = user.info.name
-            ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
-        case .otherUser(let remote):
-            ownerView.label.text = remote.info.name
-            ownerView.imageView.image = images.getHead(index: remote.info.imageIndex)
-        }
+        session.owner.subscribe(onNext: { [unowned self] (owner) in
+            switch owner {
+            case .localUser(let user):
+                self.ownerView.label.text = user.info.name
+                self.ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
+            case .otherUser(let remote):
+                self.ownerView.label.text = remote.info.name
+                self.ownerView.imageView.image = images.getHead(index: remote.info.imageIndex)
+            }
+        }).disposed(by: bag)
         
-        if role.type != .audience {
+        if session.role.type != .audience {
             deviceVM.camera = .on
             deviceVM.mic = .on
         } else {
@@ -176,20 +171,18 @@ extension VirtualBroadcastersViewController {
         }
         
         inviteButton.rx.tap.subscribe(onNext: { [unowned self] in
-            guard let session = ALCenter.shared().liveSession,
-                let owner = session.owner,
-                let local = session.role else {
-                    assert(false)
-                    return
+            guard let session = ALCenter.shared().liveSession else {
+                assert(false)
+                return
             }
             
-            switch (self.virtualVM.broadcasting.value, owner) {
+            switch (self.virtualVM.broadcasting.value, session.owner.value) {
             case (.single, .localUser):
                 self.presentInviteList()
             case (.multi, .localUser):
                 self.ownerForceEndingBroadcasting()
             case (.multi, .otherUser):
-                guard local.type == .broadcaster else {
+                guard session.role.type == .broadcaster else {
                     return
                 }
                 self.presentEndingBroadcasting()
@@ -206,9 +199,9 @@ extension VirtualBroadcastersViewController {
             }
             
             if list.count == 1, let remote = list[0].user {
-                self.virtualVM.broadcasting.accept(.multi([session.owner.user, remote]))
+                self.virtualVM.broadcasting.accept(.multi([session.owner.value.user, remote]))
             } else {
-                self.virtualVM.broadcasting.accept(.single(session.owner.user))
+                self.virtualVM.broadcasting.accept(.single(session.owner.value.user))
             }
         }).disposed(by: bag)
         
@@ -232,12 +225,13 @@ extension VirtualBroadcastersViewController {
     
     func broadcastingStatus() {
         virtualVM.broadcasting.subscribe(onNext: { [unowned self] (broadcasting) in
-            guard let session = ALCenter.shared().liveSession,
-                let owner = session.owner,
-                var local = session.role else {
+            guard let session = ALCenter.shared().liveSession else {
                     assert(false)
                     return
             }
+            
+            let owner = session.owner
+            var local = session.role
             
             // Role update
             switch broadcasting {
@@ -245,22 +239,22 @@ extension VirtualBroadcastersViewController {
                 switch local.type {
                 case .broadcaster:
                     session.broadcasterToAudience()
-                    local = session.role!
+                    local = session.role
                 default:
                     break
                 }
             case .multi(let users):
-                for item in users where item.info.userId != owner.user.info.userId {
+                for item in users where item.info.userId != owner.value.user.info.userId {
                     if item.info.userId == local.info.userId,
                         local.type == .audience {
                         session.audienceToBroadcaster()
-                        local = session.role!
+                        local = session.role
                     }
                 }
             }
             
             // Button
-            switch (self.virtualVM.broadcasting.value, owner) {
+            switch (self.virtualVM.broadcasting.value, owner.value) {
             case (.single, .localUser):
                 self.inviteButton.isHidden = false
                 self.inviteButton.setTitle(NSLocalizedString("Invite_Broadcasting"), for: .normal)
@@ -279,7 +273,7 @@ extension VirtualBroadcastersViewController {
             }
             
             // Owner RenderView
-            switch owner {
+            switch owner.value {
             case .localUser(let user):
                 self.playerVM.startRenderLocalVideoStream(id: user.agUId,
                                                           view: self.ownerRenderView)
@@ -291,7 +285,7 @@ extension VirtualBroadcastersViewController {
             // Broadcaster RenderView
             switch broadcasting {
             case .multi(let users):
-                for item in users where item.info.userId != owner.user.info.userId {
+                for item in users where item.info.userId != owner.value.user.info.userId {
                     if item.info.userId == local.info.userId {
                         self.playerVM.startRenderLocalVideoStream(id: local.agUId,
                                                                   view: self.broadcasterRenderView)
@@ -374,8 +368,7 @@ extension VirtualBroadcastersViewController {
         
         self.userListVC?.selectedInviteAudience.subscribe(onNext: { [unowned self] (user) in
             guard let session = ALCenter.shared().liveSession,
-                let owner = session.owner,
-                owner.isLocal else {
+                session.owner.value.isLocal else {
                 return
             }
             
@@ -385,7 +378,7 @@ extension VirtualBroadcastersViewController {
                 self.userListVC = nil
             }
             
-            self.seatVM.localOwner(owner.user,
+            self.seatVM.localOwner(session.owner.value.user,
                                    command: .invite,
                                    on: LiveSeat(index: 1, state: .empty),
                                    with: user,
@@ -426,12 +419,11 @@ extension VirtualBroadcastersViewController {
             self.hiddenMaskView()
             
             guard let session = ALCenter.shared().liveSession,
-                let owner = session.owner,
-                owner.isLocal else {
+                session.owner.value.isLocal else {
                 return
             }
             let roomId = session.roomId
-            self.seatVM.localOwner(owner.user,
+            self.seatVM.localOwner(session.owner.value.user,
                                    command: .forceToAudience,
                                    on: LiveSeat(index: 1, state: .close),
                                    of: roomId)
@@ -450,13 +442,12 @@ extension VirtualBroadcastersViewController {
             self.hiddenMaskView()
             
             guard let session = ALCenter.shared().liveSession,
-                let role = session.role,
-                role.type == .broadcaster else {
+                session.role.type == .broadcaster else {
                 return
             }
             
             let roomId = session.roomId
-            self.seatVM.localBroadcaster(role,
+            self.seatVM.localBroadcaster(session.role,
                                          endBroadcastingOn: LiveSeat(index: 1, state: .empty),
                                          of: roomId)
         }
@@ -474,27 +465,25 @@ extension VirtualBroadcastersViewController {
                         self.hiddenMaskView()
                         
                         guard let session = ALCenter.shared().liveSession,
-                            let role = session.role,
-                            role.type == .audience else {
+                            session.role.type == .audience else {
                             return
                         }
                         
-                        self.seatVM.localAudience(role, rejectInvitingFrom: owner)
+                        self.seatVM.localAudience(session.role, rejectInvitingFrom: owner)
         }) { [unowned self] (_) in
             self.hiddenMaskView()
             
             guard let session = ALCenter.shared().liveSession,
-                let role = session.role,
-                role.type == .audience else {
+                session.role.type == .audience else {
                 return
             }
             
             let roomId = session.roomId
             
             self.presentVirtualAppearance(close: { [unowned self] in
-                self.seatVM.localAudience(role, rejectInvitingFrom: owner)
+                self.seatVM.localAudience(session.role, rejectInvitingFrom: owner)
             }) { [unowned self] in
-                self.seatVM.localAudience(role,
+                self.seatVM.localAudience(session.role,
                                           acceptInvitingOn: 1,
                                           roomId: roomId,
                                           extra: ["virtualAvatar": self.enhancementVM.virtualAppearance.value.item])

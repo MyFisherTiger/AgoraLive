@@ -59,19 +59,20 @@ class LiveSession: NSObject {
     
     var settings: LocalLiveSettings
     var type: LiveType
-    var role: LiveRole?
-    var owner: Owner!
+    var role: LiveLocalUser
+    private(set) var owner: BehaviorRelay<Owner>
     
     private let bag = DisposeBag()
     
     var rtcChannelReport: BehaviorRelay<ChannelReport>?
     var end = PublishRelay<()>()
-    var ownerInfoUpdate = PublishRelay<LiveOwner>()
     
-    init(roomId: String, settings: LocalLiveSettings, type: LiveType) {
+    init(roomId: String, settings: LocalLiveSettings, type: LiveType, owner: Owner, role: LiveLocalUser) {
         self.roomId = roomId
         self.settings = settings
         self.type = type
+        self.owner = BehaviorRelay(value: owner)
+        self.role = role
         super.init()
         self.observe()
     }
@@ -97,8 +98,18 @@ class LiveSession: NSObject {
         
         let successCallback: DicEXCompletion = { (json: ([String: Any])) throws in
             let roomId = try json.getStringValue(of: "data")
+            let localUser = ALCenter.shared().centerProvideLocalUser()
+            let role = LiveLocalUser(type: .owner,
+                                     info: localUser.info.value,
+                                     permission: [.camera, .mic, .chat],
+                                     agUId: 0)
             
-            let session = LiveSession(roomId: roomId, settings: roomSettings, type: type)
+            let owner = Owner.localUser(role)
+            let session = LiveSession(roomId: roomId,
+                                      settings: roomSettings,
+                                      type: type,
+                                      owner: owner,
+                                      role: role)
             
             if let success = success {
                 success(session)
@@ -131,7 +142,8 @@ class LiveSession: NSObject {
             
             // Local User
             let localUserJson = try data.getDictionaryValue(of: "user")
-            try self.initRoleiWhenJoiningWith(info: localUserJson)
+            self.role = try LiveLocalUser(dic: localUserJson)
+            // try self.initRoleiWhenJoiningWith(info: localUserJson)
             
             // Live Room
             let liveRoom = try data.getDictionaryValue(of: "room")
@@ -170,7 +182,7 @@ class LiveSession: NSObject {
             
             var virtualAppearance: String?
             
-            if self.type == .virtual, self.role!.type != .audience {
+            if self.type == .virtual, self.role.type != .audience {
                 virtualAppearance = try localUserJson.getStringValue(of: "virtualAvatar")
             }
             
@@ -204,9 +216,7 @@ class LiveSession: NSObject {
     }
     
     @discardableResult func audienceToBroadcaster() -> LiveRole {
-        guard let audience = self.role as? LiveAudience else {
-            fatalError()
-        }
+        let audience = self.role
         
         let media = ALCenter.shared().centerProvideMediaHelper()
         media.capture.audio = .on
@@ -214,26 +224,32 @@ class LiveSession: NSObject {
         var permission = audience.permission
         permission.insert(.camera)
         permission.insert(.mic)
-        let role = LiveBroadcaster(info: audience.info,
-                                         permission: permission,
-                                         agUId: audience.agUId,
-                                         giftRank: audience.giftRank)
+        
+        let role = LiveLocalUser(type: .broadcaster,
+                                 info: audience.info,
+                                 permission: permission,
+                                 agUId: audience.agUId,
+                                 giftRank: audience.giftRank)
         self.role = role
         self.setupPublishedVideoStream(settings.media)
         return role
     }
     
     @discardableResult func broadcasterToAudience() -> LiveRole {
-        guard let broadcaster = self.role as? LiveBroadcaster else {
-            fatalError()
-        }
+        let broadcaster = self.role
         
         let media = ALCenter.shared().centerProvideMediaHelper()
         media.capture.audio = .off
         try! media.capture.video(.off)
-        let role = LiveAudience(info: broadcaster.info,
-                                agUId: broadcaster.agUId,
-                                giftRank: broadcaster.giftRank)
+        var permission = broadcaster.permission
+        permission.remove(.camera)
+        permission.remove(.mic)
+        
+        let role = LiveLocalUser(type: .audience,
+                                 info: broadcaster.info,
+                                 permission: permission,
+                                 agUId: broadcaster.agUId,
+                                 giftRank: broadcaster.giftRank)
         
         self.role = role
         return role
@@ -251,7 +267,6 @@ class LiveSession: NSObject {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         let client = ALCenter.shared().centerProvideRequestHelper()
-        role = nil
         mediaKit.leaveChannel()
         try? mediaKit.capture.video(.off)
         mediaKit.capture.audio = .off
@@ -271,40 +286,16 @@ class LiveSession: NSObject {
 }
 
 private extension LiveSession {
-    func initRoleiWhenJoiningWith(info: StringAnyDic) throws {
-        // Local User
-        let userInfo = try BasicUserInfo(dic: info)
-        let permission = try LivePermission.permission(dic: info)
-        let roleType = try info.getEnum(of: "role", type: LiveRoleType.self)
-        
-        let giftRank = try info.getIntValue(of: "rank")
-        let agUId = try info.getIntValue(of: "uid")
-        
-        // Create Live role
-        switch roleType {
-        case .owner:
-            self.role = LiveOwner(info: userInfo, permission: permission, agUId: agUId)
-        case .broadcaster:
-            self.role = LiveBroadcaster(info: userInfo, permission: permission, agUId: agUId, giftRank: giftRank)
-        case .audience:
-            self.role = LiveAudience(info: userInfo, agUId: agUId, giftRank: giftRank)
-        }
-    }
-    
     func updateLiveRoomInfoWhenJoingWith(info: StringAnyDic) throws {
         // Live room owner
         var ownerJson = try info.getDictionaryValue(of: "owner")
         ownerJson["avatar"] = "Fake"
         let ownerObj = try LiveOwner(dic: ownerJson)
         
-        guard let current = ALCenter.shared().current else {
-            fatalError()
-        }
-        
-        if ownerObj.info.userId == current.info.value.userId {
-            self.owner = .localUser(ownerObj)
+        if ownerObj.info.userId == self.role.info.userId {
+            self.owner.accept(.localUser(ownerObj))
         } else {
-            self.owner = .otherUser(ownerObj)
+            self.owner.accept(.otherUser(ownerObj))
         }
         
         // Live type check
@@ -335,15 +326,9 @@ private extension LiveSession {
                 let data = try json.getDataObject()
                 let owner = try LiveOwner(dic: data)
                 
-                guard let tOwner = strongSelf.owner else {
-                    return
+                if !strongSelf.owner.value.isLocal {
+                    strongSelf.owner.accept(.otherUser(owner))
                 }
-                
-                if !tOwner.isLocal {
-                    strongSelf.owner = .otherUser(owner)
-                }
-                
-                strongSelf.ownerInfoUpdate.accept(owner)
             default:
                 break
             }

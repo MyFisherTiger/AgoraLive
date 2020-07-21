@@ -10,6 +10,7 @@ import Foundation
 import AlamoClient
 
 protocol CenterHelper where Self: ALCenter {
+    func centerProvideLocalUser() -> CurrentUser
     func centerProvideRequestHelper() -> AlamoClient
     func centerProvideImagesHelper() -> ImageFiles
     func centerProvideMediaHelper() -> MediaKit

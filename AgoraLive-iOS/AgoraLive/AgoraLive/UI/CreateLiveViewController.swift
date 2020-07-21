@@ -185,9 +185,9 @@ class CreateLiveViewController: MaskViewController {
             
             if seatVM.list.value.count == 1,
                 let remote = seatVM.list.value[0].user {
-                broadcasting = .multi([session.owner.user, remote])
+                broadcasting = .multi([session.owner.value.user, remote])
             } else {
-                broadcasting = .single(session.owner.user)
+                broadcasting = .single(session.owner.value.user)
             }
             
             vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))

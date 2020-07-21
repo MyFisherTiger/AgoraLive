@@ -355,9 +355,8 @@ class LiveSeatViewController: UIViewController {
                 
                 view.commandButton.isHidden = true
                 
-                guard let role = session.role,
-                    let user = item.user,
-                    role.info.userId == user.info.userId else {
+                guard let user = item.user,
+                    session.role.info.userId == user.info.userId else {
                         break
                 }
                 view.commandButton.isHidden = false
@@ -379,7 +378,7 @@ class LiveSeatViewController: UIViewController {
         
         switch speaker {
         case .local:
-            guard let uid = ALCenter.shared().liveSession?.role?.agUId else {
+            guard let uid = ALCenter.shared().liveSession?.role.agUId else {
                 return
             }
             agoraUid = UInt(uid)
