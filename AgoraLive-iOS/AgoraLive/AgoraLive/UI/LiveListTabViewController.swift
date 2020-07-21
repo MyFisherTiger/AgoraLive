@@ -143,7 +143,7 @@ private extension LiveListTabViewController {
         createButton.layer.shadowColor = UIColor(hexString: "#BD3070").cgColor
         
         createButton.rx.tap.subscribe(onNext: { [unowned self] in
-            if self.listVM.presentingType != .virtualBroadcasters {
+            if self.listVM.presentingType != .virtual {
                 self.performSegue(withIdentifier: "CreateLiveNavigation", sender: self.listVM.presentingType)
             } else {
                 self.performSegue(withIdentifier: "VirtualCreatNavigation", sender: nil)
@@ -165,10 +165,11 @@ private extension LiveListTabViewController {
             var type: LiveType
             
             switch index {
-            case 0: type = .multiBroadcasters
-            case 1: type = .singleBroadcaster
-            case 2: type = .pkBroadcasters
-            case 3: type = .virtualBroadcasters
+            case 0: type = .multi
+            case 1: type = .single
+            case 2: type = .pk
+            case 3: type = .virtual
+            case 4: type = .eCommerce
             default: fatalError()
             }
             
@@ -226,22 +227,26 @@ private extension LiveListTabViewController {
             var media = settings.media
             
             switch type {
-            case .multiBroadcasters:
+            case .multi:
                 media.resolution = AgoraVideoDimension240x240
                 media.frameRate = .fps15
                 media.bitRate = 200
-            case .singleBroadcaster:
+            case .single:
                 media.resolution = CGSize.AgoraVideoDimension360x640
                 media.frameRate = .fps15
                 media.bitRate = 600
-            case .pkBroadcasters:
+            case .pk:
                 media.resolution = CGSize.AgoraVideoDimension360x640
                 media.frameRate = .fps15
                 media.bitRate = 800
-            case .virtualBroadcasters:
+            case .virtual:
                 media.resolution = CGSize.AgoraVideoDimension720x1280
                 media.frameRate = .fps15
                 media.bitRate = 1000
+            case .eCommerce:
+                media.resolution = CGSize.AgoraVideoDimension360x640
+                media.frameRate = .fps15
+                media.bitRate = 600
             }
             
             settings.media = media
@@ -324,14 +329,16 @@ extension LiveListTabViewController {
             self.hiddenHUD()
             
             switch session.type {
-            case .multiBroadcasters:
+            case .multi:
                 self.performSegue(withIdentifier: "MultiBroadcastersViewController", sender: info)
-            case .singleBroadcaster:
+            case .single:
                 self.performSegue(withIdentifier: "SingleBroadcasterViewController", sender: info)
-            case .pkBroadcasters:
+            case .pk:
                 self.performSegue(withIdentifier: "PKBroadcastersViewController", sender: info)
-            case .virtualBroadcasters:
+            case .virtual:
                 self.performSegue(withIdentifier: "VirtualBroadcastersViewController", sender: info)
+            case .eCommerce:
+                self.performSegue(withIdentifier: "ECommerceLiveViewController", sender: info)
             }
         }) { [unowned self] in
             self.hiddenHUD()

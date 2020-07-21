@@ -61,7 +61,7 @@ class VirtualAppearanceViewController: UIViewController, RxViewController {
             if let navigation = self.navigationController {
                 let vc = UIStoryboard.initViewController(of: "CreateLiveViewController",
                                                          class: CreateLiveViewController.self)
-                vc.liveType = .virtualBroadcasters
+                vc.liveType = .virtual
                 navigation.pushViewController(vc, animated: true)
             } else {
                 self.dismiss(animated: true, completion: nil)

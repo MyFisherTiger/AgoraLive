@@ -15,11 +15,11 @@ fileprivate enum UserJoinOrLeft: Int {
     case left, join
 }
 
-fileprivate extension Array where Element == (UserJoinOrLeft, RemoteAudience) {
+fileprivate extension Array where Element == (UserJoinOrLeft, LiveAudience) {
     init(list: [StringAnyDic]) throws {
-        var array = [(UserJoinOrLeft, RemoteAudience)]()
+        var array = [(UserJoinOrLeft, LiveAudience)]()
         for item in list {
-            let user = try RemoteAudience(dic: item)
+            let user = try LiveAudience(dic: item)
             let join = try item.getEnum(of: "state", type: UserJoinOrLeft.self)
             array.append((join, user))
         }
@@ -27,11 +27,11 @@ fileprivate extension Array where Element == (UserJoinOrLeft, RemoteAudience) {
     }
 }
 
-fileprivate extension Array where Element == RemoteAudience {
+fileprivate extension Array where Element == LiveAudience {
     init(dicList: [StringAnyDic]) throws {
-        var array = [RemoteAudience]()
+        var array = [LiveAudience]()
         for item in dicList {
-            let user = try RemoteAudience(dic: item)
+            let user = try LiveAudience(dic: item)
             array.append(user)
         }
         self = array
@@ -39,11 +39,11 @@ fileprivate extension Array where Element == RemoteAudience {
 }
 
 class LiveRoomAudienceList: NSObject {
-    var giftList = BehaviorRelay(value: [RemoteAudience]())
+    var giftList = BehaviorRelay(value: [LiveAudience]())
     
-    var list = BehaviorRelay(value: [RemoteAudience]())
-    var join = PublishRelay<[RemoteAudience]>()
-    var left = PublishRelay<[RemoteAudience]>()
+    var list = BehaviorRelay(value: [LiveAudience]())
+    var join = PublishRelay<[LiveAudience]>()
+    var left = PublishRelay<[LiveAudience]>()
     var total = BehaviorRelay(value: 0)
     
     override init() {
@@ -175,21 +175,21 @@ private extension LiveRoomAudienceList {
             
             switch cmd {
             case .userJoinOrLeave:
-                var list: [(UserJoinOrLeft, RemoteAudience)]
+                var list: [(UserJoinOrLeft, LiveAudience)]
                 if let tList = listJson {
                     list = try Array(list: tList)
                 } else {
-                    list = [(UserJoinOrLeft, RemoteAudience)]()
+                    list = [(UserJoinOrLeft, LiveAudience)]()
                 }
                 strongSelf.userJoinOrLeft(list)
                 let total = try data.getIntValue(of: "total")
                 strongSelf.total.accept(total)
             case .ranks:
-                var list: [RemoteAudience]
+                var list: [LiveAudience]
                 if let tList = listJson {
                     list = try Array(dicList: tList)
                 } else {
-                    list = [RemoteAudience]()
+                    list = [LiveAudience]()
                 }
                 strongSelf.giftList.accept(list)
             default:
@@ -198,22 +198,22 @@ private extension LiveRoomAudienceList {
         }
     }
     
-    func fake(count: Int) -> [RemoteAudience] {
-        var list = [RemoteAudience]()
+    func fake(count: Int) -> [LiveAudience] {
+        var list = [LiveAudience]()
         for i in 0..<count {
             let dic: StringAnyDic = ["userId": "1000\(i)",
                                     "userName": "fakeUserName-\(i)",
                                     "avatar": "fakeHead",
                                     "uid": i + 100]
-            let user = try! RemoteAudience(dic: dic)
+            let user = try! LiveAudience(dic: dic)
             list.append(user)
         }
         return list
     }
     
-    func userJoinOrLeft(_ list: [(UserJoinOrLeft, RemoteAudience)]) {
-        var joins = [RemoteAudience]()
-        var lefts = [RemoteAudience]()
+    func userJoinOrLeft(_ list: [(UserJoinOrLeft, LiveAudience)]) {
+        var joins = [LiveAudience]()
+        var lefts = [LiveAudience]()
         
         for item in list {
             switch item.0 {

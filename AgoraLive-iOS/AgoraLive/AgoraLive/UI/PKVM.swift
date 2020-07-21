@@ -88,7 +88,7 @@ struct PKStatistics {
     var opponentGift: Int
     var opponentRoomId: String
     
-    var opponentOwner: RemoteAudience?
+    var opponentOwner: LiveAudience?
     
     init(state: State = .none) {
         self.state = state
@@ -112,7 +112,7 @@ struct PKStatistics {
             self.opponentGift = try dic.getIntValue(of: "pkRoomRank")
             
             let user = try dic.getDictionaryValue(of: "pkRoomOwner")
-            self.opponentOwner = try RemoteAudience(dic: user)
+            self.opponentOwner = try LiveAudience(dic: user)
         } else {
             self.startTime = -1
             self.countDown = 0

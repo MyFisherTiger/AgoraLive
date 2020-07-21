@@ -46,7 +46,7 @@ class ExtensionViewController: UIViewController {
     lazy var micButton = ExtensionButton(frame: CGRect.zero)
     lazy var audioLoopButton = ExtensionButton(frame: CGRect.zero)
     
-    var liveType: LiveType = .multiBroadcasters
+    var liveType: LiveType = .multi
     var perspective: LiveRoleType = .audience
     
     override func viewDidLoad() {
@@ -65,7 +65,7 @@ class ExtensionViewController: UIViewController {
         
         switch perspective {
         case .owner, .broadcaster:
-            if liveType != .virtualBroadcasters {
+            if liveType != .virtual {
                 settingsButton.setImage(UIImage(named: "icon-setting"), for: .normal)
                 settingsButton.setTitle(NSLocalizedString("Live_Room_Settings"), for: .normal)
                 view.addSubview(settingsButton)
@@ -129,7 +129,7 @@ class ExtensionViewController: UIViewController {
             var y: CGFloat = self.titleLabel.frame.maxY + 20.0
             var buttons: [UIButton]
             
-            if liveType != .virtualBroadcasters {
+            if liveType != .virtual {
                 buttons = [dataButton, settingsButton]
             } else {
                 buttons = [dataButton]
@@ -139,7 +139,7 @@ class ExtensionViewController: UIViewController {
             
             y = dataButton.frame.maxY + 22.0
             
-            if liveType != .virtualBroadcasters {
+            if liveType != .virtual {
                 buttons = [switchCameraButton, cameraButton, micButton, audioLoopButton]
             } else {
                 buttons = [micButton, audioLoopButton]

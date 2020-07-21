@@ -31,6 +31,8 @@ PK_Live="PK直播";
 PK_Live_Description="两个不同直播间的主播跨频道连麦PK，引爆直播间";
 Virtual_Live="虚拟主播";
 Virtual_Live_Description="用卡通形象模拟真人进行对话或直播";
+E_Commerce_Live="电商直播";
+E_Commerce_Live_Description="电商直播";
 
 // Create Room Page
 Create_A_Live_Room="请创建一个房间";

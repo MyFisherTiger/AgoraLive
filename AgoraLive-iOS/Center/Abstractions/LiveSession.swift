@@ -12,25 +12,28 @@ import RxRelay
 import AlamoClient
 
 enum LiveType: Int {
-    case singleBroadcaster = 1, multiBroadcasters, pkBroadcasters, virtualBroadcasters
+    case single = 1, multi, pk, virtual, eCommerce
     
     var description: String {
         switch self {
-        case .multiBroadcasters:
+        case .multi:
             return NSLocalizedString("Multi_Broadcasters")
-        case .singleBroadcaster:
+        case .single:
             return NSLocalizedString("Single_Broadcaster")
-        case .pkBroadcasters:
+        case .pk:
             return NSLocalizedString("PK_Live")
-        case .virtualBroadcasters:
+        case .virtual:
             return NSLocalizedString("Virtual_Live")
+        case .eCommerce:
+            return NSLocalizedString("E_Commerce_Live")
         }
     }
     
-    static let list: [LiveType] = [.multiBroadcasters,
-                                   .singleBroadcaster,
-                                   .pkBroadcasters,
-                                   .virtualBroadcasters]
+    static let list: [LiveType] = [.multi,
+                                   .single,
+                                   .pk,
+                                   .virtual,
+                                   .eCommerce]
 }
 
 class LiveSession: NSObject {
@@ -63,7 +66,7 @@ class LiveSession: NSObject {
     
     var rtcChannelReport: BehaviorRelay<ChannelReport>?
     var end = PublishRelay<()>()
-    var ownerInfoUpdate = PublishRelay<RemoteOwner>()
+    var ownerInfoUpdate = PublishRelay<LiveOwner>()
     
     init(roomId: String, settings: LocalLiveSettings, type: LiveType) {
         self.roomId = roomId
@@ -155,19 +158,19 @@ class LiveSession: NSObject {
             
             // multiBroadcasters, virtualBroadcasters have seatInfo
             var seatInfo: [StringAnyDic]?
-            if self.type == .multiBroadcasters || self.type == .virtualBroadcasters {
+            if self.type == .multi || self.type == .virtual {
                 seatInfo = try liveRoom.getListValue(of: "coVideoSeats")
             }
             
             // only pkBroadcaster has pkInfo
             var pkInfo: StringAnyDic?
-            if self.type == .pkBroadcasters {
+            if self.type == .pk {
                 pkInfo = try liveRoom.getDictionaryValue(of: "pk")
             }
             
             var virtualAppearance: String?
             
-            if self.type == .virtualBroadcasters, self.role!.type != .audience {
+            if self.type == .virtual, self.role!.type != .audience {
                 virtualAppearance = try localUserJson.getStringValue(of: "virtualAvatar")
             }
             
@@ -292,7 +295,7 @@ private extension LiveSession {
         // Live room owner
         var ownerJson = try info.getDictionaryValue(of: "owner")
         ownerJson["avatar"] = "Fake"
-        let ownerObj = try RemoteOwner(dic: ownerJson)
+        let ownerObj = try LiveOwner(dic: ownerJson)
         
         guard let current = ALCenter.shared().current else {
             fatalError()
@@ -330,7 +333,7 @@ private extension LiveSession {
                 strongSelf.end.accept(())
             case .owner:
                 let data = try json.getDataObject()
-                let owner = try RemoteOwner(dic: data)
+                let owner = try LiveOwner(dic: data)
                 
                 guard let tOwner = strongSelf.owner else {
                     return

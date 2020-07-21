@@ -11,10 +11,6 @@ import RxSwift
 import RxRelay
 import AlamoClient
 
-protocol UserInfoProtocol {
-    var info: BasicUserInfo {get set}
-}
-
 struct BasicUserInfo {
     var userId: String
     var name: String

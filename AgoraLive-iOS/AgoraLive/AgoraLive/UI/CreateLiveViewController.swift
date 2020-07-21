@@ -58,7 +58,7 @@ class CreateLiveViewController: MaskViewController {
     private var mediaSettingsNavi: UIViewController?
     private var beautyVC: UIViewController?
     
-    var liveType: LiveType = .multiBroadcasters
+    var liveType: LiveType = .multi
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,25 +82,25 @@ class CreateLiveViewController: MaskViewController {
                                              view: self.cameraPreview)
         
         switch liveType {
-        case .multiBroadcasters:
+        case .multi:
             var media = localSettings.media
             media.resolution = AgoraVideoDimension240x240
             media.frameRate = .fps15
             media.bitRate = 200
             localSettings.media = media
-        case .singleBroadcaster:
+        case .single:
             var media = localSettings.media
             media.resolution = CGSize.AgoraVideoDimension360x640
             media.frameRate = .fps15
             media.bitRate = 600
             localSettings.media = media
-        case .pkBroadcasters:
+        case .pk:
             var media = localSettings.media
             media.resolution = CGSize.AgoraVideoDimension360x640
             media.frameRate = .fps15
             media.bitRate = 800
             localSettings.media = media
-        case .virtualBroadcasters:
+        case .virtual:
             var media = localSettings.media
             media.resolution = CGSize.AgoraVideoDimension720x1280
             media.frameRate = .fps15
@@ -113,6 +113,12 @@ class CreateLiveViewController: MaskViewController {
             switchCameraButton.isHidden = true
             backButton.setImage(UIImage(named: "icon-back-black"),
                                 for: .normal)
+        case .eCommerce:
+            var media = localSettings.media
+            media.resolution = CGSize.AgoraVideoDimension360x640
+            media.frameRate = .fps15
+            media.bitRate = 600
+            localSettings.media = media
         }
     }
     
@@ -203,7 +209,7 @@ class CreateLiveViewController: MaskViewController {
     }
     
     @IBAction func doClosePressed(_ sender: UIButton) {
-        if liveType != .virtualBroadcasters {
+        if liveType != .virtual {
             self.enhancementVM.reset()
             self.deviceVM.camera = .off
             self.navigationController?.dismiss(animated: true,
@@ -327,7 +333,7 @@ private extension CreateLiveViewController {
         self.showHUD()
         
         var extra: [String: Any]? = nil
-        if liveType == .virtualBroadcasters {
+        if liveType == .virtual {
             extra = ["virtualAvatar": enhancementVM.virtualAppearance.value.item]
         }
         
@@ -351,14 +357,16 @@ private extension CreateLiveViewController {
             self.hiddenHUD()
             
             switch session.type {
-            case .multiBroadcasters:
+            case .multi:
                 self.performSegue(withIdentifier: "MultiBroadcastersViewController", sender: info)
-            case .singleBroadcaster:
+            case .single:
                 self.performSegue(withIdentifier: "SingleBroadcasterViewController", sender: info)
-            case .pkBroadcasters:
+            case .pk:
                 self.performSegue(withIdentifier: "PKBroadcastersViewController", sender: info)
-            case .virtualBroadcasters:
+            case .virtual:
                 self.performSegue(withIdentifier: "VirtualBroadcastersViewController", sender: info)
+            case .eCommerce:
+                self.performSegue(withIdentifier: "", sender: info)
             }
         }) { [unowned self] in
             self.hiddenHUD()

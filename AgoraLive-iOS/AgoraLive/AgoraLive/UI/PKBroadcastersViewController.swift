@@ -355,7 +355,7 @@ extension PKBroadcastersViewController {
         }
         
         let settings = LocalLiveSettings(title: "")
-        let newSession = LiveSession(roomId: pkVM.statistics.value.opponentRoomId, settings: settings, type: .pkBroadcasters)
+        let newSession = LiveSession(roomId: pkVM.statistics.value.opponentRoomId, settings: settings, type: .pk)
         newSession.join(success: { [unowned newSession, unowned self] (joinedInfo) in
             ALCenter.shared().liveSession = newSession
             let newPk = UIStoryboard.initViewController(of: "PKBroadcastersViewController",
@@ -498,7 +498,7 @@ private extension PKBroadcastersViewController {
                           presentedFrame: presentedFrame)
         
         // Room List
-        roomListVM.presentingType = .pkBroadcasters
+        roomListVM.presentingType = .pk
         roomListVM.refetch()
         
         inviteVC.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned inviteVC] in

@@ -39,11 +39,11 @@ enum SeatCommand {
 }
 
 struct LiveSeat {
-    var user: RemoteBroadcaster?
+    var user: LiveBroadcaster?
     var index: Int // 1 ... 6
     var state: SeatState
     
-    init(user: RemoteBroadcaster? = nil, index: Int, state: SeatState) {
+    init(user: LiveBroadcaster? = nil, index: Int, state: SeatState) {
         self.user = user
         self.index = index
         self.state = state
@@ -56,7 +56,7 @@ struct LiveSeat {
         
         if self.state == .normal {
             let broadcaster = try dic.getDictionaryValue(of: "user")
-            self.user = try RemoteBroadcaster(dic: broadcaster)
+            self.user = try LiveBroadcaster(dic: broadcaster)
         }
     }
 }
@@ -162,7 +162,7 @@ private extension LiveSeatVM {
 
 // MARK: - Owner
 extension LiveSeatVM {
-    func localOwner(_ local: LiveRole, command: SeatCommand, on seat: LiveSeat, with audience: RemoteAudience? = nil,
+    func localOwner(_ local: LiveRole, command: SeatCommand, on seat: LiveSeat, with audience: LiveAudience? = nil,
                   of roomId: String, success: Completion = nil, fail: ErrorCompletion = nil) {
         // 禁麦， 封麦，下麦， 解封， 邀请，
         // case ban, close, forceToAudience, release, invite, none

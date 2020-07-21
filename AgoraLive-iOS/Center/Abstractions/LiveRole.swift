@@ -47,7 +47,8 @@ struct LivePermission: OptionSet {
     }
 }
 
-protocol LiveRole: UserInfoProtocol {
+protocol LiveRole {
+    var info: BasicUserInfo {get set}
     var type: LiveRoleType {get set}
     var permission: LivePermission {get set}
     var agUId: Int {get set}
@@ -98,8 +99,8 @@ extension LiveRole {
 // MARK: - Audience
 class LiveAudience: NSObject, LiveRole {
     var type: LiveRoleType = .audience
-    var info: BasicUserInfo
     var permission: LivePermission
+    var info: BasicUserInfo
     var agUId: Int
     
     var giftRank: Int
@@ -110,84 +111,6 @@ class LiveAudience: NSObject, LiveRole {
         self.agUId = agUId
         self.giftRank = giftRank
     }
-}
-
-// MARK: - Broadcaster
-class LiveBroadcaster: NSObject, LiveRole {
-    var type: LiveRoleType = .broadcaster
-    var info: BasicUserInfo
-    var permission: LivePermission
-    var agUId: Int
-    
-    var giftRank: Int
-    
-    init(info: BasicUserInfo, permission: LivePermission, agUId: Int, giftRank: Int = 0) {
-        self.info = info
-        self.permission = permission
-        self.agUId = agUId
-        self.giftRank = giftRank
-    }
-}
-
-// MARK: - Owner
-class LiveOwner: NSObject, LiveRole {
-    var type: LiveRoleType = .owner
-    var info: BasicUserInfo
-    var permission: LivePermission
-    var agUId: Int
-    
-    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
-        self.info = info
-        self.permission = permission
-        self.agUId = agUId
-    }
-}
-
-// MARK: - Remote
-class RemoteOwner: NSObject, LiveRole {
-    var type: LiveRoleType = .owner
-    var permission: LivePermission
-    var info: BasicUserInfo
-    var agUId: Int
-    
-    init(dic: StringAnyDic) throws {
-        self.permission = try LivePermission.permission(dic: dic)
-        self.info = try BasicUserInfo(dic: dic)
-        self.agUId = try dic.getIntValue(of: "uid")
-    }
-    
-    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
-        self.info = info
-        self.permission = permission
-        self.agUId = agUId
-    }
-}
-
-class RemoteBroadcaster: NSObject, LiveRole {
-    var type: LiveRoleType = .broadcaster
-    var permission: LivePermission
-    var info: BasicUserInfo
-    var agUId: Int
-    
-    init(dic: StringAnyDic) throws {
-        self.permission = try LivePermission.permission(dic: dic)
-        self.info = try BasicUserInfo(dic: dic)
-        self.agUId = try dic.getIntValue(of: "uid")
-    }
-    
-    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
-        self.info = info
-        self.permission = permission
-        self.agUId = agUId
-    }
-}
-
-class RemoteAudience: NSObject, LiveRole {
-    var type: LiveRoleType = .audience
-    var permission: LivePermission
-    var info: BasicUserInfo
-    var agUId: Int
-    var giftRank: Int
     
     init(dic: StringAnyDic) throws {
         self.permission = LivePermission(rawValue: 0)
@@ -200,11 +123,48 @@ class RemoteAudience: NSObject, LiveRole {
             self.agUId = -1
         }
     }
+}
+
+// MARK: - Broadcaster
+class LiveBroadcaster: NSObject, LiveRole {
+    var type: LiveRoleType = .broadcaster
+    var permission: LivePermission
+    var info: BasicUserInfo
+    var agUId: Int
     
-    init(info: BasicUserInfo, agUId: Int) {
+    var giftRank: Int
+    
+    init(info: BasicUserInfo, permission: LivePermission, agUId: Int, giftRank: Int = 0) {
+        self.permission = permission
         self.info = info
-        self.permission = LivePermission(rawValue: 0)
         self.agUId = agUId
+        self.giftRank = giftRank
+    }
+    
+    init(dic: StringAnyDic) throws {
+        self.permission = try LivePermission.permission(dic: dic)
+        self.info = try BasicUserInfo(dic: dic)
+        self.agUId = try dic.getIntValue(of: "uid")
         self.giftRank = 0
+    }
+}
+
+// MARK: - Owner
+class LiveOwner: NSObject, LiveRole {
+    var type: LiveRoleType = .owner
+    var permission: LivePermission
+    var info: BasicUserInfo
+    var agUId: Int
+    
+    init(dic: StringAnyDic) throws {
+        self.permission = try LivePermission.permission(dic: dic)
+        self.info = try BasicUserInfo(dic: dic)
+        self.agUId = try dic.getIntValue(of: "uid")
+    }
+    
+    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
+        self.info = info
+        self.permission = permission
+        self.agUId = agUId
     }
 }

@@ -51,61 +51,74 @@ fileprivate extension Array where Element == RoomBrief {
 }
 
 class LiveListVM: NSObject {
-    fileprivate var multiBroadcastersList = [RoomBrief]() {
+    fileprivate var multiList = [RoomBrief]() {
         didSet {
             switch presentingType {
-            case .multiBroadcasters:
-                presentingList.accept(multiBroadcastersList)
+            case .multi:
+                presentingList.accept(multiList)
             default:
                 break
             }
         }
     }
     
-    fileprivate var singleBroadcasterList = [RoomBrief](){
+    fileprivate var singleList = [RoomBrief](){
         didSet {
             switch presentingType {
-            case .singleBroadcaster:
-                presentingList.accept(singleBroadcasterList)
+            case .single:
+                presentingList.accept(singleList)
             default:
                 break
             }
         }
     }
     
-    fileprivate var pkBroadcastersList = [RoomBrief]() {
+    fileprivate var pkList = [RoomBrief]() {
         didSet {
             switch presentingType {
-            case .pkBroadcasters:
-                presentingList.accept(pkBroadcastersList)
+            case .pk:
+                presentingList.accept(pkList)
             default:
                 break
             }
         }
     }
     
-    fileprivate var virtualBroadcastersList = [RoomBrief]() {
+    fileprivate var virtualList = [RoomBrief]() {
         didSet {
             switch presentingType {
-            case .virtualBroadcasters:
-                presentingList.accept(virtualBroadcastersList)
+            case .virtual:
+                presentingList.accept(virtualList)
             default:
                 break
             }
         }
     }
     
-    var presentingType = LiveType.multiBroadcasters {
+    fileprivate var eCommerceList = [RoomBrief]() {
         didSet {
             switch presentingType {
-            case .multiBroadcasters:
-                presentingList.accept(multiBroadcastersList)
-            case .singleBroadcaster:
-                presentingList.accept(singleBroadcasterList)
-            case .pkBroadcasters:
-                presentingList.accept(pkBroadcastersList)
-            case .virtualBroadcasters:
-                presentingList.accept(virtualBroadcastersList)
+            case .eCommerce:
+                presentingList.accept(eCommerceList)
+            default:
+                break
+            }
+        }
+    }
+    
+    var presentingType = LiveType.multi {
+        didSet {
+            switch presentingType {
+            case .multi:
+                presentingList.accept(multiList)
+            case .single:
+                presentingList.accept(singleList)
+            case .pk:
+                presentingList.accept(pkList)
+            case .virtual:
+                presentingList.accept(virtualList)
+            case .eCommerce:
+                presentingList.accept(eCommerceList)
             }
         }
     }
@@ -143,14 +156,16 @@ extension LiveListVM {
             let list = try [RoomBrief](dicList: jsonList)
             
             switch requestListType {
-            case .multiBroadcasters:
-                strongSelf.multiBroadcastersList.append(contentsOf: list)
-            case .singleBroadcaster:
-                strongSelf.singleBroadcasterList.append(contentsOf: list)
-            case .pkBroadcasters:
-                strongSelf.pkBroadcastersList.append(contentsOf: list)
-            case .virtualBroadcasters:
-                strongSelf.virtualBroadcastersList.append(contentsOf: list)
+            case .multi:
+                strongSelf.multiList.append(contentsOf: list)
+            case .single:
+                strongSelf.singleList.append(contentsOf: list)
+            case .pk:
+                strongSelf.pkList.append(contentsOf: list)
+            case .virtual:
+                strongSelf.virtualList.append(contentsOf: list)
+            case .eCommerce:
+                strongSelf.eCommerceList.append(contentsOf: list)
             }
             
             if let success = success {
@@ -195,14 +210,16 @@ extension LiveListVM {
             let list = try [RoomBrief](dicList: jsonList)
             
             switch requestListType {
-            case .multiBroadcasters:
-                strongSelf.multiBroadcastersList = list
-            case .singleBroadcaster:
-                strongSelf.singleBroadcasterList = list
-            case .pkBroadcasters:
-                strongSelf.pkBroadcastersList = list
-            case .virtualBroadcasters:
-                strongSelf.virtualBroadcastersList = list
+            case .multi:
+                strongSelf.multiList = list
+            case .single:
+                strongSelf.singleList = list
+            case .pk:
+                strongSelf.pkList = list
+            case .virtual:
+                strongSelf.virtualList = list
+            case .eCommerce:
+                strongSelf.eCommerceList = list
             }
             
             if let success = success {

@@ -270,8 +270,8 @@ class LiveSeatViewController: UIViewController {
     
     var perspective: LiveRoleType = .audience
     
-    var userRender = PublishRelay<(UIView, RemoteBroadcaster)>()
-    var userAudioSilence = PublishRelay<RemoteBroadcaster>()
+    var userRender = PublishRelay<(UIView, LiveBroadcaster)>()
+    var userAudioSilence = PublishRelay<LiveBroadcaster>()
     var commandFire = PublishRelay<LiveSeatCommand>()
     
     override func viewDidLoad() {

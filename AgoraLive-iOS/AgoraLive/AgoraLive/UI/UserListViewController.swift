@@ -55,10 +55,10 @@ class UserListViewController: UITableViewController {
     private let bag = DisposeBag()
     
     // Rx
-    var selectedInviteAudience = PublishRelay<RemoteAudience>()
+    var selectedInviteAudience = PublishRelay<LiveAudience>()
     var selectedInviteRoom = PublishRelay<RoomBrief>()
     
-    var userList: [RemoteAudience]? {
+    var userList: [LiveAudience]? {
         didSet {
             if showType == .allUser {
                 self.titleLabel.text = NSLocalizedString("User_List") + "(\(userList?.count ?? 0))"

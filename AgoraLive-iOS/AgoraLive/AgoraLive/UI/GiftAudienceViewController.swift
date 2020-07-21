@@ -23,7 +23,7 @@ class GiftAudienceCell: UICollectionViewCell {
 }
 
 class GiftAudienceViewController: UICollectionViewController {
-    var list: [RemoteAudience]? {
+    var list: [LiveAudience]? {
         didSet {
             self.collectionView.reloadData()
         }

@@ -53,6 +53,9 @@ class LiveTypeViewController: MaskViewController {
             `Type`(background: UIImage(named: "pic-虚拟直播")!,
                    title: NSLocalizedString("Virtual_Live"),
                    description: NSLocalizedString("Virtual_Live_Description")),
+            `Type`(background: UIImage(named: "pic-电商直播")!,
+                   title: NSLocalizedString("E_Commerce_Live"),
+                   description: NSLocalizedString("E_Commerce_Live_Description")),
         ])
     }
     
