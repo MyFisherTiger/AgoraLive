@@ -2,11 +2,12 @@ parameters:
   displayName: ''
   mode: ''
   upload: 0
+  bugly: 0
 
 jobs:
   - job: ${{ parameters.displayName }}Build
     displayName: ${{ parameters.displayName }}
-    timeoutInMinutes: 30
+    timeoutInMinutes: 40
 
     pool:
       vmImage: 'macOS-10.14'
@@ -50,5 +51,7 @@ jobs:
         inputs:
           PathtoPublish: AgoraLive-iOS/Build/product/app
           ArtifactName: ${{ parameters.displayName }}
+      
+      - script: cd 'AgoraLive-iOS/Build/shell' && ./bugly.sh ${{ parameters.bugly }} ../../AgoraLive ../product/app $(bugly_appId_ios) $(bugly_appkey_ios)
       
       - script: cd 'AgoraLive-iOS/Build/shell' && gem install fir-cli && chmod +x upload_fir.sh && ./upload_fir.sh ${{ parameters.upload }} $(firtoken) ../product/app/AgoraLive.ipa

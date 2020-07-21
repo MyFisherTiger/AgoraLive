@@ -1,8 +1,15 @@
-Project_Path=$1
-Product_Path=$2
+NEED_BUGLY=$1
 
-APP_KEY=$3
-APP_ID=$4
+if [[ $NEED_BUGLY = 0 ]] ; then
+echo "no need bugly"
+exit 0
+fi
+
+Project_Path=$2
+Product_Path=$3
+
+APP_KEY=$4
+APP_ID=$5
 
 Current_Path=`pwd`
 
