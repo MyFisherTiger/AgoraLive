@@ -12,7 +12,7 @@ import RxRelay
 import AlamoClient
 
 enum LiveType: Int {
-    case single = 1, multi, pk, virtual, eCommerce
+    case single = 1, multi, pk, virtual, shopping
     
     var description: String {
         switch self {
@@ -24,8 +24,8 @@ enum LiveType: Int {
             return NSLocalizedString("PK_Live")
         case .virtual:
             return NSLocalizedString("Virtual_Live")
-        case .eCommerce:
-            return NSLocalizedString("E_Commerce_Live")
+        case .shopping:
+            return NSLocalizedString("Live_Shopping")
         }
     }
     
@@ -33,7 +33,7 @@ enum LiveType: Int {
                                    .single,
                                    .pk,
                                    .virtual,
-                                   .eCommerce]
+                                   .shopping]
 }
 
 class LiveSession: NSObject {
@@ -55,17 +55,17 @@ class LiveSession: NSObject {
         }
     }
     
-    var roomId: String
-    
-    var settings: LocalLiveSettings
-    var type: LiveType
-    var role: LiveLocalUser
-    private(set) var owner: BehaviorRelay<Owner>
-    
     private let bag = DisposeBag()
     
-    var rtcChannelReport: BehaviorRelay<ChannelReport>?
-    var end = PublishRelay<()>()
+    private(set) var owner: BehaviorRelay<Owner>
+    private(set) var rtcChannelReport: BehaviorRelay<ChannelReport>?
+    private(set) var end = PublishRelay<()>()
+    
+    private(set) var roomId: String
+    private(set) var type: LiveType
+    private(set) var role: LiveLocalUser
+    
+    var settings: LocalLiveSettings
     
     init(roomId: String, settings: LocalLiveSettings, type: LiveType, owner: Owner, role: LiveLocalUser) {
         self.roomId = roomId

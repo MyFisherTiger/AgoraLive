@@ -87,9 +87,10 @@ private extension TabSelectView {
     func layoutButtons(titles: [String], space: CGFloat) {
         var lastButtonMaxX: CGFloat?
         var buttons = [UIButton]()
+        
         for (index, title) in titles.enumerated() {
             let textSize = title.size(font: selectedTitle.font,
-                                      drawRange: CGSize(width: 0, height: bounds.height))
+                                      drawRange: CGSize(width: CGFloat(MAXFLOAT), height: bounds.height))
             
             let button = UIButton(frame: CGRect(x: lastButtonMaxX ?? 0,
                                                 y: 0,
@@ -132,7 +133,6 @@ private extension TabSelectView {
             if i == index {
                 item.titleLabel?.font = selectedTitle.font
                 item.setTitleColor(selectedTitle.color, for: .normal)
-                
             } else {
                 item.titleLabel?.font = unselectedTitle.font
                 item.setTitleColor(unselectedTitle.color, for: .normal)
@@ -161,9 +161,15 @@ private extension TabSelectView {
             w = buttons[index].frame.width
         }
         
+        let boundsWidth = UIScreen.main.bounds.width - 30
         let y = bounds.height - h
-        let offsetX: CGFloat = ((x + w) - bounds.width) >= 0 ? ((x + w) - bounds.width) : 0
-        self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+        
+        var offsetX: CGFloat = (x + w) - boundsWidth
+        offsetX = offsetX >= 0 ? offsetX : 0
+        
+        if self.contentOffset.x < offsetX {
+            self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+        }
         
         UIView.animate(withDuration: 0.3) { [unowned self] in
             self.underline.frame = CGRect(x: x,

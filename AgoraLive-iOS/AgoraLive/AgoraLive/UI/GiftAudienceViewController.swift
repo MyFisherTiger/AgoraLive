@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxRelay
 
 class GiftAudienceCell: UICollectionViewCell {
     @IBOutlet var headImage: UIImageView!
@@ -23,11 +25,8 @@ class GiftAudienceCell: UICollectionViewCell {
 }
 
 class GiftAudienceViewController: UICollectionViewController {
-    var list: [LiveAudience]? {
-        didSet {
-            self.collectionView.reloadData()
-        }
-    }
+    private(set) var list = BehaviorRelay(value: [LiveAudience]())
+    private let bag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,15 +39,19 @@ class GiftAudienceViewController: UICollectionViewController {
         self.collectionView.reloadData()
         
         self.collectionView.backgroundColor = .clear
+        
+        list.subscribe(onNext: { [unowned self] (_) in
+            self.collectionView.reloadData()
+        }).disposed(by: bag)
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return list?.count ?? 0
+        return list.value.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GiftAudienceCell", for: indexPath) as! GiftAudienceCell
-        let audience = list![indexPath.item]
+        let audience = list.value[indexPath.item]
         cell.headImage.image = ALCenter.shared().centerProvideImagesHelper().getHead(index: audience.info.imageIndex)
         return cell
     }

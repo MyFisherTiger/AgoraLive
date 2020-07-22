@@ -135,6 +135,7 @@
 		A7D89D4C247E79060048B7EC /* VirtualAppearanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */; };
 		A7E3340A24C57213003DCA49 /* AGOSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E3340924C57213003DCA49 /* AGOSSClient.m */; };
 		A7EA40BC2459825000301AE3 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EA40BB2459825000301AE3 /* ToastView.swift */; };
+		A7EB816824C7F4E700F0A289 /* LiveShoppingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */; };
 		A7FDB59B23FD07B600487FB9 /* TabSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */; };
 		A7FDB59D23FD0E3C00487FB9 /* AppleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */; };
 		A7FDB59F23FD2B0C00487FB9 /* LiveListTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */; };
@@ -322,6 +323,7 @@
 		A7E3340824C57213003DCA49 /* AGOSSClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AGOSSClient.h; sourceTree = "<group>"; };
 		A7E3340924C57213003DCA49 /* AGOSSClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AGOSSClient.m; sourceTree = "<group>"; };
 		A7EA40BB2459825000301AE3 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveShoppingViewController.swift; sourceTree = "<group>"; };
 		A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSelectView.swift; sourceTree = "<group>"; };
 		A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleExtension.swift; sourceTree = "<group>"; };
 		A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveListTabViewController.swift; sourceTree = "<group>"; };
@@ -483,12 +485,13 @@
 		A76BD14023F27F0F00B2732B /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				A76BD14323F2852500B2732B /* ViewControllers */,
 				A7588522242DF25B0011FCCF /* MultiBroadcasting */,
 				A72B7BE2244415D500E965FB /* SingleBroadcasting */,
 				A72B7BE6244459CA00E965FB /* PKBroadcasting */,
 				A7D89D4A247E78B20048B7EC /* VirtualBroadcasting */,
+				A7EB816624C7F43E00F0A289 /* LiveShopping */,
 				A7CA48C724559B7E00507435 /* Mine */,
+				A76BD14323F2852500B2732B /* ViewControllers */,
 				A758851F242DF21E0011FCCF /* SharedView */,
 				A76BD14423F2853600B2732B /* Views */,
 				A76BD14223F2851200B2732B /* Storyboard */,
@@ -815,6 +818,14 @@
 			name = VirtualBroadcasting;
 			sourceTree = "<group>";
 		};
+		A7EB816624C7F43E00F0A289 /* LiveShopping */ = {
+			isa = PBXGroup;
+			children = (
+				A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */,
+			);
+			name = LiveShopping;
+			sourceTree = "<group>";
+		};
 		A7FDB5A823FFBB7100487FB9 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -1033,6 +1044,7 @@
 				A7952A5B24162BF600479811 /* FilesGroup.swift in Sources */,
 				A7EA40BC2459825000301AE3 /* ToastView.swift in Sources */,
 				A7615015244AF35B007AAA7F /* MediaDeviceVM.swift in Sources */,
+				A7EB816824C7F4E700F0A289 /* LiveShoppingViewController.swift in Sources */,
 				A7FDB5A323FFAEE200487FB9 /* IconTextView.swift in Sources */,
 				A7952AC624162C1000479811 /* fileenc.c in Sources */,
 				A7FDB59B23FD07B600487FB9 /* TabSelectView.swift in Sources */,

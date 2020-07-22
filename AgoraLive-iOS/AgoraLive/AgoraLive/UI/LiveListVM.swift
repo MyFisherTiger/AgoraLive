@@ -100,11 +100,11 @@ class LiveListVM: NSObject {
         }
     }
     
-    fileprivate var eCommerceList = [RoomBrief]() {
+    fileprivate var shoppingList = [RoomBrief]() {
         didSet {
             switch presentingType {
-            case .eCommerce:
-                presentingList.accept(eCommerceList)
+            case .shopping:
+                presentingList.accept(shoppingList)
             default:
                 break
             }
@@ -122,8 +122,8 @@ class LiveListVM: NSObject {
                 presentingList.accept(pkList)
             case .virtual:
                 presentingList.accept(virtualList)
-            case .eCommerce:
-                presentingList.accept(eCommerceList)
+            case .shopping:
+                presentingList.accept(shoppingList)
             }
         }
     }
@@ -169,8 +169,8 @@ extension LiveListVM {
                 strongSelf.pkList.append(contentsOf: list)
             case .virtual:
                 strongSelf.virtualList.append(contentsOf: list)
-            case .eCommerce:
-                strongSelf.eCommerceList.append(contentsOf: list)
+            case .shopping:
+                strongSelf.shoppingList.append(contentsOf: list)
             }
             
             if let success = success {
@@ -223,8 +223,8 @@ extension LiveListVM {
                 strongSelf.pkList = list
             case .virtual:
                 strongSelf.virtualList = list
-            case .eCommerce:
-                strongSelf.eCommerceList = list
+            case .shopping:
+                strongSelf.shoppingList = list
             }
             
             if let success = success {

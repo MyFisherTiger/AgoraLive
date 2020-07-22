@@ -9,7 +9,6 @@
 import UIKit
 import RxSwift
 
-
 class VirtualAppearanceViewController: UIViewController, RxViewController {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var bigImageView: UIImageView!

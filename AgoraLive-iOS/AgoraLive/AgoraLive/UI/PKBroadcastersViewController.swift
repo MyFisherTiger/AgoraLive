@@ -202,7 +202,7 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
         chatList()
         gift()
         
-        bottomTools(session: session, tintColor: tintColor)
+        bottomTools(session: session)
         chatInput()
         musicList()
         netMonitor()
@@ -540,18 +540,21 @@ private extension PKBroadcastersViewController {
             }
         }).disposed(by: bag)
         
-        roomListVM.presentingList.subscribe(onNext: { [unowned self] (list) in
-            var newList = list
-            let index = newList.firstIndex { (room) -> Bool in
-                return roomId == room.roomId
-            }
-            
-            if let index = index {
-                newList.remove(at: index)
-            }
-            
-            self.userListVC?.roomList = newList
-        }).disposed(by: bag)
+        
+        if let userListVC = userListVC {
+            roomListVM.presentingList.map { (list) -> [RoomBrief] in
+                var newList = list
+                let index = newList.firstIndex { (room) -> Bool in
+                    return roomId == room.roomId
+                }
+                
+                if let index = index {
+                    newList.remove(at: index)
+                }
+                
+                return newList
+            }.bind(to: userListVC.roomList).disposed(by: bag)
+        }
     }
     
     func hiddenInviteList() {

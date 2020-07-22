@@ -55,24 +55,11 @@ class UserListViewController: UITableViewController {
     private let bag = DisposeBag()
     
     // Rx
+    private(set) var userList = BehaviorRelay(value: [LiveAudience]())
+    private(set) var roomList = BehaviorRelay(value: [RoomBrief]())
+    
     var selectedInviteAudience = PublishRelay<LiveAudience>()
     var selectedInviteRoom = PublishRelay<RoomBrief>()
-    
-    var userList: [LiveAudience]? {
-        didSet {
-            if showType == .allUser {
-                self.titleLabel.text = NSLocalizedString("User_List") + "(\(userList?.count ?? 0))"
-            }
-            
-            tableView.reloadData()
-        }
-    }
-    
-    var roomList: [RoomBrief]? {
-        didSet {
-            tableView.reloadData()
-        }
-    }
     
     var showType: ShowType = .broadcasting
     
@@ -88,16 +75,28 @@ class UserListViewController: UITableViewController {
         switch showType {
         case .broadcasting: self.titleLabel.text = NSLocalizedString("Invite_Broadcasting")
         case .pk:           self.titleLabel.text = NSLocalizedString("Invite_PK")
-        case .allUser:      self.titleLabel.text = NSLocalizedString("User_List") + "(\(userList?.count ?? 0))"
+        case .allUser:      self.titleLabel.text = NSLocalizedString("User_List") + "(\(userList.value.count))"
         }
+        
+        userList.subscribe(onNext: { [unowned self] (list) in
+            if self.showType == .allUser {
+                self.titleLabel.text = NSLocalizedString("User_List") + "(\(list.count))"
+            }
+            self.tableView.reloadData()
+        }).disposed(by: bag)
+        
+        roomList.subscribe(onNext: { [unowned self] (list) in
+            
+            self.tableView.reloadData()
+        }).disposed(by: bag)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch showType {
         case .broadcasting, .allUser:
-            return userList?.count ?? 0
+            return userList.value.count
         case .pk:
-            return roomList?.count ?? 0
+            return roomList.value.count
         }
     }
 
@@ -108,14 +107,14 @@ class UserListViewController: UITableViewController {
         let images = ALCenter.shared().centerProvideImagesHelper()
         switch showType {
         case .broadcasting, .allUser:
-            let user = userList![indexPath.row]
+            let user = userList.value[indexPath.row]
             cell.nameLabel.text = user.info.name
             cell.headImageView.image = images.getHead(index: user.info.imageIndex)
             if showType == .allUser {
                 cell.inviteButton.isHidden = true
             }
         case .pk:
-            let room = roomList![indexPath.row]
+            let room = roomList.value[indexPath.row]
             cell.nameLabel.text = room.name
             cell.headImageView.image = images.getHead(index: room.imageIndex)
         }
@@ -131,10 +130,10 @@ extension UserListViewController: UserListCellDelegate {
         
         switch showType {
         case .broadcasting:
-            let audience = userList![index.row]
+            let audience = userList.value[index.row]
             self.selectedInviteAudience.accept(audience)
         case .pk:
-            let room = roomList![index.row]
+            let room = roomList.value[index.row]
             self.selectedInviteRoom.accept(room)
         case .allUser:
             break

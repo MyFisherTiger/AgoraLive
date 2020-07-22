@@ -12,6 +12,7 @@ Confirm="Confirm";
 Reject="Reject";
 End="End";
 Accept="Accept";
+Music="Music";
 
 Lost_Connection="Network error";
 Lost_Connection_Description="We cannot connect to network now. Please retry later";
@@ -30,8 +31,8 @@ PK_Live="PK Host-in";
 PK_Live_Description="Merge 2 streams from different channels";
 Virtual_Live="Virtual Hosts";
 Virtual_Live_Description="Avatar-based simulation for call or live streaming";
-E_Commerce_Live="电商直播";
-E_Commerce_Live_Description="电商直播";
+Live_Shopping="Live Stream Shopping";
+Live_Shopping_Description="Engage audience and other hosts in online shopping";
 
 // Create Room Page
 Create_A_Live_Room="Create a room to start";

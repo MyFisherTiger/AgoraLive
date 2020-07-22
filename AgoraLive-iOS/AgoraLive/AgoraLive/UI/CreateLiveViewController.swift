@@ -113,7 +113,7 @@ class CreateLiveViewController: MaskViewController {
             switchCameraButton.isHidden = true
             backButton.setImage(UIImage(named: "icon-back-black"),
                                 for: .normal)
-        case .eCommerce:
+        case .shopping:
             var media = localSettings.media
             media.resolution = CGSize.AgoraVideoDimension360x640
             media.frameRate = .fps15
@@ -365,8 +365,8 @@ private extension CreateLiveViewController {
                 self.performSegue(withIdentifier: "PKBroadcastersViewController", sender: info)
             case .virtual:
                 self.performSegue(withIdentifier: "VirtualBroadcastersViewController", sender: info)
-            case .eCommerce:
-                self.performSegue(withIdentifier: "", sender: info)
+            case .shopping:
+                self.performSegue(withIdentifier: "LiveShoppingViewController", sender: info)
             }
         }) { [unowned self] in
             self.hiddenHUD()

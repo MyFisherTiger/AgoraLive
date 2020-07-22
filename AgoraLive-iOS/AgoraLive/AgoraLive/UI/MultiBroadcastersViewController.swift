@@ -87,7 +87,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         chatList()
         gift()
         
-        bottomTools(session: session, tintColor: tintColor)
+        bottomTools(session: session)
         chatInput()
         musicList()
         netMonitor()

@@ -152,6 +152,8 @@ private extension LiveListTabViewController {
     }
     
     func updateTabSelectView() {
+        
+        
         tabView.underlineHeight = 3
         tabView.titleSpace = 28
         
@@ -169,7 +171,7 @@ private extension LiveListTabViewController {
             case 1: type = .single
             case 2: type = .pk
             case 3: type = .virtual
-            case 4: type = .eCommerce
+            case 4: type = .shopping
             default: fatalError()
             }
             
@@ -243,7 +245,7 @@ private extension LiveListTabViewController {
                 media.resolution = CGSize.AgoraVideoDimension720x1280
                 media.frameRate = .fps15
                 media.bitRate = 1000
-            case .eCommerce:
+            case .shopping:
                 media.resolution = CGSize.AgoraVideoDimension360x640
                 media.frameRate = .fps15
                 media.bitRate = 600
@@ -344,8 +346,8 @@ extension LiveListTabViewController {
                 self.performSegue(withIdentifier: "PKBroadcastersViewController", sender: info)
             case .virtual:
                 self.performSegue(withIdentifier: "VirtualBroadcastersViewController", sender: info)
-            case .eCommerce:
-                self.performSegue(withIdentifier: "ECommerceLiveViewController", sender: info)
+            case .shopping:
+                self.performSegue(withIdentifier: "LiveShoppingLiveViewController", sender: info)
             }
         }) { [unowned self] in
             self.hiddenHUD()

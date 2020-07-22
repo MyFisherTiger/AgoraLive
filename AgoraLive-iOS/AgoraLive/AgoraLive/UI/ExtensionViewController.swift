@@ -45,6 +45,9 @@ class ExtensionViewController: UIViewController {
     lazy var cameraButton = ExtensionButton(frame: CGRect.zero)
     lazy var micButton = ExtensionButton(frame: CGRect.zero)
     lazy var audioLoopButton = ExtensionButton(frame: CGRect.zero)
+    lazy var beautyButton = ExtensionButton(frame: CGRect.zero)
+    lazy var musicButton = ExtensionButton(frame: CGRect.zero)
+    lazy var broadcastingButton = ExtensionButton(frame: CGRect.zero)
     
     var liveType: LiveType = .multi
     var perspective: LiveRoleType = .audience
@@ -81,6 +84,16 @@ class ExtensionViewController: UIViewController {
                 view.addSubview(cameraButton)
             }
             
+            if liveType == .shopping {
+                musicButton.setImage(UIImage(named: "icon-music-shopping"), for: .normal)
+                musicButton.setTitle(NSLocalizedString("Music"), for: .normal)
+                view.addSubview(settingsButton)
+                
+                beautyButton.setImage(UIImage(named: "icon-美颜"), for: .normal)
+                beautyButton.setTitle(NSLocalizedString("Beauty"), for: .normal)
+                view.addSubview(switchCameraButton)
+            }
+            
             micButton.setImage(UIImage(named: "icon-speaker on"), for: .normal)
             micButton.setImage(UIImage(named: "icon-speaker off"), for: .selected)
             micButton.setTitle(NSLocalizedString("Mic"), for: .normal)
@@ -100,61 +113,73 @@ class ExtensionViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        func buttonsLayout(_ buttons: [UIButton], y: CGFloat) {
+            let width: CGFloat = 63.0
+            let height: CGFloat = 17.0 + 8.0 + 42.0
+            let leftRightSpace: CGFloat = 25.0
+            let betweenSpace: CGFloat = (UIScreen.main.bounds.width - (leftRightSpace * 2) - (width * 4)) / 3
+            
+            var lastButton: UIButton? = nil
+            
+            for button in buttons {
+                if lastButton == nil {
+                    button.frame = CGRect(x: leftRightSpace,
+                                          y: y,
+                                          width: width,
+                                          height: height)
+                } else {
+                    button.frame = CGRect(x: lastButton!.frame.maxX + betweenSpace,
+                                          y: y,
+                                          width: width,
+                                          height: height)
+                }
+                lastButton = button
+            }
+        }
+        
         switch perspective {
         case .owner, .broadcaster:
-            func buttonsLayout(_ buttons: [UIButton], y: CGFloat) {
-                let width: CGFloat = 63.0
-                let height: CGFloat = 17.0 + 8.0 + 42.0
-                let leftRightSpace: CGFloat = 25.0
-                let betweenSpace: CGFloat = (UIScreen.main.bounds.width - (leftRightSpace * 2) - (width * 4)) / 3
-                
-                var lastButton: UIButton? = nil
-                
-                for button in buttons {
-                    if lastButton == nil {
-                        button.frame = CGRect(x: leftRightSpace,
-                                              y: y,
-                                              width: width,
-                                              height: height)
-                    } else {
-                        button.frame = CGRect(x: lastButton!.frame.maxX + betweenSpace,
-                                              y: y,
-                                              width: width,
-                                              height: height)
-                    }
-                    lastButton = button
-                }
-            }
-            
+            // row 0
             var y: CGFloat = self.titleLabel.frame.maxY + 20.0
             var buttons: [UIButton]
             
-            if liveType != .virtual {
-                buttons = [dataButton, settingsButton]
-            } else {
+            switch liveType {
+            case .shopping:
+                buttons = [dataButton, settingsButton, beautyButton, musicButton]
+            case .virtual:
                 buttons = [dataButton]
+            default:
+                buttons = [dataButton, settingsButton]
             }
             
             buttonsLayout(buttons, y: y)
             
+            // row 1
             y = dataButton.frame.maxY + 22.0
             
-            if liveType != .virtual {
-                buttons = [switchCameraButton, cameraButton, micButton, audioLoopButton]
-            } else {
+            switch liveType {
+            case .virtual:
                 buttons = [micButton, audioLoopButton]
+            default:
+                buttons = [switchCameraButton, cameraButton, micButton, audioLoopButton]
             }
             
             buttonsLayout(buttons, y: y)
         case .audience:
-            let width: CGFloat = 63.0
-            let height: CGFloat = 17.0 + 8.0 + 42.0
-            let y: CGFloat = self.titleLabel.frame.maxY + 20.0
-            let x: CGFloat = (self.view.bounds.width - width) * 0.5
-            self.dataButton.frame = CGRect(x: x,
-                                           y: y,
-                                           width: width,
-                                           height: height)
+            switch liveType {
+            case .shopping:
+                let y: CGFloat = self.titleLabel.frame.maxY + 20.0
+                buttonsLayout([broadcastingButton, dataButton], y: y)
+            default:
+                let width: CGFloat = 63.0
+                let height: CGFloat = 17.0 + 8.0 + 42.0
+                let y: CGFloat = self.titleLabel.frame.maxY + 20.0
+                let x: CGFloat = (self.view.bounds.width - width) * 0.5
+                self.dataButton.frame = CGRect(x: x,
+                                               y: y,
+                                               width: width,
+                                               height: height)
+            }
         }
     }
 }

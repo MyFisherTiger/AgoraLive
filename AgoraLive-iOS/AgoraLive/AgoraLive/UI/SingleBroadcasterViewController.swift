@@ -75,11 +75,11 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
         chatList()
         gift()
         
-        bottomTools(session: session, tintColor: tintColor)
+        bottomTools(session: session)
         chatInput()
         musicList()
         netMonitor()
-        superResolution(session: session)
+        superResolution()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -114,16 +114,14 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
 extension SingleBroadcasterViewController {
     // MARK: - Live Room
     func liveRoom(session: LiveSession) {
-        let owner = session.owner
-        
-        let images = ALCenter.shared().centerProvideImagesHelper()
-        
         ownerView.offsetLeftX = -13
         ownerView.offsetRightX = 5
         ownerView.label.textColor = .white
         ownerView.label.font = UIFont.systemFont(ofSize: 11)
         
         session.owner.subscribe(onNext: { [unowned self] (owner) in
+            let images = ALCenter.shared().centerProvideImagesHelper()
+            
             switch owner {
             case .localUser(let user):
                 self.ownerView.label.text = user.info.name
@@ -143,8 +141,13 @@ extension SingleBroadcasterViewController {
         }).disposed(by: bag)
     }
     
-    func superResolution(session: LiveSession) {
-        bottomToolsVC?.superRenderButton.rx.tap.subscribe(onNext: { [unowned self, unowned session] () in
+    func superResolution() {
+        bottomToolsVC?.superRenderButton.rx.tap.subscribe(onNext: { [unowned self] () in
+            guard let session = ALCenter.shared().liveSession else {
+                assert(false)
+                return
+            }
+            
             guard let vc = self.bottomToolsVC else {
                 assert(false)
                 return

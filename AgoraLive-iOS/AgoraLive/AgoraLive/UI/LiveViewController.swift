@@ -61,9 +61,9 @@ extension LiveViewController {
             self.presentAllUserList()
         }).disposed(by: bag)
         
-        audienceListVM.giftList.subscribe(onNext: { [unowned self] (list) in
-            self.giftAudienceVC?.list = list
-        }).disposed(by: bag)
+        if let giftAudienceVC = self.giftAudienceVC {
+            audienceListVM.giftList.bind(to: giftAudienceVC.list).disposed(by: bag)
+        }
         
         audienceListVM.total.subscribe(onNext: { [unowned self] (total) in
             self.personCountView.label.text = "\(total)"
@@ -92,9 +92,9 @@ extension LiveViewController {
     
     // MARK: - Chat List
     func chatList() {
-        chatVM.list.subscribe(onNext: { [unowned self] (list) in
-            self.chatVC?.list = list
-        }).disposed(by: bag)
+        if let chatVC = self.chatVC {
+            chatVM.list.bind(to: chatVC.list).disposed(by: bag)
+        }
     }
     
     // MARK: - Gift
@@ -169,18 +169,24 @@ extension LiveViewController {
 // MARK: - View
 extension LiveViewController {
     // MARK: - Bottom Tools
-    func bottomTools(session: LiveSession, tintColor: UIColor = .black) {
+    func bottomTools(session: LiveSession) {
         let perspective = session.role.type
         
-        bottomToolsVC?.liveType = session.type
-        bottomToolsVC?.perspective = perspective
-        bottomToolsVC?.tintColor = tintColor
+        guard let bottomToolsVC = self.bottomToolsVC else {
+            return
+        }
+        
+        bottomToolsVC.liveType = session.type
+        bottomToolsVC.perspective = perspective
+        bottomToolsVC.tintColor = tintColor
+        
+        enhancementVM.beauty.map { (action) -> Bool in
+            return action.boolValue
+        }.bind(to: bottomToolsVC.beautyButton.rx.isSelected).disposed(by: bag)
         
         switch perspective {
         case .owner, .broadcaster:
-            bottomToolsVC?.beautyButton.isSelected = enhancementVM.beauty.value.boolValue
-            
-            bottomToolsVC?.beautyButton.rx.tap.subscribe(onNext: { [unowned self] () in
+            bottomToolsVC.beautyButton.rx.tap.subscribe(onNext: { [unowned self] () in
                 self.showMaskView(color: UIColor.clear) { [unowned self] in
                     self.hiddenMaskView()
                     if let beautyVC = self.beautyVC {
@@ -191,7 +197,7 @@ extension LiveViewController {
                 self.presentBeautySettings()
             }).disposed(by: bag)
             
-            bottomToolsVC?.musicButton.rx.tap.subscribe(onNext: { [unowned self] () in
+            bottomToolsVC.musicButton.rx.tap.subscribe(onNext: { [unowned self] () in
                 self.showMaskView(color: UIColor.clear) { [unowned self] in
                     self.hiddenMaskView()
                     if let musicVC = self.musicVC {
@@ -202,7 +208,7 @@ extension LiveViewController {
                 self.presentMusicList()
             }).disposed(by: bag)
             
-            bottomToolsVC?.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
+            bottomToolsVC.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
                 self.showMaskView(color: UIColor.clear) { [unowned self] in
                     self.hiddenMaskView()
                     if let extensionVC = self.extensionVC {
@@ -214,7 +220,7 @@ extension LiveViewController {
             }).disposed(by: bag)
             
             if perspective == .broadcaster {
-                bottomToolsVC?.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
+                bottomToolsVC.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
                     self.showMaskView(color: UIColor.clear) { [unowned self] in
                         self.hiddenMaskView()
                         if let giftVC = self.giftVC {
@@ -226,7 +232,7 @@ extension LiveViewController {
                 }).disposed(by: bag)
             }
         case .audience:
-            bottomToolsVC?.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
+            bottomToolsVC.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
                 self.showMaskView(color: UIColor.clear) { [unowned self] in
                     self.hiddenMaskView()
                     if let giftVC = self.giftVC {
@@ -237,7 +243,7 @@ extension LiveViewController {
                 self.presentGiftList()
             }).disposed(by: bag)
             
-            bottomToolsVC?.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
+            bottomToolsVC.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
                 self.showMaskView(color: UIColor.clear) { [unowned self] in
                     self.hiddenMaskView()
                     if let extensionVC = self.extensionVC {
@@ -249,7 +255,7 @@ extension LiveViewController {
             }).disposed(by: bag)
         }
         
-        bottomToolsVC?.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
+        bottomToolsVC.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
             if self is PKBroadcastersViewController {
                 return
             }
@@ -267,7 +273,6 @@ extension LiveViewController {
     // MARK: - Chat Input
     func chatInput() {
         chatInputView.textView.rx.controlEvent([.editingDidEndOnExit])
-            .asObservable()
             .subscribe(onNext: { [unowned self] in
                 self.hiddenMaskView()
                 if !self.chatInputView.isHidden {
@@ -356,9 +361,9 @@ extension LiveViewController {
         
         audienceListVM.refetch(roomId: session.roomId, onlyAudience: isOnlyAudience)
         
-        audienceListVM.list.subscribe(onNext: { [unowned self] (list) in
-            self.userListVC?.userList = list
-        }).disposed(by: bag)
+        if let userListVC = self.userListVC {
+            audienceListVM.list.bind(to: userListVC.userList).disposed(by: bag)
+        }
         
         let roomId = session.roomId
         
@@ -398,9 +403,11 @@ extension LiveViewController {
                           animated: true,
                           presentedFrame: presentedFrame)
         
-        beautyVC.enhanceVM.beauty.subscribe(onNext: { [unowned self] (work) in
-            self.bottomToolsVC?.beautyButton.isSelected = work.boolValue
-        }).disposed(by: bag)
+        if let bottomToolsVC = self.bottomToolsVC {
+            beautyVC.enhanceVM.beauty.map { (action) -> Bool in
+                return action.boolValue
+            }.bind(to: bottomToolsVC.beautyButton.rx.isSelected).disposed(by: bag)
+        }
     }
     
     // MARK: - Music List
@@ -431,7 +438,7 @@ extension LiveViewController {
                                                             cell.singerLabel.text = music.singer
         }.disposed(by: bag)
         
-        musicVC.tableView.rx.itemSelected.asObservable().subscribe(onNext: { [unowned self] (index) in
+        musicVC.tableView.rx.itemSelected.subscribe(onNext: { [unowned self] (index) in
             self.musicVM.listSelectedIndex = index.row
         }).disposed(by: bag)
     }
@@ -513,7 +520,7 @@ extension LiveViewController {
                 return
             }
             
-            var role = session.role
+            let role = session.role
             var permission = role.permission
             switch self.deviceVM.camera {
             case .on:
@@ -535,7 +542,7 @@ extension LiveViewController {
                 return
             }
             
-            var role = session.role
+            let role = session.role
             var permission = role.permission
             switch self.deviceVM.mic {
             case .on:

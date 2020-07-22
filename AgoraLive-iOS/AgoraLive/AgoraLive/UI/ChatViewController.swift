@@ -78,12 +78,18 @@ class ChatCell: UITableViewCell {
 }
 
 class ChatViewController: UITableViewController {
-    var list: [Chat]? {
-        didSet {
-            guard let list = list else {
-                return
-            }
-            
+    private(set) var list = BehaviorRelay(value: [Chat]())
+    private let bag = DisposeBag()
+    
+    var cellColor: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+    var contentColor: UIColor? = nil
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
+        self.tableView.backgroundColor = .clear
+        
+        list.subscribe(onNext: { [unowned self] (list) in
             self.tableView.reloadData()
             
             guard list.count > 0 else {
@@ -93,30 +99,21 @@ class ChatViewController: UITableViewController {
             self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0),
                                        at: .bottom,
                                        animated: true)
-        }
-    }
-    
-    var cellColor: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
-    var contentColor: UIColor? = nil
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
-        self.tableView.backgroundColor = .clear
+        }).disposed(by: bag)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return list?.count ?? 0
+        return list.value.count
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let chat = list![indexPath.row]
+        let chat = list.value[indexPath.row]
         return chat.textSize.height + (5 * 2) + (10 * 2)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell") as! ChatCell
-        let chat = list![indexPath.row]
+        let chat = list.value[indexPath.row]
         cell.contentLabel.attributedText = chat.content
         cell.fillet.insideBackgroundColor = cellColor
         cell.contentWidth = chat.textSize.width
