@@ -133,6 +133,14 @@
 		A7D2D36F2418D0B600D327B5 /* CenterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */; };
 		A7D89D4C247E79060048B7EC /* VirtualAppearanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */; };
 		A7EA40BC2459825000301AE3 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EA40BB2459825000301AE3 /* ToastView.swift */; };
+		A7EB815524C7E5E700F0A289 /* AgoraRtcKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7EB815424C7E5E700F0A289 /* AgoraRtcKit.framework */; };
+		A7EB815924C7E60900F0A289 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7EB815824C7E60900F0A289 /* AudioToolbox.framework */; };
+		A7EB815B24C7E61100F0A289 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7EB815A24C7E61000F0A289 /* AVFoundation.framework */; };
+		A7EB815D24C7E62000F0A289 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7EB815C24C7E62000F0A289 /* CoreMedia.framework */; };
+		A7EB815F24C7E62F00F0A289 /* CoreML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7EB815E24C7E62F00F0A289 /* CoreML.framework */; };
+		A7EB816124C7E63900F0A289 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7EB816024C7E63900F0A289 /* CoreMotion.framework */; };
+		A7EB816324C7E64500F0A289 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7EB816224C7E64500F0A289 /* SystemConfiguration.framework */; };
+		A7EB816524C7E64D00F0A289 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7EB816424C7E64D00F0A289 /* VideoToolbox.framework */; };
 		A7FDB59B23FD07B600487FB9 /* TabSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */; };
 		A7FDB59D23FD0E3C00487FB9 /* AppleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */; };
 		A7FDB59F23FD2B0C00487FB9 /* LiveListTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */; };
@@ -317,6 +325,14 @@
 		A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterHelper.swift; path = ../Center/ALCenter/CenterHelper.swift; sourceTree = "<group>"; };
 		A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualAppearanceViewController.swift; sourceTree = "<group>"; };
 		A7EA40BB2459825000301AE3 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		A7EB815424C7E5E700F0A289 /* AgoraRtcKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AgoraRtcKit.framework; path = ../Resource/AgoraRtcKit.framework; sourceTree = "<group>"; };
+		A7EB815824C7E60900F0A289 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		A7EB815A24C7E61000F0A289 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A7EB815C24C7E62000F0A289 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		A7EB815E24C7E62F00F0A289 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
+		A7EB816024C7E63900F0A289 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		A7EB816224C7E64500F0A289 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A7EB816424C7E64D00F0A289 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSelectView.swift; sourceTree = "<group>"; };
 		A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleExtension.swift; sourceTree = "<group>"; };
 		A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveListTabViewController.swift; sourceTree = "<group>"; };
@@ -335,11 +351,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7EB815B24C7E61100F0A289 /* AVFoundation.framework in Frameworks */,
+				A7EB816524C7E64D00F0A289 /* VideoToolbox.framework in Frameworks */,
+				A7EB815524C7E5E700F0A289 /* AgoraRtcKit.framework in Frameworks */,
+				A7EB815F24C7E62F00F0A289 /* CoreML.framework in Frameworks */,
 				A7952C1C2416319400479811 /* libc++.tbd in Frameworks */,
+				A7EB815D24C7E62000F0A289 /* CoreMedia.framework in Frameworks */,
 				A7952C182416317900479811 /* Accelerate.framework in Frameworks */,
 				A7952C1A2416318300479811 /* CoreTelephony.framework in Frameworks */,
+				A7EB815924C7E60900F0A289 /* AudioToolbox.framework in Frameworks */,
 				A7952C1E241631B200479811 /* libresolv.tbd in Frameworks */,
 				5C815897D3298150823074AF /* Pods_AgoraLive.framework in Frameworks */,
+				A7EB816324C7E64500F0A289 /* SystemConfiguration.framework in Frameworks */,
+				A7EB816124C7E63900F0A289 /* CoreMotion.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +391,15 @@
 		43E1BE38BCD4AC1E2DD8D79B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A7EB816424C7E64D00F0A289 /* VideoToolbox.framework */,
+				A7EB816224C7E64500F0A289 /* SystemConfiguration.framework */,
+				A7EB816024C7E63900F0A289 /* CoreMotion.framework */,
+				A7EB815E24C7E62F00F0A289 /* CoreML.framework */,
+				A7EB815C24C7E62000F0A289 /* CoreMedia.framework */,
+				A7EB815A24C7E61000F0A289 /* AVFoundation.framework */,
+				A7EB815824C7E60900F0A289 /* AudioToolbox.framework */,
 				A7952C1F241631C600479811 /* AgoraRtcKit.framework */,
+				A7EB815424C7E5E700F0A289 /* AgoraRtcKit.framework */,
 				A7952C20241631C600479811 /* AgoraRtmKit.framework */,
 				A7952C1D241631A900479811 /* libresolv.tbd */,
 				A7952C1B2416318D00479811 /* libc++.tbd */,
@@ -1257,6 +1289,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
+					"${PROJECT_DIR}/../Resource",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -1362,6 +1395,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
+					"${PROJECT_DIR}/../Resource",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -1522,6 +1556,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
+					"${PROJECT_DIR}/../Resource",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -1682,6 +1717,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
+					"${PROJECT_DIR}/../Resource",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -1842,6 +1878,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
+					"${PROJECT_DIR}/../Resource",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
