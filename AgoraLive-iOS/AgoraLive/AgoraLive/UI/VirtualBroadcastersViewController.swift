@@ -287,38 +287,22 @@ extension VirtualBroadcastersViewController {
             }
             
             // Owner RenderView
-            switch owner.value {
-            case .localUser(let user):
-                self.playerVM.startRenderLocalVideoStream(id: user.agUId,
-                                                          view: self.ownerRenderView)
-            case .otherUser(let user):
-                self.playerVM.startRenderRemoteVideoStream(id: user.agUId,
-                                                           view: self.ownerRenderView)
-            }
+            self.playerVM.startRenderVideoStreamOf(user: owner.value.user,
+                                                   on: self.ownerRenderView)
             
             // Broadcaster RenderView
             switch broadcasting {
             case .multi(let users):
                 for item in users where item.info.userId != owner.value.user.info.userId {
-                    if item.info.userId == local.info.userId {
-                        self.playerVM.startRenderLocalVideoStream(id: local.agUId,
-                                                                  view: self.broadcasterRenderView)
-                    } else {
-                        self.playerVM.startRenderRemoteVideoStream(id: item.agUId,
-                                                                   view: self.broadcasterRenderView)
-                    }
+                    self.playerVM.startRenderVideoStreamOf(user: item,
+                                                           on: self.broadcasterRenderView)
                 }
             default:
                 break
             }
             
             // Video Layout
-            switch broadcasting {
-            case .single:
-                self.updateVideoLayout(onlyOwner: true)
-            case .multi:
-                self.updateVideoLayout(onlyOwner: false)
-            }
+            self.updateVideoLayout(onlyOwner: broadcasting.isSingle)
         }).disposed(by: bag)
     }
     

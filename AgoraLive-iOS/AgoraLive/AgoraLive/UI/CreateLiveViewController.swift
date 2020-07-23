@@ -78,8 +78,7 @@ class CreateLiveViewController: MaskViewController {
                                         frameRate: .fps15,
                                         bitRate: 1000)
         
-        playerVM.startRenderLocalVideoStream(id: 0,
-                                             view: self.cameraPreview)
+        playerVM.startRenderPreview(on: self.cameraPreview)
         
         switch liveType {
         case .multi:

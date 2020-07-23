@@ -13,6 +13,13 @@ import RxRelay
 class VirtualVM: NSObject {
     enum Broadcasting {
         case single(LiveRole), multi([LiveRole])
+        
+        var isSingle: Bool {
+            switch self {
+            case .single: return true
+            case .multi:  return true
+            }
+        }
     }
     
     var broadcasting: BehaviorRelay<Broadcasting>

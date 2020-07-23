@@ -165,19 +165,7 @@ extension MultiBroadcastersViewController {
         
         // Media
         seatVC.userRender.subscribe(onNext: { [unowned self] (viewUser) in
-            guard let session = ALCenter.shared().liveSession else {
-                    assert(false)
-                    return
-            }
-            
-            let local = session.role
-            if local.agUId == viewUser.user.agUId {
-                self.playerVM.startRenderLocalVideoStream(id: viewUser.user.agUId,
-                                                          view: viewUser.view)
-            } else {
-                self.playerVM.startRenderRemoteVideoStream(id: viewUser.user.agUId,
-                                                           view: viewUser.view)
-            }
+            self.playerVM.startRenderVideoStreamOf(user: viewUser.user, on: viewUser.view)
         }).disposed(by: bag)
         
         seatVC.userAudioSilence.subscribe(onNext: { [unowned self] (user) in
@@ -331,16 +319,18 @@ private extension MultiBroadcastersViewController {
                 
                 self.ownerRenderView.imageView.image = images.getOrigin(index: user.info.imageIndex)
                 self.ownerRenderView.label.text = user.info.name
-                self.playerVM.startRenderLocalVideoStream(id: user.agUId,
-                                                     view: self.ownerRenderView.renderView)
+                self.playerVM.startRenderVideoStreamOf(user: user,
+                                                       on: self.ownerRenderView.renderView)
+                
                 self.deviceVM.camera = .on
                 self.deviceVM.mic = .on
             case .otherUser(let remote):
                 let images = ALCenter.shared().centerProvideImagesHelper()
                 self.ownerRenderView.imageView.image = images.getOrigin(index: remote.info.imageIndex)
                 self.ownerRenderView.label.text  = remote.info.name
-                self.playerVM.startRenderRemoteVideoStream(id: remote.agUId,
-                                                 view: self.ownerRenderView.renderView)
+                self.playerVM.startRenderVideoStreamOf(user: remote,
+                                                       on: self.ownerRenderView.renderView)
+                
                 self.deviceVM.camera = .off
                 self.deviceVM.mic = .off
             }

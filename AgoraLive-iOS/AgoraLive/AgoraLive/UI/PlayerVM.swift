@@ -20,19 +20,32 @@ class PlayerVM: RxObject {
         self.observe()
     }
     
-    func startRenderLocalVideoStream(id: Int, view: UIView) {
+    func startRenderPreview(on view: UIView) {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        mediaKit.player.startRenderLocalVideoStream(id: id, view: view)
+        mediaKit.player.startRenderLocalVideoStream(id: 0,
+                                                    view: view)
     }
     
-    func startRenderRemoteVideoStream(id: Int, view: UIView) {
+    func startRenderVideoStreamOf(user: LiveRole, on view: UIView) {
+        guard let session = ALCenter.shared().liveSession else {
+            return
+        }
+         
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        mediaKit.player.startRenderRemoteVideoStream(id: id, view: view)
+        let local = session.role
+        
+        if local.agUId == user.agUId {
+            mediaKit.player.startRenderLocalVideoStream(id: user.agUId,
+                                                      view: view)
+        } else {
+            mediaKit.player.startRenderRemoteVideoStream(id: user.agUId,
+                                                       view: view)
+        }
     }
     
-    func renderRemoteVideoStream(id: Int, superResolution action: AGESwitch) {
+    func enhance(_ enhance: AGESwitch, videoStreamOf user: LiveRole) {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        mediaKit.player.renderRemoteVideoStream(id: id, superResolution: action)
+        mediaKit.player.renderRemoteVideoStream(id: user.agUId, superResolution: enhance)
     }
 }
 
