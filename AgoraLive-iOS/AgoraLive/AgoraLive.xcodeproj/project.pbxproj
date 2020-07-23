@@ -136,6 +136,7 @@
 		A7E3340A24C57213003DCA49 /* AGOSSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E3340924C57213003DCA49 /* AGOSSClient.m */; };
 		A7EA40BC2459825000301AE3 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EA40BB2459825000301AE3 /* ToastView.swift */; };
 		A7EB816824C7F4E700F0A289 /* LiveShoppingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */; };
+		A7EB816A24C84BCB00F0A289 /* MultiHostsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EB816924C84BCB00F0A289 /* MultiHostsVM.swift */; };
 		A7FDB59B23FD07B600487FB9 /* TabSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */; };
 		A7FDB59D23FD0E3C00487FB9 /* AppleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */; };
 		A7FDB59F23FD2B0C00487FB9 /* LiveListTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */; };
@@ -324,6 +325,7 @@
 		A7E3340924C57213003DCA49 /* AGOSSClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AGOSSClient.m; sourceTree = "<group>"; };
 		A7EA40BB2459825000301AE3 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveShoppingViewController.swift; sourceTree = "<group>"; };
+		A7EB816924C84BCB00F0A289 /* MultiHostsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiHostsVM.swift; sourceTree = "<group>"; };
 		A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSelectView.swift; sourceTree = "<group>"; };
 		A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleExtension.swift; sourceTree = "<group>"; };
 		A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveListTabViewController.swift; sourceTree = "<group>"; };
@@ -826,21 +828,30 @@
 			name = LiveShopping;
 			sourceTree = "<group>";
 		};
+		A7EB816C24C9318B00F0A289 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				A7847F982458216600469187 /* VideoEnhancementVM.swift */,
+				A7CEF1EE24249BC0004FB752 /* LiveAudienceListVM.swift */,
+				A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */,
+				A7FDB5A923FFBB9300487FB9 /* LiveListVM.swift */,
+				A77718152456FBDA00BF1F21 /* PlayerVM.swift */,
+				A71AAF1924335CD600820096 /* MusicVM.swift */,
+				A711AB88243F218A00C2A3FD /* GiftVM.swift */,
+				A754FAF3242C5A920062B2F5 /* ChatVM.swift */,
+			);
+			name = Shared;
+			sourceTree = "<group>";
+		};
 		A7FDB5A823FFBB7100487FB9 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				A7CEF1EE24249BC0004FB752 /* LiveAudienceListVM.swift */,
+				A7EB816C24C9318B00F0A289 /* Shared */,
+				A7EB816924C84BCB00F0A289 /* MultiHostsVM.swift */,
 				A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */,
-				A7FDB5A923FFBB9300487FB9 /* LiveListVM.swift */,
-				A7D2D36B2417AA6100D327B5 /* MineVM.swift */,
-				A754FAF3242C5A920062B2F5 /* ChatVM.swift */,
-				A71AAF1924335CD600820096 /* MusicVM.swift */,
-				A711AB88243F218A00C2A3FD /* GiftVM.swift */,
 				A72B7BE924445D5B00E965FB /* PKVM.swift */,
-				A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */,
-				A77718152456FBDA00BF1F21 /* PlayerVM.swift */,
-				A7847F982458216600469187 /* VideoEnhancementVM.swift */,
 				A7584B4A2484DB290088FACB /* VirtualVM.swift */,
+				A7D2D36B2417AA6100D327B5 /* MineVM.swift */,
 			);
 			name = ViewModel;
 			path = UI;
@@ -1002,6 +1013,7 @@
 				A7053A41241A2C290061E5E2 /* BeautySettingsViewController.swift in Sources */,
 				A773BD50240E4CC1003ECBFD /* MainTabBarViewController.swift in Sources */,
 				A7355F85240650010010CCD1 /* CreateLiveViewController.swift in Sources */,
+				A7EB816A24C84BCB00F0A289 /* MultiHostsVM.swift in Sources */,
 				A7FDB59D23FD0E3C00487FB9 /* AppleExtension.swift in Sources */,
 				A7FDB5A723FFB49300487FB9 /* UIColor+Hex.m in Sources */,
 				A7952C522416691600479811 /* URLGroup.swift in Sources */,

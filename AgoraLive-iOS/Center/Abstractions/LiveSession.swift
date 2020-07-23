@@ -215,6 +215,37 @@ class LiveSession: NSObject {
         client.request(task: task, success: response, failRetry: retry)
     }
     
+    func setupPublishedVideoStream(_ settings: LocalLiveSettings.VideoConfiguration) {
+        let mediaKit = ALCenter.shared().centerProvideMediaHelper()
+        
+        mediaKit.setupPublishedVideoStream(resolution: settings.resolution,
+                                           frameRate: settings.frameRate,
+                                           bitRate: settings.bitRate)
+    }
+    
+    func leave() {
+        let mediaKit = ALCenter.shared().centerProvideMediaHelper()
+        let rtm = ALCenter.shared().centerProvideRTMHelper()
+        let client = ALCenter.shared().centerProvideRequestHelper()
+        mediaKit.leaveChannel()
+        try? mediaKit.capture.video(.off)
+        mediaKit.capture.audio = .off
+        
+        rtm.leaveChannel()
+        
+        let event = RequestEvent(name: "live-session-leave")
+        let url = URLGroup.leaveLive(roomId: self.roomId)
+        let task = RequestTask(event: event, type: .http(.post, url: url))
+        client.request(task: task)
+    }
+    
+    deinit {
+        let rtm = ALCenter.shared().centerProvideRTMHelper()
+        rtm.removeReceivedChannelMessage(observer: self)
+    }
+}
+
+extension LiveSession {
     @discardableResult func audienceToBroadcaster() -> LiveRole {
         let audience = self.role
         
@@ -255,33 +286,23 @@ class LiveSession: NSObject {
         return role
     }
     
-    func setupPublishedVideoStream(_ settings: LocalLiveSettings.VideoConfiguration) {
-        let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        
-        mediaKit.setupPublishedVideoStream(resolution: settings.resolution,
-                                           frameRate: settings.frameRate,
-                                           bitRate: settings.bitRate)
+    func muteAudio(user: LiveRole, fail: Completion) {
+        let parameters: StringAnyDic = ["enableAudio": 0,
+                                        "enableVideo": user.permission.contains(.camera) ? 1 : 0,
+                                        "enableChat": user.permission.contains(.chat) ? 1 : 0]
+       
+        userMediaOperation(user: user,
+                           parameters: parameters,
+                           fail: fail)
     }
     
-    func leave() {
-        let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        let client = ALCenter.shared().centerProvideRequestHelper()
-        mediaKit.leaveChannel()
-        try? mediaKit.capture.video(.off)
-        mediaKit.capture.audio = .off
-        
-        rtm.leaveChannel()
-        
-        let event = RequestEvent(name: "live-session-leave")
-        let url = URLGroup.leaveLive(roomId: self.roomId)
-        let task = RequestTask(event: event, type: .http(.post, url: url))
-        client.request(task: task)
-    }
-    
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedChannelMessage(observer: self)
+    func unmuteAudio(user: LiveRole, fail: Completion) {
+        let parameters: StringAnyDic = ["enableAudio": 1,
+                                        "enableVideo": user.permission.contains(.camera) ? 1 : 0,
+                                        "enableChat": user.permission.contains(.chat) ? 1 : 0]
+        userMediaOperation(user: user,
+                           parameters: parameters,
+                           fail: fail)
     }
 }
 
@@ -304,6 +325,37 @@ private extension LiveSession {
         guard self.type == liveType else {
             throw AGEError.fail("local live type is not equal to server live type")
         }
+    }
+    
+    func userMediaOperation(user: LiveRole, parameters: StringAnyDic, success: Completion = nil, fail: Completion = nil) {
+        let client = ALCenter.shared().centerProvideRequestHelper()
+        let url = URLGroup.userCommand(userId: user.info.userId, roomId: roomId)
+        let event = RequestEvent(name: "live-user-media-operation")
+        
+        let token = ["token": ALKeys.ALUserToken]
+        let task = RequestTask(event: event,
+                               type: .http(.post, url: url),
+                               header: token,
+                               parameters: parameters)
+        let successCallback: DicEXCompletion = { (json) in
+            try json.getCodeCheck()
+            let isSuccess = try json.getBoolInfoValue(of: "data")
+            if isSuccess, let callback = success {
+                callback()
+            } else if !isSuccess, let callback = fail {
+                callback()
+            }
+        }
+        let response = ACResponse.json(successCallback)
+        
+        let fail: ACErrorRetryCompletion = { (_) in
+            if let callback = fail {
+                callback()
+            }
+            return .resign
+        }
+        
+        client.request(task: task, success: response, failRetry: fail)
     }
 }
 

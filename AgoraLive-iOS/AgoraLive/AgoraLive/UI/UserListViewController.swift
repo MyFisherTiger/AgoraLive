@@ -58,7 +58,7 @@ class UserListViewController: UITableViewController {
     private(set) var userList = BehaviorRelay(value: [LiveAudience]())
     private(set) var roomList = BehaviorRelay(value: [RoomBrief]())
     
-    var selectedInviteAudience = PublishRelay<LiveAudience>()
+    var selectedUser = PublishRelay<LiveAudience>()
     var selectedInviteRoom = PublishRelay<RoomBrief>()
     
     var showType: ShowType = .broadcasting
@@ -131,7 +131,7 @@ extension UserListViewController: UserListCellDelegate {
         switch showType {
         case .broadcasting:
             let audience = userList.value[index.row]
-            self.selectedInviteAudience.accept(audience)
+            self.selectedUser.accept(audience)
         case .pk:
             let room = roomList.value[index.row]
             self.selectedInviteRoom.accept(room)

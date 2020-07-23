@@ -55,7 +55,8 @@ class CommandCell: UICollectionViewCell {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+        self.backgroundColor = UIColor(hexString: "#0088EB")
     }
     
     lazy var titleLabel: UILabel = {
@@ -69,10 +70,16 @@ class CommandCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.titleLabel.frame = CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)
+        self.titleLabel.frame = CGRect(x: 0,
+                                       y: 0,
+                                       width: self.bounds.width,
+                                       height: self.bounds.height)
         
         if needUnderLine {
-            self.underLine.frame = CGRect(x: 5, y: self.bounds.height - 1, width: self.bounds.width - 10, height: 1)
+            self.underLine.frame = CGRect(x: 5,
+                                          y: self.bounds.height - 1,
+                                          width: self.bounds.width - 10,
+                                          height: 1)
         } else {
             self.underLine.frame = CGRect.zero
         }
@@ -80,7 +87,27 @@ class CommandCell: UICollectionViewCell {
 }
 
 class LiveSeatView: UIView {
-    fileprivate var commands = BehaviorRelay(value: [SeatCommand]())
+    enum Command {
+        // 禁麦， 解禁， 封麦，下麦， 解封， 邀请，
+        case ban, unban, close, forceToAudience, release, invitation
+        // 申请成为主播， 主播下麦
+        case application, endBroadcasting
+        
+        var description: String {
+            switch self {
+            case .ban:                  return NSLocalizedString("Seat_Ban")
+            case .unban:                return NSLocalizedString("Seat_Unban")
+            case .forceToAudience:      return NSLocalizedString("End_Broadcasting")
+            case .close:                return NSLocalizedString("Seat_Close")
+            case .release:              return NSLocalizedString("Seat_Release")
+            case .invitation:           return "invite"
+            case .application:          return NSLocalizedString("Apply_For_Broadcasting")
+            case .endBroadcasting:      return NSLocalizedString("End_Broadcasting")
+            }
+        }
+    }
+    
+    fileprivate var commands = BehaviorRelay(value: [Command]())
     
     fileprivate var renderView = LabelShadowRender()
     fileprivate var commandButton = UIButton()
@@ -94,6 +121,8 @@ class LiveSeatView: UIView {
             indexView.text = "\(index + 1)"
         }
     }
+    
+    private(set) var commandFire = PublishRelay<Command>()
     
     private var popover = Popover(options: [.type(.down),
                                             .blackOverlayColor(UIColor.clear),
@@ -115,8 +144,6 @@ class LiveSeatView: UIView {
             }
         }
     }
-    
-    var commandFire = BehaviorRelay(value: SeatCommand.none)
     
     init(index: Int, frame: CGRect) {
         super.init(frame: frame)
@@ -149,9 +176,9 @@ class LiveSeatView: UIView {
         inviteButton.rx.tap.subscribe(onNext: { [unowned self] in
             switch self.perspective {
             case .owner:
-                self.commandFire.accept(.invite)
+                self.commandFire.accept(.invitation)
             case .audience:
-                self.commandFire.accept(.applyForBroadcasting)
+                self.commandFire.accept(.application)
             case .broadcaster:
                 break
             }
@@ -196,7 +223,7 @@ class LiveSeatView: UIView {
         }.disposed(by: bag)
         
         commandsCollectionView.rx
-            .modelSelected(SeatCommand.self)
+            .modelSelected(Command.self)
             .subscribe(onNext: { [unowned self] (command) in
                 self.popover.dismiss()
                 self.commandFire.accept(command)
@@ -235,47 +262,56 @@ class LiveSeatView: UIView {
     }
 }
 
-struct LiveSeatCommand {
+struct LiveSeatAction {
     var seat: LiveSeat
-    var command: SeatCommand
+    var command: LiveSeatView.Command
 }
 
 class LiveSeatViewController: UIViewController {
+    private let seatCount = 6
+    private let bag = DisposeBag()
+    
     private lazy var seatViews: [LiveSeatView] = {
         var temp = [LiveSeatView]()
         for i in 0 ..< seatCount {
             let seatView = LiveSeatView(index: i,
                                     frame: CGRect.zero)
-            seatView.commandFire.subscribe(onNext: { [unowned self, unowned seatView] (command) in
-                guard let seats = self.seats else {
-                    fatalError()
-                }
-            
-                let seat = seats[seatView.index]
-                let seatCommand = LiveSeatCommand(seat: seat, command: command)
-                self.commandFire.accept(seatCommand)
+            seatView.commandFire.subscribe(onNext: { [unowned self] (command) in
+                let seat = self.seats.value[seatView.index]
+                let action = LiveSeatAction(seat: seat, command: command)
+                self.actionFire.accept(action)
             }).disposed(by: bag)
             temp.append(seatView)
         }
         return temp
     }()
     
-    private let seatCount = 6
-    private let bag = DisposeBag()
-    private var seats: [LiveSeat]?
+    private(set) var seats: BehaviorRelay<[LiveSeat]>!
     
     private var contanerView: AGEVideoContainer {
         return self.view as! AGEVideoContainer
     }
     
-    var perspective: LiveRoleType = .audience
+    private(set) var userRender = PublishRelay<(view: UIView, user: LiveBroadcaster)>()
+    private(set) var userAudioSilence = PublishRelay<LiveBroadcaster>()
+    private(set) var actionFire = PublishRelay<LiveSeatAction>()
     
-    var userRender = PublishRelay<(UIView, LiveBroadcaster)>()
-    var userAudioSilence = PublishRelay<LiveBroadcaster>()
-    var commandFire = PublishRelay<LiveSeatCommand>()
+    var perspective: LiveRoleType = .audience
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        var temp = [LiveSeat]()
+        for i in 0 ..< self.seatCount {
+            let seat = LiveSeat(index: i, state: .empty)
+            temp.append(seat)
+        }
+        
+        seats = BehaviorRelay(value: temp)
+        
+        seats.subscribe(onNext: { (seats) in
+            self.updateSeats(seats)
+        }).disposed(by: bag)
         
         let layout = AGEVideoLayout(level: 0)
             .itemSize(.scale(CGSize(width: 0.3, height: 0.5)))
@@ -290,12 +326,34 @@ class LiveSeatViewController: UIViewController {
         self.contanerView.setLayouts([layout])
     }
     
-    func updateSeats(_ seats: [LiveSeat], of session: LiveSession) {
-        guard seats.count == seatCount else {
-            fatalError()
+    func activeSpeaker(_ speaker: Speaker) {
+        var agoraUid: UInt
+        
+        switch speaker {
+        case .local:
+            guard let uid = ALCenter.shared().liveSession?.role.agUId else {
+                return
+            }
+            agoraUid = UInt(uid)
+        case .other(agoraUid: let uid):
+            agoraUid = uid
         }
         
-        self.seats = seats
+        for item in seats.value where item.user != nil {
+            let seatView = self.seatViews[item.index - 1]
+            if let user = item.user, user.agUId == agoraUid {
+                seatView.renderView.startSpeakerAnimating()
+            }
+        }
+    }
+}
+
+private extension LiveSeatViewController {
+    func updateSeats(_ seats: [LiveSeat]) {
+        guard seats.count == seatCount else {
+            assert(false)
+            return
+        }
         
         for (index, item) in seats.enumerated() {
             let view = seatViews[index]
@@ -355,7 +413,8 @@ class LiveSeatViewController: UIViewController {
                 
                 view.commandButton.isHidden = true
                 
-                guard let user = item.user,
+                guard let session = ALCenter.shared().liveSession,
+                    let user = item.user,
                     session.role.info.userId == user.info.userId else {
                         break
                 }
@@ -365,31 +424,6 @@ class LiveSeatViewController: UIViewController {
                 view.inviteButton.setTitle(NSLocalizedString("Apply_For_Broadcasting"),
                                            for: .normal)
                 view.commandButton.isHidden = true
-            }
-        }
-    }
-    
-    func activeSpeaker(_ speaker: Speaker) {
-        guard let seats = seats else {
-            return
-        }
-        
-        var agoraUid: UInt
-        
-        switch speaker {
-        case .local:
-            guard let uid = ALCenter.shared().liveSession?.role.agUId else {
-                return
-            }
-            agoraUid = UInt(uid)
-        case .other(agoraUid: let uid):
-            agoraUid = uid
-        }
-        
-        for item in seats where item.user != nil {
-            let seatView = self.seatViews[item.index - 1]
-            if let user = item.user, user.agUId == agoraUid {
-                seatView.renderView.startSpeakerAnimating()
             }
         }
     }

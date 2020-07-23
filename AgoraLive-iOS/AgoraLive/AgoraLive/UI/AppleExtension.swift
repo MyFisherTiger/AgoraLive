@@ -289,6 +289,12 @@ extension ShowToastProtocol {
             }
         })
     }
+    
+    func showTextToast(text: String, duration: TimeInterval = TimeInterval.animation, completion: Completion = nil) {
+        let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
+        view.text = text
+        self.showToastView(view, duration: duration, completion: completion)
+    }
 }
 
 class MaskViewController: UIViewController, ShowAlertProtocol, PresentChildProtocol, ShowHudProtocol, ShowToastProtocol {
