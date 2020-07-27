@@ -249,6 +249,9 @@ public class LivePrepareActivity extends LiveBaseActivity implements View.OnClic
             case Config.LIVE_TYPE_VIRTUAL_HOST:
                 intent = new Intent(this, VirtualHostLiveActivity.class);
                 break;
+            case Config.LIVE_TYPE_ECOMMERCE:
+                intent = new Intent(this, ECommerceLiveActivity.class);
+                break;
             default: return;
         }
 

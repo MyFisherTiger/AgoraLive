@@ -18,6 +18,7 @@ public class ClientProxy {
     public static final int ROOM_TYPE_HOST_IN = 2;
     public static final int ROOM_TYPE_PK = 3;
     public static final int ROOM_TYPE_VIRTUAL_HOST = 4;
+    public static final int ROOM_TYPE_ECOMMERCE = 5;
 
     public static final int PK_WAIT = 0;
     public static final int PK_IN = 1;
