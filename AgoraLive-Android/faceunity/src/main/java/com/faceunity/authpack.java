@@ -1,9 +1,12 @@
 package com.faceunity;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 public class authpack {
-    Contact sales@agora.io and get Faceunity auth file
+    public static int sha1_32(byte[] buf) {
+        return -1;
+    }
+
+    public static byte[] A() {
+        return null;
+    }
 }
 
