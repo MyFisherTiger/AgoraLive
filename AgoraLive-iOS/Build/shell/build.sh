@@ -18,28 +18,21 @@ rm -f *dSYMs.zip
 rm -rf *.xcarchive
 
 BUILD_DATE=`date +%Y-%m-%d-%H.%M.%S`
-ArchivePath=${APP_TARGET}-${BUILD_DATE}.xcarchive
+ArchivePath=../Build/product/${APP_TARGET}-${BUILD_DATE}_${MODE}.xcarchive
 
-if [[ $APP_TARGET =~ "Release" ]] 
+if [[ $MODE =~ "Release" ]] 
 then
 Export_Plist_File=exportPlist_release.plist
-elif [[ $APP_TARGET =~ "QA" ]] 
+elif [[ $MODE =~ "QA" ]] 
 then
 Export_Plist_File=exportPlist_qa.plist
 else 
 Export_Plist_File=exportPlist.plist
 fi
 
-if [[ $MODE =~ "Debug" ]] 
-then
-    if [[ $APP_TARGET =~ "Release" ]] 
-    then
-    Export_Plist_File=exportPlist.plist
-    fi    
-MODE=Debug
-else 
-MODE=Release
-fi 
+Plist_Path=../Build/plist/${Export_Plist_File}
+
+cd ../../AgoraLive/
 
 TARGET_FILE=""
 if [ ! -f "Podfile" ];then
@@ -53,10 +46,17 @@ xcodebuild clean -workspace ${TARGET_FILE} -scheme "${APP_TARGET}" -configuratio
 xcodebuild -workspace ${TARGET_FILE} -scheme "${APP_TARGET}" -configuration ${MODE} -archivePath ${ArchivePath} archive
 fi
 
-xcodebuild -exportArchive -exportOptionsPlist ${Export_Plist_File} -archivePath ${ArchivePath} -exportPath .
+xcodebuild -exportArchive -exportOptionsPlist ${Plist_Path} -archivePath ${ArchivePath} -exportPath .
+
+PRODUCT_PATH=../Build/product
+
+mv -f *.ipa ${PRODUCT_PATH}
+mv -f DistributionSummary.plist ${PRODUCT_PATH}
+mv -f ExportOptions.plist ${PRODUCT_PATH}
+mv -f Packaging.log ${PRODUCT_PATH}
+
+cd ${PRODUCT_PATH}
 
 mkdir app
 mv *.ipa app && mv *.xcarchive app
 zip -q -r app.zip app
-
-cp pugongying.sh app

@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxRelay
+import AlamoClient
 
 struct MediaRelayInfo {
     var currentChannelName: String
@@ -162,13 +163,13 @@ class PKVM: NSObject {
             if let success = success, isSuccess {
                 success()
             } else if let fail = fail, !isSuccess {
-                let error = AGEError.fail("pk live invite fail")
+                let error = ACError.fail("pk live invite fail")
                 fail(error)
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let retry: ErrorRetryCompletion = { (error: AGEError) -> RetryOptions in
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
             if let fail = fail {
                 fail(error)
             }
@@ -189,6 +190,10 @@ private extension PKVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+            guard let strongSelf = self else {
+                return
+            }
+            
             guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self) else {
                 return
             }
@@ -196,44 +201,55 @@ private extension PKVM {
                 return
             }
             
-            guard let session = ALCenter.shared().liveSession else {
+            guard let session = ALCenter.shared().liveSession,
+                let owner = session.owner else {
                 return
             }
             
             let data = try json.getDataObject()
             let statistics = try PKStatistics(dic: data)
             
-            guard statistics.state.isDuring else {
-                self?.statistics.accept(statistics)
-                return
-            }
+            strongSelf.statistics.accept(statistics)
             
-            switch session.owner {
-            case .localUser:
-                guard let role = session.role else {
+            switch statistics.state {
+            case .none:
+                guard owner.isLocal else {
                     return
                 }
                 
-                guard role.info.userId != statistics.opponentOwner!.info.userId else {
+                strongSelf.stopRelayingMediaStream()
+            case .during:
+                guard owner.isLocal else {
                     return
                 }
-            case .otherUser(let user):
-                guard user.info.userId != statistics.opponentOwner!.info.userId else {
+                
+                if let config = try? data.getDictionaryValue(of: "relayConfig") {
+                    let relayInfo = try MediaRelayInfo(dic: config)
+                    strongSelf.startRelayingMediaStream(relayInfo)
+                }
+            case .start:
+                guard owner.isLocal else {
                     return
                 }
-            }
-            
-            self?.statistics.accept(statistics)
-            
-            if let config = try? data.getDictionaryValue(of: "relayConfig") {
-                let relayInfo = try MediaRelayInfo(dic: config)
-                self?.startRelayingMediaStream(relayInfo)
-            } else {
-                self?.stopRelayingMediaStream()
+                
+                if let config = try? data.getDictionaryValue(of: "relayConfig") {
+                    let relayInfo = try MediaRelayInfo(dic: config)
+                    strongSelf.startRelayingMediaStream(relayInfo)
+                }
+            case .end:
+                guard owner.isLocal else {
+                    return
+                }
+                
+                strongSelf.stopRelayingMediaStream()
             }
         }
         
         rtm.addReceivedPeerMessage(observer: self) { [weak self] (json) in
+            guard let strongSelf = self else {
+                return
+            }
+            
             guard let type = try? json.getEnum(of: "cmd", type: ALPeerMessage.AType.self) else {
                 return
             }
@@ -250,11 +266,11 @@ private extension PKVM {
             case ALPeerMessage.Command.invitePK(fromRoom: "").rawValue:
                 let fromRoom = try data.getStringValue(of: "pkRoomId")
                 let room = RoomBrief(roomId: fromRoom, ownerAgoraUid: agoraUid)
-                self?.receivedPKInvite.accept(room)
+                strongSelf.receivedPKInvite.accept(room)
             case ALPeerMessage.Command.rejectPK(fromRoom: "").rawValue:
                 let fromRoom = try data.getStringValue(of: "pkRoomId")
                 let room = RoomBrief(roomId: fromRoom, ownerAgoraUid: agoraUid)
-                self?.receivedPKReject.accept(room)
+                strongSelf.receivedPKReject.accept(room)
             default:
                 break
             }
@@ -275,13 +291,13 @@ private extension PKVM {
                           of: RequestEvent(name: isInvite ? "invite-pk" : "reject-pk"),
                           to: "\(inviteRoom.ownerAgoraUid)",
                           fail: fail)
-        } catch let error as AGEError {
+        } catch let error as ACError {
             if let fail = fail {
                 fail(error)
             }
         } catch {
             if let fail = fail {
-                fail(AGEError.unknown())
+                fail(ACError.unknown())
             }
         }
     }

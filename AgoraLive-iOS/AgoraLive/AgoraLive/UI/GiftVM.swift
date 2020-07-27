@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxRelay
+import AlamoClient
 
 enum Gift: Int {
     case smallBell = 0, iceCream, wine, cake, ring, watch, crystal, rocket
@@ -102,7 +103,7 @@ class GiftVM: NSObject {
                                header: ["token": ALKeys.ALUserToken],
                                parameters: ["giftId": gift.rawValue, "count": 1])
         
-        client.request(task: task, success: AGEResponse.blank({ [weak self] in
+        client.request(task: task, success: ACResponse.blank({ [weak self] in
             self?.received.accept((local.name, gift))
         }))
     }

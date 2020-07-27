@@ -19,7 +19,12 @@ extension CSNavigationControllerDelegate {
 class CSNavigationController: UINavigationController {
     var backButton: UIButton? {
         didSet {
+            if let old = oldValue {
+                old.removeFromSuperview()
+            }
+            
             guard let button = backButton else {
+                navigationItem.setHidesBackButton(false, animated: false)
                 return
             }
             
@@ -29,6 +34,10 @@ class CSNavigationController: UINavigationController {
     
     var rightButton: UIButton? {
         didSet {
+            if let old = oldValue {
+                old.removeFromSuperview()
+            }
+            
             guard let button = rightButton else {
                 return
             }
@@ -119,14 +128,16 @@ extension CSNavigationController {
 
 private extension CSNavigationController {
     func setupBackButton(_ button: UIButton) {
-        self.navigationItem.hidesBackButton = true
+        if let top = self.topViewController {
+            top.navigationItem.setHidesBackButton(true, animated: false)
+        }
         
         let barHeight = self.navigationBar.bounds.height
         
         let w = button.bounds.width
         let h = button.bounds.height > barHeight ? barHeight : button.bounds.height
         
-        let x = CGFloat(15)
+        let x = button.frame.origin.x
         let y = (barHeight - h) * 0.5
         button.frame = CGRect(x: x, y: y, width: w, height: h)
         button.addTarget(self, action: #selector(popBack), for: .touchUpInside)

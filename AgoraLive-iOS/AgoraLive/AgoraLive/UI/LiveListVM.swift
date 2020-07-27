@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxRelay
+import AlamoClient
 
 struct RoomBrief {
     var name: String
@@ -83,6 +84,17 @@ class LiveListVM: NSObject {
         }
     }
     
+    fileprivate var virtualBroadcastersList = [RoomBrief]() {
+        didSet {
+            switch presentingType {
+            case .virtualBroadcasters:
+                presentingList.accept(virtualBroadcastersList)
+            default:
+                break
+            }
+        }
+    }
+    
     var presentingType = LiveType.multiBroadcasters {
         didSet {
             switch presentingType {
@@ -92,6 +104,8 @@ class LiveListVM: NSObject {
                 presentingList.accept(singleBroadcasterList)
             case .pkBroadcasters:
                 presentingList.accept(pkBroadcastersList)
+            case .virtualBroadcasters:
+                presentingList.accept(virtualBroadcastersList)
             }
         }
     }
@@ -119,27 +133,33 @@ extension LiveListVM {
                                header: ["token": ALKeys.ALUserToken],
                                parameters: parameters)
         
-        let successCallback: DicEXCompletion = { [unowned self] (json: ([String: Any])) in
+        let successCallback: DicEXCompletion = { [weak self] (json: ([String: Any])) in
+            guard let strongSelf = self else {
+                return
+            }
+            
             let object = try json.getDataObject()
             let jsonList = try object.getValue(of: "list", type: [StringAnyDic].self)
             let list = try [RoomBrief](dicList: jsonList)
             
             switch requestListType {
             case .multiBroadcasters:
-                self.multiBroadcastersList.append(contentsOf: list)
+                strongSelf.multiBroadcastersList.append(contentsOf: list)
             case .singleBroadcaster:
-                self.singleBroadcasterList.append(contentsOf: list)
+                strongSelf.singleBroadcasterList.append(contentsOf: list)
             case .pkBroadcasters:
-                self.pkBroadcastersList.append(contentsOf: list)
+                strongSelf.pkBroadcastersList.append(contentsOf: list)
+            case .virtualBroadcasters:
+                strongSelf.virtualBroadcastersList.append(contentsOf: list)
             }
             
             if let success = success {
                 success()
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let retry: ErrorRetryCompletion = { (error: AGEError) -> RetryOptions in
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
             if let fail = fail {
                 fail()
             }
@@ -164,7 +184,11 @@ extension LiveListVM {
                                header: ["token": ALKeys.ALUserToken],
                                parameters: parameters)
         
-        let successCallback: DicEXCompletion = { [unowned self] (json: ([String: Any])) in
+        let successCallback: DicEXCompletion = { [weak self] (json: ([String: Any])) in
+            guard let strongSelf = self else {
+                return
+            }
+            
             try json.getCodeCheck()
             let object = try json.getDataObject()
             let jsonList = try object.getValue(of: "list", type: [StringAnyDic].self)
@@ -172,20 +196,22 @@ extension LiveListVM {
             
             switch requestListType {
             case .multiBroadcasters:
-                self.multiBroadcastersList = list
+                strongSelf.multiBroadcastersList = list
             case .singleBroadcaster:
-                self.singleBroadcasterList = list
+                strongSelf.singleBroadcasterList = list
             case .pkBroadcasters:
-                self.pkBroadcastersList = list
+                strongSelf.pkBroadcastersList = list
+            case .virtualBroadcasters:
+                strongSelf.virtualBroadcastersList = list
             }
             
             if let success = success {
                 success()
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let retry: ErrorRetryCompletion = { (error: AGEError) -> RetryOptions in
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
             if let fail = fail {
                 fail()
             }

@@ -11,6 +11,7 @@ import UIKit
 #else
 import Cocoa
 #endif
+import AlamoClient
 
 class LogFiles: NSObject {
     private let fileName: String = {
@@ -36,13 +37,9 @@ class LogFiles: NSObject {
     func upload(success: Completion, fail: ErrorCompletion) {
         do {
             try privateUpload(success: success, fail: fail)
-        } catch let error as AGEError {
-            if let fail = fail {
-                fail(error)
-            }
         } catch {
             if let fail = fail {
-                fail(AGEError.fail(error.localizedDescription))
+                fail(error)
             }
         }
     }

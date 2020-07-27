@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxRelay
+import AlamoClient
 
 fileprivate enum UserJoinOrLeft: Int {
     case left, join
@@ -77,21 +78,25 @@ class LiveRoomAudienceList: NSObject {
                                header: ["token": ALKeys.ALUserToken],
                                parameters: parameters)
         
-        let successCallback: DicEXCompletion = { [unowned self] (json: ([String: Any])) in
+        let successCallback: DicEXCompletion = { [weak self] (json: ([String: Any])) in
+            guard let strongSelf = self else {
+                return
+            }
+            
             let data = try json.getDataObject()
             let listJson = try data.getListValue(of: "list")
             let new = try Array(dicList: listJson)
-            var list = self.list.value
+            var list = strongSelf.list.value
             list.append(contentsOf: new)
-            self.list.accept(list)
+            strongSelf.list.accept(list)
             
             if let success = success {
                 success()
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let retry: ErrorRetryCompletion = { (error: AGEError) -> RetryOptions in
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
             if let fail = fail {
                 fail()
             }
@@ -117,19 +122,23 @@ class LiveRoomAudienceList: NSObject {
                                header: ["token": ALKeys.ALUserToken],
                                parameters: parameters)
         
-        let successCallback: DicEXCompletion = { [unowned self] (json: ([String: Any])) in
+        let successCallback: DicEXCompletion = { [weak self] (json: ([String: Any])) in
+            guard let strongSelf = self else {
+                return
+            }
+            
             let data = try json.getDataObject()
             let listJson = try data.getListValue(of: "list")
             let list = try Array(dicList: listJson)
-            self.list.accept(list)
+            strongSelf.list.accept(list)
             
             if let success = success {
                 success()
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let retry: ErrorRetryCompletion = { (error: AGEError) -> RetryOptions in
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
             if let fail = fail {
                 fail()
             }

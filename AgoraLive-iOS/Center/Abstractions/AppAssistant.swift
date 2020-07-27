@@ -9,6 +9,7 @@
 import UIKit
 #endif
 import Foundation
+import AlamoClient
 
 class AppAssistant: NSObject {
     func checkMinVersion(success: Completion = nil) {
@@ -20,8 +21,12 @@ class AppAssistant: NSObject {
                                         "terminalType": 1,
                                         "version": AppAssistant.version]
         
-        let task = RequestTask(event: event, type: .http(.get, url: url), timeout: .low, parameters: parameters)
-        let successCallback: DicEXCompletion = { (json: ([String: Any])) throws in
+        let task = RequestTask(event: event,
+                               type: .http(.get, url: url),
+                               timeout: .low,
+                               parameters: parameters)
+        
+        let successCallback: ACDicEXCompletion = { (json: ([String: Any])) throws in
             let data = try json.getDataObject()
             let config = try data.getDictionaryValue(of: "config")
             let appId = try config.getStringValue(of: "appId")
@@ -31,10 +36,10 @@ class AppAssistant: NSObject {
                 success()
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let retry: ErrorRetryCompletion = { (error: AGEError) -> RetryOptions in
-            return .retry(after: 0.5, newTask: nil)
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
+            return .retry(after: 0.5)
         }
         
         client.request(task: task, success: response, failRetry: retry)

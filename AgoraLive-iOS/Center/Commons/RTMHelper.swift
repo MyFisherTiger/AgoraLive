@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AlamoClient
 
 enum RTMmessageType: AGEDescription {
     case peer(Int), channel
@@ -28,11 +29,11 @@ enum RTMmessageType: AGEDescription {
 }
 
 struct RTMQueueItem {
-    var event: AGERequestEvent
-    var success: AGEResponse?
+    var event: ACRequestEvent
+    var success: ACResponse?
     var fail: ErrorCompletion
     
-    init(event: AGERequestEvent, success: AGEResponse?, fail: ErrorCompletion) {
+    init(event: ACRequestEvent, success: ACResponse?, fail: ErrorCompletion) {
         self.event = event
         self.success = success
         self.fail = fail

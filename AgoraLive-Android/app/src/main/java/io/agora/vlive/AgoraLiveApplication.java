@@ -119,7 +119,7 @@ public class AgoraLiveApplication extends Application {
 
         String flatPattern = "{d yy/MM/dd HH:mm:ss} {l}|{t}: {m}";
         Printer filePrinter = new FilePrinter                                   // Printer that print the log to the file system
-                .Builder(UserUtil.appLogFolder(this).getPath())         // Specify the path to save log file
+                .Builder(UserUtil.appLogFolderPath(this))         // Specify the path to save log file
                 .fileNameGenerator(new DateFileNameGenerator())                 // Default: ChangelessFileNameGenerator("log")
                 .backupStrategy(new FileSizeBackupStrategy(
                         Global.Constants.APP_LOG_SIZE))                         // Default: FileSizeBackupStrategy(1024 * 1024)

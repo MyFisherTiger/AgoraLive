@@ -64,6 +64,7 @@ class MineViewController: UITableViewController {
     @IBOutlet weak var headLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nameValueLabel: UILabel!
+    @IBOutlet weak var aboutLabel: UILabel!
     
     private var topView: TopView?
     private var mineVM = MineVM()
@@ -88,7 +89,6 @@ class MineViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateViews()
-        setupNextBackButton()
         updateViewsWithVM()
     }
     
@@ -100,15 +100,21 @@ class MineViewController: UITableViewController {
         switch segueId {
         case "UserNameViewController":
             let vc = segue.destination as! UserNameViewController
+            vc.hidesBottomBarWhenPushed = true
             vc.newName = BehaviorRelay(value: mineVM.userName.value)
             updateNameWithNameVC(vc)
+            setupCancelBackButton()
+        case "AboutViewController":
+            let vc = segue.destination
+            vc.hidesBottomBarWhenPushed = true
+            setupBackButton()
         default:
             break
         }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 2
     }
     
     /*
@@ -153,18 +159,31 @@ private extension MineViewController {
         
         // table cell
         self.headLabel.text = NSLocalizedString("Mine_Head")
+        self.aboutLabel.text = NSLocalizedString("About")
         self.nameLabel.text = NSLocalizedString("Mine_Name")
     }
     
-    func setupNextBackButton() {
+    func setupCancelBackButton() {
         guard let navigation = self.navigationController as? CSNavigationController else {
             fatalError()
         }
         
-        let backButton = UIButton(frame: CGRect(x: 0, y: 0, width: 36, height: 44))
+        let backButton = UIButton(frame: CGRect(x: 10, y: 0, width: 69, height: 44))
         backButton.setTitle(NSLocalizedString("Cancel"), for: .normal)
         backButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        backButton.titleLabel?.adjustsFontSizeToFitWidth = true
         backButton.setTitleColor(UIColor(hexString: "#333333"), for: .normal)
+        navigation.setupBarOthersColor(color: UIColor.white)
+        navigation.backButton = backButton
+    }
+    
+    func setupBackButton() {
+        guard let navigation = self.navigationController as? CSNavigationController else {
+            fatalError()
+        }
+        
+        let backButton = UIButton(frame: CGRect(x: 0, y: 0, width: 69, height: 44))
+        backButton.setImage(UIImage(named: "icon-back-black"), for: .normal)
         navigation.setupBarOthersColor(color: UIColor.white)
         navigation.backButton = backButton
     }

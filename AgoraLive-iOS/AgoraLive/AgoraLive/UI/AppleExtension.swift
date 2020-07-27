@@ -95,8 +95,48 @@ extension TimeInterval {
     static let animation: TimeInterval = 0.3
 }
 
-extension UIViewController {
+extension UIStoryboard {
+    static func initViewController<T: Any>(of id: String, class: T.Type, on stroyName: String = "Main") -> T {
+        let storyboard = UIStoryboard(name: stroyName, bundle: Bundle.main)
+        let identifier = id
+        let vc = storyboard.instantiateViewController(withIdentifier: identifier) as! T
+        return vc
+    }
+}
+
+extension NotificationCenter {
+    func observerKeyboard(listening: (((endFrame: CGRect, duration: Double)) -> Void)? = nil) {
+        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: nil) { (notify) in
+            guard let userInfo = notify.userInfo else {
+                return
+            }
+            
+            let endKeyboardFrameValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+            let endKeyboardFrame = endKeyboardFrameValue?.cgRectValue
+            let durationValue = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber
+            let duration = durationValue?.doubleValue
+            
+            if let listening = listening {
+                let callbackParameter = (endFrame: endKeyboardFrame!, duration: duration!)
+                listening(callbackParameter)
+            }
+        }
+    }
+}
+
+protocol PresentChildProtocol where Self: UIViewController {
+    var presentingChild: UIViewController? {get set}
+    func presentChild(_ viewController: UIViewController, animated flag: Bool, presentedFrame: CGRect)
+    func dismissChild(_ viewController: UIViewController, animated flag: Bool)
+}
+
+extension PresentChildProtocol {
     func presentChild(_ viewController: UIViewController, animated flag: Bool, presentedFrame: CGRect) {
+        if let child = presentingChild {
+            dismissChild(child, animated: false)
+        }
+        
+        self.presentingChild = viewController
         self.view.addSubview(viewController.view)
         
         let originRect = CGRect(x: presentedFrame.origin.x,
@@ -141,11 +181,126 @@ extension UIViewController {
     }
 }
 
-class MaskViewController: UIViewController {
-    private var hud: MBProgressHUD?
+protocol ShowAlertProtocol where Self: UIViewController {
+    var presentingAlert: UIAlertController? {get set}
+    
+    func showAlert(_ title: String?, message: String?, handler: ((UIAlertAction) -> Void)?)
+    func showAlert(_ title: String?, message: String?, preferredStyle: UIAlertController.Style, action1: String, action2: String, handler1: ((UIAlertAction) -> Void)?, handler2: ((UIAlertAction) -> Void)?)
+    func showAlert(_ title: String?, message: String?, preferredStyle: UIAlertController.Style, actions: [UIAlertAction]?, completion: Completion)
+}
+
+extension ShowAlertProtocol {
+    func showAlert(_ title: String? = nil, message: String? = nil, handler: ((UIAlertAction) -> Void)? = nil) {
+        let action = UIAlertAction(title: "OK", style: .default, handler: handler)
+        showAlert(title, message: message, preferredStyle: .alert, actions: [action], completion: nil)
+    }
+    
+    func showAlert(_ title: String? = nil, message: String? = nil, preferredStyle: UIAlertController.Style = .alert, action1: String, action2: String, handler1: ((UIAlertAction) -> Void)? = nil, handler2: ((UIAlertAction) -> Void)? = nil) {
+        let act1 = UIAlertAction(title: action1, style: .default, handler: handler1)
+        let act2 = UIAlertAction(title: action2, style: .default, handler: handler2)
+        showAlert(title, message: message, preferredStyle: preferredStyle, actions: [act1, act2], completion: nil)
+    }
+    
+    func showAlert(_ title: String? = nil, message: String? = nil, preferredStyle: UIAlertController.Style = .alert, actions: [UIAlertAction]? = nil, completion: Completion) {
+        view.endEditing(true)
+        
+        if let alert = presentingAlert {
+            alert.dismiss(animated: false, completion: nil)
+        }
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
+        self.presentingAlert = alert
+        
+        var tActions: [UIAlertAction]
+        
+        if let actions = actions {
+            tActions = actions
+        } else {
+            tActions = [UIAlertAction(title: "OK", style: .default, handler: nil)]
+        }
+        
+        for item in tActions {
+            alert.addAction(item)
+        }
+        
+        present(alert, animated: true, completion: completion)
+    }
+}
+
+protocol ShowHudProtocol where Self: UIViewController {
+    var hud: MBProgressHUD? {get set}
+    func isShowingHUD() -> Bool
+    func showHUD()
+    func hiddenHUD()
+}
+
+extension ShowHudProtocol {
+    func isShowingHUD() -> Bool {
+        if let _ = self.hud {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func showHUD() {
+        guard self.hud == nil else {
+            return
+        }
+        
+        self.hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+        self.hud?.show(animated: true)
+    }
+    
+    func hiddenHUD() {
+        self.hud?.hide(animated: true)
+        self.hud = nil
+    }
+}
+
+protocol ShowToastProtocol where Self: UIViewController {
+    var toastView: ToastView? {get set}
+    var toastWork: AfterWorker? {get set}
+    
+    func showToastView(_ view: ToastView, duration: TimeInterval, completion: Completion )
+}
+
+extension ShowToastProtocol {
+    func showToastView(_ view: ToastView, duration: TimeInterval = TimeInterval.animation, completion: Completion = nil) {
+        guard let window = UIApplication.shared.keyWindow else {
+            return
+        }
+        
+        if let worker = toastWork {
+            self.toastView?.removeFromSuperview()
+            worker.cancel()
+        }
+        
+        toastWork = AfterWorker()
+        
+        self.toastView = view
+        
+        window.addSubview(view)
+        
+        toastWork?.perform(after: duration, on: DispatchQueue.main, { [weak self] in
+            self?.toastView?.removeFromSuperview()
+            if let completion = completion {
+                completion()
+            }
+        })
+    }
+}
+
+class MaskViewController: UIViewController, ShowAlertProtocol, PresentChildProtocol, ShowHudProtocol, ShowToastProtocol {
+    var presentingChild: UIViewController? = nil
+    var presentingAlert: UIAlertController? = nil
+    
+    var hud: MBProgressHUD?
+    
+    var toastView: ToastView?
+    var toastWork: AfterWorker?
+    
     private var maskTapBlock: (() -> Void)?
-    private var toastView: UIView?
-    private var toastWork: AfterWorker?
     
     private(set) var maskView: UIControl = {
         let view = UIControl()
@@ -170,6 +325,11 @@ class MaskViewController: UIViewController {
         view.endEditing(true)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        toastView?.removeFromSuperview()
+    }
+    
     func showMaskView(color: UIColor = UIColor(red: 0.0,
                                                green: 0.0,
                                                blue: 0.0,
@@ -189,113 +349,12 @@ class MaskViewController: UIViewController {
     @objc private func tapMaskView(_ mask: UIControl) {
         if let maskTapBlock = maskTapBlock {
             maskTapBlock()
-        }
-    }
-    
-    func showHUD() {
-        guard self.hud == nil else {
-            return
-        }
-        
-        self.hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        self.hud?.show(animated: true)
-    }
-    
-    func hiddenHUD() {
-        self.hud?.hide(animated: true)
-        self.hud = nil
-    }
-    
-    func showToastView(_ view: UIView? = nil, position: CGPoint, duration: TimeInterval = TimeInterval.animation) {
-        guard let window = UIApplication.shared.keyWindow else {
-            return
-        }
-        
-        if let worker = toastWork {
-            self.toastView?.removeFromSuperview()
-            worker.cancel()
-        }
-        
-        toastWork = AfterWorker()
-        
-        if view == nil {
-            self.toastView = ToastView(frame: CGRect.zero)
         } else {
-            self.toastView = view
+            maskView.isHidden = true
         }
-        
-        self.toastView?.center = position
-        window.addSubview(self.toastView!)
-        
-        toastWork?.perform(after: duration, on: DispatchQueue.main, { [unowned self] in
-            self.toastView?.removeFromSuperview()
-        })
     }
 }
 
-protocol ShowAlertProtocol: UIViewController {
-    func showAlert(_ title: String?, message: String?, handler: ((UIAlertAction) -> Void)?)
-    func showAlert(_ title: String?, message: String?, preferredStyle: UIAlertController.Style, action1: String, action2: String, handler1: ((UIAlertAction) -> Void)?, handler2: ((UIAlertAction) -> Void)?)
-    func showAlert(_ title: String?, message: String?, preferredStyle: UIAlertController.Style, actions: [UIAlertAction]?, completion: Completion)
-}
-
-extension ShowAlertProtocol {
-    func showAlert(_ title: String? = nil, message: String? = nil, handler: ((UIAlertAction) -> Void)? = nil) {
-        let action = UIAlertAction(title: "OK", style: .default, handler: handler)
-        showAlert(title, message: message, preferredStyle: .alert, actions: [action], completion: nil)
-    }
-    
-    func showAlert(_ title: String? = nil, message: String? = nil, preferredStyle: UIAlertController.Style = .alert, action1: String, action2: String, handler1: ((UIAlertAction) -> Void)? = nil, handler2: ((UIAlertAction) -> Void)? = nil) {
-        let act1 = UIAlertAction(title: action1, style: .default, handler: handler1)
-        let act2 = UIAlertAction(title: action2, style: .default, handler: handler2)
-        showAlert(title, message: message, preferredStyle: preferredStyle, actions: [act1, act2], completion: nil)
-    }
-    
-    func showAlert(_ title: String? = nil, message: String? = nil, preferredStyle: UIAlertController.Style = .alert, actions: [UIAlertAction]? = nil, completion: Completion) {
-        view.endEditing(true)
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
-        var tActions: [UIAlertAction]
-        
-        if let actions = actions {
-            tActions = actions
-        } else {
-            tActions = [UIAlertAction(title: "OK", style: .default, handler: nil)]
-        }
-        
-        for item in tActions {
-            alert.addAction(item)
-        }
-        
-        present(alert, animated: true, completion: completion)
-    }
-}
-
-extension UIStoryboard {
-    static func initViewController<T: Any>(of id: String, class: T.Type, on stroyName: String = "Main") -> T {
-        let storyboard = UIStoryboard(name: stroyName, bundle: Bundle.main)
-        let identifier = id
-        let vc = storyboard.instantiateViewController(withIdentifier: identifier) as! T
-        return vc
-    }
-}
-
-extension NotificationCenter {
-    func observerKeyboard(listening: (((endFrame: CGRect, duration: Double)) -> Void)? = nil) {
-        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: nil) { (notify) in
-            guard let userInfo = notify.userInfo else {
-                return
-            }
-            
-            let endKeyboardFrameValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
-            let endKeyboardFrame = endKeyboardFrameValue?.cgRectValue
-            let durationValue = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber
-            let duration = durationValue?.doubleValue
-            
-            if let listening = listening {
-                let callbackParameter = (endFrame: endKeyboardFrame!, duration: duration!)
-                listening(callbackParameter)
-            }
-        }
-    }
+class MaskTabBarController: UITabBarController, ShowHudProtocol {
+    var hud: MBProgressHUD?
 }

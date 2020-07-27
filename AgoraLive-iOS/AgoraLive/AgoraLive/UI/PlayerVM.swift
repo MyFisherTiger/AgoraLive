@@ -20,14 +20,14 @@ class PlayerVM: NSObject {
         self.observe()
     }
     
-    func renderLocalVideoStream(id: Int, view: UIView) {
+    func startRenderLocalVideoStream(id: Int, view: UIView) {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        mediaKit.player.renderLocalVideoStream(id: id, view: view)
+        mediaKit.player.startRenderLocalVideoStream(id: id, view: view)
     }
     
-    func renderRemoteVideoStream(id: Int, view: UIView) {
+    func startRenderRemoteVideoStream(id: Int, view: UIView) {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        mediaKit.player.renderRemoteVideoStream(id: id, view: view)
+        mediaKit.player.startRenderRemoteVideoStream(id: id, view: view)
     }
     
     func renderRemoteVideoStream(id: Int, superResolution action: AGESwitch) {

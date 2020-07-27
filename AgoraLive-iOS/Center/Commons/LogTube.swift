@@ -51,9 +51,9 @@ private extension LogTube {
     }
         
     func debugPrint(_ log: String) {
-        #if DEBUG
+//        #if DEBUG
         NSLog("%@", log)
-        #endif
+//        #endif
         writeToFile(log: log)
     }
 }

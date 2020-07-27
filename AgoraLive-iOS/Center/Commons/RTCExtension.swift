@@ -96,6 +96,7 @@ extension AgoraRtcEngineKit: AGELogBase {
         self.enableDualStreamMode(true)
         self.enableWebSdkInteroperability(true)
         self.enableAudioVolumeIndication(2000, smooth: 3, report_vad: false)
+        log(info: "rtc sdk version: \(AgoraRtcEngineKit.getSdkVersion())")
     }
     
     func setupVideo(resolution: CGSize, frameRate: AgoraVideoFrameRate, bitRate: Int) {

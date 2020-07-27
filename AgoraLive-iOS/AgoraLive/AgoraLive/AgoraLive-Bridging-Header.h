@@ -8,7 +8,7 @@
 
 #import "LCLLogFile.h"
 #import "ZipArchive.h"
-#import "FUManager.h"
 #import "SSZipArchive.h"
 #import "UIColor+Hex.h"
 #import "UIImage+CSClipToCycle.h"
+#import "FUClient.h"

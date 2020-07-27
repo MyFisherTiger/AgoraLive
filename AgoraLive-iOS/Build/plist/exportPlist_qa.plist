@@ -9,7 +9,7 @@
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>io.agora.AgoraLiveBroadcast</key>
-		<string>AgoraIOTest2019</string>
+		<string>AgoraLab2020</string>
 	</dict>
 </dict>
 </plist>

@@ -157,7 +157,7 @@ class LiveSeatView: UIView {
             }
         }).disposed(by: bag)
         
-        closeButton.setTitle(NSLocalizedString("Seat_Colse"), for: .normal)
+        closeButton.setTitle(NSLocalizedString("Seat_Close"), for: .normal)
         closeButton.setImage(UIImage(named: "icon-ban"), for: .normal)
         closeButton.rx.tap.subscribe(onNext: { [unowned self] in
             switch self.perspective {

@@ -8,6 +8,7 @@
 
 import Foundation
 import AgoraRtmKit
+import AlamoClient
 
 typealias AGESocketState = AgoraRtmConnectionState
 
@@ -31,6 +32,7 @@ extension AgoraRtmKit: AGELogBase {
         setParameters("{\"rtm.msg.report_enabled\": \(true)}")
         setParameters("{\"rtm.msg.payload_report_enabled\": \(true)}")
         #endif
+        log(info: "rtm sdk version: \(AgoraRtmKit.getSDKVersion())")
     }
     
     func login(rtmId: String, token: String?, success: Completion, fail: ErrorCompletion) {
@@ -53,7 +55,7 @@ extension AgoraRtmKit: AGELogBase {
         }
     }
     
-    func send(message: String, of event: AGERequestEvent, to peer: String, success: Completion, fail: ErrorCompletion) {
+    func send(message: String, of event: ACRequestEvent, to peer: String, success: Completion, fail: ErrorCompletion) {
         let messageObj = AgoraRtmMessage(text: message)
         
         send(messageObj, toPeer: peer) { [unowned self] (errorCode) in
@@ -99,13 +101,7 @@ extension AgoraRtmKit: AGELogBase {
                     }
                 }
             }
-        } catch let error as AGEError {
-            log(error: error, extra: "create channel fail")
-            if let fail = fail {
-                fail(error)
-            }
         } catch {
-            let error = AGEError.unknown()
             log(error: error, extra: "create channel fail")
             if let fail = fail {
                 fail(error)
@@ -167,7 +163,7 @@ extension AgoraRtmChannel: AGELogBase {
         }
     }
     
-    func send(message: String, of event: AGERequestEvent, success: Completion, fail: ErrorCompletion) {
+    func send(message: String, of event: ACRequestEvent, success: Completion, fail: ErrorCompletion) {
         let messageObj = AgoraRtmMessage(text: message)
         
         send(messageObj) { [unowned self] (errorCode) in

@@ -8,10 +8,10 @@
 
 import Foundation
 import AgoraRtcKit
+import AGECamera
 
 typealias AudioOutputRouting = AgoraAudioOutputRouting
 typealias ChannelReport = StatisticsInfo
-//typealias SpeakerReport =
 
 class MediaKit: NSObject, AGELogBase {
     enum Speaker {
@@ -50,6 +50,7 @@ class MediaKit: NSObject, AGELogBase {
     }
     
     private(set) var channelStatus: AGEChannelStatus = .out
+    private var cameraStreamQueue = DispatchQueue(label: "CameraStreamQueue")
     
     lazy var capture = Capture(parent: self)
     lazy var player = Player()
@@ -175,24 +176,26 @@ extension MediaKit: AgoraVideoSourceProtocol {
 }
 
 extension MediaKit: AGESingleCameraDelegate {
-    func camera(_ camera: AGESingleCamera, position: Position, didOutput sampleBuffer: CMSampleBuffer) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            return
+    func camera(_ camera: AGESingleCamera, position: AGECamera.Position, didOutput sampleBuffer: CMSampleBuffer) {
+        cameraStreamQueue.async { [unowned self] in
+            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+                return
+            }
+            
+            CVPixelBufferLockBaseAddress(pixelBuffer, .init(rawValue: 0))
+            
+            let timeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+            
+            if self.enhancement.beauty == .on || self.enhancement.appearance != .none {
+                self.enhancement.renderItems(to: pixelBuffer)
+            }
+            
+            self.consumer?.consumePixelBuffer(pixelBuffer,
+                                              withTimestamp: timeStamp,
+                                              rotation: .rotationNone)
+            
+            CVPixelBufferUnlockBaseAddress(pixelBuffer, .init(rawValue: 0))
         }
-        
-        CVPixelBufferLockBaseAddress(pixelBuffer, .init(rawValue: 0))
-        
-        let timeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-        
-        if enhancement.work == .on {
-            FUManager.share()?.renderItems(to: pixelBuffer)
-        }
-        
-        self.consumer?.consumePixelBuffer(pixelBuffer,
-                                          withTimestamp: timeStamp,
-                                          rotation: .rotationNone)
-        
-        CVPixelBufferUnlockBaseAddress(pixelBuffer, .init(rawValue: 0))
     }
 }
 

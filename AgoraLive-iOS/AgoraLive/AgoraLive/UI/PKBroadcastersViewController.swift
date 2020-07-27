@@ -183,6 +183,8 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
     var giftVM = GiftVM()
     var deviceVM = MediaDeviceVM()
     var playerVM = PlayerVM()
+    var enhancementVM = VideoEnhancementVM()
+    var monitor = NetworkMonitor(host: "www.apple.com")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -190,9 +192,11 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
         self.view.layer.contents = image?.cgImage
         
         guard let session = ALCenter.shared().liveSession else {
-            fatalError()
+            assert(false)
+            return
         }
         
+        liveSession(session)
         liveRoom(session: session)
         audience()
         chatList()
@@ -201,6 +205,7 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
         bottomTools(session: session, tintColor: tintColor)
         chatInput()
         musicList()
+        netMonitor()
         PK(session: session)
     }
     
@@ -214,12 +219,10 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
             let vc = segue.destination as! GiftAudienceViewController
             self.giftAudienceVC = vc
         case "BottomToolsViewController":
-            guard let session = ALCenter.shared().liveSession else {
-                fatalError()
-            }
-            
-            guard let role = session.role else {
-                fatalError()
+            guard let session = ALCenter.shared().liveSession,
+                let role = session.role else {
+                assert(false)
+                return
             }
             
             let vc = segue.destination as! BottomToolsViewController
@@ -242,8 +245,9 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
 extension PKBroadcastersViewController {
     // MARK: - Live Room
     func liveRoom(session: LiveSession) {
-        guard let localRole = session.role else {
-            fatalError()
+        guard let owner = session.owner else {
+            assert(false)
+            return
         }
         
         let images = ALCenter.shared().centerProvideImagesHelper()
@@ -254,12 +258,10 @@ extension PKBroadcastersViewController {
         ownerView.label.font = UIFont.systemFont(ofSize: 11)
         ownerView.backgroundColor = tintColor
         
-        let owner = session.owner
-        
         switch owner {
-        case .localUser:
-            ownerView.label.text = localRole.info.name
-            ownerView.imageView.image = images.getHead(index: localRole.info.imageIndex)
+        case .localUser(let user):
+            ownerView.label.text = user.info.name
+            ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
             deviceVM.camera = .on
             deviceVM.mic = .on
             pkView?.intoOtherButton.isHidden = true
@@ -273,16 +275,6 @@ extension PKBroadcastersViewController {
             pkButton.isHidden = true
         }
         
-        session.end.subscribe(onNext: { [unowned self] (_) in
-            guard !owner.isLocal else {
-                return
-            }
-            
-            self.showAlert(NSLocalizedString("Live_End")) { [unowned self] (_) in
-                self.leave()
-            }
-        }).disposed(by: bag)
-        
         bottomToolsVC?.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
             if self.pkVM.statistics.value.state.isDuring {
                 self.showAlert(NSLocalizedString("End_PK"),
@@ -290,6 +282,7 @@ extension PKBroadcastersViewController {
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("End")) { [unowned self] (_) in
                                 self.leave()
+                                self.dimissSelf()
                 }
             } else {
                 self.showAlert(NSLocalizedString("Live_End"),
@@ -297,6 +290,7 @@ extension PKBroadcastersViewController {
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
                                 self.leave()
+                                self.dimissSelf()
                 }
             }
         }).disposed(by: bag)
@@ -329,7 +323,8 @@ extension PKBroadcastersViewController {
                            action2: NSLocalizedString("Confirm"),
                            handler1: { [unowned self] (_) in
                             guard let role = ALCenter.shared().liveSession?.role else {
-                                fatalError()
+                                assert(false)
+                                return
                             }
                             
                             self.pkVM.rejectPK(localRoom: roomId, localUser: role, inviteRoom: room)
@@ -349,7 +344,8 @@ extension PKBroadcastersViewController {
     
     func intoOtherRoom() {
         guard let session = ALCenter.shared().liveSession else {
-            fatalError()
+            assert(false)
+            return
         }
         
         session.leave()
@@ -374,9 +370,11 @@ extension PKBroadcastersViewController {
             }
             
             newPk.pkVM = PKVM(statistics: statistics)
-            let navigation = self.navigationController
-            navigation?.popViewController(animated: false)
-            navigation?.pushViewController(newPk, animated: true)
+            guard let navigation = self.navigationController else {
+                return
+            }
+            navigation.popViewController(animated: false)
+            navigation.pushViewController(newPk, animated: false)
         }, fail: fail)
     }
 }
@@ -384,9 +382,11 @@ extension PKBroadcastersViewController {
 private extension PKBroadcastersViewController {
     func showResult(statistics: PKStatistics) {
         if let result = statistics.state.hasResult {
-            let completion = { [unowned self] in
-                self.showAlert(NSLocalizedString("PK_End"))
-                self.updateViewsWith(statistics: statistics)
+            let completion = { [weak self] in
+                let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
+                view.text = NSLocalizedString("PK_End")
+                self?.showToastView(view, duration: 0.2)
+                self?.updateViewsWith(statistics: statistics)
             }
             
             switch result {
@@ -403,57 +403,53 @@ private extension PKBroadcastersViewController {
     }
     
     func updateViewsWith(statistics: PKStatistics) {
-        guard let session = ALCenter.shared().liveSession else {
-            fatalError()
+        guard let session = ALCenter.shared().liveSession,
+            let owner = session.owner else {
+                return
         }
-        
-        let owner = session.owner
         
         renderView.isHidden = statistics.state.isDuring
         pkContainerView.isHidden = !statistics.state.isDuring
         
         switch (owner, statistics.state.isDuring) {
-        case (.localUser, false):
-            guard let localRole = session.role else {
-                fatalError()
-            }
-            playerVM.renderLocalVideoStream(id: localRole.agoraUserId,
-                                                view: renderView)
+        case (.localUser(let user), false):
+            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
+                                                 view: renderView)
             pkButton.isHidden = false
         case (.otherUser(let user), false):
-            playerVM.renderRemoteVideoStream(id: user.agoraUserId,
+            playerVM.startRenderRemoteVideoStream(id: user.agoraUserId,
                                              view: renderView)
-            
             pkButton.isHidden = true
-        case (.localUser, true):
-            guard let localRole = session.role,
-                let pkView = self.pkView else {
-                    fatalError()
+        case (.localUser(let user), true):
+            guard let pkView = self.pkView else {
+                assert(false)
+                return
             }
             
             let leftRenderView = pkView.leftRenderView
             let rightRenderView = pkView.rightRenderView
             
-            playerVM.renderLocalVideoStream(id: localRole.agoraUserId,
-                                            view: leftRenderView!)
+            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
+                                                 view: leftRenderView!)
             
             let opponentUser = statistics.opponentOwner!.agoraUserId
-            playerVM.renderRemoteVideoStream(id: opponentUser,
+            playerVM.startRenderRemoteVideoStream(id: opponentUser,
                                              view: rightRenderView!)
             pkButton.isHidden = true
         case (.otherUser(let user), true):
             guard let pkView = self.pkView else {
-                    fatalError()
+                assert(false)
+                return
             }
             
             let leftRenderView = pkView.leftRenderView
             let rightRenderView = pkView.rightRenderView
             
-            playerVM.renderRemoteVideoStream(id: user.agoraUserId,
+            playerVM.startRenderRemoteVideoStream(id: user.agoraUserId,
                                              view: leftRenderView!)
             
             let opponentUser = statistics.opponentOwner!.agoraUserId
-            playerVM.renderRemoteVideoStream(id: opponentUser,
+            playerVM.startRenderRemoteVideoStream(id: opponentUser,
                                              view: rightRenderView!)
             pkButton.isHidden = true
         }
@@ -474,12 +470,10 @@ private extension PKBroadcastersViewController {
     }
     
     func presentInviteList() {
-        guard let session = ALCenter.shared().liveSession else {
-            return
-        }
-        
-        guard let role = session.role else {
-            fatalError()
+        guard let session = ALCenter.shared().liveSession,
+            let role = session.role else {
+                assert(false)
+                return
         }
         
         let roomId = session.roomId
@@ -510,7 +504,7 @@ private extension PKBroadcastersViewController {
         inviteVC.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned inviteVC] in
             self.roomListVM.refetch(success: {
                 inviteVC.tableView.mj_header?.endRefreshing()
-            }) { // fail
+            }) { [unowned inviteVC] in // fail
                 inviteVC.tableView.mj_header?.endRefreshing()
             }
         })
@@ -518,7 +512,7 @@ private extension PKBroadcastersViewController {
         inviteVC.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned inviteVC] in
             self.roomListVM.fetch(success: {
                 inviteVC.tableView.mj_footer?.endRefreshing()
-            }) { // fail
+            }) { [unowned inviteVC] in // fail
                 inviteVC.tableView.mj_footer?.endRefreshing()
             }
         })

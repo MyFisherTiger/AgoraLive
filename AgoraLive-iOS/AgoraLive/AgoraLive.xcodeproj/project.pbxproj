@@ -7,35 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0975BB0997D7E5C3669CB3AF /* Pods_AgoraLive_QA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 823EA9C8A5237646AB8599E9 /* Pods_AgoraLive_QA.framework */; };
-		36A1B88A633EF39815C58821 /* Pods_AgoraLive_Release.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81367C233BF3DD3090FA3F59 /* Pods_AgoraLive_Release.framework */; };
-		5771FAC0EAE065A3C51D4EA1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
-		784B5123246680A7003AF420 /* AgoraLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A719060F24667DCE0031E91C /* AgoraLive.xcdatamodeld */; };
-		784B5124246680AA003AF420 /* UserData+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719061124667DCE0031E91C /* UserData+CoreDataClass.swift */; };
-		784B5125246680AC003AF420 /* UserData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719061224667DCE0031E91C /* UserData+CoreDataProperties.swift */; };
-		784B5126246680AE003AF420 /* UserDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719061324667DCE0031E91C /* UserDataHelper.swift */; };
-		784B5127246680BC003AF420 /* Popover.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060C24666D580031E91C /* Popover.swift */; };
-		784B5128246680D2003AF420 /* AGECameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060424666D2B0031E91C /* AGECameraPreview.swift */; };
-		784B5129246680D2003AF420 /* AGECameraProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060624666D2B0031E91C /* AGECameraProtocol.swift */; };
-		784B512A246680D2003AF420 /* AGECameraSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060724666D2B0031E91C /* AGECameraSession.swift */; };
-		784B512B246680D2003AF420 /* AGESingleCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060524666D2B0031E91C /* AGESingleCamera.swift */; };
+		5C815897D3298150823074AF /* Pods_AgoraLive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B455272B1AE17AD3814D3C67 /* Pods_AgoraLive.framework */; };
 		A7053A41241A2C290061E5E2 /* BeautySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7053A40241A2C290061E5E2 /* BeautySettingsViewController.swift */; };
-		A711AB7B243EF78A00C2A3FD /* SuperRocket.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB77243EF78A00C2A3FD /* SuperRocket.gif */; };
-		A711AB7C243EF78A00C2A3FD /* SuperWatch.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB78243EF78A00C2A3FD /* SuperWatch.gif */; };
-		A711AB7D243EF78A00C2A3FD /* SuperRing.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB79243EF78A00C2A3FD /* SuperRing.gif */; };
-		A711AB7E243EF78A00C2A3FD /* SuperDiamond.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB7A243EF78A00C2A3FD /* SuperDiamond.gif */; };
 		A711AB83243EF83800C2A3FD /* GIFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB82243EF83800C2A3FD /* GIFViewController.swift */; };
 		A711AB87243F034100C2A3FD /* GiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB86243F034100C2A3FD /* GiftViewController.swift */; };
 		A711AB89243F218A00C2A3FD /* GiftVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB88243F218A00C2A3FD /* GiftVM.swift */; };
-		A711AB8E244015E000C2A3FD /* SuperIcecream.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8A244015DF00C2A3FD /* SuperIcecream.gif */; };
-		A711AB8F244015E000C2A3FD /* SuperBell.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8B244015DF00C2A3FD /* SuperBell.gif */; };
-		A711AB90244015E000C2A3FD /* SuperCake.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8C244015DF00C2A3FD /* SuperCake.gif */; };
-		A711AB91244015E000C2A3FD /* SuperWine.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8D244015DF00C2A3FD /* SuperWine.gif */; };
 		A711AB94244059F400C2A3FD /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB93244059F400C2A3FD /* LiveViewController.swift */; };
-		A719060824666D2B0031E91C /* AGECameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060424666D2B0031E91C /* AGECameraPreview.swift */; };
-		A719060924666D2B0031E91C /* AGESingleCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060524666D2B0031E91C /* AGESingleCamera.swift */; };
-		A719060A24666D2B0031E91C /* AGECameraProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060624666D2B0031E91C /* AGECameraProtocol.swift */; };
-		A719060B24666D2B0031E91C /* AGECameraSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060724666D2B0031E91C /* AGECameraSession.swift */; };
 		A719060D24666D580031E91C /* Popover.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060C24666D580031E91C /* Popover.swift */; };
 		A719061424667DCE0031E91C /* AgoraLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A719060F24667DCE0031E91C /* AgoraLive.xcdatamodeld */; };
 		A719061524667DCE0031E91C /* UserData+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719061124667DCE0031E91C /* UserData+CoreDataClass.swift */; };
@@ -48,12 +25,6 @@
 		A71AAF282435D7A900820096 /* StatisticsInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF272435D7A900820096 /* StatisticsInfo.swift */; };
 		A71AAF2A2435D8BE00820096 /* RealDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF292435D8BE00820096 /* RealDataViewController.swift */; };
 		A71AAF88243D740F00820096 /* UIImage+CSClipToCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF87243D740F00820096 /* UIImage+CSClipToCycle.m */; };
-		A722F07E2476924400132129 /* srmetal.metallib in Resources */ = {isa = PBXBuildFile; fileRef = A722F07C2476924400132129 /* srmetal.metallib */; };
-		A722F07F2476924400132129 /* model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A722F07D2476924400132129 /* model.bundle */; };
-		A722F08024769E3F00132129 /* model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A722F07D2476924400132129 /* model.bundle */; };
-		A722F08124769E5100132129 /* srmetal.metallib in Resources */ = {isa = PBXBuildFile; fileRef = A722F07C2476924400132129 /* srmetal.metallib */; };
-		A722F08224769E5900132129 /* model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A722F07D2476924400132129 /* model.bundle */; };
-		A722F08324769E5F00132129 /* srmetal.metallib in Resources */ = {isa = PBXBuildFile; fileRef = A722F07C2476924400132129 /* srmetal.metallib */; };
 		A72B7BE42444161400E965FB /* SingleBroadcasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE32444161400E965FB /* SingleBroadcasterViewController.swift */; };
 		A72B7BE8244459F000E965FB /* PKBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE7244459F000E965FB /* PKBroadcastersViewController.swift */; };
 		A72B7BEA24445D5B00E965FB /* PKVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE924445D5B00E965FB /* PKVM.swift */; };
@@ -64,10 +35,14 @@
 		A754FAEF242B717D0062B2F5 /* FilletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAEE242B717D0062B2F5 /* FilletView.swift */; };
 		A754FAF4242C5A920062B2F5 /* ChatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF3242C5A920062B2F5 /* ChatVM.swift */; };
 		A754FAF6242C9B700062B2F5 /* LiveSeatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */; };
+		A7584B09248114EA0088FACB /* VirtualBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7584B08248114EA0088FACB /* VirtualBroadcastersViewController.swift */; };
+		A7584B4B2484DB290088FACB /* VirtualVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7584B4A2484DB290088FACB /* VirtualVM.swift */; };
 		A758851E242DF20E0011FCCF /* UserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A758851D242DF20E0011FCCF /* UserListViewController.swift */; };
 		A7588528242E01C10011FCCF /* BottomToolsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7588527242E01C10011FCCF /* BottomToolsViewController.swift */; };
+		A75A56D124A054C100D0089E /* FUClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A75A56D024A054C100D0089E /* FUClient.m */; };
 		A75D5B2A244FE77D00CE7528 /* CSNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D5B29244FE77D00CE7528 /* CSNavigationController.swift */; };
 		A7615015244AF35B007AAA7F /* MediaDeviceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */; };
+		A76767EB249B0E45002C4FBD /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76767EA249B0E45002C4FBD /* AboutViewController.swift */; };
 		A768B6142452F3980073510D /* GIFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A768B6132452F3980073510D /* GIFView.swift */; };
 		A76BD12123F1035500B2732B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76BD12023F1035500B2732B /* AppDelegate.swift */; };
 		A76BD12823F1035500B2732B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A76BD12623F1035500B2732B /* Main.storyboard */; };
@@ -78,15 +53,22 @@
 		A773BD4E24090426003ECBFD /* MineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A773BD4D24090426003ECBFD /* MineViewController.swift */; };
 		A773BD50240E4CC1003ECBFD /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A773BD4F240E4CC1003ECBFD /* MainTabBarViewController.swift */; };
 		A773BD522410A001003ECBFD /* UserNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A773BD512410A001003ECBFD /* UserNameViewController.swift */; };
-		A77718132456C9BB00BF1F21 /* LabelShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A795CEC12451683700220EF4 /* LabelShadowView.swift */; };
-		A77718142456CA3E00BF1F21 /* GIFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A768B6132452F3980073510D /* GIFView.swift */; };
+		A776F71F24BEA711001B16B1 /* hashiqi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A776F71B24BEA711001B16B1 /* hashiqi.bundle */; };
+		A776F72024BEA711001B16B1 /* bg.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A776F71C24BEA711001B16B1 /* bg.bundle */; };
+		A776F72124BEA711001B16B1 /* girl.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A776F71D24BEA711001B16B1 /* girl.bundle */; };
 		A77718162456FBDA00BF1F21 /* PlayerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77718152456FBDA00BF1F21 /* PlayerVM.swift */; };
-		A77718172456FBDA00BF1F21 /* PlayerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77718152456FBDA00BF1F21 /* PlayerVM.swift */; };
 		A7779C2B244DC7DC002A285A /* LocalLiveSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7779C2A244DC7DC002A285A /* LocalLiveSettings.swift */; };
-		A7847F9624581A5800469187 /* sound.gif in Resources */ = {isa = PBXBuildFile; fileRef = A7847F9524581A5800469187 /* sound.gif */; };
-		A7847F9724581A5800469187 /* sound.gif in Resources */ = {isa = PBXBuildFile; fileRef = A7847F9524581A5800469187 /* sound.gif */; };
+		A77E574724A8955700DD7670 /* SuperBell.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573824A8955600DD7670 /* SuperBell.gif */; };
+		A77E574824A8955700DD7670 /* SuperCake.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573924A8955600DD7670 /* SuperCake.gif */; };
+		A77E574924A8955700DD7670 /* SuperWatch.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573A24A8955600DD7670 /* SuperWatch.gif */; };
+		A77E574A24A8955700DD7670 /* SuperWine.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573B24A8955600DD7670 /* SuperWine.gif */; };
+		A77E574B24A8955700DD7670 /* SuperRocket.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573C24A8955600DD7670 /* SuperRocket.gif */; };
+		A77E574C24A8955700DD7670 /* SuperRing.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573D24A8955600DD7670 /* SuperRing.gif */; };
+		A77E574D24A8955700DD7670 /* SuperIcecream.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573E24A8955600DD7670 /* SuperIcecream.gif */; };
+		A77E574E24A8955700DD7670 /* SuperDiamond.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573F24A8955600DD7670 /* SuperDiamond.gif */; };
+		A77E574F24A8955700DD7670 /* sound.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E574024A8955600DD7670 /* sound.gif */; };
+		A77E579224AE10FE00DD7670 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77E579124AE10FE00DD7670 /* NetworkMonitor.swift */; };
 		A7847F992458216600469187 /* VideoEnhancementVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7847F982458216600469187 /* VideoEnhancementVM.swift */; };
-		A7847F9A2458216600469187 /* VideoEnhancementVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7847F982458216600469187 /* VideoEnhancementVM.swift */; };
 		A791F33A242898DC008D8BC9 /* MultiBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F339242898DC008D8BC9 /* MultiBroadcastersViewController.swift */; };
 		A791F33C2428A014008D8BC9 /* GiftAudienceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F33B2428A014008D8BC9 /* GiftAudienceViewController.swift */; };
 		A791F33E2428B121008D8BC9 /* LiveSeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F33D2428B121008D8BC9 /* LiveSeatViewController.swift */; };
@@ -102,7 +84,6 @@
 		A7952AA624162C1000479811 /* MediaSubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5F24162C1000479811 /* MediaSubs.swift */; };
 		A7952AA724162C1000479811 /* RTMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6024162C1000479811 /* RTMClient.swift */; };
 		A7952AA824162C1000479811 /* AGEError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6124162C1000479811 /* AGEError.swift */; };
-		A7952AA924162C1000479811 /* RequestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6224162C1000479811 /* RequestProtocols.swift */; };
 		A7952AAA24162C1000479811 /* LogTube.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6324162C1000479811 /* LogTube.swift */; };
 		A7952AAB24162C1000479811 /* RTMProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6424162C1000479811 /* RTMProtocols.swift */; };
 		A7952AAC24162C1000479811 /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6524162C1000479811 /* Convert.swift */; };
@@ -111,7 +92,6 @@
 		A7952AAF24162C1000479811 /* TypeAlias.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6B24162C1000479811 /* TypeAlias.swift */; };
 		A7952AB024162C1000479811 /* MediaKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6C24162C1000479811 /* MediaKit.swift */; };
 		A7952AB124162C1000479811 /* RTMHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6D24162C1000479811 /* RTMHelper.swift */; };
-		A7952AB224162C1000479811 /* RequestModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6E24162C1000479811 /* RequestModels.swift */; };
 		A7952AB324162C1000479811 /* ZipTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6F24162C1000479811 /* ZipTool.swift */; };
 		A7952AB524162C1000479811 /* DictionaryGetable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7124162C1000479811 /* DictionaryGetable.swift */; };
 		A7952AB624162C1000479811 /* MediaModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7224162C1000479811 /* MediaModels.swift */; };
@@ -137,322 +117,22 @@
 		A7952ACA24162C1000479811 /* pwd2key.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9A24162C1000479811 /* pwd2key.c */; };
 		A7952ACB24162C1000479811 /* aestab.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9B24162C1000479811 /* aestab.c */; };
 		A7952ACC24162C1000479811 /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA024162C1000479811 /* SSZipArchive.m */; };
-		A7952ACE24162C1000479811 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA224162C1000479811 /* NetworkMonitor.swift */; };
-		A7952ACF24162C1000479811 /* AlamoClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA324162C1000479811 /* AlamoClient.swift */; };
 		A7952AD124162C1000479811 /* RTMExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA524162C1000479811 /* RTMExtension.swift */; };
-		A7952B8C24162EBC00479811 /* FUMusicPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AE324162EBB00479811 /* FUMusicPlayer.m */; };
-		A7952B8D24162EBC00479811 /* FULiveModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AE524162EBB00479811 /* FULiveModel.m */; };
-		A7952B8F24162EBC00479811 /* FUOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AE924162EBB00479811 /* FUOpenGLView.m */; };
-		A7952B9024162EBC00479811 /* FUItemsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AEC24162EBB00479811 /* FUItemsView.m */; };
-		A7952B9124162EBC00479811 /* FULiveCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AEF24162EBB00479811 /* FULiveCell.m */; };
-		A7952B9224162EBC00479811 /* FUItemsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AF124162EBB00479811 /* FUItemsViewCell.m */; };
-		A7952B9324162EBC00479811 /* FUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AF224162EBB00479811 /* FUManager.m */; };
-		A7952B9424162EBC00479811 /* FUCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AF424162EBB00479811 /* FUCamera.m */; };
-		A7952C0F24162EBC00479811 /* release_note.txt in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8224162EBC00479811 /* release_note.txt */; };
-		A7952C1024162EBC00479811 /* libnama.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952B8324162EBC00479811 /* libnama.a */; };
-		A7952C1124162EBC00479811 /* v3.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8524162EBC00479811 /* v3.bundle */; };
-		A7952C1224162EBC00479811 /* ardata_ex.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8624162EBC00479811 /* ardata_ex.bundle */; };
-		A7952C1324162EBC00479811 /* anim_model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8724162EBC00479811 /* anim_model.bundle */; };
-		A7952C1424162EBC00479811 /* face_beautification.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8824162EBC00479811 /* face_beautification.bundle */; };
 		A7952C1624162F4200479811 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952C1524162F4200479811 /* User.swift */; };
 		A7952C182416317900479811 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C172416317900479811 /* Accelerate.framework */; };
 		A7952C1A2416318300479811 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C192416318300479811 /* CoreTelephony.framework */; };
 		A7952C1C2416319400479811 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1B2416318D00479811 /* libc++.tbd */; };
 		A7952C1E241631B200479811 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1D241631A900479811 /* libresolv.tbd */; };
-		A7952C23241631C600479811 /* AgoraRtmKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C20241631C600479811 /* AgoraRtmKit.framework */; };
 		A7952C522416691600479811 /* URLGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952C512416691600479811 /* URLGroup.swift */; };
-		A7952C582417457A00479811 /* AgoraRtcKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1F241631C600479811 /* AgoraRtcKit.framework */; };
-		A7952C592417457A00479811 /* AgoraRtcKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1F241631C600479811 /* AgoraRtcKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A7952C5C2417636D00479811 /* ALJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952C5B2417636D00479811 /* ALJson.swift */; };
 		A795CEC22451683700220EF4 /* LabelShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A795CEC12451683700220EF4 /* LabelShadowView.swift */; };
-		A7A97851245140DB00A82265 /* MusicVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF1924335CD600820096 /* MusicVM.swift */; };
-		A7A97852245140DB00A82265 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9324162C1000479811 /* sha1.c */; };
-		A7A97854245140DB00A82265 /* RTMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6024162C1000479811 /* RTMClient.swift */; };
-		A7A97855245140DB00A82265 /* BeautySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7053A40241A2C290061E5E2 /* BeautySettingsViewController.swift */; };
-		A7A97856245140DB00A82265 /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A773BD4F240E4CC1003ECBFD /* MainTabBarViewController.swift */; };
-		A7A97857245140DB00A82265 /* CreateLiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7355F84240650010010CCD1 /* CreateLiveViewController.swift */; };
-		A7A97858245140DB00A82265 /* AppleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */; };
-		A7A97859245140DB00A82265 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A623FFB49300487FB9 /* UIColor+Hex.m */; };
-		A7A9785A245140DB00A82265 /* URLGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952C512416691600479811 /* URLGroup.swift */; };
-		A7A9785B245140DB00A82265 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7D24162C1000479811 /* zip.c */; };
-		A7A9785C245140DB00A82265 /* AppAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5624162BF600479811 /* AppAssistant.swift */; };
-		A7A9785D245140DB00A82265 /* aestab.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9B24162C1000479811 /* aestab.c */; };
-		A7A9785E245140DB00A82265 /* LiveSeatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */; };
-		A7A9785F245140DB00A82265 /* ChatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF1524331B9C00820096 /* ChatInputView.swift */; };
-		A7A97860245140DB00A82265 /* FUCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AF424162EBB00479811 /* FUCamera.m */; };
-		A7A97861245140DB00A82265 /* GiftVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB88243F218A00C2A3FD /* GiftVM.swift */; };
-		A7A97862245140DB00A82265 /* MineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A773BD4D24090426003ECBFD /* MineViewController.swift */; };
-		A7A97863245140DB00A82265 /* FUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AF224162EBB00479811 /* FUManager.m */; };
-		A7A97864245140DB00A82265 /* BottomToolsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7588527242E01C10011FCCF /* BottomToolsViewController.swift */; };
-		A7A97865245140DB00A82265 /* ImageFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5824162BF600479811 /* ImageFiles.swift */; };
-		A7A97868245140DB00A82265 /* LogFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5924162BF600479811 /* LogFiles.swift */; };
-		A7A97869245140DB00A82265 /* FilletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAEE242B717D0062B2F5 /* FilletView.swift */; };
-		A7A9786A245140DB00A82265 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952C1524162F4200479811 /* User.swift */; };
-		A7A9786B245140DB00A82265 /* AlamoClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA324162C1000479811 /* AlamoClient.swift */; };
-		A7A9786C245140DB00A82265 /* UIView+ExProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = A7355F86240658F40010CCD1 /* UIView+ExProperty.m */; };
-		A7A9786D245140DB00A82265 /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8D24162C1000479811 /* hmac.c */; };
-		A7A9786F245140DB00A82265 /* RTMHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6D24162C1000479811 /* RTMHelper.swift */; };
-		A7A97870245140DB00A82265 /* RequestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6224162C1000479811 /* RequestProtocols.swift */; };
-		A7A97871245140DB00A82265 /* MineVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36B2417AA6100D327B5 /* MineVM.swift */; };
-		A7A97872245140DB00A82265 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7F24162C1000479811 /* ioapi.c */; };
-		A7A97873245140DB00A82265 /* UserNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A773BD512410A001003ECBFD /* UserNameViewController.swift */; };
-		A7A97874245140DB00A82265 /* SingleBroadcasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE32444161400E965FB /* SingleBroadcasterViewController.swift */; };
-		A7A97875245140DB00A82265 /* ViewFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76BD14723F299D900B2732B /* ViewFrame.swift */; };
-		A7A97876245140DB00A82265 /* FUMusicPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AE324162EBB00479811 /* FUMusicPlayer.m */; };
-		A7A97877245140DB00A82265 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB93244059F400C2A3FD /* LiveViewController.swift */; };
-		A7A97878245140DB00A82265 /* LiveSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EA2423495E004FB752 /* LiveSession.swift */; };
-		A7A97879245140DB00A82265 /* ExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF222434C09500820096 /* ExtensionViewController.swift */; };
-		A7A9787A245140DB00A82265 /* AGEError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6124162C1000479811 /* AGEError.swift */; };
-		A7A9787B245140DB00A82265 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7C24162C1000479811 /* unzip.c */; };
-		A7A9787C245140DB00A82265 /* minishared.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8624162C1000479811 /* minishared.c */; };
-		A7A9787D245140DB00A82265 /* LiveAudienceListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EE24249BC0004FB752 /* LiveAudienceListVM.swift */; };
-		A7A9787E245140DB00A82265 /* LiveListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A023FFA65F00487FB9 /* LiveListViewController.swift */; };
-		A7A9787F245140DB00A82265 /* LCLLogFile.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6924162C1000479811 /* LCLLogFile.m */; };
-		A7A97880245140DB00A82265 /* FUItemsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AEC24162EBB00479811 /* FUItemsView.m */; };
-		A7A97881245140DB00A82265 /* FilesGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5724162BF600479811 /* FilesGroup.swift */; };
-		A7A97883245140DB00A82265 /* MediaDeviceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */; };
-		A7A97884245140DB00A82265 /* IconTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A223FFAEE200487FB9 /* IconTextView.swift */; };
-		A7A97885245140DB00A82265 /* fileenc.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9124162C1000479811 /* fileenc.c */; };
-		A7A97886245140DB00A82265 /* TabSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */; };
-		A7A97887245140DB00A82265 /* MediaKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6C24162C1000479811 /* MediaKit.swift */; };
-		A7A97888245140DB00A82265 /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6524162C1000479811 /* Convert.swift */; };
-		A7A97889245140DB00A82265 /* FUItemsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AF124162EBB00479811 /* FUItemsViewCell.m */; };
-		A7A9788A245140DB00A82265 /* ioapi_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8124162C1000479811 /* ioapi_buf.c */; };
-		A7A9788B245140DB00A82265 /* aescrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9024162C1000479811 /* aescrypt.c */; };
-		A7A9788C245140DB00A82265 /* RTMExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA524162C1000479811 /* RTMExtension.swift */; };
-		A7A9788D245140DB00A82265 /* AfterWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7724162C1000479811 /* AfterWorker.swift */; };
-		A7A9788E245140DB00A82265 /* ALKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A4F24162BE600479811 /* ALKeys.swift */; };
-		A7A9788F245140DB00A82265 /* ALJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952C5B2417636D00479811 /* ALJson.swift */; };
-		A7A97890245140DB00A82265 /* DataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7324162C1000479811 /* DataExtension.swift */; };
-		A7A97891245140DB00A82265 /* PKBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BED24445EBB00E965FB /* PKBar.swift */; };
-		A7A97892245140DB00A82265 /* AGELock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7424162C1000479811 /* AGELock.swift */; };
-		A7A97893245140DB00A82265 /* ALCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5124162BE600479811 /* ALCenter.swift */; };
-		A7A97894245140DB00A82265 /* LiveListTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */; };
-		A7A97895245140DB00A82265 /* UIImage+CSClipToCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF87243D740F00820096 /* UIImage+CSClipToCycle.m */; };
-		A7A97896245140DB00A82265 /* MusicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF17243354C500820096 /* MusicViewController.swift */; };
-		A7A97897245140DB00A82265 /* aeskey.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8C24162C1000479811 /* aeskey.c */; };
-		A7A97899245140DB00A82265 /* ChatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF3242C5A920062B2F5 /* ChatVM.swift */; };
-		A7A9789A245140DB00A82265 /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA024162C1000479811 /* SSZipArchive.m */; };
-		A7A9789B245140DB00A82265 /* GiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB86243F034100C2A3FD /* GiftViewController.swift */; };
-		A7A9789C245140DB00A82265 /* LiveTypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76BD13E23F26E0400B2732B /* LiveTypeViewController.swift */; };
-		A7A9789D245140DB00A82265 /* LiveListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A923FFBB9300487FB9 /* LiveListVM.swift */; };
-		A7A9789E245140DB00A82265 /* ioapi_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8524162C1000479811 /* ioapi_mem.c */; };
-		A7A9789F245140DB00A82265 /* FULiveModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AE524162EBB00479811 /* FULiveModel.m */; };
-		A7A978A0245140DB00A82265 /* MediaSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A48241624C700479811 /* MediaSettingsViewController.swift */; };
-		A7A978A1245140DB00A82265 /* LocalLiveSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7779C2A244DC7DC002A285A /* LocalLiveSettings.swift */; };
-		A7A978A2245140DB00A82265 /* LogTube.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6324162C1000479811 /* LogTube.swift */; };
-		A7A978A3245140DB00A82265 /* UserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A758851D242DF20E0011FCCF /* UserListViewController.swift */; };
-		A7A978A4245140DB00A82265 /* MediaModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7224162C1000479811 /* MediaModels.swift */; };
-		A7A978A5245140DB00A82265 /* FUOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AE924162EBB00479811 /* FUOpenGLView.m */; };
-		A7A978A6245140DB00A82265 /* PKBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE7244459F000E965FB /* PKBroadcastersViewController.swift */; };
-		A7A978A8245140DB00A82265 /* MultiBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F339242898DC008D8BC9 /* MultiBroadcastersViewController.swift */; };
-		A7A978A9245140DB00A82265 /* FULiveCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AEF24162EBB00479811 /* FULiveCell.m */; };
-		A7A978AA245140DB00A82265 /* GiftAudienceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F33B2428A014008D8BC9 /* GiftAudienceViewController.swift */; };
-		A7A978AB245140DB00A82265 /* CenterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */; };
-		A7A978AC245140DB00A82265 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F340242B0ADF008D8BC9 /* ChatViewController.swift */; };
-		A7A978AE245140DB00A82265 /* GIFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB82243EF83800C2A3FD /* GIFViewController.swift */; };
-		A7A978B0245140DB00A82265 /* prng.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9824162C1000479811 /* prng.c */; };
-		A7A978B1245140DB00A82265 /* MediaSubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5F24162C1000479811 /* MediaSubs.swift */; };
-		A7A978B2245140DB00A82265 /* RequestModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6E24162C1000479811 /* RequestModels.swift */; };
-		A7A978B3245140DB00A82265 /* AGELog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7524162C1000479811 /* AGELog.swift */; };
-		A7A978B4245140DB00A82265 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5024162BE600479811 /* Utils.swift */; };
-		A7A978B5245140DB00A82265 /* crypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7B24162C1000479811 /* crypt.c */; };
-		A7A978B6245140DB00A82265 /* DictionaryGetable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7124162C1000479811 /* DictionaryGetable.swift */; };
-		A7A978B7245140DB00A82265 /* LiveSeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F33D2428B121008D8BC9 /* LiveSeatViewController.swift */; };
-		A7A978B8245140DB00A82265 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA224162C1000479811 /* NetworkMonitor.swift */; };
-		A7A978B9245140DB00A82265 /* StatisticsInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF272435D7A900820096 /* StatisticsInfo.swift */; };
-		A7A978BA245140DB00A82265 /* PKVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE924445D5B00E965FB /* PKVM.swift */; };
-		A7A978BB245140DB00A82265 /* ZipTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6F24162C1000479811 /* ZipTool.swift */; };
-		A7A978BC245140DB00A82265 /* RTCExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7624162C1000479811 /* RTCExtension.swift */; };
-		A7A978BD245140DB00A82265 /* RealDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF292435D8BE00820096 /* RealDataViewController.swift */; };
-		A7A978BE245140DB00A82265 /* TypeAlias.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6B24162C1000479811 /* TypeAlias.swift */; };
-		A7A978C0245140DB00A82265 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76BD12023F1035500B2732B /* AppDelegate.swift */; };
-		A7A978C1245140DB00A82265 /* LiveRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EC24238389004FB752 /* LiveRole.swift */; };
-		A7A978C2245140DB00A82265 /* CSNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D5B29244FE77D00CE7528 /* CSNavigationController.swift */; };
-		A7A978C3245140DB00A82265 /* RTMProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6424162C1000479811 /* RTMProtocols.swift */; };
-		A7A978C4245140DB00A82265 /* DeviceAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6624162C1000479811 /* DeviceAssistant.swift */; };
-		A7A978C5245140DB00A82265 /* aes_ni.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9624162C1000479811 /* aes_ni.c */; };
-		A7A978C6245140DB00A82265 /* pwd2key.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9A24162C1000479811 /* pwd2key.c */; };
-		A7A978C8245140DB00A82265 /* libnama.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952B8324162EBC00479811 /* libnama.a */; };
-		A7A978C9245140DB00A82265 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1B2416318D00479811 /* libc++.tbd */; };
-		A7A978CB245140DB00A82265 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C172416317900479811 /* Accelerate.framework */; };
-		A7A978CC245140DB00A82265 /* AgoraRtcKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1F241631C600479811 /* AgoraRtcKit.framework */; };
-		A7A978CD245140DB00A82265 /* AgoraRtmKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C20241631C600479811 /* AgoraRtmKit.framework */; };
-		A7A978CE245140DB00A82265 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C192416318300479811 /* CoreTelephony.framework */; };
-		A7A978CF245140DB00A82265 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1D241631A900479811 /* libresolv.tbd */; };
-		A7A978DD245140DB00A82265 /* release_note.txt in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8224162EBC00479811 /* release_note.txt */; };
-		A7A978DE245140DB00A82265 /* SuperRocket.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB77243EF78A00C2A3FD /* SuperRocket.gif */; };
-		A7A978E4245140DB00A82265 /* SuperBell.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8B244015DF00C2A3FD /* SuperBell.gif */; };
-		A7A978EB245140DB00A82265 /* anim_model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8724162EBC00479811 /* anim_model.bundle */; };
-		A7A978FB245140DB00A82265 /* SuperRing.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB79243EF78A00C2A3FD /* SuperRing.gif */; };
-		A7A978FF245140DB00A82265 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A72B7BEB24445DEF00E965FB /* Assets.xcassets */; };
-		A7A9790A245140DB00A82265 /* face_beautification.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8824162EBC00479811 /* face_beautification.bundle */; };
-		A7A9790E245140DB00A82265 /* ardata_ex.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8624162EBC00479811 /* ardata_ex.bundle */; };
-		A7A9790F245140DB00A82265 /* SuperCake.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8C244015DF00C2A3FD /* SuperCake.gif */; };
-		A7A97913245140DB00A82265 /* SuperDiamond.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB7A243EF78A00C2A3FD /* SuperDiamond.gif */; };
-		A7A97925245140DB00A82265 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A76BD12B23F1035600B2732B /* LaunchScreen.storyboard */; };
-		A7A9792C245140DB00A82265 /* SuperWatch.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB78243EF78A00C2A3FD /* SuperWatch.gif */; };
-		A7A97930245140DB00A82265 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A76BD13C23F25F6500B2732B /* Localizable.strings */; };
-		A7A97931245140DB00A82265 /* v3.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8524162EBC00479811 /* v3.bundle */; };
-		A7A9794B245140DB00A82265 /* SuperIcecream.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8A244015DF00C2A3FD /* SuperIcecream.gif */; };
-		A7A97953245140DB00A82265 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A76BD12623F1035500B2732B /* Main.storyboard */; };
-		A7A97954245140DB00A82265 /* SuperWine.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8D244015DF00C2A3FD /* SuperWine.gif */; };
-		A7A97957245140DB00A82265 /* AgoraRtcKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1F241631C600479811 /* AgoraRtcKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		A7CEAE57247252E00041124B /* MusicVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF1924335CD600820096 /* MusicVM.swift */; };
-		A7CEAE58247252E00041124B /* GIFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A768B6132452F3980073510D /* GIFView.swift */; };
-		A7CEAE59247252E00041124B /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9324162C1000479811 /* sha1.c */; };
-		A7CEAE5A247252E00041124B /* RTMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6024162C1000479811 /* RTMClient.swift */; };
-		A7CEAE5B247252E00041124B /* BeautySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7053A40241A2C290061E5E2 /* BeautySettingsViewController.swift */; };
-		A7CEAE5C247252E00041124B /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A773BD4F240E4CC1003ECBFD /* MainTabBarViewController.swift */; };
-		A7CEAE5D247252E00041124B /* CreateLiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7355F84240650010010CCD1 /* CreateLiveViewController.swift */; };
-		A7CEAE5E247252E00041124B /* AppleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */; };
-		A7CEAE5F247252E00041124B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A623FFB49300487FB9 /* UIColor+Hex.m */; };
-		A7CEAE60247252E00041124B /* URLGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952C512416691600479811 /* URLGroup.swift */; };
-		A7CEAE61247252E00041124B /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7D24162C1000479811 /* zip.c */; };
-		A7CEAE62247252E00041124B /* UserData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719061224667DCE0031E91C /* UserData+CoreDataProperties.swift */; };
-		A7CEAE63247252E00041124B /* AppAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5624162BF600479811 /* AppAssistant.swift */; };
-		A7CEAE64247252E00041124B /* LabelShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A795CEC12451683700220EF4 /* LabelShadowView.swift */; };
-		A7CEAE65247252E00041124B /* aestab.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9B24162C1000479811 /* aestab.c */; };
-		A7CEAE66247252E00041124B /* LiveSeatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */; };
-		A7CEAE67247252E00041124B /* ChatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF1524331B9C00820096 /* ChatInputView.swift */; };
-		A7CEAE68247252E00041124B /* FUCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AF424162EBB00479811 /* FUCamera.m */; };
-		A7CEAE69247252E00041124B /* GiftVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB88243F218A00C2A3FD /* GiftVM.swift */; };
-		A7CEAE6A247252E00041124B /* MineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A773BD4D24090426003ECBFD /* MineViewController.swift */; };
-		A7CEAE6B247252E00041124B /* FUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AF224162EBB00479811 /* FUManager.m */; };
-		A7CEAE6C247252E00041124B /* BottomToolsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7588527242E01C10011FCCF /* BottomToolsViewController.swift */; };
-		A7CEAE6D247252E00041124B /* ImageFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5824162BF600479811 /* ImageFiles.swift */; };
-		A7CEAE6E247252E00041124B /* LogFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5924162BF600479811 /* LogFiles.swift */; };
-		A7CEAE6F247252E00041124B /* FilletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAEE242B717D0062B2F5 /* FilletView.swift */; };
-		A7CEAE70247252E00041124B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952C1524162F4200479811 /* User.swift */; };
-		A7CEAE71247252E00041124B /* AlamoClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA324162C1000479811 /* AlamoClient.swift */; };
-		A7CEAE72247252E00041124B /* AGECameraProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060624666D2B0031E91C /* AGECameraProtocol.swift */; };
-		A7CEAE73247252E00041124B /* UserDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719061324667DCE0031E91C /* UserDataHelper.swift */; };
-		A7CEAE74247252E00041124B /* PlayerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77718152456FBDA00BF1F21 /* PlayerVM.swift */; };
-		A7CEAE75247252E00041124B /* UIView+ExProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = A7355F86240658F40010CCD1 /* UIView+ExProperty.m */; };
-		A7CEAE76247252E00041124B /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8D24162C1000479811 /* hmac.c */; };
-		A7CEAE77247252E00041124B /* RTMHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6D24162C1000479811 /* RTMHelper.swift */; };
-		A7CEAE78247252E00041124B /* RequestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6224162C1000479811 /* RequestProtocols.swift */; };
-		A7CEAE79247252E00041124B /* MineVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36B2417AA6100D327B5 /* MineVM.swift */; };
-		A7CEAE7A247252E00041124B /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7F24162C1000479811 /* ioapi.c */; };
-		A7CEAE7B247252E00041124B /* UserNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A773BD512410A001003ECBFD /* UserNameViewController.swift */; };
-		A7CEAE7C247252E00041124B /* SingleBroadcasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE32444161400E965FB /* SingleBroadcasterViewController.swift */; };
-		A7CEAE7D247252E00041124B /* ViewFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76BD14723F299D900B2732B /* ViewFrame.swift */; };
-		A7CEAE7E247252E00041124B /* FUMusicPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AE324162EBB00479811 /* FUMusicPlayer.m */; };
-		A7CEAE7F247252E00041124B /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB93244059F400C2A3FD /* LiveViewController.swift */; };
-		A7CEAE80247252E00041124B /* LiveSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EA2423495E004FB752 /* LiveSession.swift */; };
-		A7CEAE81247252E00041124B /* ExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF222434C09500820096 /* ExtensionViewController.swift */; };
-		A7CEAE82247252E00041124B /* AGEError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6124162C1000479811 /* AGEError.swift */; };
-		A7CEAE83247252E00041124B /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7C24162C1000479811 /* unzip.c */; };
-		A7CEAE84247252E00041124B /* minishared.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8624162C1000479811 /* minishared.c */; };
-		A7CEAE85247252E00041124B /* LiveAudienceListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EE24249BC0004FB752 /* LiveAudienceListVM.swift */; };
-		A7CEAE86247252E00041124B /* LiveListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A023FFA65F00487FB9 /* LiveListViewController.swift */; };
-		A7CEAE87247252E00041124B /* LCLLogFile.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6924162C1000479811 /* LCLLogFile.m */; };
-		A7CEAE88247252E00041124B /* VideoEnhancementVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7847F982458216600469187 /* VideoEnhancementVM.swift */; };
-		A7CEAE89247252E00041124B /* FUItemsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AEC24162EBB00479811 /* FUItemsView.m */; };
-		A7CEAE8A247252E00041124B /* FilesGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5724162BF600479811 /* FilesGroup.swift */; };
-		A7CEAE8B247252E00041124B /* AGECameraSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060724666D2B0031E91C /* AGECameraSession.swift */; };
-		A7CEAE8C247252E00041124B /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EA40BB2459825000301AE3 /* ToastView.swift */; };
-		A7CEAE8D247252E00041124B /* MediaDeviceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */; };
-		A7CEAE8E247252E00041124B /* IconTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A223FFAEE200487FB9 /* IconTextView.swift */; };
-		A7CEAE8F247252E00041124B /* fileenc.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9124162C1000479811 /* fileenc.c */; };
-		A7CEAE90247252E00041124B /* TabSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */; };
-		A7CEAE91247252E00041124B /* MediaKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6C24162C1000479811 /* MediaKit.swift */; };
-		A7CEAE92247252E00041124B /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6524162C1000479811 /* Convert.swift */; };
-		A7CEAE93247252E00041124B /* FUItemsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AF124162EBB00479811 /* FUItemsViewCell.m */; };
-		A7CEAE94247252E00041124B /* ioapi_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8124162C1000479811 /* ioapi_buf.c */; };
-		A7CEAE95247252E00041124B /* UserData+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719061124667DCE0031E91C /* UserData+CoreDataClass.swift */; };
-		A7CEAE96247252E00041124B /* aescrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9024162C1000479811 /* aescrypt.c */; };
-		A7CEAE97247252E00041124B /* RTMExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA524162C1000479811 /* RTMExtension.swift */; };
-		A7CEAE98247252E00041124B /* AgoraLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A719060F24667DCE0031E91C /* AgoraLive.xcdatamodeld */; };
-		A7CEAE99247252E00041124B /* AfterWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7724162C1000479811 /* AfterWorker.swift */; };
-		A7CEAE9A247252E00041124B /* Popover.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060C24666D580031E91C /* Popover.swift */; };
-		A7CEAE9B247252E00041124B /* ALKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A4F24162BE600479811 /* ALKeys.swift */; };
-		A7CEAE9C247252E00041124B /* AGESingleCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060524666D2B0031E91C /* AGESingleCamera.swift */; };
-		A7CEAE9D247252E00041124B /* ALJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952C5B2417636D00479811 /* ALJson.swift */; };
-		A7CEAE9E247252E00041124B /* DataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7324162C1000479811 /* DataExtension.swift */; };
-		A7CEAE9F247252E00041124B /* PKBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BED24445EBB00E965FB /* PKBar.swift */; };
-		A7CEAEA0247252E00041124B /* AGELock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7424162C1000479811 /* AGELock.swift */; };
-		A7CEAEA1247252E00041124B /* ALCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5124162BE600479811 /* ALCenter.swift */; };
-		A7CEAEA2247252E00041124B /* LiveListTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */; };
-		A7CEAEA3247252E00041124B /* UIImage+CSClipToCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF87243D740F00820096 /* UIImage+CSClipToCycle.m */; };
-		A7CEAEA4247252E00041124B /* MusicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF17243354C500820096 /* MusicViewController.swift */; };
-		A7CEAEA5247252E00041124B /* aeskey.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8C24162C1000479811 /* aeskey.c */; };
-		A7CEAEA6247252E00041124B /* ChatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF3242C5A920062B2F5 /* ChatVM.swift */; };
-		A7CEAEA7247252E00041124B /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA024162C1000479811 /* SSZipArchive.m */; };
-		A7CEAEA8247252E00041124B /* GiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB86243F034100C2A3FD /* GiftViewController.swift */; };
-		A7CEAEA9247252E00041124B /* LiveTypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76BD13E23F26E0400B2732B /* LiveTypeViewController.swift */; };
-		A7CEAEAA247252E00041124B /* LiveListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A923FFBB9300487FB9 /* LiveListVM.swift */; };
-		A7CEAEAB247252E00041124B /* ioapi_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A8524162C1000479811 /* ioapi_mem.c */; };
-		A7CEAEAC247252E00041124B /* FULiveModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AE524162EBB00479811 /* FULiveModel.m */; };
-		A7CEAEAD247252E00041124B /* MediaSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A48241624C700479811 /* MediaSettingsViewController.swift */; };
-		A7CEAEAE247252E00041124B /* LocalLiveSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7779C2A244DC7DC002A285A /* LocalLiveSettings.swift */; };
-		A7CEAEAF247252E00041124B /* LogTube.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6324162C1000479811 /* LogTube.swift */; };
-		A7CEAEB0247252E00041124B /* UserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A758851D242DF20E0011FCCF /* UserListViewController.swift */; };
-		A7CEAEB1247252E00041124B /* MediaModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7224162C1000479811 /* MediaModels.swift */; };
-		A7CEAEB2247252E00041124B /* FUOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AE924162EBB00479811 /* FUOpenGLView.m */; };
-		A7CEAEB3247252E00041124B /* PKBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE7244459F000E965FB /* PKBroadcastersViewController.swift */; };
-		A7CEAEB4247252E00041124B /* MultiBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F339242898DC008D8BC9 /* MultiBroadcastersViewController.swift */; };
-		A7CEAEB5247252E00041124B /* FULiveCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A7952AEF24162EBB00479811 /* FULiveCell.m */; };
-		A7CEAEB6247252E00041124B /* GiftAudienceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F33B2428A014008D8BC9 /* GiftAudienceViewController.swift */; };
-		A7CEAEB7247252E00041124B /* CenterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */; };
-		A7CEAEB8247252E00041124B /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F340242B0ADF008D8BC9 /* ChatViewController.swift */; };
-		A7CEAEB9247252E00041124B /* AGECameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A719060424666D2B0031E91C /* AGECameraPreview.swift */; };
-		A7CEAEBA247252E00041124B /* GIFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711AB82243EF83800C2A3FD /* GIFViewController.swift */; };
-		A7CEAEBB247252E00041124B /* prng.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9824162C1000479811 /* prng.c */; };
-		A7CEAEBC247252E00041124B /* MediaSubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5F24162C1000479811 /* MediaSubs.swift */; };
-		A7CEAEBD247252E00041124B /* RequestModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6E24162C1000479811 /* RequestModels.swift */; };
-		A7CEAEBE247252E00041124B /* AGELog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7524162C1000479811 /* AGELog.swift */; };
-		A7CEAEBF247252E00041124B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A5024162BE600479811 /* Utils.swift */; };
-		A7CEAEC0247252E00041124B /* crypt.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7B24162C1000479811 /* crypt.c */; };
-		A7CEAEC1247252E00041124B /* DictionaryGetable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7124162C1000479811 /* DictionaryGetable.swift */; };
-		A7CEAEC2247252E00041124B /* LiveSeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A791F33D2428B121008D8BC9 /* LiveSeatViewController.swift */; };
-		A7CEAEC3247252E00041124B /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952AA224162C1000479811 /* NetworkMonitor.swift */; };
-		A7CEAEC4247252E00041124B /* StatisticsInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF272435D7A900820096 /* StatisticsInfo.swift */; };
-		A7CEAEC5247252E00041124B /* PKVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE924445D5B00E965FB /* PKVM.swift */; };
-		A7CEAEC6247252E00041124B /* ZipTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6F24162C1000479811 /* ZipTool.swift */; };
-		A7CEAEC7247252E00041124B /* RTCExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A7624162C1000479811 /* RTCExtension.swift */; };
-		A7CEAEC8247252E00041124B /* RealDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF292435D8BE00820096 /* RealDataViewController.swift */; };
-		A7CEAEC9247252E00041124B /* TypeAlias.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6B24162C1000479811 /* TypeAlias.swift */; };
-		A7CEAECA247252E00041124B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76BD12023F1035500B2732B /* AppDelegate.swift */; };
-		A7CEAECB247252E00041124B /* LiveRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EC24238389004FB752 /* LiveRole.swift */; };
-		A7CEAECC247252E00041124B /* CSNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D5B29244FE77D00CE7528 /* CSNavigationController.swift */; };
-		A7CEAECD247252E00041124B /* RTMProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6424162C1000479811 /* RTMProtocols.swift */; };
-		A7CEAECE247252E00041124B /* DeviceAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7952A6624162C1000479811 /* DeviceAssistant.swift */; };
-		A7CEAECF247252E00041124B /* aes_ni.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9624162C1000479811 /* aes_ni.c */; };
-		A7CEAED0247252E00041124B /* pwd2key.c in Sources */ = {isa = PBXBuildFile; fileRef = A7952A9A24162C1000479811 /* pwd2key.c */; };
-		A7CEAED2247252E00041124B /* libnama.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952B8324162EBC00479811 /* libnama.a */; };
-		A7CEAED3247252E00041124B /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1B2416318D00479811 /* libc++.tbd */; };
-		A7CEAED4247252E00041124B /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C172416317900479811 /* Accelerate.framework */; };
-		A7CEAED5247252E00041124B /* AgoraRtcKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1F241631C600479811 /* AgoraRtcKit.framework */; };
-		A7CEAED6247252E00041124B /* AgoraRtmKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C20241631C600479811 /* AgoraRtmKit.framework */; };
-		A7CEAED7247252E00041124B /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C192416318300479811 /* CoreTelephony.framework */; };
-		A7CEAED8247252E00041124B /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1D241631A900479811 /* libresolv.tbd */; };
-		A7CEAEDB247252E00041124B /* sound.gif in Resources */ = {isa = PBXBuildFile; fileRef = A7847F9524581A5800469187 /* sound.gif */; };
-		A7CEAEDC247252E00041124B /* release_note.txt in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8224162EBC00479811 /* release_note.txt */; };
-		A7CEAEDD247252E00041124B /* SuperRocket.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB77243EF78A00C2A3FD /* SuperRocket.gif */; };
-		A7CEAEDE247252E00041124B /* SuperBell.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8B244015DF00C2A3FD /* SuperBell.gif */; };
-		A7CEAEDF247252E00041124B /* anim_model.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8724162EBC00479811 /* anim_model.bundle */; };
-		A7CEAEE0247252E00041124B /* SuperRing.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB79243EF78A00C2A3FD /* SuperRing.gif */; };
-		A7CEAEE1247252E00041124B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A72B7BEB24445DEF00E965FB /* Assets.xcassets */; };
-		A7CEAEE2247252E00041124B /* face_beautification.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8824162EBC00479811 /* face_beautification.bundle */; };
-		A7CEAEE3247252E00041124B /* ardata_ex.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8624162EBC00479811 /* ardata_ex.bundle */; };
-		A7CEAEE4247252E00041124B /* SuperCake.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8C244015DF00C2A3FD /* SuperCake.gif */; };
-		A7CEAEE5247252E00041124B /* SuperDiamond.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB7A243EF78A00C2A3FD /* SuperDiamond.gif */; };
-		A7CEAEE6247252E00041124B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A76BD12B23F1035600B2732B /* LaunchScreen.storyboard */; };
-		A7CEAEE7247252E00041124B /* SuperWatch.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB78243EF78A00C2A3FD /* SuperWatch.gif */; };
-		A7CEAEE8247252E00041124B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A76BD13C23F25F6500B2732B /* Localizable.strings */; };
-		A7CEAEE9247252E00041124B /* v3.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7952B8524162EBC00479811 /* v3.bundle */; };
-		A7CEAEEA247252E00041124B /* SuperIcecream.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8A244015DF00C2A3FD /* SuperIcecream.gif */; };
-		A7CEAEEB247252E00041124B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A76BD12623F1035500B2732B /* Main.storyboard */; };
-		A7CEAEEC247252E00041124B /* SuperWine.gif in Resources */ = {isa = PBXBuildFile; fileRef = A711AB8D244015DF00C2A3FD /* SuperWine.gif */; };
-		A7CEAEEF247252E00041124B /* AgoraRtcKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A7952C1F241631C600479811 /* AgoraRtcKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A7CEF1EB2423495E004FB752 /* LiveSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EA2423495E004FB752 /* LiveSession.swift */; };
 		A7CEF1ED24238389004FB752 /* LiveRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EC24238389004FB752 /* LiveRole.swift */; };
 		A7CEF1EF24249BC0004FB752 /* LiveAudienceListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EE24249BC0004FB752 /* LiveAudienceListVM.swift */; };
 		A7D2D36C2417AA6100D327B5 /* MineVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36B2417AA6100D327B5 /* MineVM.swift */; };
 		A7D2D36F2418D0B600D327B5 /* CenterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */; };
+		A7D89D4C247E79060048B7EC /* VirtualAppearanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */; };
 		A7EA40BC2459825000301AE3 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EA40BB2459825000301AE3 /* ToastView.swift */; };
-		A7EA40BD2459825000301AE3 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EA40BB2459825000301AE3 /* ToastView.swift */; };
 		A7FDB59B23FD07B600487FB9 /* TabSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */; };
 		A7FDB59D23FD0E3C00487FB9 /* AppleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */; };
 		A7FDB59F23FD2B0C00487FB9 /* LiveListTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */; };
@@ -460,50 +140,13 @@
 		A7FDB5A323FFAEE200487FB9 /* IconTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A223FFAEE200487FB9 /* IconTextView.swift */; };
 		A7FDB5A723FFB49300487FB9 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A623FFB49300487FB9 /* UIColor+Hex.m */; };
 		A7FDB5AA23FFBB9400487FB9 /* LiveListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FDB5A923FFBB9300487FB9 /* LiveListVM.swift */; };
-		EEB250A2CF0E035F2B953304 /* Pods_AgoraLive_Dev.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26700E38D3B7B23B457F18DB /* Pods_AgoraLive_Dev.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		A7952C5A2417457A00479811 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A7952C592417457A00479811 /* AgoraRtcKit.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A7A97956245140DB00A82265 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A7A97957245140DB00A82265 /* AgoraRtcKit.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A7CEAEEE247252E00041124B /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A7CEAEEF247252E00041124B /* AgoraRtcKit.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		082C9E83E5903709E7F89EB6 /* Pods-AgoraLive-Dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-Dev.release.xcconfig"; path = "Target Support Files/Pods-AgoraLive-Dev/Pods-AgoraLive-Dev.release.xcconfig"; sourceTree = "<group>"; };
 		0D77F57C20847D7309A00368 /* Pods-AgoraLive-QA.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-QA.debug.xcconfig"; path = "Target Support Files/Pods-AgoraLive-QA/Pods-AgoraLive-QA.debug.xcconfig"; sourceTree = "<group>"; };
+		18414857EA87443471255598 /* Pods-AgoraLive.qa-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.qa-dev.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.qa-dev.xcconfig"; sourceTree = "<group>"; };
 		1F308420F77498A6670DDED4 /* Pods-AgoraLive-Release.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-Release.debug.xcconfig"; path = "Target Support Files/Pods-AgoraLive-Release/Pods-AgoraLive-Release.debug.xcconfig"; sourceTree = "<group>"; };
-		26700E38D3B7B23B457F18DB /* Pods_AgoraLive_Dev.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AgoraLive_Dev.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		303FD145CF503D71440928AB /* Pods-AgoraLive-QA.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-QA.release.xcconfig"; path = "Target Support Files/Pods-AgoraLive-QA/Pods-AgoraLive-QA.release.xcconfig"; sourceTree = "<group>"; };
 		4870B43BF0CE702438D4A34B /* Pods-AgoraLive-Release.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-Release.release.xcconfig"; path = "Target Support Files/Pods-AgoraLive-Release/Pods-AgoraLive-Release.release.xcconfig"; sourceTree = "<group>"; };
 		5D497D90BD3A0419E963ADD5 /* Pods-AgoraLive-Dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-Dev.debug.xcconfig"; path = "Target Support Files/Pods-AgoraLive-Dev/Pods-AgoraLive-Dev.debug.xcconfig"; sourceTree = "<group>"; };
@@ -512,22 +155,10 @@
 		8D7DEA977B663CF4D6680DC4 /* Pods-AgoraLive.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.debug.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.debug.xcconfig"; sourceTree = "<group>"; };
 		A379550C00848DAE8B2643E2 /* Pods-AgoraLive.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.release.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.release.xcconfig"; sourceTree = "<group>"; };
 		A7053A40241A2C290061E5E2 /* BeautySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeautySettingsViewController.swift; sourceTree = "<group>"; };
-		A711AB77243EF78A00C2A3FD /* SuperRocket.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperRocket.gif; sourceTree = "<group>"; };
-		A711AB78243EF78A00C2A3FD /* SuperWatch.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperWatch.gif; sourceTree = "<group>"; };
-		A711AB79243EF78A00C2A3FD /* SuperRing.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperRing.gif; sourceTree = "<group>"; };
-		A711AB7A243EF78A00C2A3FD /* SuperDiamond.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperDiamond.gif; sourceTree = "<group>"; };
 		A711AB82243EF83800C2A3FD /* GIFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFViewController.swift; sourceTree = "<group>"; };
 		A711AB86243F034100C2A3FD /* GiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftViewController.swift; sourceTree = "<group>"; };
 		A711AB88243F218A00C2A3FD /* GiftVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftVM.swift; sourceTree = "<group>"; };
-		A711AB8A244015DF00C2A3FD /* SuperIcecream.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperIcecream.gif; sourceTree = "<group>"; };
-		A711AB8B244015DF00C2A3FD /* SuperBell.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperBell.gif; sourceTree = "<group>"; };
-		A711AB8C244015DF00C2A3FD /* SuperCake.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperCake.gif; sourceTree = "<group>"; };
-		A711AB8D244015DF00C2A3FD /* SuperWine.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperWine.gif; sourceTree = "<group>"; };
 		A711AB93244059F400C2A3FD /* LiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
-		A719060424666D2B0031E91C /* AGECameraPreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AGECameraPreview.swift; sourceTree = "<group>"; };
-		A719060524666D2B0031E91C /* AGESingleCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AGESingleCamera.swift; sourceTree = "<group>"; };
-		A719060624666D2B0031E91C /* AGECameraProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AGECameraProtocol.swift; sourceTree = "<group>"; };
-		A719060724666D2B0031E91C /* AGECameraSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AGECameraSession.swift; sourceTree = "<group>"; };
 		A719060C24666D580031E91C /* Popover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Popover.swift; sourceTree = "<group>"; };
 		A719061024667DCE0031E91C /* AgoraLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AgoraLive.xcdatamodel; sourceTree = "<group>"; };
 		A719061124667DCE0031E91C /* UserData+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserData+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -554,10 +185,15 @@
 		A754FAEE242B717D0062B2F5 /* FilletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilletView.swift; sourceTree = "<group>"; };
 		A754FAF3242C5A920062B2F5 /* ChatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatVM.swift; sourceTree = "<group>"; };
 		A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSeatVM.swift; sourceTree = "<group>"; };
+		A7584B08248114EA0088FACB /* VirtualBroadcastersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualBroadcastersViewController.swift; sourceTree = "<group>"; };
+		A7584B4A2484DB290088FACB /* VirtualVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualVM.swift; sourceTree = "<group>"; };
 		A758851D242DF20E0011FCCF /* UserListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewController.swift; sourceTree = "<group>"; };
 		A7588527242E01C10011FCCF /* BottomToolsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomToolsViewController.swift; sourceTree = "<group>"; };
+		A75A56CF24A054C100D0089E /* FUClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FUClient.h; sourceTree = "<group>"; };
+		A75A56D024A054C100D0089E /* FUClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FUClient.m; sourceTree = "<group>"; };
 		A75D5B29244FE77D00CE7528 /* CSNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSNavigationController.swift; sourceTree = "<group>"; };
 		A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDeviceVM.swift; sourceTree = "<group>"; };
+		A76767EA249B0E45002C4FBD /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		A768B6132452F3980073510D /* GIFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFView.swift; sourceTree = "<group>"; };
 		A76BD11D23F1035500B2732B /* AgoraLive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AgoraLive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A76BD12023F1035500B2732B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -573,9 +209,22 @@
 		A773BD4D24090426003ECBFD /* MineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineViewController.swift; sourceTree = "<group>"; };
 		A773BD4F240E4CC1003ECBFD /* MainTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarViewController.swift; sourceTree = "<group>"; };
 		A773BD512410A001003ECBFD /* UserNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNameViewController.swift; sourceTree = "<group>"; };
+		A776F71B24BEA711001B16B1 /* hashiqi.bundle */ = {isa = PBXFileReference; lastKnownFileType = file; path = hashiqi.bundle; sourceTree = "<group>"; };
+		A776F71C24BEA711001B16B1 /* bg.bundle */ = {isa = PBXFileReference; lastKnownFileType = file; path = bg.bundle; sourceTree = "<group>"; };
+		A776F71D24BEA711001B16B1 /* girl.bundle */ = {isa = PBXFileReference; lastKnownFileType = file; path = girl.bundle; sourceTree = "<group>"; };
+		A776F71E24BEA711001B16B1 /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
 		A77718152456FBDA00BF1F21 /* PlayerVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerVM.swift; sourceTree = "<group>"; };
 		A7779C2A244DC7DC002A285A /* LocalLiveSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalLiveSettings.swift; sourceTree = "<group>"; };
-		A7847F9524581A5800469187 /* sound.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = sound.gif; sourceTree = "<group>"; };
+		A77E573824A8955600DD7670 /* SuperBell.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperBell.gif; sourceTree = "<group>"; };
+		A77E573924A8955600DD7670 /* SuperCake.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperCake.gif; sourceTree = "<group>"; };
+		A77E573A24A8955600DD7670 /* SuperWatch.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperWatch.gif; sourceTree = "<group>"; };
+		A77E573B24A8955600DD7670 /* SuperWine.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperWine.gif; sourceTree = "<group>"; };
+		A77E573C24A8955600DD7670 /* SuperRocket.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperRocket.gif; sourceTree = "<group>"; };
+		A77E573D24A8955600DD7670 /* SuperRing.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperRing.gif; sourceTree = "<group>"; };
+		A77E573E24A8955600DD7670 /* SuperIcecream.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperIcecream.gif; sourceTree = "<group>"; };
+		A77E573F24A8955600DD7670 /* SuperDiamond.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperDiamond.gif; sourceTree = "<group>"; };
+		A77E574024A8955600DD7670 /* sound.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = sound.gif; sourceTree = "<group>"; };
+		A77E579124AE10FE00DD7670 /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		A7847F982458216600469187 /* VideoEnhancementVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEnhancementVM.swift; sourceTree = "<group>"; };
 		A791F339242898DC008D8BC9 /* MultiBroadcastersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiBroadcastersViewController.swift; sourceTree = "<group>"; };
 		A791F33B2428A014008D8BC9 /* GiftAudienceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftAudienceViewController.swift; sourceTree = "<group>"; };
@@ -592,7 +241,6 @@
 		A7952A5F24162C1000479811 /* MediaSubs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaSubs.swift; sourceTree = "<group>"; };
 		A7952A6024162C1000479811 /* RTMClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMClient.swift; sourceTree = "<group>"; };
 		A7952A6124162C1000479811 /* AGEError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AGEError.swift; sourceTree = "<group>"; };
-		A7952A6224162C1000479811 /* RequestProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestProtocols.swift; sourceTree = "<group>"; };
 		A7952A6324162C1000479811 /* LogTube.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogTube.swift; sourceTree = "<group>"; };
 		A7952A6424162C1000479811 /* RTMProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMProtocols.swift; sourceTree = "<group>"; };
 		A7952A6524162C1000479811 /* Convert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
@@ -603,7 +251,6 @@
 		A7952A6B24162C1000479811 /* TypeAlias.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeAlias.swift; sourceTree = "<group>"; };
 		A7952A6C24162C1000479811 /* MediaKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaKit.swift; sourceTree = "<group>"; };
 		A7952A6D24162C1000479811 /* RTMHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMHelper.swift; sourceTree = "<group>"; };
-		A7952A6E24162C1000479811 /* RequestModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestModels.swift; sourceTree = "<group>"; };
 		A7952A6F24162C1000479811 /* ZipTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipTool.swift; sourceTree = "<group>"; };
 		A7952A7124162C1000479811 /* DictionaryGetable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryGetable.swift; sourceTree = "<group>"; };
 		A7952A7224162C1000479811 /* MediaModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaModels.swift; sourceTree = "<group>"; };
@@ -651,34 +298,7 @@
 		A7952A9F24162C1000479811 /* SSZipCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipCommon.h; sourceTree = "<group>"; };
 		A7952AA024162C1000479811 /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
 		A7952AA124162C1000479811 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A7952AA224162C1000479811 /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
-		A7952AA324162C1000479811 /* AlamoClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlamoClient.swift; sourceTree = "<group>"; };
 		A7952AA524162C1000479811 /* RTMExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMExtension.swift; sourceTree = "<group>"; };
-		A7952AE324162EBB00479811 /* FUMusicPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUMusicPlayer.m; sourceTree = "<group>"; };
-		A7952AE424162EBB00479811 /* FUOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUOpenGLView.h; sourceTree = "<group>"; };
-		A7952AE524162EBB00479811 /* FULiveModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FULiveModel.m; sourceTree = "<group>"; };
-		A7952AE624162EBB00479811 /* FUCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUCamera.h; sourceTree = "<group>"; };
-		A7952AE724162EBB00479811 /* FUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUManager.h; sourceTree = "<group>"; };
-		A7952AE924162EBB00479811 /* FUOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUOpenGLView.m; sourceTree = "<group>"; };
-		A7952AEA24162EBB00479811 /* FUMusicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUMusicPlayer.h; sourceTree = "<group>"; };
-		A7952AEC24162EBB00479811 /* FUItemsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUItemsView.m; sourceTree = "<group>"; };
-		A7952AED24162EBB00479811 /* FULiveCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FULiveCell.h; sourceTree = "<group>"; };
-		A7952AEE24162EBB00479811 /* FUItemsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUItemsViewCell.h; sourceTree = "<group>"; };
-		A7952AEF24162EBB00479811 /* FULiveCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FULiveCell.m; sourceTree = "<group>"; };
-		A7952AF024162EBB00479811 /* FUItemsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUItemsView.h; sourceTree = "<group>"; };
-		A7952AF124162EBB00479811 /* FUItemsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUItemsViewCell.m; sourceTree = "<group>"; };
-		A7952AF224162EBB00479811 /* FUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUManager.m; sourceTree = "<group>"; };
-		A7952AF324162EBB00479811 /* FULiveModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FULiveModel.h; sourceTree = "<group>"; };
-		A7952AF424162EBB00479811 /* FUCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUCamera.m; sourceTree = "<group>"; };
-		A7952B0224162EBB00479811 /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
-		A7952B8224162EBC00479811 /* release_note.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_note.txt; sourceTree = "<group>"; };
-		A7952B8324162EBC00479811 /* libnama.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libnama.a; sourceTree = "<group>"; };
-		A7952B8524162EBC00479811 /* v3.bundle */ = {isa = PBXFileReference; lastKnownFileType = file; path = v3.bundle; sourceTree = "<group>"; };
-		A7952B8624162EBC00479811 /* ardata_ex.bundle */ = {isa = PBXFileReference; lastKnownFileType = file; path = ardata_ex.bundle; sourceTree = "<group>"; };
-		A7952B8724162EBC00479811 /* anim_model.bundle */ = {isa = PBXFileReference; lastKnownFileType = file; path = anim_model.bundle; sourceTree = "<group>"; };
-		A7952B8824162EBC00479811 /* face_beautification.bundle */ = {isa = PBXFileReference; lastKnownFileType = file; path = face_beautification.bundle; sourceTree = "<group>"; };
-		A7952B8A24162EBC00479811 /* funama.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = funama.h; sourceTree = "<group>"; };
-		A7952B8B24162EBC00479811 /* FURenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FURenderer.h; sourceTree = "<group>"; };
 		A7952C1524162F4200479811 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		A7952C172416317900479811 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		A7952C192416318300479811 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -690,13 +310,12 @@
 		A7952C512416691600479811 /* URLGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLGroup.swift; sourceTree = "<group>"; };
 		A7952C5B2417636D00479811 /* ALJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALJson.swift; sourceTree = "<group>"; };
 		A795CEC12451683700220EF4 /* LabelShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelShadowView.swift; sourceTree = "<group>"; };
-		A7A9795B245140DB00A82265 /* AgoraLive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AgoraLive.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A7CEAEF3247252E00041124B /* AgoraLive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AgoraLive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7CEF1EA2423495E004FB752 /* LiveSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSession.swift; sourceTree = "<group>"; };
 		A7CEF1EC24238389004FB752 /* LiveRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRole.swift; sourceTree = "<group>"; };
 		A7CEF1EE24249BC0004FB752 /* LiveAudienceListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveAudienceListVM.swift; sourceTree = "<group>"; };
 		A7D2D36B2417AA6100D327B5 /* MineVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineVM.swift; sourceTree = "<group>"; };
 		A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterHelper.swift; path = ../Center/ALCenter/CenterHelper.swift; sourceTree = "<group>"; };
+		A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualAppearanceViewController.swift; sourceTree = "<group>"; };
 		A7EA40BB2459825000301AE3 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabSelectView.swift; sourceTree = "<group>"; };
 		A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleExtension.swift; sourceTree = "<group>"; };
@@ -706,6 +325,9 @@
 		A7FDB5A523FFB49300487FB9 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		A7FDB5A623FFB49300487FB9 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		A7FDB5A923FFBB9300487FB9 /* LiveListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveListVM.swift; sourceTree = "<group>"; };
+		B455272B1AE17AD3814D3C67 /* Pods_AgoraLive.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AgoraLive.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB5512637E9134229608F7E1 /* Pods-AgoraLive.release-test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.release-test.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.release-test.xcconfig"; sourceTree = "<group>"; };
+		FE7AEBFEC18103833CA7C8E4 /* Pods-AgoraLive.qa-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.qa-pre.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.qa-pre.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -713,45 +335,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A7952C1024162EBC00479811 /* libnama.a in Frameworks */,
 				A7952C1C2416319400479811 /* libc++.tbd in Frameworks */,
 				A7952C182416317900479811 /* Accelerate.framework in Frameworks */,
-				A7952C582417457A00479811 /* AgoraRtcKit.framework in Frameworks */,
-				A7952C23241631C600479811 /* AgoraRtmKit.framework in Frameworks */,
 				A7952C1A2416318300479811 /* CoreTelephony.framework in Frameworks */,
 				A7952C1E241631B200479811 /* libresolv.tbd in Frameworks */,
-				5771FAC0EAE065A3C51D4EA1 /* (null) in Frameworks */,
-				EEB250A2CF0E035F2B953304 /* Pods_AgoraLive_Dev.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A7A978C7245140DB00A82265 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A7A978C8245140DB00A82265 /* libnama.a in Frameworks */,
-				A7A978C9245140DB00A82265 /* libc++.tbd in Frameworks */,
-				A7A978CB245140DB00A82265 /* Accelerate.framework in Frameworks */,
-				A7A978CC245140DB00A82265 /* AgoraRtcKit.framework in Frameworks */,
-				A7A978CD245140DB00A82265 /* AgoraRtmKit.framework in Frameworks */,
-				A7A978CE245140DB00A82265 /* CoreTelephony.framework in Frameworks */,
-				A7A978CF245140DB00A82265 /* libresolv.tbd in Frameworks */,
-				0975BB0997D7E5C3669CB3AF /* Pods_AgoraLive_QA.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A7CEAED1247252E00041124B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A7CEAED2247252E00041124B /* libnama.a in Frameworks */,
-				A7CEAED3247252E00041124B /* libc++.tbd in Frameworks */,
-				A7CEAED4247252E00041124B /* Accelerate.framework in Frameworks */,
-				A7CEAED5247252E00041124B /* AgoraRtcKit.framework in Frameworks */,
-				A7CEAED6247252E00041124B /* AgoraRtmKit.framework in Frameworks */,
-				A7CEAED7247252E00041124B /* CoreTelephony.framework in Frameworks */,
-				A7CEAED8247252E00041124B /* libresolv.tbd in Frameworks */,
-				36A1B88A633EF39815C58821 /* Pods_AgoraLive_Release.framework in Frameworks */,
+				5C815897D3298150823074AF /* Pods_AgoraLive.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -769,6 +357,9 @@
 				303FD145CF503D71440928AB /* Pods-AgoraLive-QA.release.xcconfig */,
 				5D497D90BD3A0419E963ADD5 /* Pods-AgoraLive-Dev.debug.xcconfig */,
 				082C9E83E5903709E7F89EB6 /* Pods-AgoraLive-Dev.release.xcconfig */,
+				18414857EA87443471255598 /* Pods-AgoraLive.qa-dev.xcconfig */,
+				FE7AEBFEC18103833CA7C8E4 /* Pods-AgoraLive.qa-pre.xcconfig */,
+				EB5512637E9134229608F7E1 /* Pods-AgoraLive.release-test.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -784,25 +375,9 @@
 				A7952C172416317900479811 /* Accelerate.framework */,
 				823EA9C8A5237646AB8599E9 /* Pods_AgoraLive_QA.framework */,
 				81367C233BF3DD3090FA3F59 /* Pods_AgoraLive_Release.framework */,
-				26700E38D3B7B23B457F18DB /* Pods_AgoraLive_Dev.framework */,
+				B455272B1AE17AD3814D3C67 /* Pods_AgoraLive.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		A711AB6A243EF74800C2A3FD /* Gif */ = {
-			isa = PBXGroup;
-			children = (
-				A7847F9524581A5800469187 /* sound.gif */,
-				A711AB7A243EF78A00C2A3FD /* SuperDiamond.gif */,
-				A711AB79243EF78A00C2A3FD /* SuperRing.gif */,
-				A711AB77243EF78A00C2A3FD /* SuperRocket.gif */,
-				A711AB78243EF78A00C2A3FD /* SuperWatch.gif */,
-				A711AB8B244015DF00C2A3FD /* SuperBell.gif */,
-				A711AB8C244015DF00C2A3FD /* SuperCake.gif */,
-				A711AB8A244015DF00C2A3FD /* SuperIcecream.gif */,
-				A711AB8D244015DF00C2A3FD /* SuperWine.gif */,
-			);
-			path = Gif;
 			sourceTree = "<group>";
 		};
 		A719060E24667DCE0031E91C /* LocalStorage */ = {
@@ -816,20 +391,20 @@
 			path = LocalStorage;
 			sourceTree = "<group>";
 		};
-		A72B7BE2244415D500E965FB /* SingleBroadcaste */ = {
+		A72B7BE2244415D500E965FB /* SingleBroadcasting */ = {
 			isa = PBXGroup;
 			children = (
 				A72B7BE32444161400E965FB /* SingleBroadcasterViewController.swift */,
 			);
-			name = SingleBroadcaste;
+			name = SingleBroadcasting;
 			sourceTree = "<group>";
 		};
-		A72B7BE6244459CA00E965FB /* PKBroadcasters */ = {
+		A72B7BE6244459CA00E965FB /* PKBroadcasting */ = {
 			isa = PBXGroup;
 			children = (
 				A72B7BE7244459F000E965FB /* PKBroadcastersViewController.swift */,
 			);
-			name = PKBroadcasters;
+			name = PKBroadcasting;
 			sourceTree = "<group>";
 		};
 		A758851F242DF21E0011FCCF /* SharedView */ = {
@@ -858,19 +433,20 @@
 			name = SharedView;
 			sourceTree = "<group>";
 		};
-		A7588522242DF25B0011FCCF /* MultiBroadcasters */ = {
+		A7588522242DF25B0011FCCF /* MultiBroadcasting */ = {
 			isa = PBXGroup;
 			children = (
 				A791F339242898DC008D8BC9 /* MultiBroadcastersViewController.swift */,
 				A791F33D2428B121008D8BC9 /* LiveSeatViewController.swift */,
 			);
-			name = MultiBroadcasters;
+			name = MultiBroadcasting;
 			sourceTree = "<group>";
 		};
 		A76BD11423F1035500B2732B = {
 			isa = PBXGroup;
 			children = (
 				A76BD11F23F1035500B2732B /* AgoraLive */,
+				A77E572C24A8955600DD7670 /* Resource */,
 				A7952A4E24162BC600479811 /* Center */,
 				A76BD11E23F1035500B2732B /* Products */,
 				33F5DFEBF7B1A17E6486CE1B /* Pods */,
@@ -882,8 +458,6 @@
 			isa = PBXGroup;
 			children = (
 				A76BD11D23F1035500B2732B /* AgoraLive.app */,
-				A7A9795B245140DB00A82265 /* AgoraLive.app */,
-				A7CEAEF3247252E00041124B /* AgoraLive.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -897,7 +471,6 @@
 				A719060E24667DCE0031E91C /* LocalStorage */,
 				A76BD14923F2A37900B2732B /* Utils */,
 				A76BD14123F27F2300B2732B /* Supporting Files */,
-				A711AB6A243EF74800C2A3FD /* Gif */,
 			);
 			path = AgoraLive;
 			sourceTree = "<group>";
@@ -906,9 +479,10 @@
 			isa = PBXGroup;
 			children = (
 				A76BD14323F2852500B2732B /* ViewControllers */,
-				A7588522242DF25B0011FCCF /* MultiBroadcasters */,
-				A72B7BE2244415D500E965FB /* SingleBroadcaste */,
-				A72B7BE6244459CA00E965FB /* PKBroadcasters */,
+				A7588522242DF25B0011FCCF /* MultiBroadcasting */,
+				A72B7BE2244415D500E965FB /* SingleBroadcasting */,
+				A72B7BE6244459CA00E965FB /* PKBroadcasting */,
+				A7D89D4A247E78B20048B7EC /* VirtualBroadcasting */,
 				A7CA48C724559B7E00507435 /* Mine */,
 				A758851F242DF21E0011FCCF /* SharedView */,
 				A76BD14423F2853600B2732B /* Views */,
@@ -978,12 +552,57 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		A776F71924BEA711001B16B1 /* Faceunity */ = {
+			isa = PBXGroup;
+			children = (
+				A776F71E24BEA711001B16B1 /* authpack.h */,
+				A776F71A24BEA711001B16B1 /* Animoji */,
+			);
+			path = Faceunity;
+			sourceTree = "<group>";
+		};
+		A776F71A24BEA711001B16B1 /* Animoji */ = {
+			isa = PBXGroup;
+			children = (
+				A776F71B24BEA711001B16B1 /* hashiqi.bundle */,
+				A776F71C24BEA711001B16B1 /* bg.bundle */,
+				A776F71D24BEA711001B16B1 /* girl.bundle */,
+			);
+			path = Animoji;
+			sourceTree = "<group>";
+		};
 		A7779C28244DC56E002A285A /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				A7779C2A244DC7DC002A285A /* LocalLiveSettings.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		A77E572C24A8955600DD7670 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				A776F71924BEA711001B16B1 /* Faceunity */,
+				A77E573724A8955600DD7670 /* Gif */,
+			);
+			name = Resource;
+			path = ../Resource;
+			sourceTree = "<group>";
+		};
+		A77E573724A8955600DD7670 /* Gif */ = {
+			isa = PBXGroup;
+			children = (
+				A77E573824A8955600DD7670 /* SuperBell.gif */,
+				A77E573924A8955600DD7670 /* SuperCake.gif */,
+				A77E573A24A8955600DD7670 /* SuperWatch.gif */,
+				A77E573B24A8955600DD7670 /* SuperWine.gif */,
+				A77E573C24A8955600DD7670 /* SuperRocket.gif */,
+				A77E573D24A8955600DD7670 /* SuperRing.gif */,
+				A77E573E24A8955600DD7670 /* SuperIcecream.gif */,
+				A77E573F24A8955600DD7670 /* SuperDiamond.gif */,
+				A77E574024A8955600DD7670 /* sound.gif */,
+			);
+			path = Gif;
 			sourceTree = "<group>";
 		};
 		A7952A4E24162BC600479811 /* Center */ = {
@@ -1020,7 +639,6 @@
 			isa = PBXGroup;
 			children = (
 				A7952AD424162CF600479811 /* Media */,
-				A7952AD224162C7300479811 /* Request */,
 				A7952AD324162CB300479811 /* Socket */,
 				A7952ADF24162E2800479811 /* Tools */,
 				A7952ADE24162E0900479811 /* Log */,
@@ -1044,8 +662,8 @@
 		A7952A7824162C1000479811 /* SSZipArchive */ = {
 			isa = PBXGroup;
 			children = (
-				A7952A7924162C1000479811 /* ZipArchive.h */,
 				A7952A7A24162C1000479811 /* minizip */,
+				A7952A7924162C1000479811 /* ZipArchive.h */,
 				A7952A9E24162C1000479811 /* SSZipArchive.h */,
 				A7952A9F24162C1000479811 /* SSZipCommon.h */,
 				A7952AA024162C1000479811 /* SSZipArchive.m */,
@@ -1103,17 +721,6 @@
 			path = aes;
 			sourceTree = "<group>";
 		};
-		A7952AD224162C7300479811 /* Request */ = {
-			isa = PBXGroup;
-			children = (
-				A7952AA324162C1000479811 /* AlamoClient.swift */,
-				A7952AA224162C1000479811 /* NetworkMonitor.swift */,
-				A7952A6E24162C1000479811 /* RequestModels.swift */,
-				A7952A6224162C1000479811 /* RequestProtocols.swift */,
-			);
-			name = Request;
-			sourceTree = "<group>";
-		};
 		A7952AD324162CB300479811 /* Socket */ = {
 			isa = PBXGroup;
 			children = (
@@ -1133,20 +740,10 @@
 				A7952A7224162C1000479811 /* MediaModels.swift */,
 				A7952A7624162C1000479811 /* RTCExtension.swift */,
 				A71AAF272435D7A900820096 /* StatisticsInfo.swift */,
-				A7952AD524162CFF00479811 /* Camera */,
+				A75A56CF24A054C100D0089E /* FUClient.h */,
+				A75A56D024A054C100D0089E /* FUClient.m */,
 			);
 			name = Media;
-			sourceTree = "<group>";
-		};
-		A7952AD524162CFF00479811 /* Camera */ = {
-			isa = PBXGroup;
-			children = (
-				A719060424666D2B0031E91C /* AGECameraPreview.swift */,
-				A719060624666D2B0031E91C /* AGECameraProtocol.swift */,
-				A719060724666D2B0031E91C /* AGECameraSession.swift */,
-				A719060524666D2B0031E91C /* AGESingleCamera.swift */,
-			);
-			name = Camera;
 			sourceTree = "<group>";
 		};
 		A7952ADE24162E0900479811 /* Log */ = {
@@ -1162,6 +759,7 @@
 		A7952ADF24162E2800479811 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				A77E579124AE10FE00DD7670 /* NetworkMonitor.swift */,
 				A7952A6624162C1000479811 /* DeviceAssistant.swift */,
 				A7952A7724162C1000479811 /* AfterWorker.swift */,
 				A7952A6524162C1000479811 /* Convert.swift */,
@@ -1184,85 +782,10 @@
 		A7952AE124162E9000479811 /* libs */ = {
 			isa = PBXGroup;
 			children = (
-				A7952AF524162EBB00479811 /* Faceunity */,
-				A7952AE224162EBB00479811 /* FaceunityUtils */,
 				A7952A7824162C1000479811 /* SSZipArchive */,
 				A7952A6724162C1000479811 /* LCLLogFile */,
 			);
 			name = libs;
-			sourceTree = "<group>";
-		};
-		A7952AE224162EBB00479811 /* FaceunityUtils */ = {
-			isa = PBXGroup;
-			children = (
-				A7952AE324162EBB00479811 /* FUMusicPlayer.m */,
-				A7952AE424162EBB00479811 /* FUOpenGLView.h */,
-				A7952AE524162EBB00479811 /* FULiveModel.m */,
-				A7952AE624162EBB00479811 /* FUCamera.h */,
-				A7952AE724162EBB00479811 /* FUManager.h */,
-				A7952AE924162EBB00479811 /* FUOpenGLView.m */,
-				A7952AEA24162EBB00479811 /* FUMusicPlayer.h */,
-				A7952AEB24162EBB00479811 /* Views */,
-				A7952AF224162EBB00479811 /* FUManager.m */,
-				A7952AF324162EBB00479811 /* FULiveModel.h */,
-				A7952AF424162EBB00479811 /* FUCamera.m */,
-			);
-			name = FaceunityUtils;
-			path = ../../SDK/FaceunityUtils;
-			sourceTree = "<group>";
-		};
-		A7952AEB24162EBB00479811 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				A7952AEC24162EBB00479811 /* FUItemsView.m */,
-				A7952AED24162EBB00479811 /* FULiveCell.h */,
-				A7952AEE24162EBB00479811 /* FUItemsViewCell.h */,
-				A7952AEF24162EBB00479811 /* FULiveCell.m */,
-				A7952AF024162EBB00479811 /* FUItemsView.h */,
-				A7952AF124162EBB00479811 /* FUItemsViewCell.m */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		A7952AF524162EBB00479811 /* Faceunity */ = {
-			isa = PBXGroup;
-			children = (
-				A7952B0224162EBB00479811 /* authpack.h */,
-				A7952B8124162EBC00479811 /* FaceUnity-SDK-iOS */,
-			);
-			name = Faceunity;
-			path = ../../SDK/Faceunity;
-			sourceTree = "<group>";
-		};
-		A7952B8124162EBC00479811 /* FaceUnity-SDK-iOS */ = {
-			isa = PBXGroup;
-			children = (
-				A7952B8224162EBC00479811 /* release_note.txt */,
-				A7952B8324162EBC00479811 /* libnama.a */,
-				A7952B8424162EBC00479811 /* Resources */,
-				A7952B8924162EBC00479811 /* Headers */,
-			);
-			path = "FaceUnity-SDK-iOS";
-			sourceTree = "<group>";
-		};
-		A7952B8424162EBC00479811 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				A7952B8524162EBC00479811 /* v3.bundle */,
-				A7952B8624162EBC00479811 /* ardata_ex.bundle */,
-				A7952B8724162EBC00479811 /* anim_model.bundle */,
-				A7952B8824162EBC00479811 /* face_beautification.bundle */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		A7952B8924162EBC00479811 /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-				A7952B8A24162EBC00479811 /* funama.h */,
-				A7952B8B24162EBC00479811 /* FURenderer.h */,
-			);
-			path = Headers;
 			sourceTree = "<group>";
 		};
 		A7CA48C724559B7E00507435 /* Mine */ = {
@@ -1270,8 +793,18 @@
 			children = (
 				A773BD4D24090426003ECBFD /* MineViewController.swift */,
 				A773BD512410A001003ECBFD /* UserNameViewController.swift */,
+				A76767EA249B0E45002C4FBD /* AboutViewController.swift */,
 			);
 			name = Mine;
+			sourceTree = "<group>";
+		};
+		A7D89D4A247E78B20048B7EC /* VirtualBroadcasting */ = {
+			isa = PBXGroup;
+			children = (
+				A7584B08248114EA0088FACB /* VirtualBroadcastersViewController.swift */,
+				A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */,
+			);
+			name = VirtualBroadcasting;
 			sourceTree = "<group>";
 		};
 		A7FDB5A823FFBB7100487FB9 /* ViewModel */ = {
@@ -1288,6 +821,7 @@
 				A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */,
 				A77718152456FBDA00BF1F21 /* PlayerVM.swift */,
 				A7847F982458216600469187 /* VideoEnhancementVM.swift */,
+				A7584B4A2484DB290088FACB /* VirtualVM.swift */,
 			);
 			name = ViewModel;
 			path = UI;
@@ -1296,64 +830,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A76BD11C23F1035500B2732B /* AgoraLive-Dev */ = {
+		A76BD11C23F1035500B2732B /* AgoraLive */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A76BD13123F1035600B2732B /* Build configuration list for PBXNativeTarget "AgoraLive-Dev" */;
+			buildConfigurationList = A76BD13123F1035600B2732B /* Build configuration list for PBXNativeTarget "AgoraLive" */;
 			buildPhases = (
 				C26095D0AD7A02DE9E311C09 /* [CP] Check Pods Manifest.lock */,
 				A76BD11923F1035500B2732B /* Sources */,
 				A76BD11A23F1035500B2732B /* Frameworks */,
 				A76BD11B23F1035500B2732B /* Resources */,
 				78672562EF6D193B4C6E483B /* [CP] Embed Pods Frameworks */,
-				A7952C5A2417457A00479811 /* Embed Frameworks */,
+				1628209E308E3AD506C6C7F6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "AgoraLive-Dev";
+			name = AgoraLive;
 			productName = AgoraLive;
 			productReference = A76BD11D23F1035500B2732B /* AgoraLive.app */;
-			productType = "com.apple.product-type.application";
-		};
-		A7A9784E245140DB00A82265 /* AgoraLive-QA */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A7A97958245140DB00A82265 /* Build configuration list for PBXNativeTarget "AgoraLive-QA" */;
-			buildPhases = (
-				44E12D5388C5B46402B52D3A /* [CP] Check Pods Manifest.lock */,
-				A7A97850245140DB00A82265 /* Sources */,
-				A7A978C7245140DB00A82265 /* Frameworks */,
-				A7A978D0245140DB00A82265 /* Resources */,
-				A7A97956245140DB00A82265 /* Embed Frameworks */,
-				36BEA8BC9424B74C11BF3313 /* [CP] Embed Pods Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "AgoraLive-QA";
-			productName = AgoraLive;
-			productReference = A7A9795B245140DB00A82265 /* AgoraLive.app */;
-			productType = "com.apple.product-type.application";
-		};
-		A7CEAE54247252E00041124B /* AgoraLive-Release */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A7CEAEF0247252E00041124B /* Build configuration list for PBXNativeTarget "AgoraLive-Release" */;
-			buildPhases = (
-				A7CEAE55247252E00041124B /* [CP] Check Pods Manifest.lock */,
-				A7CEAE56247252E00041124B /* Sources */,
-				A7CEAED1247252E00041124B /* Frameworks */,
-				A7CEAEDA247252E00041124B /* Resources */,
-				A7CEAEED247252E00041124B /* [CP] Embed Pods Frameworks */,
-				A7CEAEEE247252E00041124B /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "AgoraLive-Release";
-			productName = AgoraLive;
-			productReference = A7CEAEF3247252E00041124B /* AgoraLive.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1386,9 +880,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A76BD11C23F1035500B2732B /* AgoraLive-Dev */,
-				A7A9784E245140DB00A82265 /* AgoraLive-QA */,
-				A7CEAE54247252E00041124B /* AgoraLive-Release */,
+				A76BD11C23F1035500B2732B /* AgoraLive */,
 			);
 		};
 /* End PBXProject section */
@@ -1398,123 +890,43 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A722F08324769E5F00132129 /* srmetal.metallib in Resources */,
-				A722F08224769E5900132129 /* model.bundle in Resources */,
-				A7847F9624581A5800469187 /* sound.gif in Resources */,
-				A7952C0F24162EBC00479811 /* release_note.txt in Resources */,
-				A711AB7B243EF78A00C2A3FD /* SuperRocket.gif in Resources */,
-				A711AB8F244015E000C2A3FD /* SuperBell.gif in Resources */,
-				A7952C1324162EBC00479811 /* anim_model.bundle in Resources */,
-				A711AB7D243EF78A00C2A3FD /* SuperRing.gif in Resources */,
+				A77E574C24A8955700DD7670 /* SuperRing.gif in Resources */,
+				A776F72124BEA711001B16B1 /* girl.bundle in Resources */,
+				A77E574824A8955700DD7670 /* SuperCake.gif in Resources */,
 				A72B7BEC24445DEF00E965FB /* Assets.xcassets in Resources */,
-				A7952C1424162EBC00479811 /* face_beautification.bundle in Resources */,
-				A7952C1224162EBC00479811 /* ardata_ex.bundle in Resources */,
-				A711AB90244015E000C2A3FD /* SuperCake.gif in Resources */,
-				A711AB7E243EF78A00C2A3FD /* SuperDiamond.gif in Resources */,
+				A77E574D24A8955700DD7670 /* SuperIcecream.gif in Resources */,
+				A77E574E24A8955700DD7670 /* SuperDiamond.gif in Resources */,
+				A77E574F24A8955700DD7670 /* sound.gif in Resources */,
+				A77E574B24A8955700DD7670 /* SuperRocket.gif in Resources */,
 				A76BD12D23F1035600B2732B /* LaunchScreen.storyboard in Resources */,
-				A711AB7C243EF78A00C2A3FD /* SuperWatch.gif in Resources */,
+				A77E574A24A8955700DD7670 /* SuperWine.gif in Resources */,
+				A776F72024BEA711001B16B1 /* bg.bundle in Resources */,
 				A76BD13A23F25F6500B2732B /* Localizable.strings in Resources */,
-				A7952C1124162EBC00479811 /* v3.bundle in Resources */,
-				A711AB8E244015E000C2A3FD /* SuperIcecream.gif in Resources */,
+				A77E574724A8955700DD7670 /* SuperBell.gif in Resources */,
+				A776F71F24BEA711001B16B1 /* hashiqi.bundle in Resources */,
+				A77E574924A8955700DD7670 /* SuperWatch.gif in Resources */,
 				A76BD12823F1035500B2732B /* Main.storyboard in Resources */,
-				A711AB91244015E000C2A3FD /* SuperWine.gif in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A7A978D0245140DB00A82265 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A722F08124769E5100132129 /* srmetal.metallib in Resources */,
-				A722F08024769E3F00132129 /* model.bundle in Resources */,
-				A7847F9724581A5800469187 /* sound.gif in Resources */,
-				A7A978DD245140DB00A82265 /* release_note.txt in Resources */,
-				A7A978DE245140DB00A82265 /* SuperRocket.gif in Resources */,
-				A7A978E4245140DB00A82265 /* SuperBell.gif in Resources */,
-				A7A978EB245140DB00A82265 /* anim_model.bundle in Resources */,
-				A7A978FB245140DB00A82265 /* SuperRing.gif in Resources */,
-				A7A978FF245140DB00A82265 /* Assets.xcassets in Resources */,
-				A7A9790A245140DB00A82265 /* face_beautification.bundle in Resources */,
-				A7A9790E245140DB00A82265 /* ardata_ex.bundle in Resources */,
-				A7A9790F245140DB00A82265 /* SuperCake.gif in Resources */,
-				A7A97913245140DB00A82265 /* SuperDiamond.gif in Resources */,
-				A7A97925245140DB00A82265 /* LaunchScreen.storyboard in Resources */,
-				A7A9792C245140DB00A82265 /* SuperWatch.gif in Resources */,
-				A7A97930245140DB00A82265 /* Localizable.strings in Resources */,
-				A7A97931245140DB00A82265 /* v3.bundle in Resources */,
-				A7A9794B245140DB00A82265 /* SuperIcecream.gif in Resources */,
-				A7A97953245140DB00A82265 /* Main.storyboard in Resources */,
-				A7A97954245140DB00A82265 /* SuperWine.gif in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A7CEAEDA247252E00041124B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A722F07E2476924400132129 /* srmetal.metallib in Resources */,
-				A722F07F2476924400132129 /* model.bundle in Resources */,
-				A7CEAEDB247252E00041124B /* sound.gif in Resources */,
-				A7CEAEDC247252E00041124B /* release_note.txt in Resources */,
-				A7CEAEDD247252E00041124B /* SuperRocket.gif in Resources */,
-				A7CEAEDE247252E00041124B /* SuperBell.gif in Resources */,
-				A7CEAEDF247252E00041124B /* anim_model.bundle in Resources */,
-				A7CEAEE0247252E00041124B /* SuperRing.gif in Resources */,
-				A7CEAEE1247252E00041124B /* Assets.xcassets in Resources */,
-				A7CEAEE2247252E00041124B /* face_beautification.bundle in Resources */,
-				A7CEAEE3247252E00041124B /* ardata_ex.bundle in Resources */,
-				A7CEAEE4247252E00041124B /* SuperCake.gif in Resources */,
-				A7CEAEE5247252E00041124B /* SuperDiamond.gif in Resources */,
-				A7CEAEE6247252E00041124B /* LaunchScreen.storyboard in Resources */,
-				A7CEAEE7247252E00041124B /* SuperWatch.gif in Resources */,
-				A7CEAEE8247252E00041124B /* Localizable.strings in Resources */,
-				A7CEAEE9247252E00041124B /* v3.bundle in Resources */,
-				A7CEAEEA247252E00041124B /* SuperIcecream.gif in Resources */,
-				A7CEAEEB247252E00041124B /* Main.storyboard in Resources */,
-				A7CEAEEC247252E00041124B /* SuperWine.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		36BEA8BC9424B74C11BF3313 /* [CP] Embed Pods Frameworks */ = {
+		1628209E308E3AD506C6C7F6 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive-QA/Pods-AgoraLive-QA-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive/Pods-AgoraLive-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive-QA/Pods-AgoraLive-QA-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive/Pods-AgoraLive-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AgoraLive-QA/Pods-AgoraLive-QA-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		44E12D5388C5B46402B52D3A /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AgoraLive-QA-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AgoraLive/Pods-AgoraLive-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		78672562EF6D193B4C6E483B /* [CP] Embed Pods Frameworks */ = {
@@ -1523,54 +935,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive-Dev/Pods-AgoraLive-Dev-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive/Pods-AgoraLive-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive-Dev/Pods-AgoraLive-Dev-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive/Pods-AgoraLive-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AgoraLive-Dev/Pods-AgoraLive-Dev-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A7CEAE55247252E00041124B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AgoraLive-Release-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A7CEAEED247252E00041124B /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive-Release/Pods-AgoraLive-Release-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AgoraLive-Release/Pods-AgoraLive-Release-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AgoraLive-Release/Pods-AgoraLive-Release-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AgoraLive/Pods-AgoraLive-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C26095D0AD7A02DE9E311C09 /* [CP] Check Pods Manifest.lock */ = {
@@ -1588,7 +961,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AgoraLive-Dev-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-AgoraLive-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1604,6 +977,7 @@
 			files = (
 				A71AAF1A24335CD600820096 /* MusicVM.swift in Sources */,
 				A768B6142452F3980073510D /* GIFView.swift in Sources */,
+				A7D89D4C247E79060048B7EC /* VirtualAppearanceViewController.swift in Sources */,
 				A7952AC724162C1000479811 /* sha1.c in Sources */,
 				A7952AA724162C1000479811 /* RTMClient.swift in Sources */,
 				A7053A41241A2C290061E5E2 /* BeautySettingsViewController.swift in Sources */,
@@ -1619,29 +993,24 @@
 				A7952ACB24162C1000479811 /* aestab.c in Sources */,
 				A754FAF6242C9B700062B2F5 /* LiveSeatVM.swift in Sources */,
 				A71AAF1624331B9C00820096 /* ChatInputView.swift in Sources */,
-				A7952B9424162EBC00479811 /* FUCamera.m in Sources */,
 				A711AB89243F218A00C2A3FD /* GiftVM.swift in Sources */,
 				A773BD4E24090426003ECBFD /* MineViewController.swift in Sources */,
-				A7952B9324162EBC00479811 /* FUManager.m in Sources */,
 				A7588528242E01C10011FCCF /* BottomToolsViewController.swift in Sources */,
 				A7952A5C24162BF600479811 /* ImageFiles.swift in Sources */,
 				A7952A5D24162BF600479811 /* LogFiles.swift in Sources */,
 				A754FAEF242B717D0062B2F5 /* FilletView.swift in Sources */,
 				A7952C1624162F4200479811 /* User.swift in Sources */,
-				A7952ACF24162C1000479811 /* AlamoClient.swift in Sources */,
-				A719060A24666D2B0031E91C /* AGECameraProtocol.swift in Sources */,
 				A719061724667DCE0031E91C /* UserDataHelper.swift in Sources */,
 				A77718162456FBDA00BF1F21 /* PlayerVM.swift in Sources */,
 				A7355F88240658F40010CCD1 /* UIView+ExProperty.m in Sources */,
 				A7952AC424162C1000479811 /* hmac.c in Sources */,
 				A7952AB124162C1000479811 /* RTMHelper.swift in Sources */,
-				A7952AA924162C1000479811 /* RequestProtocols.swift in Sources */,
 				A7D2D36C2417AA6100D327B5 /* MineVM.swift in Sources */,
+				A75A56D124A054C100D0089E /* FUClient.m in Sources */,
 				A7952ABF24162C1000479811 /* ioapi.c in Sources */,
 				A773BD522410A001003ECBFD /* UserNameViewController.swift in Sources */,
 				A72B7BE42444161400E965FB /* SingleBroadcasterViewController.swift in Sources */,
 				A76BD14823F299D900B2732B /* ViewFrame.swift in Sources */,
-				A7952B8C24162EBC00479811 /* FUMusicPlayer.m in Sources */,
 				A711AB94244059F400C2A3FD /* LiveViewController.swift in Sources */,
 				A7CEF1EB2423495E004FB752 /* LiveSession.swift in Sources */,
 				A71AAF232434C09500820096 /* ExtensionViewController.swift in Sources */,
@@ -1652,9 +1021,7 @@
 				A7FDB5A123FFA65F00487FB9 /* LiveListViewController.swift in Sources */,
 				A7952AAE24162C1000479811 /* LCLLogFile.m in Sources */,
 				A7847F992458216600469187 /* VideoEnhancementVM.swift in Sources */,
-				A7952B9024162EBC00479811 /* FUItemsView.m in Sources */,
 				A7952A5B24162BF600479811 /* FilesGroup.swift in Sources */,
-				A719060B24666D2B0031E91C /* AGECameraSession.swift in Sources */,
 				A7EA40BC2459825000301AE3 /* ToastView.swift in Sources */,
 				A7615015244AF35B007AAA7F /* MediaDeviceVM.swift in Sources */,
 				A7FDB5A323FFAEE200487FB9 /* IconTextView.swift in Sources */,
@@ -1662,8 +1029,8 @@
 				A7FDB59B23FD07B600487FB9 /* TabSelectView.swift in Sources */,
 				A7952AB024162C1000479811 /* MediaKit.swift in Sources */,
 				A7952AAC24162C1000479811 /* Convert.swift in Sources */,
-				A7952B9224162EBC00479811 /* FUItemsViewCell.m in Sources */,
 				A7952AC024162C1000479811 /* ioapi_buf.c in Sources */,
+				A7584B09248114EA0088FACB /* VirtualBroadcastersViewController.swift in Sources */,
 				A719061524667DCE0031E91C /* UserData+CoreDataClass.swift in Sources */,
 				A7952AC524162C1000479811 /* aescrypt.c in Sources */,
 				A7952AD124162C1000479811 /* RTMExtension.swift in Sources */,
@@ -1671,12 +1038,13 @@
 				A7952ABB24162C1000479811 /* AfterWorker.swift in Sources */,
 				A719060D24666D580031E91C /* Popover.swift in Sources */,
 				A7952A5224162BE600479811 /* ALKeys.swift in Sources */,
-				A719060924666D2B0031E91C /* AGESingleCamera.swift in Sources */,
 				A7952C5C2417636D00479811 /* ALJson.swift in Sources */,
+				A7584B4B2484DB290088FACB /* VirtualVM.swift in Sources */,
 				A7952AB724162C1000479811 /* DataExtension.swift in Sources */,
 				A72B7BEE24445EBB00E965FB /* PKBar.swift in Sources */,
 				A7952AB824162C1000479811 /* AGELock.swift in Sources */,
 				A7952A5424162BE600479811 /* ALCenter.swift in Sources */,
+				A76767EB249B0E45002C4FBD /* AboutViewController.swift in Sources */,
 				A7FDB59F23FD2B0C00487FB9 /* LiveListTabViewController.swift in Sources */,
 				A71AAF88243D740F00820096 /* UIImage+CSClipToCycle.m in Sources */,
 				A71AAF18243354C500820096 /* MusicViewController.swift in Sources */,
@@ -1687,30 +1055,25 @@
 				A76BD13F23F26E0400B2732B /* LiveTypeViewController.swift in Sources */,
 				A7FDB5AA23FFBB9400487FB9 /* LiveListVM.swift in Sources */,
 				A7952AC124162C1000479811 /* ioapi_mem.c in Sources */,
-				A7952B8D24162EBC00479811 /* FULiveModel.m in Sources */,
 				A7952A49241624C800479811 /* MediaSettingsViewController.swift in Sources */,
 				A7779C2B244DC7DC002A285A /* LocalLiveSettings.swift in Sources */,
 				A7952AAA24162C1000479811 /* LogTube.swift in Sources */,
 				A758851E242DF20E0011FCCF /* UserListViewController.swift in Sources */,
 				A7952AB624162C1000479811 /* MediaModels.swift in Sources */,
-				A7952B8F24162EBC00479811 /* FUOpenGLView.m in Sources */,
 				A72B7BE8244459F000E965FB /* PKBroadcastersViewController.swift in Sources */,
 				A791F33A242898DC008D8BC9 /* MultiBroadcastersViewController.swift in Sources */,
-				A7952B9124162EBC00479811 /* FULiveCell.m in Sources */,
 				A791F33C2428A014008D8BC9 /* GiftAudienceViewController.swift in Sources */,
 				A7D2D36F2418D0B600D327B5 /* CenterHelper.swift in Sources */,
 				A791F341242B0ADF008D8BC9 /* ChatViewController.swift in Sources */,
-				A719060824666D2B0031E91C /* AGECameraPreview.swift in Sources */,
 				A711AB83243EF83800C2A3FD /* GIFViewController.swift in Sources */,
 				A7952AC924162C1000479811 /* prng.c in Sources */,
 				A7952AA624162C1000479811 /* MediaSubs.swift in Sources */,
-				A7952AB224162C1000479811 /* RequestModels.swift in Sources */,
 				A7952AB924162C1000479811 /* AGELog.swift in Sources */,
 				A7952A5324162BE600479811 /* Utils.swift in Sources */,
 				A7952ABC24162C1000479811 /* crypt.c in Sources */,
 				A7952AB524162C1000479811 /* DictionaryGetable.swift in Sources */,
+				A77E579224AE10FE00DD7670 /* NetworkMonitor.swift in Sources */,
 				A791F33E2428B121008D8BC9 /* LiveSeatViewController.swift in Sources */,
-				A7952ACE24162C1000479811 /* NetworkMonitor.swift in Sources */,
 				A71AAF282435D7A900820096 /* StatisticsInfo.swift in Sources */,
 				A72B7BEA24445D5B00E965FB /* PKVM.swift in Sources */,
 				A7952AB324162C1000479811 /* ZipTool.swift in Sources */,
@@ -1724,264 +1087,6 @@
 				A7952AAD24162C1000479811 /* DeviceAssistant.swift in Sources */,
 				A7952AC824162C1000479811 /* aes_ni.c in Sources */,
 				A7952ACA24162C1000479811 /* pwd2key.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A7A97850245140DB00A82265 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A7A97851245140DB00A82265 /* MusicVM.swift in Sources */,
-				A77718142456CA3E00BF1F21 /* GIFView.swift in Sources */,
-				A7A97852245140DB00A82265 /* sha1.c in Sources */,
-				A7A97854245140DB00A82265 /* RTMClient.swift in Sources */,
-				A7A97855245140DB00A82265 /* BeautySettingsViewController.swift in Sources */,
-				784B5124246680AA003AF420 /* UserData+CoreDataClass.swift in Sources */,
-				A7A97856245140DB00A82265 /* MainTabBarViewController.swift in Sources */,
-				A7A97857245140DB00A82265 /* CreateLiveViewController.swift in Sources */,
-				A7A97858245140DB00A82265 /* AppleExtension.swift in Sources */,
-				A7A97859245140DB00A82265 /* UIColor+Hex.m in Sources */,
-				A7A9785A245140DB00A82265 /* URLGroup.swift in Sources */,
-				A7A9785B245140DB00A82265 /* zip.c in Sources */,
-				A7A9785C245140DB00A82265 /* AppAssistant.swift in Sources */,
-				A77718132456C9BB00BF1F21 /* LabelShadowView.swift in Sources */,
-				A7A9785D245140DB00A82265 /* aestab.c in Sources */,
-				A7A9785E245140DB00A82265 /* LiveSeatVM.swift in Sources */,
-				A7A9785F245140DB00A82265 /* ChatInputView.swift in Sources */,
-				A7A97860245140DB00A82265 /* FUCamera.m in Sources */,
-				A7A97861245140DB00A82265 /* GiftVM.swift in Sources */,
-				A7A97862245140DB00A82265 /* MineViewController.swift in Sources */,
-				A7A97863245140DB00A82265 /* FUManager.m in Sources */,
-				784B512A246680D2003AF420 /* AGECameraSession.swift in Sources */,
-				A7A97864245140DB00A82265 /* BottomToolsViewController.swift in Sources */,
-				A7A97865245140DB00A82265 /* ImageFiles.swift in Sources */,
-				A7A97868245140DB00A82265 /* LogFiles.swift in Sources */,
-				A7A97869245140DB00A82265 /* FilletView.swift in Sources */,
-				A7A9786A245140DB00A82265 /* User.swift in Sources */,
-				A7A9786B245140DB00A82265 /* AlamoClient.swift in Sources */,
-				A77718172456FBDA00BF1F21 /* PlayerVM.swift in Sources */,
-				A7A9786C245140DB00A82265 /* UIView+ExProperty.m in Sources */,
-				A7A9786D245140DB00A82265 /* hmac.c in Sources */,
-				A7A9786F245140DB00A82265 /* RTMHelper.swift in Sources */,
-				A7A97870245140DB00A82265 /* RequestProtocols.swift in Sources */,
-				A7A97871245140DB00A82265 /* MineVM.swift in Sources */,
-				A7A97872245140DB00A82265 /* ioapi.c in Sources */,
-				A7A97873245140DB00A82265 /* UserNameViewController.swift in Sources */,
-				784B512B246680D2003AF420 /* AGESingleCamera.swift in Sources */,
-				A7A97874245140DB00A82265 /* SingleBroadcasterViewController.swift in Sources */,
-				A7A97875245140DB00A82265 /* ViewFrame.swift in Sources */,
-				A7A97876245140DB00A82265 /* FUMusicPlayer.m in Sources */,
-				A7A97877245140DB00A82265 /* LiveViewController.swift in Sources */,
-				A7A97878245140DB00A82265 /* LiveSession.swift in Sources */,
-				A7A97879245140DB00A82265 /* ExtensionViewController.swift in Sources */,
-				A7A9787A245140DB00A82265 /* AGEError.swift in Sources */,
-				A7A9787B245140DB00A82265 /* unzip.c in Sources */,
-				A7A9787C245140DB00A82265 /* minishared.c in Sources */,
-				A7A9787D245140DB00A82265 /* LiveAudienceListVM.swift in Sources */,
-				A7A9787E245140DB00A82265 /* LiveListViewController.swift in Sources */,
-				A7A9787F245140DB00A82265 /* LCLLogFile.m in Sources */,
-				A7847F9A2458216600469187 /* VideoEnhancementVM.swift in Sources */,
-				A7A97880245140DB00A82265 /* FUItemsView.m in Sources */,
-				A7A97881245140DB00A82265 /* FilesGroup.swift in Sources */,
-				A7EA40BD2459825000301AE3 /* ToastView.swift in Sources */,
-				A7A97883245140DB00A82265 /* MediaDeviceVM.swift in Sources */,
-				A7A97884245140DB00A82265 /* IconTextView.swift in Sources */,
-				A7A97885245140DB00A82265 /* fileenc.c in Sources */,
-				A7A97886245140DB00A82265 /* TabSelectView.swift in Sources */,
-				A7A97887245140DB00A82265 /* MediaKit.swift in Sources */,
-				A7A97888245140DB00A82265 /* Convert.swift in Sources */,
-				A7A97889245140DB00A82265 /* FUItemsViewCell.m in Sources */,
-				A7A9788A245140DB00A82265 /* ioapi_buf.c in Sources */,
-				A7A9788B245140DB00A82265 /* aescrypt.c in Sources */,
-				A7A9788C245140DB00A82265 /* RTMExtension.swift in Sources */,
-				A7A9788D245140DB00A82265 /* AfterWorker.swift in Sources */,
-				A7A9788E245140DB00A82265 /* ALKeys.swift in Sources */,
-				784B5123246680A7003AF420 /* AgoraLive.xcdatamodeld in Sources */,
-				A7A9788F245140DB00A82265 /* ALJson.swift in Sources */,
-				A7A97890245140DB00A82265 /* DataExtension.swift in Sources */,
-				A7A97891245140DB00A82265 /* PKBar.swift in Sources */,
-				A7A97892245140DB00A82265 /* AGELock.swift in Sources */,
-				A7A97893245140DB00A82265 /* ALCenter.swift in Sources */,
-				A7A97894245140DB00A82265 /* LiveListTabViewController.swift in Sources */,
-				A7A97895245140DB00A82265 /* UIImage+CSClipToCycle.m in Sources */,
-				A7A97896245140DB00A82265 /* MusicViewController.swift in Sources */,
-				A7A97897245140DB00A82265 /* aeskey.c in Sources */,
-				A7A97899245140DB00A82265 /* ChatVM.swift in Sources */,
-				A7A9789A245140DB00A82265 /* SSZipArchive.m in Sources */,
-				A7A9789B245140DB00A82265 /* GiftViewController.swift in Sources */,
-				A7A9789C245140DB00A82265 /* LiveTypeViewController.swift in Sources */,
-				A7A9789D245140DB00A82265 /* LiveListVM.swift in Sources */,
-				A7A9789E245140DB00A82265 /* ioapi_mem.c in Sources */,
-				784B5127246680BC003AF420 /* Popover.swift in Sources */,
-				A7A9789F245140DB00A82265 /* FULiveModel.m in Sources */,
-				A7A978A0245140DB00A82265 /* MediaSettingsViewController.swift in Sources */,
-				A7A978A1245140DB00A82265 /* LocalLiveSettings.swift in Sources */,
-				A7A978A2245140DB00A82265 /* LogTube.swift in Sources */,
-				A7A978A3245140DB00A82265 /* UserListViewController.swift in Sources */,
-				A7A978A4245140DB00A82265 /* MediaModels.swift in Sources */,
-				A7A978A5245140DB00A82265 /* FUOpenGLView.m in Sources */,
-				784B5126246680AE003AF420 /* UserDataHelper.swift in Sources */,
-				A7A978A6245140DB00A82265 /* PKBroadcastersViewController.swift in Sources */,
-				A7A978A8245140DB00A82265 /* MultiBroadcastersViewController.swift in Sources */,
-				A7A978A9245140DB00A82265 /* FULiveCell.m in Sources */,
-				A7A978AA245140DB00A82265 /* GiftAudienceViewController.swift in Sources */,
-				A7A978AB245140DB00A82265 /* CenterHelper.swift in Sources */,
-				A7A978AC245140DB00A82265 /* ChatViewController.swift in Sources */,
-				784B5128246680D2003AF420 /* AGECameraPreview.swift in Sources */,
-				784B5125246680AC003AF420 /* UserData+CoreDataProperties.swift in Sources */,
-				A7A978AE245140DB00A82265 /* GIFViewController.swift in Sources */,
-				A7A978B0245140DB00A82265 /* prng.c in Sources */,
-				A7A978B1245140DB00A82265 /* MediaSubs.swift in Sources */,
-				A7A978B2245140DB00A82265 /* RequestModels.swift in Sources */,
-				A7A978B3245140DB00A82265 /* AGELog.swift in Sources */,
-				A7A978B4245140DB00A82265 /* Utils.swift in Sources */,
-				A7A978B5245140DB00A82265 /* crypt.c in Sources */,
-				A7A978B6245140DB00A82265 /* DictionaryGetable.swift in Sources */,
-				A7A978B7245140DB00A82265 /* LiveSeatViewController.swift in Sources */,
-				A7A978B8245140DB00A82265 /* NetworkMonitor.swift in Sources */,
-				A7A978B9245140DB00A82265 /* StatisticsInfo.swift in Sources */,
-				A7A978BA245140DB00A82265 /* PKVM.swift in Sources */,
-				A7A978BB245140DB00A82265 /* ZipTool.swift in Sources */,
-				A7A978BC245140DB00A82265 /* RTCExtension.swift in Sources */,
-				A7A978BD245140DB00A82265 /* RealDataViewController.swift in Sources */,
-				A7A978BE245140DB00A82265 /* TypeAlias.swift in Sources */,
-				A7A978C0245140DB00A82265 /* AppDelegate.swift in Sources */,
-				A7A978C1245140DB00A82265 /* LiveRole.swift in Sources */,
-				784B5129246680D2003AF420 /* AGECameraProtocol.swift in Sources */,
-				A7A978C2245140DB00A82265 /* CSNavigationController.swift in Sources */,
-				A7A978C3245140DB00A82265 /* RTMProtocols.swift in Sources */,
-				A7A978C4245140DB00A82265 /* DeviceAssistant.swift in Sources */,
-				A7A978C5245140DB00A82265 /* aes_ni.c in Sources */,
-				A7A978C6245140DB00A82265 /* pwd2key.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A7CEAE56247252E00041124B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A7CEAE57247252E00041124B /* MusicVM.swift in Sources */,
-				A7CEAE58247252E00041124B /* GIFView.swift in Sources */,
-				A7CEAE59247252E00041124B /* sha1.c in Sources */,
-				A7CEAE5A247252E00041124B /* RTMClient.swift in Sources */,
-				A7CEAE5B247252E00041124B /* BeautySettingsViewController.swift in Sources */,
-				A7CEAE5C247252E00041124B /* MainTabBarViewController.swift in Sources */,
-				A7CEAE5D247252E00041124B /* CreateLiveViewController.swift in Sources */,
-				A7CEAE5E247252E00041124B /* AppleExtension.swift in Sources */,
-				A7CEAE5F247252E00041124B /* UIColor+Hex.m in Sources */,
-				A7CEAE60247252E00041124B /* URLGroup.swift in Sources */,
-				A7CEAE61247252E00041124B /* zip.c in Sources */,
-				A7CEAE62247252E00041124B /* UserData+CoreDataProperties.swift in Sources */,
-				A7CEAE63247252E00041124B /* AppAssistant.swift in Sources */,
-				A7CEAE64247252E00041124B /* LabelShadowView.swift in Sources */,
-				A7CEAE65247252E00041124B /* aestab.c in Sources */,
-				A7CEAE66247252E00041124B /* LiveSeatVM.swift in Sources */,
-				A7CEAE67247252E00041124B /* ChatInputView.swift in Sources */,
-				A7CEAE68247252E00041124B /* FUCamera.m in Sources */,
-				A7CEAE69247252E00041124B /* GiftVM.swift in Sources */,
-				A7CEAE6A247252E00041124B /* MineViewController.swift in Sources */,
-				A7CEAE6B247252E00041124B /* FUManager.m in Sources */,
-				A7CEAE6C247252E00041124B /* BottomToolsViewController.swift in Sources */,
-				A7CEAE6D247252E00041124B /* ImageFiles.swift in Sources */,
-				A7CEAE6E247252E00041124B /* LogFiles.swift in Sources */,
-				A7CEAE6F247252E00041124B /* FilletView.swift in Sources */,
-				A7CEAE70247252E00041124B /* User.swift in Sources */,
-				A7CEAE71247252E00041124B /* AlamoClient.swift in Sources */,
-				A7CEAE72247252E00041124B /* AGECameraProtocol.swift in Sources */,
-				A7CEAE73247252E00041124B /* UserDataHelper.swift in Sources */,
-				A7CEAE74247252E00041124B /* PlayerVM.swift in Sources */,
-				A7CEAE75247252E00041124B /* UIView+ExProperty.m in Sources */,
-				A7CEAE76247252E00041124B /* hmac.c in Sources */,
-				A7CEAE77247252E00041124B /* RTMHelper.swift in Sources */,
-				A7CEAE78247252E00041124B /* RequestProtocols.swift in Sources */,
-				A7CEAE79247252E00041124B /* MineVM.swift in Sources */,
-				A7CEAE7A247252E00041124B /* ioapi.c in Sources */,
-				A7CEAE7B247252E00041124B /* UserNameViewController.swift in Sources */,
-				A7CEAE7C247252E00041124B /* SingleBroadcasterViewController.swift in Sources */,
-				A7CEAE7D247252E00041124B /* ViewFrame.swift in Sources */,
-				A7CEAE7E247252E00041124B /* FUMusicPlayer.m in Sources */,
-				A7CEAE7F247252E00041124B /* LiveViewController.swift in Sources */,
-				A7CEAE80247252E00041124B /* LiveSession.swift in Sources */,
-				A7CEAE81247252E00041124B /* ExtensionViewController.swift in Sources */,
-				A7CEAE82247252E00041124B /* AGEError.swift in Sources */,
-				A7CEAE83247252E00041124B /* unzip.c in Sources */,
-				A7CEAE84247252E00041124B /* minishared.c in Sources */,
-				A7CEAE85247252E00041124B /* LiveAudienceListVM.swift in Sources */,
-				A7CEAE86247252E00041124B /* LiveListViewController.swift in Sources */,
-				A7CEAE87247252E00041124B /* LCLLogFile.m in Sources */,
-				A7CEAE88247252E00041124B /* VideoEnhancementVM.swift in Sources */,
-				A7CEAE89247252E00041124B /* FUItemsView.m in Sources */,
-				A7CEAE8A247252E00041124B /* FilesGroup.swift in Sources */,
-				A7CEAE8B247252E00041124B /* AGECameraSession.swift in Sources */,
-				A7CEAE8C247252E00041124B /* ToastView.swift in Sources */,
-				A7CEAE8D247252E00041124B /* MediaDeviceVM.swift in Sources */,
-				A7CEAE8E247252E00041124B /* IconTextView.swift in Sources */,
-				A7CEAE8F247252E00041124B /* fileenc.c in Sources */,
-				A7CEAE90247252E00041124B /* TabSelectView.swift in Sources */,
-				A7CEAE91247252E00041124B /* MediaKit.swift in Sources */,
-				A7CEAE92247252E00041124B /* Convert.swift in Sources */,
-				A7CEAE93247252E00041124B /* FUItemsViewCell.m in Sources */,
-				A7CEAE94247252E00041124B /* ioapi_buf.c in Sources */,
-				A7CEAE95247252E00041124B /* UserData+CoreDataClass.swift in Sources */,
-				A7CEAE96247252E00041124B /* aescrypt.c in Sources */,
-				A7CEAE97247252E00041124B /* RTMExtension.swift in Sources */,
-				A7CEAE98247252E00041124B /* AgoraLive.xcdatamodeld in Sources */,
-				A7CEAE99247252E00041124B /* AfterWorker.swift in Sources */,
-				A7CEAE9A247252E00041124B /* Popover.swift in Sources */,
-				A7CEAE9B247252E00041124B /* ALKeys.swift in Sources */,
-				A7CEAE9C247252E00041124B /* AGESingleCamera.swift in Sources */,
-				A7CEAE9D247252E00041124B /* ALJson.swift in Sources */,
-				A7CEAE9E247252E00041124B /* DataExtension.swift in Sources */,
-				A7CEAE9F247252E00041124B /* PKBar.swift in Sources */,
-				A7CEAEA0247252E00041124B /* AGELock.swift in Sources */,
-				A7CEAEA1247252E00041124B /* ALCenter.swift in Sources */,
-				A7CEAEA2247252E00041124B /* LiveListTabViewController.swift in Sources */,
-				A7CEAEA3247252E00041124B /* UIImage+CSClipToCycle.m in Sources */,
-				A7CEAEA4247252E00041124B /* MusicViewController.swift in Sources */,
-				A7CEAEA5247252E00041124B /* aeskey.c in Sources */,
-				A7CEAEA6247252E00041124B /* ChatVM.swift in Sources */,
-				A7CEAEA7247252E00041124B /* SSZipArchive.m in Sources */,
-				A7CEAEA8247252E00041124B /* GiftViewController.swift in Sources */,
-				A7CEAEA9247252E00041124B /* LiveTypeViewController.swift in Sources */,
-				A7CEAEAA247252E00041124B /* LiveListVM.swift in Sources */,
-				A7CEAEAB247252E00041124B /* ioapi_mem.c in Sources */,
-				A7CEAEAC247252E00041124B /* FULiveModel.m in Sources */,
-				A7CEAEAD247252E00041124B /* MediaSettingsViewController.swift in Sources */,
-				A7CEAEAE247252E00041124B /* LocalLiveSettings.swift in Sources */,
-				A7CEAEAF247252E00041124B /* LogTube.swift in Sources */,
-				A7CEAEB0247252E00041124B /* UserListViewController.swift in Sources */,
-				A7CEAEB1247252E00041124B /* MediaModels.swift in Sources */,
-				A7CEAEB2247252E00041124B /* FUOpenGLView.m in Sources */,
-				A7CEAEB3247252E00041124B /* PKBroadcastersViewController.swift in Sources */,
-				A7CEAEB4247252E00041124B /* MultiBroadcastersViewController.swift in Sources */,
-				A7CEAEB5247252E00041124B /* FULiveCell.m in Sources */,
-				A7CEAEB6247252E00041124B /* GiftAudienceViewController.swift in Sources */,
-				A7CEAEB7247252E00041124B /* CenterHelper.swift in Sources */,
-				A7CEAEB8247252E00041124B /* ChatViewController.swift in Sources */,
-				A7CEAEB9247252E00041124B /* AGECameraPreview.swift in Sources */,
-				A7CEAEBA247252E00041124B /* GIFViewController.swift in Sources */,
-				A7CEAEBB247252E00041124B /* prng.c in Sources */,
-				A7CEAEBC247252E00041124B /* MediaSubs.swift in Sources */,
-				A7CEAEBD247252E00041124B /* RequestModels.swift in Sources */,
-				A7CEAEBE247252E00041124B /* AGELog.swift in Sources */,
-				A7CEAEBF247252E00041124B /* Utils.swift in Sources */,
-				A7CEAEC0247252E00041124B /* crypt.c in Sources */,
-				A7CEAEC1247252E00041124B /* DictionaryGetable.swift in Sources */,
-				A7CEAEC2247252E00041124B /* LiveSeatViewController.swift in Sources */,
-				A7CEAEC3247252E00041124B /* NetworkMonitor.swift in Sources */,
-				A7CEAEC4247252E00041124B /* StatisticsInfo.swift in Sources */,
-				A7CEAEC5247252E00041124B /* PKVM.swift in Sources */,
-				A7CEAEC6247252E00041124B /* ZipTool.swift in Sources */,
-				A7CEAEC7247252E00041124B /* RTCExtension.swift in Sources */,
-				A7CEAEC8247252E00041124B /* RealDataViewController.swift in Sources */,
-				A7CEAEC9247252E00041124B /* TypeAlias.swift in Sources */,
-				A7CEAECA247252E00041124B /* AppDelegate.swift in Sources */,
-				A7CEAECB247252E00041124B /* LiveRole.swift in Sources */,
-				A7CEAECC247252E00041124B /* CSNavigationController.swift in Sources */,
-				A7CEAECD247252E00041124B /* RTMProtocols.swift in Sources */,
-				A7CEAECE247252E00041124B /* DeviceAssistant.swift in Sources */,
-				A7CEAECF247252E00041124B /* aes_ni.c in Sources */,
-				A7CEAED0247252E00041124B /* pwd2key.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2136,13 +1241,13 @@
 		};
 		A76BD13223F1035600B2732B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5D497D90BD3A0419E963ADD5 /* Pods-AgoraLive-Dev.debug.xcconfig */;
+			baseConfigurationReference = 8D7DEA977B663CF4D6680DC4 /* Pods-AgoraLive.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Yuhua Gong (YBKA3W5TF4)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 300;
+				CURRENT_PROJECT_VERSION = 323;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = SW3CA7M752;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2152,7 +1257,11 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
-					"$(PROJECT_DIR)/../SDK/",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"FU_67=0",
 				);
 				INFOPLIST_FILE = AgoraLive/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2160,11 +1269,74 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../SDK/Faceunity/FaceUnity-SDK-iOS";
-				MARKETING_VERSION = 3.0.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Nama-lite/FaceUnity-SDK-iOS-v6.7.0-lite\"",
+				);
+				MARKETING_VERSION = 3.1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"nama\"",
+					"-l\"resolv\"",
+					"-l\"stdc++\"",
+					"-framework",
+					"\"AGECamera\"",
+					"-framework",
+					"\"AGEVideoLayout\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AgoraRtcKit\"",
+					"-framework",
+					"\"AgoraRtmKit\"",
+					"-framework",
+					"\"AlamoClient\"",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"Differentiator\"",
+					"-framework",
+					"\"FLAnimatedImage\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"MBProgressHUD\"",
+					"-framework",
+					"\"MJRefresh\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"OpenGLES\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"RxCocoa\"",
+					"-framework",
+					"\"RxDataSources\"",
+					"-framework",
+					"\"RxRelay\"",
+					"-framework",
+					"\"RxSwift\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D FU_67";
 				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
 				PRODUCT_NAME = AgoraLive;
 				PROVISIONING_PROFILE_SPECIFIER = AgoraAppsDevProfile;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FU_67=0";
 				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -2174,166 +1346,13 @@
 		};
 		A76BD13323F1035600B2732B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 082C9E83E5903709E7F89EB6 /* Pods-AgoraLive-Dev.release.xcconfig */;
+			baseConfigurationReference = A379550C00848DAE8B2643E2 /* Pods-AgoraLive.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Yuhua Gong (YBKA3W5TF4)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Agora Lab, Inc. (48TB6ZZL5S)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 300;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = SW3CA7M752;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxCocoa\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
-					"$(PROJECT_DIR)/../SDK/",
-				);
-				INFOPLIST_FILE = AgoraLive/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../SDK/Faceunity/FaceUnity-SDK-iOS";
-				MARKETING_VERSION = 3.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
-				PRODUCT_NAME = AgoraLive;
-				PROVISIONING_PROFILE_SPECIFIER = AgoraAppsDevProfile;
-				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		A7A97959245140DB00A82265 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0D77F57C20847D7309A00368 /* Pods-AgoraLive-QA.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development: Junjie Liu (ZU7LZHDW27)";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 300;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 7289G77ZF3;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxCocoa\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
-					"$(PROJECT_DIR)/../SDK/",
-				);
-				INFOPLIST_FILE = AgoraLive/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../SDK/Faceunity/FaceUnity-SDK-iOS";
-				MARKETING_VERSION = 3.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
-				PRODUCT_NAME = AgoraLive;
-				PROVISIONING_PROFILE_SPECIFIER = AgoraIOTest2019;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PREPRODUCT";
-				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		A7A9795A245140DB00A82265 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 303FD145CF503D71440928AB /* Pods-AgoraLive-QA.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development: Junjie Liu (ZU7LZHDW27)";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 300;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 7289G77ZF3;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxCocoa\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
-					"$(PROJECT_DIR)/../SDK/",
-				);
-				INFOPLIST_FILE = AgoraLive/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../SDK/Faceunity/FaceUnity-SDK-iOS";
-				MARKETING_VERSION = 3.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
-				PRODUCT_NAME = AgoraLive;
-				PROVISIONING_PROFILE_SPECIFIER = AgoraIOTest2019;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PREPRODUCT;
-				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		A7CEAEF1247252E00041124B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1F308420F77498A6670DDED4 /* Pods-AgoraLive-Release.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Yuhua Gong (YBKA3W5TF4)";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 302;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = SW3CA7M752;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxCocoa\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
-					"$(PROJECT_DIR)/../SDK/",
-				);
-				INFOPLIST_FILE = AgoraLive/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../SDK/Faceunity/FaceUnity-SDK-iOS";
-				MARKETING_VERSION = 3.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
-				PRODUCT_NAME = AgoraLive;
-				PROVISIONING_PROFILE_SPECIFIER = AgoraAppsDevProfile;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRODUCT";
-				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		A7CEAEF2247252E00041124B /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4870B43BF0CE702438D4A34B /* Pods-AgoraLive-Release.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Agora Lab, Inc. (48TB6ZZL5S)";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 302;
+				CURRENT_PROJECT_VERSION = 323;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 48TB6ZZL5S;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2343,7 +1362,12 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
-					"$(PROJECT_DIR)/../SDK/",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"FU_67=0",
+					"PRODUCT=1",
 				);
 				INFOPLIST_FILE = AgoraLive/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2351,17 +1375,559 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../SDK/Faceunity/FaceUnity-SDK-iOS";
-				MARKETING_VERSION = 3.0.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Nama-lite/FaceUnity-SDK-iOS-v6.7.0-lite\"",
+				);
+				MARKETING_VERSION = 3.1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"nama\"",
+					"-l\"resolv\"",
+					"-l\"stdc++\"",
+					"-framework",
+					"\"AGECamera\"",
+					"-framework",
+					"\"AGEVideoLayout\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AgoraRtcKit\"",
+					"-framework",
+					"\"AgoraRtmKit\"",
+					"-framework",
+					"\"AlamoClient\"",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"Differentiator\"",
+					"-framework",
+					"\"FLAnimatedImage\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"MBProgressHUD\"",
+					"-framework",
+					"\"MJRefresh\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"OpenGLES\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"RxCocoa\"",
+					"-framework",
+					"\"RxDataSources\"",
+					"-framework",
+					"\"RxRelay\"",
+					"-framework",
+					"\"RxSwift\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D FU_67 -D PRODUCT";
 				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
 				PRODUCT_NAME = AgoraLive;
 				PROVISIONING_PROFILE_SPECIFIER = AgoraLiveDistribution;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PRODUCT;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FU_67=0 PRODUCT=1";
 				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
+		};
+		A795B9FE248F39C900F38569 /* QA-Dev */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "QA-Dev";
+		};
+		A795B9FF248F39C900F38569 /* QA-Dev */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 18414857EA87443471255598 /* Pods-AgoraLive.qa-dev.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Haifeng Hong (MJP2F92AG6)";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 323;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JDPG69R49Z;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxCocoa\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"FU_67=0",
+				);
+				INFOPLIST_FILE = AgoraLive/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Nama-lite/FaceUnity-SDK-iOS-v6.7.0-lite\"",
+				);
+				MARKETING_VERSION = 3.1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"nama\"",
+					"-l\"resolv\"",
+					"-l\"stdc++\"",
+					"-framework",
+					"\"AGECamera\"",
+					"-framework",
+					"\"AGEVideoLayout\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AgoraRtcKit\"",
+					"-framework",
+					"\"AgoraRtmKit\"",
+					"-framework",
+					"\"AlamoClient\"",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"Differentiator\"",
+					"-framework",
+					"\"FLAnimatedImage\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"MBProgressHUD\"",
+					"-framework",
+					"\"MJRefresh\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"OpenGLES\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"RxCocoa\"",
+					"-framework",
+					"\"RxDataSources\"",
+					"-framework",
+					"\"RxRelay\"",
+					"-framework",
+					"\"RxSwift\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D FU_67";
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
+				PRODUCT_NAME = AgoraLive;
+				PROVISIONING_PROFILE_SPECIFIER = AgoraLab2020;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FU_67=0";
+				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "QA-Dev";
+		};
+		A795BA00248F3D6A00F38569 /* QA-Pre */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "PREPRODUCT=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "QA-Pre";
+		};
+		A795BA01248F3D6A00F38569 /* QA-Pre */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FE7AEBFEC18103833CA7C8E4 /* Pods-AgoraLive.qa-pre.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Haifeng Hong (MJP2F92AG6)";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 323;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JDPG69R49Z;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxCocoa\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"PREPRODUCT=1",
+					"FU_67=0",
+				);
+				INFOPLIST_FILE = AgoraLive/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Nama-lite/FaceUnity-SDK-iOS-v6.7.0-lite\"",
+				);
+				MARKETING_VERSION = 3.1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"nama\"",
+					"-l\"resolv\"",
+					"-l\"stdc++\"",
+					"-framework",
+					"\"AGECamera\"",
+					"-framework",
+					"\"AGEVideoLayout\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AgoraRtcKit\"",
+					"-framework",
+					"\"AgoraRtmKit\"",
+					"-framework",
+					"\"AlamoClient\"",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"Differentiator\"",
+					"-framework",
+					"\"FLAnimatedImage\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"MBProgressHUD\"",
+					"-framework",
+					"\"MJRefresh\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"OpenGLES\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"RxCocoa\"",
+					"-framework",
+					"\"RxDataSources\"",
+					"-framework",
+					"\"RxRelay\"",
+					"-framework",
+					"\"RxSwift\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D PREPRODUCT -D FU_67";
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
+				PRODUCT_NAME = AgoraLive;
+				PROVISIONING_PROFILE_SPECIFIER = AgoraLab2020;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PREPRODUCT=1";
+				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "QA-Pre";
+		};
+		A7AD0F0224AF0138008FFD5B /* Release-Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Release-Test";
+		};
+		A7AD0F0324AF0138008FFD5B /* Release-Test */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EB5512637E9134229608F7E1 /* Pods-AgoraLive.release-test.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Yuhua Gong (YBKA3W5TF4)";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 323;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = SW3CA7M752;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxCocoa\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxDataSources\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxRelay\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RxSwift\"",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"FU_67=0",
+					"PRODUCT=1",
+				);
+				INFOPLIST_FILE = AgoraLive/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Nama-lite/FaceUnity-SDK-iOS-v6.7.0-lite\"",
+				);
+				MARKETING_VERSION = 3.1.2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"nama\"",
+					"-l\"resolv\"",
+					"-l\"stdc++\"",
+					"-framework",
+					"\"AGECamera\"",
+					"-framework",
+					"\"AGEVideoLayout\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AgoraRtcKit\"",
+					"-framework",
+					"\"AgoraRtmKit\"",
+					"-framework",
+					"\"AlamoClient\"",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"Differentiator\"",
+					"-framework",
+					"\"FLAnimatedImage\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"MBProgressHUD\"",
+					"-framework",
+					"\"MJRefresh\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"OpenGLES\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"RxCocoa\"",
+					"-framework",
+					"\"RxDataSources\"",
+					"-framework",
+					"\"RxRelay\"",
+					"-framework",
+					"\"RxSwift\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D FU_67 -D PRODUCT";
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
+				PRODUCT_NAME = AgoraLive;
+				PROVISIONING_PROFILE_SPECIFIER = AgoraAppsDevProfile;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FU_67=0 PRODUCT=1";
+				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Release-Test";
 		};
 /* End XCBuildConfiguration section */
 
@@ -2371,33 +1937,21 @@
 			buildConfigurations = (
 				A76BD12F23F1035600B2732B /* Debug */,
 				A76BD13023F1035600B2732B /* Release */,
+				A7AD0F0224AF0138008FFD5B /* Release-Test */,
+				A795B9FE248F39C900F38569 /* QA-Dev */,
+				A795BA00248F3D6A00F38569 /* QA-Pre */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A76BD13123F1035600B2732B /* Build configuration list for PBXNativeTarget "AgoraLive-Dev" */ = {
+		A76BD13123F1035600B2732B /* Build configuration list for PBXNativeTarget "AgoraLive" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A76BD13223F1035600B2732B /* Debug */,
 				A76BD13323F1035600B2732B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A7A97958245140DB00A82265 /* Build configuration list for PBXNativeTarget "AgoraLive-QA" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A7A97959245140DB00A82265 /* Debug */,
-				A7A9795A245140DB00A82265 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A7CEAEF0247252E00041124B /* Build configuration list for PBXNativeTarget "AgoraLive-Release" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A7CEAEF1247252E00041124B /* Debug */,
-				A7CEAEF2247252E00041124B /* Release */,
+				A7AD0F0324AF0138008FFD5B /* Release-Test */,
+				A795B9FF248F39C900F38569 /* QA-Dev */,
+				A795BA01248F3D6A00F38569 /* QA-Pre */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -34,20 +34,24 @@ struct RandomName {
     }
 }
 
-class CreateLiveViewController: MaskViewController, ShowAlertProtocol {
+class CreateLiveViewController: MaskViewController {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var nameBgView: UIView!
     
+    @IBOutlet weak var switchCameraButton: UIButton!
     @IBOutlet weak var settingsButton: UIButton!
     @IBOutlet weak var beautyButton: UIButton!
     @IBOutlet weak var startButton: UIButton!
+    @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var cameraPreview: UIView!
+    @IBOutlet weak var randomButton: UIButton!
     
     private let bag = DisposeBag()
     
     private let deviceVM = MediaDeviceVM()
     private let playerVM = PlayerVM()
+    private let enhancementVM = VideoEnhancementVM()
     
     private var localSettings = LocalLiveSettings(title: "")
     private var firstLayoutSubviews: Bool = false
@@ -55,14 +59,27 @@ class CreateLiveViewController: MaskViewController, ShowAlertProtocol {
     private var beautyVC: UIViewController?
     
     var liveType: LiveType = .multiBroadcasters
-    var publicRoomSettings = PublishRelay<LocalLiveSettings>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        nameTextField.delegate = self
         nameLabel.text = NSLocalizedString("Create_NameLabel")
         startButton.setTitle(NSLocalizedString("Create_Start"),
                              for: .normal)
         randomName()
+        
+        deviceVM.camera = .on
+        deviceVM.cameraPosition = .front
+        deviceVM.cameraResolution(.high)
+        
+        // workaround: make local preview render scale to 16:9
+        let media = ALCenter.shared().centerProvideMediaHelper()
+        media.setupVideo(resolution: CGSize.AgoraVideoDimension720x1280,
+                         frameRate: .fps15,
+                         bitRate: 1000)
+        
+        playerVM.startRenderLocalVideoStream(id: 0,
+                                             view: self.cameraPreview)
         
         switch liveType {
         case .multiBroadcasters:
@@ -83,11 +100,94 @@ class CreateLiveViewController: MaskViewController, ShowAlertProtocol {
             media.frameRate = .fps15
             media.bitRate = 800
             localSettings.media = media
+        case .virtualBroadcasters:
+            var media = localSettings.media
+            media.resolution = CGSize.AgoraVideoDimension720x1280
+            media.frameRate = .fps15
+            media.bitRate = 1000
+            localSettings.media = media
+            
+            startButton.backgroundColor = UIColor(hexString: "#0088EB")
+            settingsButton.isHidden = true
+            beautyButton.isHidden = true
+            switchCameraButton.isHidden = true
+            backButton.setImage(UIImage(named: "icon-back-black"),
+                                for: .normal)
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showLimitToast()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let segueId = segue.identifier else {
+            return
         }
         
-        deviceVM.camera = .on
-        playerVM.renderLocalVideoStream(id: 0,
-                                        view: self.cameraPreview)
+        switch segueId {
+        case "MultiBroadcastersViewController":
+            guard let sender = sender,
+                let info = sender as? LiveSession.JoinedInfo,
+                let seatInfo = info.seatInfo else {
+                    fatalError()
+            }
+            
+            let vc = segue.destination as? MultiBroadcastersViewController
+            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.seatVM = try! LiveSeatVM(list: seatInfo)
+        case "SingleBroadcasterViewController":
+            guard let sender = sender,
+                let info = sender as? LiveSession.JoinedInfo else {
+                    fatalError()
+            }
+            
+            let vc = segue.destination as? SingleBroadcasterViewController
+            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+        case "PKBroadcastersViewController":
+            guard let sender = sender,
+                let info = sender as? LiveSession.JoinedInfo else {
+                    fatalError()
+            }
+            
+            var statistics: PKStatistics
+            
+            if let pkInfo = info.pkInfo {
+                statistics = try! PKStatistics(dic: pkInfo)
+            } else {
+                statistics = PKStatistics(state: .none)
+            }
+            
+            let vc = segue.destination as? PKBroadcastersViewController
+            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.pkVM = PKVM(statistics: statistics)
+        case "VirtualBroadcastersViewController":
+            guard let sender = sender,
+                let info = sender as? LiveSession.JoinedInfo,
+                let seatInfo = info.seatInfo,
+                let session = ALCenter.shared().liveSession else {
+                    fatalError()
+            }
+            
+            let vc = segue.destination as? VirtualBroadcastersViewController
+            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+            let seatVM = try! LiveSeatVM(list: seatInfo)
+            vc?.seatVM = seatVM
+            
+            var broadcasting: VirtualVM.Broadcasting
+            
+            if seatVM.list.value.count == 1,
+                let remote = seatVM.list.value[0].user {
+                broadcasting = .multi([session.owner.user, remote])
+            } else {
+                broadcasting = .single(session.owner.user)
+            }
+            
+            vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
+        default:
+            break
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -103,11 +203,13 @@ class CreateLiveViewController: MaskViewController, ShowAlertProtocol {
     }
     
     @IBAction func doClosePressed(_ sender: UIButton) {
-        self.showAlert("是否取消直播间创建",
-                       action1: NSLocalizedString("Cancel"),
-                       action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                        self.deviceVM.camera = .off
-                        self.dismiss(animated: true, completion: nil)
+        if liveType != .virtualBroadcasters {
+            self.enhancementVM.reset()
+            self.deviceVM.camera = .off
+            self.navigationController?.dismiss(animated: true,
+                                               completion: nil)
+        } else {
+            self.navigationController?.popViewController(animated: true)
         }
     }
     
@@ -134,8 +236,8 @@ class CreateLiveViewController: MaskViewController, ShowAlertProtocol {
             self.showAlert("未输入房间名")
             return
         }
-        self.dismiss(animated: false, completion: nil)
-        self.publicRoomSettings.accept(self.localSettings)
+        
+        self.startLivingWithLocalSettings(localSettings)
     }
     
     func hiddenSubSettings() {
@@ -157,6 +259,17 @@ private extension CreateLiveViewController {
             return
         }
         nameTextField.text = name
+    }
+    
+    func showLimitToast() {
+        let mainScreen = UIScreen.main
+        let y = mainScreen.bounds.height - mainScreen.heightOfSafeAreaBottom - 38 - 15 - 150
+        let view = TagImageTextToast(frame: CGRect(x: 15, y: y, width: 181, height: 44.0), filletRadius: 8)
+        
+        view.labelSize = CGSize(width: UIScreen.main.bounds.width - 30, height: 0)
+        view.text = NSLocalizedString("Limit_Toast")
+        view.tagImage = UIImage(named: "icon-yellow-caution")
+        self.showToastView(view, duration: 5.0)
     }
     
     func presentMediaSettings() {
@@ -206,5 +319,62 @@ private extension CreateLiveViewController {
         beautyVC.workSwitch.rx.value.subscribe(onNext: { [unowned self] (value) in
             self.beautyButton.isSelected = value
         }).disposed(by: bag)
+    }
+}
+
+private extension CreateLiveViewController {
+    func startLivingWithLocalSettings(_ settings: LocalLiveSettings) {
+        self.showHUD()
+        
+        var extra: [String: Any]? = nil
+        if liveType == .virtualBroadcasters {
+            extra = ["virtualAvatar": enhancementVM.virtualAppearance.value.item]
+        }
+        
+        LiveSession.create(roomSettings: settings,
+                           type: liveType,
+                           extra: extra,
+                           success: { [unowned self] (session) in
+                            self.joinLiving(session: session)
+        }) { [unowned self] in
+            self.hiddenHUD()
+            self.showAlert(message:"start live fail")
+        }
+    }
+    
+    func joinLiving(session: LiveSession) {
+        self.showHUD()
+        
+        let center = ALCenter.shared()
+        center.liveSession = session
+        session.join(success: { [unowned session, unowned self] (info: LiveSession.JoinedInfo) in
+            self.hiddenHUD()
+            
+            switch session.type {
+            case .multiBroadcasters:
+                self.performSegue(withIdentifier: "MultiBroadcastersViewController", sender: info)
+            case .singleBroadcaster:
+                self.performSegue(withIdentifier: "SingleBroadcasterViewController", sender: info)
+            case .pkBroadcasters:
+                self.performSegue(withIdentifier: "PKBroadcastersViewController", sender: info)
+            case .virtualBroadcasters:
+                self.performSegue(withIdentifier: "VirtualBroadcastersViewController", sender: info)
+            }
+        }) { [unowned self] in
+            self.hiddenHUD()
+            self.showAlert(message:"join live fail")
+        }
+    }
+}
+
+extension CreateLiveViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if range.length == 1 && string.count == 0 {
+            return true
+        } else if let text = textField.text, text.count >= 25 {
+            return false
+        } else {
+            return true
+        }
     }
 }

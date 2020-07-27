@@ -18,7 +18,7 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
     var tintColor = UIColor(red: 0,
                             green: 0,
                             blue: 0,
-                            alpha: 0.4)
+                            alpha: 0.6)
     
     var bag: DisposeBag = DisposeBag()
     
@@ -56,6 +56,8 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
     var giftVM = GiftVM()
     var deviceVM = MediaDeviceVM()
     var playerVM = PlayerVM()
+    var enhancementVM = VideoEnhancementVM()
+    var monitor = NetworkMonitor(host: "www.apple.com")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,9 +65,11 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
         self.view.layer.contents = image?.cgImage
         
         guard let session = ALCenter.shared().liveSession else {
-            fatalError()
+            assert(false)
+            return
         }
         
+        liveSession(session)
         liveRoom(session: session)
         audience()
         chatList()
@@ -74,6 +78,7 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
         bottomTools(session: session, tintColor: tintColor)
         chatInput()
         musicList()
+        netMonitor()
         superResolution(session: session)
     }
     
@@ -87,12 +92,10 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
             let vc = segue.destination as! GiftAudienceViewController
             self.giftAudienceVC = vc
         case "BottomToolsViewController":
-            guard let session = ALCenter.shared().liveSession else {
-                fatalError()
-            }
-            
-            guard let role = session.role else {
-                fatalError()
+            guard let session = ALCenter.shared().liveSession,
+                let role = session.role else {
+                    assert(false)
+                    return
             }
             
             let vc = segue.destination as! BottomToolsViewController
@@ -112,8 +115,9 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
 extension SingleBroadcasterViewController {
     // MARK: - Live Room
     func liveRoom(session: LiveSession) {
-        guard let localRole = session.role else {
-            fatalError()
+        guard let owner = session.owner else {
+            assert(false)
+            return
         }
         
         let images = ALCenter.shared().centerProvideImagesHelper()
@@ -123,49 +127,38 @@ extension SingleBroadcasterViewController {
         ownerView.label.textColor = .white
         ownerView.label.font = UIFont.systemFont(ofSize: 11)
         
-        let owner = session.owner
-        
         switch owner {
-        case .localUser:
-            ownerView.label.text = localRole.info.name
-            ownerView.imageView.image = images.getHead(index: localRole.info.imageIndex)
-            let owner = localRole as! LiveOwner
-            playerVM.renderLocalVideoStream(id: owner.agoraUserId,
-                                            view: self.renderView)
+        case .localUser(let user):
+            ownerView.label.text = user.info.name
+            ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
+            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
+                                                 view: self.renderView)
             deviceVM.camera = .on
             deviceVM.mic = .on
         case .otherUser(let remote):
             ownerView.label.text = remote.info.name
             ownerView.imageView.image = images.getHead(index: remote.info.imageIndex)
-            playerVM.renderRemoteVideoStream(id: remote.agoraUserId,
+            playerVM.startRenderRemoteVideoStream(id: remote.agoraUserId,
                                              view: self.renderView)
             deviceVM.camera = .off
             deviceVM.mic = .off
         }
-        
-        session.end.subscribe(onNext: { [unowned self] (_) in
-            guard !owner.isLocal else {
-                return
-            }
-            
-            self.showAlert(NSLocalizedString("Live_End")) { [unowned self] (_) in
-                self.leave()
-            }
-        }).disposed(by: bag)
     }
     
     func superResolution(session: LiveSession) {
         bottomToolsVC?.superRenderButton.rx.tap.subscribe(onNext: { [unowned self, unowned session] () in
             guard let vc = self.bottomToolsVC else {
-                fatalError()
+                assert(false)
+                return
             }
             
             vc.superRenderButton.isSelected.toggle()
             
             if vc.superRenderButton.isSelected {
-                let view = SuperResolutionToast(frame: CGRect(x: 0, y: 0, width: 181, height: 44.0), filletRadius: 8)
-                let point = CGPoint(x: UIScreen.main.bounds.width * 0.5, y: 200)
-                self.showToastView(view, position: point, duration: 1.0)
+                let view = TagImageTextToast(frame: CGRect(x: 0, y: 300, width: 181, height: 44.0), filletRadius: 8)
+                view.text = NSLocalizedString("Super_Resolution_Enabled")
+                view.tagImage = UIImage(named: "icon-done")
+                self.showToastView(view, duration: 1.0)
             }
             
             switch session.owner {
@@ -174,7 +167,8 @@ extension SingleBroadcasterViewController {
                 media.player.renderRemoteVideoStream(id: remote.agoraUserId,
                                                      superResolution: vc.superRenderButton.isSelected ? .on : .off)
             default:
-                fatalError()
+                assert(false)
+                break
             }
         }).disposed(by: bag)
     }

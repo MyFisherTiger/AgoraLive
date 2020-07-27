@@ -34,7 +34,7 @@ class LiveTypeCell: UITableViewCell {
     }
 }
 
-class LiveTypeViewController: UIViewController {
+class LiveTypeViewController: MaskViewController {
     struct `Type` {
         var background: UIImage
         var title: String
@@ -46,13 +46,13 @@ class LiveTypeViewController: UIViewController {
                    description: NSLocalizedString("Multi_Broadcasters_Description")),
             `Type`(background: UIImage(named: "pic-单主播")!,
                    title: NSLocalizedString("Single_Broadcaster"),
-                   description: NSLocalizedString("Multi_Broadcasters_Description")),
+                   description: NSLocalizedString("Single_Broadcaster_Description")),
             `Type`(background: UIImage(named: "pic-PK直播")!,
                    title: NSLocalizedString("PK_Live"),
-                   description: NSLocalizedString("Multi_Broadcasters_Description")),
+                   description: NSLocalizedString("PK_Live_Description")),
             `Type`(background: UIImage(named: "pic-虚拟直播")!,
                    title: NSLocalizedString("Virtual_Live"),
-                   description: NSLocalizedString("Comming_Soon")),
+                   description: NSLocalizedString("Virtual_Live_Description")),
         ])
     }
     
@@ -78,33 +78,15 @@ class LiveTypeViewController: UIViewController {
         
         // Selected Event
         guard let parentVC = self.parent,
-            let tabbarVC = parentVC as? UITabBarController,
-            let children = tabbarVC.viewControllers else {
-            fatalError()
-        }
-        
-        var tLiveListTabVC: LiveListTabViewController?
-        
-        for child in children where child is UINavigationController {
-            let navi = child as! UINavigationController
-            
-            if let tabVC = navi.viewControllers.first as? LiveListTabViewController {
-                tLiveListTabVC = tabVC
-                break
-            }
-        }
-        
-        guard let liveListTabVC = tLiveListTabVC else {
-            fatalError()
-        }
-        
-        _ = liveListTabVC.view
-        
-        tableView.rx.itemSelected.subscribe(onNext: { [weak tabbarVC, weak liveListTabVC] (index) in
-            let commingSoonIndex = 3
-            guard index.row < commingSoonIndex else {
+            let tabbarVC = parentVC as? MainTabBarViewController else {
+                assert(false)
                 return
-            }
+        }
+        
+        let liveListTabVC = tabbarVC.findFirstChild(of: LiveListTabViewController.self)
+        _ = liveListTabVC?.view
+                
+        tableView.rx.itemSelected.subscribe(onNext: { [weak tabbarVC, weak liveListTabVC] (index) in
             let liveListTabVCIndex = 1
             tabbarVC?.selectedIndex = liveListTabVCIndex
             liveListTabVC?.tabView.selectedIndex.accept(index.row)

@@ -10,67 +10,67 @@ import UIKit
 
 struct URLGroup {
     #if PREPRODUCT
-    private static let ip = "https://api-solutions-pre.sh.agoralab.co/"
+    private static let host = "http://api-solutions-pre.sh.agoralab.co/"
     #elseif PRODUCT
-    private static let ip = "https://api-solutions.sh.agoralab.co/"
+    private static let host = "http://api-solutions.sh.agoralab.co/"
     #else
-    private static let ip = "https://api-solutions-dev.sh.agoralab.co/"
+    private static let host = "http://api-solutions-dev.sh.agoralab.co/"
     #endif
     private static let mainPath = "ent/v1/"
     
     static var userRegister: String {
-        return URLGroup.ip + URLGroup.mainPath + "user"
+        return URLGroup.host + URLGroup.mainPath + "user"
     }
     
     static var appVersion: String {
-        return URLGroup.ip + URLGroup.mainPath + "app/version"
+        return URLGroup.host + URLGroup.mainPath + "app/version"
     }
     
     static var userLogin: String {
-        return URLGroup.ip + URLGroup.mainPath + "user/login"
+        return URLGroup.host + URLGroup.mainPath + "user/login"
     }
     
     static var musicList: String {
-        return URLGroup.ip + URLGroup.mainPath + "musics"
+        return URLGroup.host + URLGroup.mainPath + "musics"
     }
     
     static func userUpdateInfo(userId: String) -> String {
-        return URLGroup.ip + URLGroup.mainPath + "user/\(userId)"
+        return URLGroup.host + URLGroup.mainPath + "user/\(userId)"
     }
         
     static var roomPage: String {
-        return URLGroup.ip + URLGroup.mainPath + "room/page"
+        return URLGroup.host + URLGroup.mainPath + "room/page"
     }
     
     static var liveCreate: String {
-        return URLGroup.ip + URLGroup.mainPath + "room"
+        return URLGroup.host + URLGroup.mainPath + "room"
     }
     
     static func joinLive(roomId: String) -> String {
-        return URLGroup.ip + URLGroup.mainPath + "room/\(roomId)/entry"
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/entry"
     }
     
     static func leaveLive(roomId: String) -> String {
-        return URLGroup.ip + URLGroup.mainPath + "room/\(roomId)/exit"
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/exit"
     }
     
     static func audienceList(roomId: String) -> String {
-        return URLGroup.ip + URLGroup.mainPath + "room/\(roomId)/user/page"
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/user/page"
     }
     
     static func liveSeatCommand(roomId: String) -> String {
-        return URLGroup.ip + URLGroup.mainPath + "room/\(roomId)/seat"
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/seat"
     }
     
     static func userCommand(userId: String, roomId: String) -> String {
-        return URLGroup.ip + URLGroup.mainPath + "room/\(roomId)/user/\(userId)"
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/user/\(userId)"
     }
     
     static func receivedGift(roomId: String) -> String {
-        return URLGroup.ip + URLGroup.mainPath + "room/\(roomId)/gift"
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/gift"
     }
     
     static func pkLive(roomId: String) -> String {
-        return URLGroup.ip + URLGroup.mainPath + "room/\(roomId)/pk"
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/pk"
     }
 }

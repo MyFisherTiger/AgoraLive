@@ -46,6 +46,7 @@ class ExtensionViewController: UIViewController {
     lazy var micButton = ExtensionButton(frame: CGRect.zero)
     lazy var audioLoopButton = ExtensionButton(frame: CGRect.zero)
     
+    var liveType: LiveType = .multiBroadcasters
     var perspective: LiveRoleType = .audience
     
     override func viewDidLoad() {
@@ -64,19 +65,21 @@ class ExtensionViewController: UIViewController {
         
         switch perspective {
         case .owner, .broadcaster:
-            settingsButton.setImage(UIImage(named: "icon-setting"), for: .normal)
-            settingsButton.setTitle(NSLocalizedString("Live_Room_Settings"), for: .normal)
-            view.addSubview(settingsButton)
-            
-            switchCameraButton.setImage(UIImage(named: "icon-rotate"), for: .normal)
-            switchCameraButton.setTitle(NSLocalizedString("Switch_Camera"), for: .normal)
-            view.addSubview(switchCameraButton)
-            
-            cameraButton.setImage(UIImage(named: "icon-video on"), for: .normal)
-            cameraButton.setImage(UIImage(named: "icon-video off"), for: .selected)
-            cameraButton.setTitle(NSLocalizedString("Camera"), for: .normal)
-            cameraButton.setTitle(NSLocalizedString("Camera"), for: .selected)
-            view.addSubview(cameraButton)
+            if liveType != .virtualBroadcasters {
+                settingsButton.setImage(UIImage(named: "icon-setting"), for: .normal)
+                settingsButton.setTitle(NSLocalizedString("Live_Room_Settings"), for: .normal)
+                view.addSubview(settingsButton)
+                
+                switchCameraButton.setImage(UIImage(named: "icon-rotate"), for: .normal)
+                switchCameraButton.setTitle(NSLocalizedString("Switch_Camera"), for: .normal)
+                view.addSubview(switchCameraButton)
+                
+                cameraButton.setImage(UIImage(named: "icon-video on"), for: .normal)
+                cameraButton.setImage(UIImage(named: "icon-video off"), for: .selected)
+                cameraButton.setTitle(NSLocalizedString("Camera"), for: .normal)
+                cameraButton.setTitle(NSLocalizedString("Camera"), for: .selected)
+                view.addSubview(cameraButton)
+            }
             
             micButton.setImage(UIImage(named: "icon-speaker on"), for: .normal)
             micButton.setImage(UIImage(named: "icon-speaker off"), for: .selected)
@@ -124,11 +127,24 @@ class ExtensionViewController: UIViewController {
             }
             
             var y: CGFloat = self.titleLabel.frame.maxY + 20.0
-            var buttons = [dataButton, settingsButton]
+            var buttons: [UIButton]
+            
+            if liveType != .virtualBroadcasters {
+                buttons = [dataButton, settingsButton]
+            } else {
+                buttons = [dataButton]
+            }
+            
             buttonsLayout(buttons, y: y)
             
             y = dataButton.frame.maxY + 22.0
-            buttons = [switchCameraButton, cameraButton, micButton, audioLoopButton]
+            
+            if liveType != .virtualBroadcasters {
+                buttons = [switchCameraButton, cameraButton, micButton, audioLoopButton]
+            } else {
+                buttons = [micButton, audioLoopButton]
+            }
+            
             buttonsLayout(buttons, y: y)
         case .audience:
             let width: CGFloat = 63.0

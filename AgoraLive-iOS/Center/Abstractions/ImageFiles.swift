@@ -103,64 +103,64 @@ private extension ImageFiles {
 }
 
 private extension ImageFiles {
-    func getHead(url: String, success: ((AGEImage) -> Void)? = nil, error: ErrorCompletion = nil) {
-        // default head
-        if url.contains("local") {
-            if let success = success {
-                success(AGEImage(named: "head-default")!)
-            }
-            return
-        }
-        
-        // 1.caches
-        if let head = headCaches[url] {
-            if let success = success {
-                success(head)
-            }
-            return
-        }
-        
-        let queue = DispatchQueue.main
-        queue.async { [unowned self] in
-            
-            // 2.local
-            if let head = try? self.localHead(url: url) {
-                self.headCaches[url] = head
-                if let success = success {
-                    DispatchQueue.main.sync {
-                        success(head)
-                    }
-                }
-                return
-            }
-            
-            // check this image is downloading
-            if let _ = self.isDownloading.first(where: {$0 == url}) {
-                return
-            }
-            
-            self.isDownloading.append(url)
-            
-            // 3.download
-            self.download(url: url, success: { (image) in
-                self.headCaches[url] = image
-                self.isDownloading.removeAll(where: {$0 == url})
-                try? self.save(image, name: url + ".png")
-                if let success = success {
-                    DispatchQueue.main.sync {
-                        success(image)
-                    }
-                }
-            }) { (mError) in
-                self.isDownloading.removeAll(where: {$0 == url})
-                if let error = error {
-                    DispatchQueue.main.async {
-                        error(mError)
-                    }
-                }
-            }
-        }
-    }
+//    func getHead(url: String, success: ((AGEImage) -> Void)? = nil, error: ErrorCompletion = nil) {
+//        // default head
+//        if url.contains("local") {
+//            if let success = success {
+//                success(AGEImage(named: "head-default")!)
+//            }
+//            return
+//        }
+//
+//        // 1.caches
+//        if let head = headCaches[url] {
+//            if let success = success {
+//                success(head)
+//            }
+//            return
+//        }
+//
+//        let queue = DispatchQueue.main
+//        queue.async { [unowned self] in
+//
+//            // 2.local
+//            if let head = try? self.localHead(url: url) {
+//                self.headCaches[url] = head
+//                if let success = success {
+//                    DispatchQueue.main.sync {
+//                        success(head)
+//                    }
+//                }
+//                return
+//            }
+//
+//            // check this image is downloading
+//            if let _ = self.isDownloading.first(where: {$0 == url}) {
+//                return
+//            }
+//
+//            self.isDownloading.append(url)
+//
+//            // 3.download
+//            self.download(url: url, success: { (image) in
+//                self.headCaches[url] = image
+//                self.isDownloading.removeAll(where: {$0 == url})
+//                try? self.save(image, name: url + ".png")
+//                if let success = success {
+//                    DispatchQueue.main.sync {
+//                        success(image)
+//                    }
+//                }
+//            }) { (mError) in
+//                self.isDownloading.removeAll(where: {$0 == url})
+//                if let error = error {
+//                    DispatchQueue.main.async {
+//                        error(mError)
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     func removeHead(url: String) {
         headCaches.removeValue(forKey: url)
@@ -173,29 +173,29 @@ private extension ImageFiles {
 }
 
 private extension ImageFiles {
-    func download(url: String, success: ((AGEImage) -> Void)? = nil, error: ErrorCompletion = nil) {
-        let client = ALCenter.shared().centerProvideRequestHelper()
-        let event = RequestEvent(name: "download-head")
-        let task = RequestTask(event: event, type: .http(.get, url: url))
-        
-        let successCallback: DataExCompletion = { (data: Data) throws in
-            let image = try UIImage.initWith(data: data)
-            if let success = success {
-                success(image)
-            }
-        }
-        
-        let retry: ErrorRetryCompletion = { (mError: AGEError) in
-            if let error = error {
-                error(mError)
-            }
-            return .resign
-        }
-        
-        let response = AGEResponse.data(successCallback)
-        
-        client.request(task: task, success: response, failRetry: retry)
-    }
+//    func download(url: String, success: ((AGEImage) -> Void)? = nil, error: ErrorCompletion = nil) {
+//        let client = ALCenter.shared().centerProvideRequestHelper()
+//        let event = RequestEvent(name: "download-head")
+//        let task = RequestTask(event: event, type: .http(.get, url: url))
+//        
+//        let successCallback: DataExCompletion = { (data: Data) throws in
+//            let image = try UIImage.initWith(data: data)
+//            if let success = success {
+//                success(image)
+//            }
+//        }
+//        
+//        let retry: ACErrorRetryCompletion = { (mError: AGEError) in
+//            if let error = error {
+//                error(mError)
+//            }
+//            return .resign
+//        }
+//        
+//        let response = ACResponse.data(successCallback)
+//        
+//        client.request(task: task, success: response, failRetry: retry)
+//    }
     
     func local(path: String) throws -> AGEImage  {
         let url = URL(fileURLWithPath: path)

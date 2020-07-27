@@ -4,13 +4,13 @@
 
 ### FaceUnity SDK
 
-AgoraLive currently supports FaceUnity SDK v6.4, please go to () to download this version. After you download the right version of FaceUnity SDK, unzip the zip file and copy files to project folders (create the folder if not exists).
+Now AgoraLive supports FaceUnity SDK v6.4. Download [here](https://github.com/Faceunity/FULiveDemoDroid/releases/download/v6.4/Faceunity-Android-v6.4.zip). 
 
-Assume the SDK file is unzipped to folder PATH/TO/FaceUnity-SDK-v6.4, copy the following resource files to project folders like:
+Assume the SDK archive is unzipped to folder `PATH/TO/FaceUnity`, copy the following resource files to project folders like:
 
-* `PATH/TO/FaceUnity-SDK-v6.4/Android/assets` to `faceunity/src/main/assets`
-* `PATH/TO/FaceUnity-SDK-v6.4/Android/jniLibs` to `faceunity/src/main/jniLibs`
-* `PATH/TO/FaceUnity-SDK-v6.4/Android/libs/nama.jar` to `faceunity/libs`
+* `PATH/TO/FaceUnity/Android/assets` to `faceunity/src/main/assets`
+* `PATH/TO/FaceUnity/Android/jniLibs` to `faceunity/src/main/jniLibs`
+* `PATH/TO/FaceUnity/Android/libs/nama.jar` to `faceunity/libs`
 
 
 The project folder structure:
@@ -42,9 +42,15 @@ faceunity
                     |_ libnama.so
 ``` 
 
+### Face Unity Licence
+
+You need to contact FaceUnity for a licence file named `authpack.java`. Please replace `faceunity/src/main/java/com/faceunity/authpack.java` with your `authpack.java`.
+
+The licence should at least contain beautification and animoji permissions.
+
 ### Virtual Host Image Resource
 
-The virtual host image resources are not part of FaceUnity SDK, you need to download from (here). Unzip the archive and copy the following files to `app/src/main/assets` like:
+The virtual host image resources are not part of FaceUnity SDK, you can download [here](https://download.agora.io/demo/release/AgoraLiveVirtualImage.zip). Unzip and copy the following files to `app/src/main/assets` like:
 
 ```
 app
@@ -58,4 +64,4 @@ app
 
 ### Agora Video SDK
 
-Different from some other Agora demos, you DO NOT need to sign up for a developer account and register an app id to run this project.
+Different from some other Agora demos, currently you DO NOT need to sign up for a developer account and register an app id to run this project.

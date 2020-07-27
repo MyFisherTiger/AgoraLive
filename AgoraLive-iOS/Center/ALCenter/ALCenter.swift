@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxRelay
+import AlamoClient
 
 class ALCenter: NSObject {
     static let instance = ALCenter()
@@ -30,8 +31,8 @@ class ALCenter: NSObject {
     private let log = LogTube()
     private lazy var mediaKit = MediaKit(log: log)
     
-    private lazy var alamo = AlamoClient(logTube: log,
-                                         delegate: nil)
+    private lazy var alamo = AlamoClient(delegate: nil,
+                                         logTube: self)
     
     private lazy var rtm = RTMClient(logTube: log)
     private lazy var userDataHelper = UserDataHelper()
@@ -53,37 +54,6 @@ extension ALCenter {
                 self.isWorkNormally.accept(true)
             }
         }
-    }
-    
-    func createLiveSession(roomSettings: LocalLiveSettings, type: LiveType, success: ((LiveSession) -> Void)? = nil, fail: Completion = nil) {
-        let url = URLGroup.liveCreate
-        let event = RequestEvent(name: "live-session-create")
-        let parameter: StringAnyDic = ["roomName": roomSettings.title, "type": type.rawValue]
-        let task = RequestTask(event: event,
-                               type: .http(.post, url: url),
-                               timeout: .medium,
-                               header: ["token": ALKeys.ALUserToken],
-                               parameters: parameter)
-        
-        let successCallback: DicEXCompletion = { (json: ([String: Any])) throws in
-            let roomId = try json.getStringValue(of: "data")
-            
-            let session = LiveSession(roomId: roomId, settings: roomSettings, type: type)
-            
-            if let success = success {
-                success(session)
-            }
-        }
-        let response = AGEResponse.json(successCallback)
-        
-        let retry: ErrorRetryCompletion = { (error: AGEError) -> RetryOptions in
-            if let fail = fail {
-                fail()
-            }
-            return .resign
-        }
-        
-        alamo.request(task: task, success: response, failRetry: retry)
     }
     
     func reinitAgoraServe() {
@@ -114,10 +84,10 @@ private extension ALCenter {
                 success(info)
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let retry: ErrorRetryCompletion = { (error: AGEError) -> RetryOptions in
-            return .retry(after: 1, newTask: nil)
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
+            return .retry(after: 1)
         }
         
         alamo.request(task: task, success: response, failRetry: retry)
@@ -145,13 +115,13 @@ private extension ALCenter {
                     success()
                 }
             }) { (error) -> RetryOptions in
-                return .retry(after: 0.5, newTask: nil)
+                return .retry(after: 0.5)
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let retry: ErrorRetryCompletion = { (error: AGEError) -> RetryOptions in
-            return .retry(after: 1, newTask: nil)
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
+            return .retry(after: 1)
         }
         
         alamo.request(task: task, success: response, failRetry: retry)
@@ -185,5 +155,31 @@ extension ALCenter: CenterHelper {
     
     func centerProvideUserDataHelper() -> UserDataHelper {
         return userDataHelper
+    }
+}
+
+extension ALCenter: ACLogTube {
+    func log(from: AnyClass, info: String, extral: String?, funcName: String) {
+        let fromatter = AGELogFormatter(type: .info(info),
+                                        className: NSStringFromClass(from),
+                                        funcName: funcName,
+                                        extra: extral)
+        log.logFromClass(formatter: fromatter)
+    }
+    
+    func log(from: AnyClass, warning: String, extral: String?, funcName: String) {
+        let fromatter = AGELogFormatter(type: .warning(warning),
+                                        className: NSStringFromClass(from),
+                                        funcName: funcName,
+                                        extra: extral)
+        log.logFromClass(formatter: fromatter)
+    }
+    
+    func log(from: AnyClass, error: Error, extral: String?, funcName: String) {
+        let fromatter = AGELogFormatter(type: .error(error.localizedDescription),
+                                        className: NSStringFromClass(from),
+                                        funcName: funcName,
+                                        extra: extral)
+        log.logFromClass(formatter: fromatter)
     }
 }

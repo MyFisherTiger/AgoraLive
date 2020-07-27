@@ -49,10 +49,14 @@ private extension MineVM {
         
         let images = ALCenter.shared().centerProvideImagesHelper()
         
-        abstraction.publicInfo.subscribe(onNext: { [unowned self] (newInfo) in
-            self.userName.accept(newInfo.name)
+        abstraction.publicInfo.subscribe(onNext: { [weak self] (newInfo) in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            strongSelf.userName.accept(newInfo.name)
             let head = images.getHead(index: newInfo.imageIndex)
-            self.head.accept(head)
+            strongSelf.head.accept(head)
         }).disposed(by: bag)
     }
 }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AlamoClient
 
 protocol CenterHelper where Self: ALCenter {
     func centerProvideRequestHelper() -> AlamoClient

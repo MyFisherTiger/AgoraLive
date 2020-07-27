@@ -11,13 +11,39 @@ import RxSwift
 import RxCocoa
 
 class PlaceHolderView: UIView {
-    @IBOutlet var imageView: UIImageView!
-    @IBOutlet var label: UILabel!
+    enum ViewType {
+        case noRoom, lostConnection
+    }
     
-    var tap = PublishSubject<Bool>()
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var createRoomLabel: UILabel!
+    @IBOutlet weak var lostConnectionLabel: UILabel!
+    @IBOutlet weak var lostConnectionDescLabel: UILabel!
+    
+    var tap = PublishSubject<()>()
+    
+    var viewType: ViewType = .noRoom {
+        didSet {
+            switch viewType {
+            case .noRoom:
+                imageView.image = UIImage(named: "pic-placeholding")
+                createRoomLabel.text = NSLocalizedString("Create_A_Live_Room")
+                createRoomLabel.isHidden = false
+                lostConnectionLabel.isHidden = true
+                lostConnectionDescLabel.isHidden = true
+            case .lostConnection:
+                imageView.image = UIImage(named: "pic-Nosignal")
+                lostConnectionLabel.text = NSLocalizedString("Lost_Connection")
+                lostConnectionDescLabel.text = NSLocalizedString("Lost_Connection_Description")
+                createRoomLabel.isHidden = true
+                lostConnectionLabel.isHidden = false
+                lostConnectionDescLabel.isHidden = false
+            }
+        }
+    }
     
     @IBAction func doTapPressed(_ sender: UITapGestureRecognizer) {
-        tap.onNext(true)
+        tap.onNext(())
     }
 }
 
@@ -56,6 +82,6 @@ class LiveListViewController: UIViewController {
         
         collectionView.setCollectionViewLayout(layout, animated: true)
         
-        placeHolderView.label.text = NSLocalizedString("Create_A_Live_Room")
+        placeHolderView.viewType = .noRoom
     }
 }

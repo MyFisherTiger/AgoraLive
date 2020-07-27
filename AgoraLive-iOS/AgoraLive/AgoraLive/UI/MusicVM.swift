@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxRelay
+import AlamoClient
 
 fileprivate extension Array where Element == Music {
     init(list: [StringAnyDic]) throws {
@@ -66,17 +67,21 @@ class MusicVM: NSObject {
                                type: .http(.get, url: url),
                                timeout: .medium)
         
-        let success: DicEXCompletion = { [unowned self] (json) in
+        let success: DicEXCompletion = { [weak self] (json) in
+            guard let strongSelf = self else {
+                return
+            }
+            
             let data = try json.getListValue(of: "data")
             let list = try Array(list: data)
-            self.list = BehaviorRelay(value: list)
+            strongSelf.list = BehaviorRelay(value: list)
         }
         
-        let fail: ErrorRetryCompletion = { (error) in
+        let fail: ACErrorRetryCompletion = { (error) in
             return .resign
         }
         
-        let response = AGEResponse.json(success)
+        let response = ACResponse.json(success)
         client.request(task: task, success: response, failRetry: fail)
     }
 }
@@ -84,7 +89,8 @@ class MusicVM: NSObject {
 private extension MusicVM {
     func playItem(_ last: Int?, selected: Int) {
         guard var musicList = self.list?.value else {
-            fatalError()
+            assert(false)
+            return
         }
         
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
@@ -116,12 +122,28 @@ private extension MusicVM {
         }
         
         // play
-        mediaKit.player.startMixingFileAudio(url: item.url) { [unowned self] in
-            guard let selectedIndex = self.listSelectedIndex else {
-                fatalError()
+        mediaKit.player.startMixingFileAudio(url: item.url) { [weak self] in
+            guard let strongSelf = self,
+                let selectedIndex = strongSelf.listSelectedIndex else {
+                return
             }
+            
+            guard var musicList = strongSelf.list?.value else {
+                assert(false)
+                return
+            }
+            
             let next = selectedIndex + 1
-            self.listSelectedIndex = next
+            if next < musicList.count {
+                strongSelf.listSelectedIndex = next
+            } else {
+                strongSelf.listSelectedIndex = nil
+                
+                var item = musicList[selected]
+                item.isPlaying.toggle()
+                musicList[selected] = item
+                strongSelf.list?.accept(musicList)
+            }
         }
     }
 }

@@ -53,19 +53,14 @@ public class UserUtil {
     }
 
     public static File appLogFolder(Context context) {
-        File folder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            folder = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), LOG_FOLDER_NAME);
-        } else {
-            String path = Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + File.separator +
-                    context.getPackageName() + File.separator +
-                    LOG_FOLDER_NAME;
-            folder = new File(path);
-        }
-
-        if (!folder.exists() && !folder.mkdir()) folder = null;
+        File folder = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), LOG_FOLDER_NAME);
+        if (!folder.exists() && !folder.mkdirs()) folder = null;
         return folder;
+    }
+
+    public static String appLogFolderPath(Context context) {
+        File folder = appLogFolder(context);
+        return folder != null && folder.exists() ? folder.getAbsolutePath() : "";
     }
 
     private static String logFilePath(Context context, String name) {

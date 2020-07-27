@@ -12,10 +12,6 @@
     import Cocoa
 #endif
 
-enum RetryOptions {
-    case retry(after: TimeInterval, newTask: AGERequestTaskProtocol? = nil), resign
-}
-
 //MARK: - Block
 typealias DicCompletion = (([String: Any]) -> Void)?
 typealias AnyCompletion = ((Any?) -> Void)?
@@ -27,9 +23,8 @@ typealias DicEXCompletion = (([String: Any]) throws -> Void)?
 typealias StringExCompletion = ((String) throws -> Void)?
 typealias DataExCompletion = ((Data) throws -> Void)?
 
-typealias ErrorCompletion = ((AGEError) -> Void)?
-typealias ErrorBoolCompletion = ((AGEError) -> Bool)?
-typealias ErrorRetryCompletion = ((AGEError) -> RetryOptions)?
+typealias ErrorCompletion = ((Error) -> Void)?
+typealias ErrorBoolCompletion = ((Error) -> Bool)?
 
 //MARK: - Dictinary
 typealias StringAnyDic = [String: Any]

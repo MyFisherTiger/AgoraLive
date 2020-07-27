@@ -62,30 +62,35 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
     var giftVM = GiftVM()
     var deviceVM = MediaDeviceVM()
     var playerVM = PlayerVM()
+    var enhancementVM = VideoEnhancementVM()
+    var monitor = NetworkMonitor(host: "www.apple.com")
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let image = UIImage(named: "live-bg")
         self.view.layer.contents = image?.cgImage
-
+        
         guard let session = ALCenter.shared().liveSession else {
-            fatalError()
+            assert(false)
+            return
         }
         
+        liveSession(session)
         liveRoom(session: session)
         liveRole(session: session)
         audience()
         liveSeat(roomId: session.roomId)
         chatList()
         gift()
-
+        
         bottomTools(session: session, tintColor: tintColor)
         chatInput()
         musicList()
+        netMonitor()
         activeSpeaker()
     }
     
@@ -97,9 +102,10 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         switch identifier {
         case "LiveSeatViewController":
             guard let type = ALCenter.shared().liveSession?.role?.type else {
-                fatalError()
+                assert(false)
+                return
             }
-
+            
             let vc = segue.destination as! LiveSeatViewController
             vc.perspective = type
             self.seatVC = vc
@@ -108,7 +114,8 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
             self.giftAudienceVC = vc
         case "BottomToolsViewController":
             guard let type = ALCenter.shared().liveSession?.role?.type else {
-                fatalError()
+                assert(false)
+                return
             }
             
             let vc = segue.destination as! BottomToolsViewController
@@ -127,7 +134,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         playerVM.activeSpeaker.subscribe(onNext: { [weak self] (speaker) in
             guard let strongSelf = self,
                 let session = ALCenter.shared().liveSession else {
-                return
+                    return
             }
             
             switch (speaker, session.owner) {
@@ -152,60 +159,54 @@ extension MultiBroadcastersViewController {
     func liveSeat(roomId: String) {
         // Media
         seatVC?.userRender.subscribe(onNext: { [unowned self] (viewUser) in
-            guard let session = ALCenter.shared().liveSession else {
-                return
+            guard let session = ALCenter.shared().liveSession,
+                let local = session.role else {
+                    assert(false)
+                    return
             }
-
-            guard let local = session.role else {
-                fatalError()
-            }
-
+            
             if local.agoraUserId == viewUser.1.agoraUserId {
-                self.playerVM.renderLocalVideoStream(id: viewUser.1.agoraUserId,
-                                                     view: viewUser.0)
+                self.playerVM.startRenderLocalVideoStream(id: viewUser.1.agoraUserId,
+                                                          view: viewUser.0)
             } else {
-                self.playerVM.renderRemoteVideoStream(id: viewUser.1.agoraUserId,
-                                                      view: viewUser.0)
+                self.playerVM.startRenderRemoteVideoStream(id: viewUser.1.agoraUserId,
+                                                           view: viewUser.0)
             }
         }).disposed(by: bag)
-
+        
         seatVC?.userAudioSilence.subscribe(onNext: { [unowned self] (user) in
-            guard let session = ALCenter.shared().liveSession else {
-                return
+            guard let session = ALCenter.shared().liveSession,
+                let local = session.role,
+                local.agoraUserId == user.agoraUserId else {
+                    return
             }
-
-            guard let local = session.role else {
-                fatalError()
-            }
-
-            guard local.agoraUserId == user.agoraUserId else {
-               return
-            }
-
+            
             self.deviceVM.mic = user.status.contains(.mic) ? .on : .off
         }).disposed(by: bag)
-
+        
         // Live Seat List
         seatVM.list.subscribe(onNext: { [unowned self] (list) in
             guard let session = ALCenter.shared().liveSession else {
-                fatalError()
+                assert(false)
+                return
             }
-
+            
             // Local user starts / stops broadcasting
             self.localUserRoleChangeWith(seatList: list)
             self.seatVC!.updateSeats(list, of: session)
         }).disposed(by: bag)
-
+        
         // Live Seat Command
         seatVC?.commandFire.subscribe(onNext: { [unowned self] (seatCommand) in
             guard seatCommand.command != .none else {
                 return
             }
-
+            
             guard let session = ALCenter.shared().liveSession else {
-                fatalError()
+                assert(false)
+                return
             }
-
+            
             switch seatCommand.command {
             // Owner
             case .invite:
@@ -220,21 +221,22 @@ extension MultiBroadcastersViewController {
             case .close, .ban, .unban, .forceToAudience, .release:
                 guard session.owner.isLocal,
                     let role = session.role as? LiveOwner else {
-                    fatalError()
+                        assert(false)
+                        return
                 }
-
+                
                 let handler: ((UIAlertAction) -> Void)? = {[weak self] (_) in
                     self?.seatVM.localOwner(role,
-                                           command: seatCommand.command,
-                                           on: seatCommand.seat,
-                                           of: roomId) { [weak self] (_) in
-                                            self?.showAlert(NSLocalizedString("Seat_Command_Fail"))
+                                            command: seatCommand.command,
+                                            on: seatCommand.seat,
+                                            of: roomId) { [weak self] (_) in
+                                                self?.showAlert(NSLocalizedString("Seat_Command_Fail"))
                     }
                 }
-
+                
                 let message = self.alertMessageOfSeatCommand(seatCommand.command,
                                                              with: seatCommand.seat.user?.info.name)
-
+                
                 self.showAlert(seatCommand.command.description,
                                message: message,
                                action1: NSLocalizedString("Cancel"),
@@ -242,34 +244,44 @@ extension MultiBroadcastersViewController {
                                handler2: handler)
             // Broadcaster
             case .endBroadcasting:
-                guard let role = session.role as? MultiBroadBroadcaster else {
-                    fatalError()
+                guard let role = session.role as? LiveBroadcaster else {
+                    assert(false)
+                    return
                 }
-
+                
                 self.showAlert(seatCommand.command.description,
                                message: NSLocalizedString("Confirm_End_Broadcasting"),
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                                self.seatVM.localBroadcaster(role, endBroadcastingOn: seatCommand.seat, of: roomId)
+                                self.seatVM.localBroadcaster(role,
+                                                             endBroadcastingOn: seatCommand.seat,
+                                                             of: roomId)
                 }
             // Audience
             case .applyForBroadcasting:
                 let handler: ((UIAlertAction) -> Void)? =  {[unowned self] (_) in
-                    switch session.owner {
+                    guard let session = ALCenter.shared().liveSession,
+                        let owner = session.owner else {
+                            assert(false)
+                            return
+                    }
+                    
+                    switch owner {
                     case .otherUser(let remote):
                         guard let role = session.role as? LiveAudience else {
-                            fatalError()
+                            assert(false)
+                            return
                         }
-
+                        
                         self.seatVM.localAudience(role,
-                                                  applyForBroadcastingToOwner: remote.agoraUserId,
+                                                  applyForBroadcastingTo: remote,
                                                   seat: seatCommand.seat) {[unowned self] (_) in
                                                     self.showAlert(NSLocalizedString("Apply_For_Broadcasting_Fail"))
                         }
-                    case .localUser: fatalError()
+                    case .localUser: assert(false); break
                     }
                 }
-
+                
                 self.showAlert(NSLocalizedString("Apply_For_Broadcasting"),
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm"),
@@ -283,6 +295,7 @@ extension MultiBroadcastersViewController {
     //MARK: - User List
     func presentInviteList(seat: LiveSeat) {
         guard let session = ALCenter.shared().liveSession else {
+            assert(false)
             return
         }
         
@@ -301,8 +314,10 @@ extension MultiBroadcastersViewController {
                 self.userListVC = nil
             }
             
-            guard let role = session.role as? LiveOwner else {
-                fatalError()
+            guard let role = session.role,
+                role.type == .owner else {
+                    assert(false)
+                    return
             }
             
             self.seatVM.localOwner(role,
@@ -319,73 +334,64 @@ extension MultiBroadcastersViewController {
 private extension MultiBroadcastersViewController {
     // MARK: - Live Room
     func liveRoom(session: LiveSession) {
+        guard let owner = session.owner else {
+            assert(false)
+            return
+        }
+        
         ownerRenderView.cornerRadius(5)
         ownerRenderView.layer.masksToBounds = true
         ownerRenderView.imageView.isHidden = true
         ownerRenderView.backgroundColor = tintColor
         
-        let owner = session.owner
-        
         switch owner {
-        case .localUser:
-            guard let localRole = session.role else {
-                fatalError()
-            }
+        case .localUser(let user):
             let images = ALCenter.shared().centerProvideImagesHelper()
             
-            ownerRenderView.imageView.image = images.getOrigin(index: localRole.info.imageIndex)
-            ownerRenderView.label.text = localRole.info.name
-            playerVM.renderLocalVideoStream(id: localRole.agoraUserId,
-                                            view: self.ownerRenderView.renderView)
+            ownerRenderView.imageView.image = images.getOrigin(index: user.info.imageIndex)
+            ownerRenderView.label.text = user.info.name
+            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
+                                                 view: self.ownerRenderView.renderView)
             deviceVM.camera = .on
             deviceVM.mic = .on
         case .otherUser(let remote):
             let images = ALCenter.shared().centerProvideImagesHelper()
             ownerRenderView.imageView.image = images.getOrigin(index: remote.info.imageIndex)
             ownerRenderView.label.text  = remote.info.name
-            playerVM.renderRemoteVideoStream(id: remote.agoraUserId,
-                                                    view: self.ownerRenderView.renderView)
+            playerVM.startRenderRemoteVideoStream(id: remote.agoraUserId,
+                                             view: self.ownerRenderView.renderView)
             deviceVM.camera = .off
             deviceVM.mic = .off
         }
         
         self.roomLabel.text = NSLocalizedString("Live_Room") + ": "
         self.roomNameLabel.text = session.settings.title
-        
-        session.end.subscribe(onNext: { [unowned self] (_) in
-            guard !owner.isLocal else {
-                return
-            }
-            
-            self.showAlert(NSLocalizedString("Live_End")) { [unowned self] (_) in
-                self.leave()
-            }
-        }).disposed(by: bag)
     }
     
     func liveRole(session: LiveSession) {
         guard let localRole = session.role else {
-            fatalError()
+            assert(false)
+            return
         }
         let roomId = session.roomId
         
         // Owner
         switch localRole.type {
         case .owner:
-            seatVM.receivedRejectInviteBroadcasting.subscribe(onNext: { [unowned self] (userName) in
-                self.showAlert(message: userName + NSLocalizedString("Reject"))
+            seatVM.receivedAudienceRejectInvitation.subscribe(onNext: { [unowned self] (user) in
+                self.showAlert(message: user.info.name + NSLocalizedString("Reject"))
             }).disposed(by: bag)
             
-            seatVM.receivedBroadcasting.subscribe(onNext: { [unowned self] (peerInfo) in
-                self.showAlert(message: "\"\(peerInfo.userName)\" " + NSLocalizedString("Apply_For_Broadcasting"),
+            seatVM.receivedAudienceApplication.subscribe(onNext: { [unowned self] (userSeat) in
+                self.showAlert(message: "\"\(userSeat.user.info.name)\" " + NSLocalizedString("Apply_For_Broadcasting"),
                                action1: NSLocalizedString("Reject"),
                                action2: NSLocalizedString("Confirm"), handler1: { [unowned session] (_) in
                                 let role = session.role as! LiveOwner
-
-                                self.seatVM.localOwner(role, rejectBroadcastingAudience: peerInfo.agoraUserId)
+                                
+                                self.seatVM.localOwner(role, rejectBroadcastingAudience: userSeat.user.agoraUserId)
                 }) {[unowned self] (_) in
-                    self.seatVM.localOwnerAcceptBroadcasting(audience: peerInfo.userId,
-                                                             seatIndex: peerInfo.seatIndex!,
+                    self.seatVM.localOwnerAcceptBroadcasting(audience: userSeat.user,
+                                                             seatIndex: userSeat.seatIndex,
                                                              roomId: roomId)
                 }
             }).disposed(by: bag)
@@ -394,19 +400,20 @@ private extension MultiBroadcastersViewController {
         case .audience:
             let audience = localRole as! LiveAudience
             
-            seatVM.receivedInvite.subscribe(onNext: {[unowned self] (peerInfo) in
-                self.showAlert(NSLocalizedString("Invite_A_Broadcast"),
+            seatVM.receivedOwnerInvitation.subscribe(onNext: {[unowned self] (userSeat) in
+                self.showAlert(NSLocalizedString("Invite_Broadcasting"),
+                               message: NSLocalizedString("Confirm_Accept_Broadcasting_Invitation"),
                                action1: NSLocalizedString("Reject"),
                                action2: NSLocalizedString("Confirm"),
                                handler1: {[unowned self] (_) in
                                 
-                                self.seatVM.localAudience(audience, rejectInvitingFrom: peerInfo.agoraUserId)
+                                self.seatVM.localAudience(audience, rejectInvitingFrom: userSeat.user)
                 }) {[unowned self] (_) in
-                    self.seatVM.localAudience(audience, acceptInvitingOn: peerInfo.seatIndex!, roomId: roomId)
+                    self.seatVM.localAudience(audience, acceptInvitingOn: userSeat.seatIndex, roomId: roomId)
                 }
             }).disposed(by: bag)
             
-            seatVM.receivedRejectBroadcasting.subscribe(onNext: {[unowned self] (userName) in
+            seatVM.receivedOwnerRejectApplication.subscribe(onNext: {[unowned self] (userName) in
                 self.showAlert(message: NSLocalizedString("Owner_Reject_Broadcasting_Application"))
             }).disposed(by: bag)
         }
@@ -420,12 +427,10 @@ private extension MultiBroadcastersViewController {
 
 private extension MultiBroadcastersViewController {
     func localUserRoleChangeWith(seatList: [LiveSeat]) {
-        guard let session = ALCenter.shared().liveSession else {
-            fatalError()
-        }
-        
-        guard let role = session.role else {
-            fatalError()
+        guard let session = ALCenter.shared().liveSession,
+            let role = session.role else {
+                assert(false)
+                return
         }
         
         switch role.type {
@@ -433,7 +438,8 @@ private extension MultiBroadcastersViewController {
             var isBroadcaster = false
             for seat in seatList where seat.state == .normal {
                 guard let user = seat.user else {
-                    fatalError()
+                    assert(false)
+                    return
                 }
                 
                 if user.info.userId == role.info.userId {
@@ -453,7 +459,8 @@ private extension MultiBroadcastersViewController {
             var isBroadcaster = false
             for seat in seatList where seat.state == .normal {
                 guard let user = seat.user else {
-                    fatalError()
+                    assert(false)
+                    return
                 }
                 
                 if user.info.userId == role.info.userId {
@@ -477,9 +484,17 @@ private extension MultiBroadcastersViewController {
     func alertMessageOfSeatCommand(_ command: SeatCommand, with userName: String?) -> String {
         switch command {
         case .ban:
-            return "禁止\"\(userName!)\"发言?"
+            if DeviceAssistant.Language.isChinese {
+                return "禁止\"\(userName!)\"发言?"
+            } else {
+                return "mute \"\(userName!)\"?"
+            }
         case .unban:
-            return "解除\"\(userName!)\"禁言?"
+            if DeviceAssistant.Language.isChinese {
+                return "解除\"\(userName!)\"禁言?"
+            } else {
+                return "unmute \"\(userName!)\"?"
+            }
         case .forceToAudience:
             if DeviceAssistant.Language.isChinese {
                 return "确定\"\(userName!)\"下麦?"
@@ -487,11 +502,16 @@ private extension MultiBroadcastersViewController {
                 return "Stop \"\(userName!)\" hosting"
             }
         case .close:
-            return "将关闭该麦位，如果该位置上有用户，将下麦该用户"
+            if DeviceAssistant.Language.isChinese {
+                return "将关闭该麦位，如果该位置上有用户，将下麦该用户"
+            } else {
+                return "block this position"
+            }
         case .release:
-            return "解封此连麦位"
+            return NSLocalizedString("Seat_Release_Description")
         default:
-            fatalError()
+            assert(false)
+            return ""
         }
     }
 }

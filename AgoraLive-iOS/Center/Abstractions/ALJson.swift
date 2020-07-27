@@ -129,6 +129,7 @@ struct ALPeerMessage {
 
 struct ALChannelMessage {
     enum AType: Int {
+        // ranks: audience's total gift value
         case chat = 1, userJoinOrLeave, ranks, owner, seats, pkState, gift, liveEnd
     }
 }

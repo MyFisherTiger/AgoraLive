@@ -5,7 +5,7 @@ parameters:
 jobs:
 
   - job: ${{ parameters.name }}_Build
-    displayName: ${{ parameters.mame }}
+    displayName: ${{ parameters.name }}
     pool:
       vmImage: 'macos-latest'
     variables:

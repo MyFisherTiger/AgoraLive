@@ -8,6 +8,7 @@
 
 import Foundation
 import AgoraRtmKit
+import AlamoClient
 
 class RTMClient: NSObject, AGELogBase {
     private lazy var kit: AgoraRtmKit = {
@@ -69,7 +70,7 @@ class RTMClient: NSObject, AGELogBase {
 }
 
 extension RTMClient: SocketProtocol {
-    func connect(rtmId: String, token: String?, success: Completion, failRetry: ErrorRetryCompletion) throws {
+    func connect(rtmId: String, token: String?, success: Completion, failRetry: ACErrorRetryCompletion) throws {
         kit.login(rtmId: rtmId, token: token, success: success) { [unowned self] (error) in
             guard let retry = failRetry else {
                 return
@@ -97,7 +98,7 @@ extension RTMClient: SocketProtocol {
         self.kit.renewToken(token, fail: fail)
     }
     
-    func write(message: String, of event: AGERequestEvent, to: String, success: Completion = nil, fail: ErrorCompletion = nil) throws {
+    func write(message: String, of event: ACRequestEvent, to: String, success: Completion = nil, fail: ErrorCompletion = nil) throws {
         kit.send(message: message, of: event, to: to, success: success, fail: fail)
     }
     
@@ -134,7 +135,7 @@ extension RTMClient: SocketProtocol {
 }
 
 extension RTMClient: RTMChannelProtocol {
-    func joinChannel(_ channel: String, success: Completion, failRetry: ErrorRetryCompletion) {
+    func joinChannel(_ channel: String, success: Completion, failRetry: ACErrorRetryCompletion) {
         kit.joinChannel(channel, delegate: self, success: { [unowned self] in
             self.everJoinChannel = channel
             
@@ -168,7 +169,7 @@ extension RTMClient: RTMChannelProtocol {
         try? kit.leaveChannel(channel)
     }
     
-    func writeChannel(message: String, of event: AGERequestEvent, success: Completion = nil, fail: ErrorCompletion) throws {
+    func writeChannel(message: String, of event: ACRequestEvent, success: Completion = nil, fail: ErrorCompletion) throws {
         guard let channel = everJoinChannel else {
             return
         }
@@ -196,7 +197,7 @@ extension RTMClient: RTMChannelProtocol {
 }
 
 extension RTMClient: RequestClientProtocol {
-    func request(task: AGERequestTaskProtocol, success: AGEResponse?, failRetry: ErrorRetryCompletion) {
+    func request(task: ACRequestTaskProtocol, responseOnMainQueue: Bool = true, success: ACResponse?, failRetry: ACErrorRetryCompletion) {
         do {
             try prepareRequest(task: task, success: success) { [unowned self] (error) in
                 self.log(error: error)
@@ -223,9 +224,9 @@ extension RTMClient: RequestClientProtocol {
         }
     }
 
-    func upload(task: AGEUploadTaskProtocol, success: AGEResponse?, failRetry: ErrorRetryCompletion) {
+    func upload(task: ACUploadTaskProtocol, responseOnMainQueue: Bool = true, success: ACResponse?, failRetry: ACErrorRetryCompletion) {
         if let retry = failRetry {
-            let error = AGEError.fail("rtm doesn't support upload yet")
+            let error = ACError.fail("rtm doesn't support upload yet")
             _ = retry(error)
         }
     }
@@ -233,8 +234,8 @@ extension RTMClient: RequestClientProtocol {
 
 // MARK: Request
 private extension RTMClient {
-    @discardableResult func prepareRequest(task: AGERequestTaskProtocol, success: AGEResponse?, fail: ErrorCompletion) throws -> Int {
-        let failHandle = { (error: AGEError) in
+    @discardableResult func prepareRequest(task: ACRequestTaskProtocol, success: ACResponse?, fail: ErrorCompletion) throws -> Int {
+        let failHandle = { (error: Error) in
             if let fail = fail {
                 fail(error)
             }
@@ -248,7 +249,7 @@ private extension RTMClient {
         return task.id
     }
 
-    func request(task: AGERequestTaskProtocol, sendSuccess: Completion, sendFail: ErrorCompletion) throws {
+    func request(task: ACRequestTaskProtocol, sendSuccess: Completion, sendFail: ErrorCompletion) throws {
         guard let parameters = task.parameters else {
             throw AGEError.valueNil("paraAGEers")
         }
@@ -262,14 +263,14 @@ private extension RTMClient {
         switch task.requestType {
         case .http:
             throw AGEError.fail("rtm doesn't support http request")
-        case .rtm(peer: let peer):
+        case .socket(peer: let peer):
             remote = peer
         }
         
         kit.send(message: text, of: event, to: remote, success: sendSuccess, fail: sendFail)
     }
 
-    func pushRequestItemToQueue(_ item: RTMQueueItem, timeout: RequestTimeout, id: Int) {
+    func pushRequestItemToQueue(_ item: RTMQueueItem, timeout: ACRequestTimeout, id: Int) {
         requestQueue.push(item, id: id)
         let afterWorker = worker(of: id)
         let time = timeout.value

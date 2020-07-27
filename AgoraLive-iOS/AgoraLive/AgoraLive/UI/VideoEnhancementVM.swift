@@ -11,14 +11,53 @@ import RxSwift
 import RxRelay
 
 class VideoEnhancementVM: NSObject {
+    private let bag = DisposeBag()
+    
     // Rx
-    lazy var publishWork = BehaviorRelay(value: enhancement.work)
-    lazy var publishLightening = BehaviorRelay(value: enhancement.lightening)
-    lazy var publishRedness = BehaviorRelay(value: enhancement.redness)
-    lazy var publishBlur = BehaviorRelay(value: enhancement.blurLevel)
-    lazy var publishColor = BehaviorRelay(value: enhancement.colorLevel)
-    lazy var publishCheekThing = BehaviorRelay(value: enhancement.cheekThining)
-    lazy var publishEyeEnlarging = BehaviorRelay(value: enhancement.eyeEnlarging)
+    private(set) lazy var beauty = BehaviorRelay(value: enhancement.beauty)
+    private(set) lazy var smooth = BehaviorRelay(value: enhancement.getFilterItem(with: .smooth).value)
+    private(set) lazy var brighten = BehaviorRelay(value: enhancement.getFilterItem(with: .brighten).value)
+    private(set) lazy var thinning = BehaviorRelay(value: enhancement.getFilterItem(with: .thinning).value)
+    private(set) lazy var eyeEnlarge = BehaviorRelay(value: enhancement.getFilterItem(with: .eye).value)
+    
+    private(set) lazy var virtualAppearance = BehaviorRelay(value: enhancement.appearance)
+    
+    var minSmooth: Float {
+        return enhancement.getFilterItem(with: .smooth).minValue
+    }
+    
+    var maxSmooth: Float {
+        return enhancement.getFilterItem(with: .smooth).maxValue
+    }
+    
+    var minBrighten: Float {
+        return enhancement.getFilterItem(with: .brighten).minValue
+    }
+    
+    var maxBrighten: Float {
+        return enhancement.getFilterItem(with: .brighten).maxValue
+    }
+    
+    var minThinning: Float {
+        return enhancement.getFilterItem(with: .thinning).minValue
+    }
+    
+    var maxThinning: Float {
+        return enhancement.getFilterItem(with: .thinning).maxValue
+    }
+    
+    var minEyeEnlarge: Float {
+        return enhancement.getFilterItem(with: .eye).minValue
+    }
+    
+    var maxEyeEnlarge: Float {
+        return enhancement.getFilterItem(with: .eye).maxValue
+    }
+    
+    override init() {
+        super.init()
+        observerPropertys()
+    }
 }
 
 extension VideoEnhancementVM {
@@ -26,80 +65,59 @@ extension VideoEnhancementVM {
        return  ALCenter.shared().centerProvideMediaHelper().enhancement
     }
     
-    var work: AGESwitch {
-        set {
-            enhancement.work = newValue
-            publishWork.accept(newValue)
-        }
-        
-        get {
-            return enhancement.work
-        }
-    }
-    
-    var lightening: Double {
-        set {
-            enhancement.lightening = newValue
-            publishLightening.accept(newValue)
-        }
-        
-        get {
-            return enhancement.lightening
-        }
-    }
-    
-    var redness: Double {
-        set {
-            enhancement.redness = newValue
-            publishRedness.accept(newValue)
-        }
-        
-        get {
-            return enhancement.redness
+    func beauty(_ action: AGESwitch) {
+        switch action {
+        case .on:
+            self.enhancement.beauty(.on, success: { [unowned self] in
+                DispatchQueue.main.async { [weak self] in
+                    self?.beauty.accept(.on)
+                }
+            }) { [unowned self] in
+                DispatchQueue.main.async { [weak self] in
+                    self?.beauty.accept(.off)
+                }
+            }
+        case .off:
+            self.enhancement.beauty(.off)
+            self.beauty.accept(.off)
+            smooth.accept(enhancement.getFilterItem(with: .smooth).value)
+            brighten.accept(enhancement.getFilterItem(with: .brighten).value)
+            thinning.accept(enhancement.getFilterItem(with: .thinning).value)
+            eyeEnlarge.accept(enhancement.getFilterItem(with: .eye).value)
         }
     }
     
-    var blurLevel: Double {
-        set {
-            enhancement.blurLevel = newValue
-            publishBlur.accept(newValue)
-        }
-        
-        get {
-            return enhancement.blurLevel
+    func virtualAppearance(_ appearance: VirtualAppearance) {
+        enhancement.virtualAppearance(appearance, success: { [weak self] in
+            self?.virtualAppearance.accept(appearance)
+        }) { [weak self] in
+            self?.virtualAppearance.accept(.none)
         }
     }
     
-    var colorLevel: Double {
-        set {
-            enhancement.colorLevel = newValue
-            publishColor.accept(newValue)
-        }
-        
-        get {
-            return enhancement.colorLevel
-        }
+    func reset() {
+        beauty.accept(.off)
+        virtualAppearance.accept(.none)
+        enhancement.reset()
     }
-    
-    var cheekThining: Double {
-        set {
-            enhancement.cheekThining = newValue
-            publishCheekThing.accept(newValue)
-        }
+}
+
+extension VideoEnhancementVM {
+    func observerPropertys() {
+        smooth.subscribe(onNext: { [unowned self] (value) in
+            self.enhancement.setFilterValue(value, with: .smooth)
+        }).disposed(by: bag)
         
-        get {
-            return enhancement.cheekThining
-        }
-    }
-    
-    var eyeEnlarging: Double {
-        set {
-            enhancement.eyeEnlarging = newValue
-            publishEyeEnlarging.accept(newValue)
-        }
+        brighten.subscribe(onNext: { [unowned self] (value) in
+            self.enhancement.setFilterValue(value, with: .brighten)
+        }).disposed(by: bag)
         
-        get {
-            return enhancement.eyeEnlarging
-        }
+        thinning.subscribe(onNext: { [unowned self] (value) in
+            self.enhancement.setFilterValue(value, with: .thinning)
+        }).disposed(by: bag)
+        
+        eyeEnlarge.subscribe(onNext: { [unowned self] (value) in
+            self.enhancement.setFilterValue(value, with: .eye)
+        }).disposed(by: bag)
     }
 }

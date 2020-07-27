@@ -8,6 +8,7 @@
 
 import AgoraRtcKit
 import Foundation
+import AGECamera
 
 class Capture: NSObject {
     private var agoraKit: AgoraRtcEngineKit {
@@ -61,7 +62,8 @@ class Capture: NSObject {
             #endif
             video = .on
             #if (!arch(i386) && !arch(x86_64))
-            try cameraSession?.start(work: .capture)
+            let configuration = AGESingleCamera.CaptureConfiguration()
+            try cameraSession?.start(work: .capture(configuration: configuration))
             #endif
         case .off:
             #if (!arch(i386) && !arch(x86_64))
@@ -74,13 +76,19 @@ class Capture: NSObject {
         }
     }
     
+    func videoResolution(_ resolution: AVCaptureSession.Preset) {
+        cameraSession?.set(resolution: resolution)
+    }
+    
     #if os(iOS)
-    var cameraPostion: Position = .front {
-        didSet {
-            guard cameraPostion != oldValue else {
-                return
-            }
-            try? cameraSession?.switchPosition(cameraPostion)
+    var cameraPostion: AGECamera.Position {
+        get {
+        
+            return cameraSession?.position ?? .front
+        }
+        
+        set {
+            try? cameraSession?.switchPosition(newValue)
         }
     }
     #endif
@@ -141,15 +149,24 @@ class Player: NSObject, AGELogBase {
         return MediaKit.rtcKit
     }
     
-    func renderLocalVideoStream(id: Int, view: UIView) {
+    func startRenderLocalVideoStream(id: Int, view: UIView, isMirror: Bool = false) {
         log(info: "render local video stream", extra: "id: \(id), view frame: \(view.frame)")
         let canvas = AgoraRtcVideoCanvas(streamId: id, view: view)
+        canvas.mirrorMode = isMirror ? .enabled : .disabled
         agoraKit.setupLocalVideo(canvas)
     }
     
-    func renderRemoteVideoStream(id: Int, view: UIView) {
-        log(info: "render remote video stream", extra: "id: \(id), view frame: \(view.frame)")
+    func startRenderRemoteVideoStream(id: Int, view: UIView) {
+        log(info: "start render remote video stream", extra: "id: \(id), view frame: \(view.frame)")
         let canvas = AgoraRtcVideoCanvas(streamId: id, view: view)
+        agoraKit.setupRemoteVideo(canvas)
+    }
+    
+    func stopRenderRemoteVideoStream(id: Int) {
+        log(info: "stop render remote video stream", extra: "id: \(id)")
+        let canvas = AgoraRtcVideoCanvas()
+        canvas.uid = UInt(id)
+        canvas.view = nil
         agoraKit.setupRemoteVideo(canvas)
     }
     
@@ -175,7 +192,7 @@ class Player: NSObject, AGELogBase {
     
     func startMixingFileAudio(url: String, finish: (() -> Void)? = nil) {
         self.mixFileAudioFinish = finish
-        agoraKit.startAudioMixing(url, loopback: true, replace: false, cycle: 1)
+        agoraKit.startAudioMixing(url, loopback: false, replace: false, cycle: 1)
     }
     
     func pauseMixFileAudio() {
@@ -218,71 +235,131 @@ private extension Player {
     }
 }
 
-class VideoEnhancement: NSObject {
-    var work: AGESwitch = .off
+enum VirtualAppearance {
+    case none, girl, dog
     
-    override init() {
-        super.init()
-        FUManager.share()?.loadItems()
-    }
-    
-    var lightening: Double {
-        set {
-            FUManager.share()?.eyelightingLevel = newValue
-        }
-        
+    var image: UIImage {
         get {
-            return FUManager.share()?.eyelightingLevel ?? 0
+            switch self {
+            case .girl: return UIImage(named: "portrait-girl")!
+            case .dog:  return UIImage(named: "portrait-dog")!
+            case .none: fatalError()
+            }
         }
     }
     
-    var redness: Double {
-        set {
-            FUManager.share()?.redLevel = newValue
-        }
-        
+    var item: String {
         get {
-            return FUManager.share()?.redLevel ?? 0
+            switch self {
+            case .girl: return "girl"
+            case .dog:  return "hashiqi"
+            case .none: return "noitem"
+            }
         }
     }
     
-    var blurLevel: Double {
-        set {
-            FUManager.share()?.blurLevel = newValue
+    static func item(_ item: String) -> VirtualAppearance {
+        switch item {
+        case "girl":    return VirtualAppearance.girl
+        case "hashiqi": return VirtualAppearance.dog
+        default:        return VirtualAppearance.none
         }
-        
+    }
+}
+
+class VideoEnhancement: FUClient , AGELogBase {
+    private(set) var beauty: AGESwitch = .off
+    private(set) var appearance: VirtualAppearance = .none
+    
+    var logTube: LogTube {
         get {
-            return FUManager.share()?.blurLevel ?? 0
+            return ALCenter.shared().centerProvideLogTubeHelper()
+        }
+        set {
         }
     }
     
-    var colorLevel: Double {
-        set {
-            FUManager.share()?.whiteLevel = newValue
+    func beauty(_ action: AGESwitch, success: Completion = nil, fail: Completion = nil) {
+        if beauty == action {
+            if let success = success {
+                success()
+            }
+            return
         }
         
-        get {
-            return FUManager.share()?.whiteLevel ?? 0
+        switch action {
+        case .on:
+            loadFilter(success: { [unowned self] in
+                self.beauty = .on
+                if let success = success {
+                    success()
+                }
+                
+                self.log(info: "loadFilter success")
+            }) { [unowned self] (error) in
+                self.beauty = .off
+                if let fail = fail {
+                    fail()
+                }
+                
+                self.log(error: error, extra: "load filter")
+            }
+        case .off:
+            self.beauty = .off
         }
     }
     
-    var cheekThining: Double {
-        set {
-            FUManager.share()?.thinningLevel = newValue
-        }
-        
-        get {
-            return FUManager.share()?.thinningLevel ?? 0
+    func virtualAppearance(_ appearance: VirtualAppearance, success: Completion = nil, fail: Completion = nil) {
+        switch appearance {
+        case .girl, .dog:
+            loadBackgroud(success: { [unowned self] in
+                self.loadAnimoji(appearance.item, success: { [unowned self] in
+                    self.appearance = appearance
+                    if let success = success {
+                        success()
+                    }
+                    
+                    self.log(info: "loadAnimoji success", extra: "appearance: \(appearance.item)")
+                }) { (error) in
+                    if let fail = fail {
+                        fail()
+                    }
+                    
+                    self.log(error: error, extra: "load background")
+                }
+            }) { (error) in
+                if let fail = fail {
+                    fail()
+                }
+                
+                self.log(error: error, extra: "load virtual appearance")
+            }
+        case .none:
+            self.appearance = .none
         }
     }
     
-    var eyeEnlarging: Double {
-        set {
-            FUManager.share()?.enlargingLevel = newValue
-        }
-        
-        get {
-            return FUManager.share()?.enlargingLevel ?? 0
-        }
+    func reset() {
+        beauty = .off
+        appearance = .none
+        destoryAllItems()
+    }
+}
+
+// MARK: Log
+private extension VideoEnhancement {
+    func log(info: String, extra: String? = nil, funcName: String = #function) {
+        let className = VideoEnhancement.self
+        logOutputInfo(info, extra: extra, className: className, funcName: funcName)
+    }
+    
+    func log(warning: String, extra: String? = nil, funcName: String = #function) {
+        let className = VideoEnhancement.self
+        logOutputWarning(warning, extra: extra, className: className, funcName: funcName)
+    }
+    
+    func log(error: Error, extra: String? = nil, funcName: String = #function) {
+        let className = VideoEnhancement.self
+        logOutputError(error, extra: extra, className: className, funcName: funcName)
     }
 }

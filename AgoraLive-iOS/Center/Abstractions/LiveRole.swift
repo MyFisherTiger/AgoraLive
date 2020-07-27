@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxRelay
+import AlamoClient
 
 enum LiveRoleType: Int {
     case owner = 1, broadcaster, audience
@@ -77,12 +78,12 @@ extension LiveRole {
             if isSuccess, let callback = success {
                 callback()
             } else if !isSuccess, let callback = fail {
-                callback(AGEError.fail("live-seat-command fail") )
+                callback(ACError.fail("live-seat-command fail") )
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let fail: ErrorRetryCompletion = { (error) in
+        let fail: ACErrorRetryCompletion = { (error) in
             if let callback = fail {
                 callback(error)
             }
@@ -97,34 +98,34 @@ extension LiveRole {
 // MARK: - Audience
 class LiveAudience: NSObject, LiveRole {
     var type: LiveRoleType = .audience
-    var status: UserStatus
     var info: BasicUserInfo
-    var giftRank: Int
+    var status: UserStatus
     var agoraUserId: Int
     
-    init(info: BasicUserInfo, giftRank: Int = 0, agoraUserId: Int) {
+    var giftRank: Int
+    
+    init(info: BasicUserInfo, agoraUserId: Int, giftRank: Int = 0) {
         self.info = info
-        self.giftRank = giftRank
         self.status = UserStatus(rawValue: 0)
         self.agoraUserId = agoraUserId
+        self.giftRank = giftRank
     }
 }
 
 // MARK: - Broadcaster
-class MultiBroadBroadcaster: NSObject, LiveRole {
+class LiveBroadcaster: NSObject, LiveRole {
     var type: LiveRoleType = .broadcaster
     var info: BasicUserInfo
-    var giftRank: Int
     var status: UserStatus
     var agoraUserId: Int
     
-    init(info: BasicUserInfo, giftRank: Int = 0, status: UserStatus, agoraUserId: Int) {
+    var giftRank: Int
+    
+    init(info: BasicUserInfo, status: UserStatus, agoraUserId: Int, giftRank: Int = 0) {
         self.info = info
-        self.giftRank = giftRank
         self.status = status
         self.agoraUserId = agoraUserId
-        
-        super.init()
+        self.giftRank = giftRank
     }
 }
 
@@ -139,49 +140,56 @@ class LiveOwner: NSObject, LiveRole {
         self.info = info
         self.status = status
         self.agoraUserId = agoraUserId
-        
-        super.init()
     }
 }
 
 // MARK: - Remote
 class RemoteOwner: NSObject, LiveRole {
-    var type: LiveRoleType
+    var type: LiveRoleType = .owner
     var status: UserStatus
     var info: BasicUserInfo
     var agoraUserId: Int
     
     init(dic: StringAnyDic) throws {
-        self.type = .broadcaster
         self.status = try UserStatus.initWith(dic: dic)
         self.info = try BasicUserInfo(dic: dic)
         self.agoraUserId = try dic.getIntValue(of: "uid")
+    }
+    
+    init(info: BasicUserInfo, status: UserStatus, agoraUserId: Int) {
+        self.info = info
+        self.status = status
+        self.agoraUserId = agoraUserId
     }
 }
 
 class RemoteBroadcaster: NSObject, LiveRole {
-    var type: LiveRoleType
+    var type: LiveRoleType = .broadcaster
     var status: UserStatus
     var info: BasicUserInfo
     var agoraUserId: Int
     
     init(dic: StringAnyDic) throws {
-        self.type = .broadcaster
         self.status = try UserStatus.initWith(dic: dic)
         self.info = try BasicUserInfo(dic: dic)
         self.agoraUserId = try dic.getIntValue(of: "uid")
     }
+    
+    init(info: BasicUserInfo, status: UserStatus, agoraUserId: Int) {
+        self.info = info
+        self.status = status
+        self.agoraUserId = agoraUserId
+    }
 }
 
 class RemoteAudience: NSObject, LiveRole {
-    var type: LiveRoleType
+    var type: LiveRoleType = .audience
     var status: UserStatus
     var info: BasicUserInfo
-    var giftRank: Int
     var agoraUserId: Int
+    var giftRank: Int
     
     init(dic: StringAnyDic) throws {
-        self.type = .audience
         self.status = UserStatus(rawValue: 0)
         self.info = try BasicUserInfo(dic: dic)
         self.giftRank = 0
@@ -191,5 +199,12 @@ class RemoteAudience: NSObject, LiveRole {
         } else {
             self.agoraUserId = -1
         }
+    }
+    
+    init(info: BasicUserInfo, agoraUserId: Int) {
+        self.info = info
+        self.status = UserStatus(rawValue: 0)
+        self.agoraUserId = agoraUserId
+        self.giftRank = 0
     }
 }

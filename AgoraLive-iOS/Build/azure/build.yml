@@ -1,0 +1,54 @@
+parameters:
+  displayName: ''
+  mode: ''
+  upload: 0
+
+jobs:
+  - job: ${{ parameters.displayName }}Build
+    displayName: ${{ parameters.displayName }}
+    timeoutInMinutes: 30
+
+    pool:
+      vmImage: 'macOS-10.14'
+
+    variables:
+      - group: AgoraLive
+      - group: AgoraKeys
+
+    steps:
+      - task: InstallAppleCertificate@2
+        inputs:
+          certSecureFile: 'certificate.p12'
+          certPwd: $(agora.password)
+
+      - task: InstallAppleProvisioningProfile@1
+        inputs:
+          provProfileSecureFile: 'AgoraAppsDevProfile.mobileprovision'
+          
+      - task: InstallAppleCertificate@2
+        inputs:
+          certSecureFile: 'AgoraLab.p12'
+          certPwd: $(agora.password)
+
+      - task: InstallAppleProvisioningProfile@1
+        inputs:
+          provProfileSecureFile: 'AgoraLab2020.mobileprovision'
+          
+      - task: DownloadSecureFile@1
+        name: downloadAuthpack
+        displayName: 'Download face unity authpack'
+        inputs:
+            secureFile: 'authpack.h'
+   
+      - script: cd 'AgoraLive-iOS/Build/shell' && chmod +x download_zip.sh && ./download_zip.sh $(fubundle) ../../Resource
+      
+      - script: cp $(downloadAuthpack.secureFilePath) AgoraLive-iOS/Resource/Faceunity/
+
+      - script: cd 'AgoraLive-iOS/Build/shell' && chmod +x build.sh && ./build.sh AgoraLive ${{ parameters.mode }}
+      
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: AgoraLive-iOS/Build/product/app
+          ArtifactName: ${{ parameters.displayName }}
+      
+      - script: cd 'AgoraLive-iOS/Build/shell' && gem install fir-cli && chmod +x upload_fir.sh && ./upload_fir.sh ${{ parameters.upload }} $(firtoken) ../product/app/AgoraLive.ipa

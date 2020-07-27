@@ -24,6 +24,8 @@ class ChatCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.transform = CGAffineTransform(scaleX: 1, y: -1)
+        
         self.backgroundColor = .clear
         self.contentView.backgroundColor = .clear
         
@@ -88,17 +90,18 @@ class ChatViewController: UITableViewController {
                 return
             }
             
-            self.tableView.scrollToRow(at: IndexPath(row: list.count - 1, section: 0),
+            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0),
                                        at: .bottom,
                                        animated: true)
         }
     }
     
     var cellColor: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+    var contentColor: UIColor? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .clear
+        self.tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
         self.tableView.backgroundColor = .clear
     }
     
@@ -118,6 +121,10 @@ class ChatViewController: UITableViewController {
         cell.fillet.insideBackgroundColor = cellColor
         cell.contentWidth = chat.textSize.width
         cell.contentImage = chat.image
+        
+        if let contentColor = contentColor {
+            cell.contentLabel.textColor = contentColor
+        }
         return cell
     }
 }

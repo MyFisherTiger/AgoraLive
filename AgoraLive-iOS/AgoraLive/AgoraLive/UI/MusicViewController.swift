@@ -13,9 +13,14 @@ class MusicCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var singerLabel: UILabel!
     
+    weak var underline: CALayer? = nil
+    
     var isPlaying: Bool = false {
         didSet {
-            self.contentView.backgroundColor = isPlaying ? UIColor(hexString: "#0088EB") : UIColor.white
+            self.contentView.backgroundColor = isPlaying ? UIColor(hexString: "#0088EB") : .white
+            self.nameLabel.textColor = isPlaying ? .white : UIColor(hexString: "#333333")
+            self.singerLabel.textColor = isPlaying ? .white : UIColor(hexString: "#666666")
+            self.underline?.isHidden = isPlaying
         }
     }
     
@@ -24,9 +29,9 @@ class MusicCell: UITableViewCell {
         let color = UIColor(hexString: "#D8D8D8")
         let x: CGFloat = 15.0
         let width = UIScreen.main.bounds.width - (x * 2)
-        self.contentView.containUnderline(color,
-                                          x: x,
-                                          width: width)
+        self.underline = contentView.containUnderline(color,
+                                                      x: x,
+                                                      width: width)
     }
 }
 

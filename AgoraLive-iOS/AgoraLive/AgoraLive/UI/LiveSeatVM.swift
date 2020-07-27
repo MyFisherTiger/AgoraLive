@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxRelay
+import AlamoClient
 
 enum SeatState: Int {
     case empty = 0, normal, close
@@ -42,6 +43,12 @@ struct LiveSeat {
     var index: Int // 1 ... 6
     var state: SeatState
     
+    init(user: RemoteBroadcaster? = nil, index: Int, state: SeatState) {
+        self.user = user
+        self.index = index
+        self.state = state
+    }
+    
     init(dic: StringAnyDic) throws {
         let seatJson = try dic.getDictionaryValue(of: "seat")
         self.index = try seatJson.getIntValue(of: "no")
@@ -55,18 +62,17 @@ struct LiveSeat {
 }
 
 class LiveSeatVM: NSObject {
+    typealias UserSeat = (user: LiveRole, seatIndex: Int)
+    
     var list: BehaviorRelay<[LiveSeat]>
     
-    typealias PeerInfo = (userName: String, userId: String, agoraUserId: Int, seatIndex: Int?)
-    
     // Owner
-    var receivedBroadcasting = PublishRelay<PeerInfo>() // String: remote user name, String: remote agoraUid, Int: Seat Index
-    var receivedRejectInviteBroadcasting = PublishRelay<String>() // String: remote user name
+    var receivedAudienceApplication = PublishRelay<UserSeat>()
+    var receivedAudienceRejectInvitation = PublishRelay<LiveRole>()
     
     // Audience
-    var receivedInvite = PublishRelay<PeerInfo>() // String: remote user name, String: remote agoraUid, Int: seat index
-    var receivedRejectBroadcasting = PublishRelay<String>()
-    var receivedForceEndBroadcasting = PublishRelay<PeerInfo>()
+    var receivedOwnerInvitation = PublishRelay<UserSeat>()
+    var receivedOwnerRejectApplication = PublishRelay<LiveRole>()
     
     init(list: [StringAnyDic]) throws {
         var tempList = [LiveSeat]()
@@ -121,17 +127,20 @@ private extension LiveSeatVM {
             let userId = try data.getStringValue(of: "userId")
             let agoraUid = try data.getIntValue(of: "agoraUid")
             
+            let info = BasicUserInfo(userId: userId, name: userName)
+            let role = LiveAudience(info: info, agoraUserId: agoraUid)
+            
             switch cmd {
             case  101: //.applyForBroadcasting:
                 let index = try data.getIntValue(of: "coindex")
-                self?.receivedBroadcasting.accept((userName, userId, agoraUid, index))
+                self?.receivedAudienceApplication.accept((role, index))
             case  102: // .inviteBroadcasting:
                 let index = try data.getIntValue(of: "coindex")
-                self?.receivedInvite.accept((userName, userId, agoraUid, index))
+                self?.receivedOwnerInvitation.accept((role, index))
             case  103: // .rejectBroadcasting:
-                self?.receivedRejectBroadcasting.accept(userName)
+                self?.receivedOwnerRejectApplication.accept(role)
             case  104: // .rejectInviteBroadcasting:
-                self?.receivedRejectInviteBroadcasting.accept(userName)
+                self?.receivedAudienceRejectInvitation.accept(role)
             case  105: // .acceptBroadcastingRequest:
                 break
             case  106: // .acceptInvitingRequest:
@@ -153,7 +162,7 @@ private extension LiveSeatVM {
 
 // MARK: - Owner
 extension LiveSeatVM {
-    func localOwner(_ local: LiveOwner, command: SeatCommand, on seat:LiveSeat, with audience: RemoteAudience? = nil,
+    func localOwner(_ local: LiveRole, command: SeatCommand, on seat: LiveSeat, with audience: RemoteAudience? = nil,
                   of roomId: String, success: Completion = nil, fail: ErrorCompletion = nil) {
         // 禁麦， 封麦，下麦， 解封， 邀请，
         // case ban, close, forceToAudience, release, invite, none
@@ -181,13 +190,13 @@ extension LiveSeatVM {
                               of: RequestEvent(name: "apply_for_broadcasting"),
                               to: "\(user.agoraUserId)",
                               fail: fail)
-            } catch let error as AGEError {
+            } catch let error as ACError {
                 if let fail = fail {
                     fail(error)
                 }
             } catch {
                 if let fail = fail {
-                    fail(AGEError.unknown())
+                    fail(ACError.unknown())
                 }
             }
             return
@@ -234,12 +243,12 @@ extension LiveSeatVM {
             if isSuccess, let callback = success {
                 callback()
             } else if !isSuccess, let callback = fail {
-                callback(AGEError.fail("live-seat-command fail") )
+                callback(ACError.fail("live-seat-command fail") )
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let fail: ErrorRetryCompletion = { (error) in
+        let fail: ACErrorRetryCompletion = { (error) in
             if let callback = fail {
                 callback(error)
             }
@@ -249,10 +258,10 @@ extension LiveSeatVM {
         client.request(task: task, success: response, failRetry: fail)
     }
     
-    func localOwnerAcceptBroadcasting(audience userId: String, seatIndex: Int, roomId: String, success: Completion = nil, fail: ErrorCompletion = nil) {
+    func localOwnerAcceptBroadcasting(audience: LiveRole, seatIndex: Int, roomId: String, success: Completion = nil, fail: ErrorCompletion = nil) {
         let url = URLGroup.liveSeatCommand(roomId: roomId)
         let parameters: StringAnyDic = ["no": seatIndex,
-                                        "userId": userId,
+                                        "userId": audience.info.userId,
                                         "state": 1]
         
         let client = ALCenter.shared().centerProvideRequestHelper()
@@ -272,9 +281,9 @@ extension LiveSeatVM {
                 callback(AGEError.fail("live-seat-command fail") )
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let fail: ErrorRetryCompletion = { (error) in
+        let fail: ACErrorRetryCompletion = { (error) in
             if let callback = fail {
                 callback(error)
             }
@@ -284,7 +293,7 @@ extension LiveSeatVM {
         client.request(task: task, success: response, failRetry: fail)
     }
     
-    func localOwner(_ local: LiveOwner, rejectBroadcastingAudience agoraUid: Int, fail: ErrorCompletion = nil) {
+    func localOwner(_ local: LiveRole, rejectBroadcastingAudience agoraUid: Int, fail: ErrorCompletion = nil) {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         let message = ALPeerMessage(type: .broadcasting,
                                     command: .rejectBroadcasting,
@@ -298,13 +307,9 @@ extension LiveSeatVM {
                           of: RequestEvent(name: "apply_for_broadcasting"),
                           to: "\(agoraUid)",
                           fail: fail)
-        } catch let error as AGEError {
-            if let fail = fail {
-                fail(error)
-            }
         } catch {
             if let fail = fail {
-                fail(AGEError.unknown())
+                fail(error)
             }
         }
     }
@@ -312,7 +317,7 @@ extension LiveSeatVM {
 
 // MARK: - LiveBroadcaster
 extension LiveSeatVM {
-    func localBroadcaster(_ local: MultiBroadBroadcaster, endBroadcastingOn seat:LiveSeat, of roomId: String, success: Completion = nil, fail: Completion = nil) {
+    func localBroadcaster(_ local: LiveRole, endBroadcastingOn seat:LiveSeat, of roomId: String, success: Completion = nil, fail: Completion = nil) {
         let url = URLGroup.liveSeatCommand(roomId: roomId)
         let parameters: StringAnyDic = ["no": seat.index,
                                         "userId": local.info.userId,
@@ -334,9 +339,9 @@ extension LiveSeatVM {
                 callback()
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let fail: ErrorRetryCompletion = { (error) in
+        let fail: ACErrorRetryCompletion = { (error) in
             if let callback = fail {
                 callback()
             }
@@ -349,7 +354,7 @@ extension LiveSeatVM {
 
 // MARK: - Audience
 extension LiveSeatVM {
-    func localAudience(_ local: LiveAudience, applyForBroadcastingToOwner agoraUid: Int, seat: LiveSeat, fail: ErrorCompletion) {
+    func localAudience(_ local: LiveRole, applyForBroadcastingTo owner: LiveRole, seat: LiveSeat, fail: ErrorCompletion = nil) {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         let message = ALPeerMessage(type: .broadcasting,
                                     command: .applyForBroadcasting(seatIndex: seat.index),
@@ -361,24 +366,26 @@ extension LiveSeatVM {
             let jsonString = try message.json().jsonString()
             try rtm.write(message: jsonString,
                           of: RequestEvent(name: "apply_for_broadcasting"),
-                          to: "\(agoraUid)",
+                          to: "\(owner.agoraUserId)",
                           fail: fail)
-        } catch let error as AGEError {
-            if let fail = fail {
-                fail(error)
-            }
         } catch {
             if let fail = fail {
-                fail(AGEError.unknown())
+                fail(error)
             }
         }
     }
     
-    func localAudience(_ local: LiveAudience, acceptInvitingOn seatIndex: Int, roomId: String, success: Completion = nil, fail: ErrorCompletion = nil) {
+    func localAudience(_ local: LiveRole, acceptInvitingOn seatIndex: Int, roomId: String, extra: [String: Any]? = nil, success: Completion = nil, fail: ErrorCompletion = nil) {
         let url = URLGroup.liveSeatCommand(roomId: roomId)
-        let parameters: StringAnyDic = ["no": seatIndex,
+        var parameters: StringAnyDic = ["no": seatIndex,
                                         "userId": local.info.userId,
                                         "state": 1]
+        
+        if let extra = extra {
+            for (key, value) in extra {
+                parameters[key] = value
+            }
+        }
         
         let client = ALCenter.shared().centerProvideRequestHelper()
         let event = RequestEvent(name: "live-seat-command: accpe")
@@ -394,12 +401,12 @@ extension LiveSeatVM {
             if isSuccess, let callback = success {
                 callback()
             } else if !isSuccess, let callback = fail {
-                callback(AGEError.fail("live-seat-command fail") )
+                callback(ACError.fail("live-seat-command fail") )
             }
         }
-        let response = AGEResponse.json(successCallback)
+        let response = ACResponse.json(successCallback)
         
-        let fail: ErrorRetryCompletion = { (error) in
+        let fail: ACErrorRetryCompletion = { (error) in
             if let callback = fail {
                 callback(error)
             }
@@ -409,7 +416,7 @@ extension LiveSeatVM {
         client.request(task: task, success: response, failRetry: fail)
     }
     
-    func localAudience(_ local: LiveAudience, rejectInvitingFrom ownerId: Int, fail: ErrorCompletion = nil) {
+    func localAudience(_ local: LiveRole, rejectInvitingFrom owner: LiveRole, fail: ErrorCompletion = nil) {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         let message = ALPeerMessage(type: .broadcasting,
                                     command: .rejectInviteBroadcasting,
@@ -421,15 +428,11 @@ extension LiveSeatVM {
             let jsonString = try message.json().jsonString()
             try rtm.write(message: jsonString,
                           of: RequestEvent(name: "apply_for_broadcasting"),
-                          to: "\(ownerId)",
+                          to: "\(owner.agoraUserId)",
                           fail: fail)
-        } catch let error as AGEError {
-            if let fail = fail {
-                fail(error)
-            }
         } catch {
             if let fail = fail {
-                fail(AGEError.unknown())
+                fail(error)
             }
         }
     }
