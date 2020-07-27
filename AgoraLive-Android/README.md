@@ -4,7 +4,9 @@
 
 ### FaceUnity SDK
 
-Now AgoraLive supports FaceUnity SDK v6.4. Download [here](https://github.com/Faceunity/FULiveDemoDroid/releases/download/v6.4/Faceunity-Android-v6.4.zip). 
+Now AgoraLive supports FaceUnity SDK v6.4. Download from [Official Download](https://github.com/Faceunity/FULiveDemoDroid/releases/download/v6.4/Faceunity-Android-v6.4.zip). 
+
+If you find difficulty downloading FaceUnity sdk from Github release, try [here](https://download.agora.io/components/release/Faceunity-Android-v6.4.zip).
 
 Assume the SDK archive is unzipped to folder `PATH/TO/FaceUnity`, copy the following resource files to project folders like:
 
