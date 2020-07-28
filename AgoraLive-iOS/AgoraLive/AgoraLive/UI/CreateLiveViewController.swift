@@ -152,21 +152,17 @@ class CreateLiveViewController: MaskViewController {
             vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
         case "PKBroadcastersViewController":
             guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo else {
-                    fatalError()
-            }
-            
-            var statistics: PKStatistics
-            
-            if let pkInfo = info.pkInfo {
-                statistics = try! PKStatistics(dic: pkInfo)
-            } else {
-                statistics = PKStatistics(state: .none)
+                let info = sender as? LiveSession.JoinedInfo,
+                let pkInfo = info.pkInfo,
+                let vm = try? PKVM(dic: pkInfo) else {
+                    assert(false)
+                    return
             }
             
             let vc = segue.destination as? PKBroadcastersViewController
+            vc?.hidesBottomBarWhenPushed = true
             vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            vc?.pkVM = PKVM(statistics: statistics)
+            vc?.pkVM = vm
         case "VirtualBroadcastersViewController":
             guard let sender = sender,
                 let info = sender as? LiveSession.JoinedInfo,

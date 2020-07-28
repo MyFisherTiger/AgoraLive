@@ -11,177 +11,128 @@ import RxSwift
 import RxRelay
 import AlamoClient
 
-struct MediaRelayInfo {
-    var currentChannelName: String
-    var currentSourceToken: String
-    var currentUidOfOpponent: Int
-    var currentTokenOfOpponent: String
+struct Battle {
+    var id: String
+    var initatorRoom: RoomBrief
+    var receiverRoom: RoomBrief
+}
+
+struct PKInfo {
+    struct RemoteRoom {
+        var roomId: String
+        var channel: String
+        var owner: LiveRole
+        
+        init(dic: StringAnyDic) throws {
+            let roomId = try dic.getStringValue(of: "roomId")
+            let channel = try dic.getStringValue(of: "channel")
+            let owner = try dic.getDictionaryValue(of: "owner")
+            
+            let userId = try owner.getStringValue(of: "userId")
+            let userName = try owner.getStringValue(of: "userName")
+            let agId = try owner.getIntValue(of: "uid")
+            
+            let info = BasicUserInfo(userId: userId, name: userName)
+            let ownerObj = LiveOwner(info: info, permission: [.camera, .mic, .chat], agUId: agId)
+            
+            self.roomId = roomId
+            self.channel = channel
+            self.owner = ownerObj
+        }
+    }
     
-    var opponentChannelName: String
-    var opponentUidOfCurrent: Int
+    var remoteRoom: RemoteRoom
+    var startTime: Int
+    var countDown: Int
+    var localRank: Int
+    var remoteRank: Int
+}
+
+enum PKResult: Int {
+    case win, draw, lose
+}
+
+enum PKEvent {
+    case start(MediaRelayConfiguration), end(PKResult), rankChanged(local: Int, remote: Int)
+}
+
+enum PKState {
+    case none, inviting, isBeingInvited, duration(PKInfo)
+    
+    var isDuration: Bool {
+        switch self {
+        case .duration: return true
+        default:        return false
+        }
+    }
+    
+    var pkInfo: PKInfo? {
+        switch self {
+        case .duration(let info): return info
+        default:                  return nil
+        }
+    }
+}
+
+struct MediaRelayConfiguration {
+    var currentId: Int
+    var currentChannelName: String
+    var cuurentChannelToken: String
+    var myIdOnRemoteChannel: Int
+    var myTokenOnRemoteChannel: String
+    
+    var remoteChannelName: String
+    var remoteIdOnCurrentChannel: Int
     
     init(dic: StringAnyDic) throws {
         let local = try dic.getDictionaryValue(of: "local")
         let proxy = try dic.getDictionaryValue(of: "proxy")
         let remote = try dic.getDictionaryValue(of: "remote")
         
+        self.currentId = try local.getIntValue(of: "uid")
         self.currentChannelName = try local.getStringValue(of: "channelName")
-        self.currentSourceToken = try local.getStringValue(of: "token")
+        self.cuurentChannelToken = try local.getStringValue(of: "token")
         
-        self.currentUidOfOpponent = try proxy.getIntValue(of: "uid")
-        self.currentTokenOfOpponent = try proxy.getStringValue(of: "token")
+        self.myIdOnRemoteChannel = try proxy.getIntValue(of: "uid")
+        self.myTokenOnRemoteChannel = try proxy.getStringValue(of: "token")
     
-        self.opponentChannelName = try proxy.getStringValue(of: "channelName")
-        self.opponentUidOfCurrent = try remote.getIntValue(of: "uid")
+        self.remoteChannelName = try proxy.getStringValue(of: "channelName")
+        self.remoteIdOnCurrentChannel = try remote.getIntValue(of: "uid")
     }
 }
 
-struct PKStatistics {
-    enum State {
-        enum Result: Int {
-            case fail = 0, success, draw
-        }
-        
-        case none, start, during, end(Result)
-        
-        var isDuring: Bool {
-            switch self {
-            case .start, .during: return true
-            default:              return false
-            }
-        }
-        
-        var hasResult: Result? {
-            switch self {
-            case .end(let result): return result
-            default:               return nil
-            }
-        }
-        
-        static func initWith(dic: StringAnyDic) throws -> State {
-            let intState = try dic.getIntValue(of: "state")
-            var state: State
-            
-            switch intState {
-            case 0:
-                state = .none
-            case 1:
-                state = .start
-            case 2:
-                state = .during
-            case 3:
-                let result = try dic.getEnum(of: "result", type: Result.self)
-                state = .end(result)
-            default:
-                throw AGEError.fail("state invalid value: \(intState)")
-            }
-            
-            return state
-        }
-    }
-    
-    var state: State
-    var startTime: Int64
-    var countDown: Int
-    
-    var currentGift: Int
-    var opponentGift: Int
-    var opponentRoomId: String
-    
-    var opponentOwner: LiveAudience?
-    
-    init(state: State = .none) {
-        self.state = state
-        self.startTime = -1
-        self.countDown = 0
-        
-        self.currentGift = 0
-        self.opponentRoomId = ""
-        self.opponentGift = 0
-    }
-    
-    init(dic: StringAnyDic) throws {
-        let state = try State.initWith(dic: dic)
-        self.state = state
-        
-        if self.state.isDuring {
-            self.countDown = try dic.getIntValue(of: "countDown")
-            self.startTime = try dic.getInt64Value(of: "pkStartTime")
-            self.currentGift = try dic.getIntValue(of: "hostRoomRank")
-            self.opponentRoomId = try dic.getStringValue(of: "pkRoomId")
-            self.opponentGift = try dic.getIntValue(of: "pkRoomRank")
-            
-            let user = try dic.getDictionaryValue(of: "pkRoomOwner")
-            self.opponentOwner = try LiveAudience(dic: user)
-        } else {
-            self.startTime = -1
-            self.countDown = 0
-            self.currentGift = 0
-            self.opponentRoomId = ""
-            self.opponentGift = 0
-            self.opponentOwner = nil
-        }
-    }
+fileprivate enum RelayState {
+    case none, duration
 }
 
 class PKVM: NSObject {
-    var receivedPKInvite = PublishRelay<RoomBrief>()
-    var receivedPKReject = PublishRelay<RoomBrief>()
+    fileprivate var relayState = RelayState.none
     
-    var statistics: BehaviorRelay<PKStatistics>
+    private(set) var receivedInvitation = PublishRelay<Battle>()
+    private(set) var invitationIsByRejected = PublishRelay<Battle>()
+    private(set) var InvitationIsByAccepted = PublishRelay<Battle>()
+    private(set) var invitationTimeout = PublishRelay<Battle>()
     
-    init(statistics: PKStatistics) {
-        self.statistics = BehaviorRelay(value: statistics)
+    private(set) var state = BehaviorRelay(value: PKState.none)
+    private(set) var event = PublishRelay<PKEvent>()
+    private(set) var mediaRelayConfiguration: MediaRelayConfiguration?
+    
+    init(dic: StringAnyDic) throws {
         super.init()
+        try self.parseJson(dic: dic)
         self.observe()
     }
     
-    func invitePK(localRoom: String, localUser: LiveRole, inviteRoom: RoomBrief, fail: ErrorCompletion = nil) {
-        self.isInviteOrRejectPK(isInvite: true, localRoomId: localRoom, localUser: localUser, inviteRoom: inviteRoom, fail: fail)
+    func sendInvitationTo(room: RoomBrief, fail: ErrorCompletion) {
+        
     }
     
-    func rejectPK(localRoom: String, localUser: LiveRole, inviteRoom: RoomBrief, fail: ErrorCompletion = nil) {
-        self.isInviteOrRejectPK(isInvite: false, localRoomId: localRoom, localUser: localUser, inviteRoom: inviteRoom, fail: fail)
+    func accpet(invitation: Battle) {
+        
     }
     
-    func startPK(action: AGESwitch, roomId: String, opponentRoomId: String, success: Completion = nil, fail: ErrorCompletion) {
-        let client = ALCenter.shared().centerProvideRequestHelper()
-        let parameters: StringAnyDic = ["roomId": action.boolValue ? opponentRoomId : ""]
+    func reject(invitation: Battle) {
         
-        let url = URLGroup.pkLive(roomId: roomId)
-        let event = RequestEvent(name: "pk-live-invite")
-        let task = RequestTask(event: event,
-                               type: .http(.post, url: url),
-                               timeout: .low,
-                               header: ["token": ALKeys.ALUserToken],
-                               parameters: parameters)
-        
-        let successCallback: DicEXCompletion = { (json: ([String: Any])) in
-            try json.getCodeCheck()
-            let isSuccess = try json.getBoolInfoValue(of: "data")
-         
-            if let success = success, isSuccess {
-                success()
-            } else if let fail = fail, !isSuccess {
-                let error = ACError.fail("pk live invite fail")
-                fail(error)
-            }
-        }
-        let response = ACResponse.json(successCallback)
-        
-        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
-            if let fail = fail {
-                fail(error)
-            }
-            return .resign
-        }
-        
-        client.request(task: task, success: response, failRetry: retry)
-    }
-    
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedPeerMessage(observer: self)
     }
 }
 
@@ -197,52 +148,13 @@ private extension PKVM {
             guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self) else {
                 return
             }
-            guard cmd == .pkState else  {
+            
+            guard cmd == .pkEvent else  {
                 return
             }
             
-            guard let session = ALCenter.shared().liveSession else {
-                return
-            }
-            
-            let owner = session.owner
             let data = try json.getDataObject()
-            let statistics = try PKStatistics(dic: data)
-            
-            strongSelf.statistics.accept(statistics)
-            
-            switch statistics.state {
-            case .none:
-                guard owner.value.isLocal else {
-                    return
-                }
-                
-                strongSelf.stopRelayingMediaStream()
-            case .during:
-                guard owner.value.isLocal else {
-                    return
-                }
-                
-                if let config = try? data.getDictionaryValue(of: "relayConfig") {
-                    let relayInfo = try MediaRelayInfo(dic: config)
-                    strongSelf.startRelayingMediaStream(relayInfo)
-                }
-            case .start:
-                guard owner.value.isLocal else {
-                    return
-                }
-                
-                if let config = try? data.getDictionaryValue(of: "relayConfig") {
-                    let relayInfo = try MediaRelayInfo(dic: config)
-                    strongSelf.startRelayingMediaStream(relayInfo)
-                }
-            case .end:
-                guard owner.value.isLocal else {
-                    return
-                }
-                
-                strongSelf.stopRelayingMediaStream()
-            }
+            try strongSelf.parseJson(dic: data)
         }
         
         rtm.addReceivedPeerMessage(observer: self) { [weak self] (json) in
@@ -259,59 +171,96 @@ private extension PKVM {
             }
             
             let data = try json.getDataObject()
-            let cmd = try data.getIntValue(of: "operate")
-            let agoraUid = try data.getIntValue(of: "agoraUid")
-            let info = BasicUserInfo(userId: "", name: "")
-            let owner = LiveOwner(info: info, permission: [.camera, .mic, .chat], agUId: agoraUid)
             
-            switch cmd {
-            case ALPeerMessage.Command.invitePK(fromRoom: "").rawValue:
-                let fromRoom = try data.getStringValue(of: "pkRoomId")
-                let room = RoomBrief(roomId: fromRoom, owner: owner)
-                strongSelf.receivedPKInvite.accept(room)
-            case ALPeerMessage.Command.rejectPK(fromRoom: "").rawValue:
-                let fromRoom = try data.getStringValue(of: "pkRoomId")
-                let room = RoomBrief(roomId: fromRoom, owner: owner)
-                strongSelf.receivedPKReject.accept(room)
-            default:
-                break
-            }
+            //
         }
     }
     
-    func isInviteOrRejectPK(isInvite: Bool, localRoomId: String, localUser: LiveRole, inviteRoom: RoomBrief, fail: ErrorCompletion) {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        let message = ALPeerMessage(type: .pk,
-                                    command: isInvite ? .invitePK(fromRoom: localRoomId) : .rejectPK(fromRoom: localRoomId),
-                                    userName: localUser.info.name,
-                                    userId: localUser.info.userId,
-                                    agoraUid: localUser.agUId)
+    func parseJson(dic: StringAnyDic) throws {
+        guard let session = ALCenter.shared().liveSession else {
+            return
+        }
         
-        do {
-            let jsonString = try message.json().jsonString()
-            try rtm.write(message: jsonString,
-                          of: RequestEvent(name: isInvite ? "invite-pk" : "reject-pk"),
-                          to: "\(inviteRoom.owner.agUId)",
-                          fail: fail)
-        } catch let error as ACError {
-            if let fail = fail {
-                fail(error)
+        let owner = session.owner
+        
+        
+        // Event
+        if let eventInt = try? dic.getIntValue(of: "event") {
+            var event: PKEvent
+            
+            switch eventInt {
+            case 0:
+                let result = try dic.getEnum(of: "result", type: PKResult.self)
+                event = .end(result)
+                guard owner.value.isLocal else {
+                    return
+                }
+                stopRelayingMediaStream()
+            case 1:
+                let relayConfig = try dic.getDictionaryValue(of: "relayConfig")
+                let configuration = try MediaRelayConfiguration(dic: relayConfig)
+                event = .start(configuration)
+                self.mediaRelayConfiguration = configuration
+                guard owner.value.isLocal else {
+                    return
+                }
+                startRelayingMediaStream(configuration)
+            case 2:
+                let local = try dic.getIntValue(of: "remoteRank")
+                let remote = try dic.getIntValue(of: "localRoomRank")
+                event = .rankChanged(local: local, remote: remote)
+            default:
+                assert(false)
+                return
             }
-        } catch {
-            if let fail = fail {
-                fail(ACError.unknown())
-            }
+            
+            self.event.accept(event)
+        } else if let relayConfig = try? dic.getDictionaryValue(of: "relayConfig")  {
+            let info = try MediaRelayConfiguration(dic: relayConfig)
+            startRelayingMediaStream(info)
         }
+        
+        // State
+        let stateInt = try dic.getIntValue(of: "state")
+        var state: PKState
+        
+        switch stateInt {
+        case 0:
+            state = .none
+        case 1:
+            state = .inviting
+        case 2:
+            state = .isBeingInvited
+        case 3:
+            let room = try PKInfo.RemoteRoom(dic: dic)
+            let startTime = try dic.getIntValue(of: "startTime")
+            let countDown = try dic.getIntValue(of: "countDown")
+            let localRank = try dic.getIntValue(of: "localRank")
+            let remoteRank = try dic.getIntValue(of: "localRoomRank")
+            let info = PKInfo(remoteRoom: room,
+                              startTime: startTime,
+                              countDown: countDown,
+                              localRank: localRank,
+                              remoteRank: remoteRank)
+            state = .duration(info)
+        default:
+            assert(false)
+            return
+        }
+        
+        self.state.accept(state)
     }
-    
-    func startRelayingMediaStream(_ info: MediaRelayInfo) {
+}
+
+private extension PKVM {
+    func startRelayingMediaStream(_ info: MediaRelayConfiguration) {
         let media = ALCenter.shared().centerProvideMediaHelper()
         
-        let currentToken = info.currentSourceToken
+        let currentToken = info.cuurentChannelToken
         let currentChannel = info.currentChannelName
-        let otherChannel = info.opponentChannelName
-        let otherToken = info.currentTokenOfOpponent
-        let otherUid = info.currentUidOfOpponent
+        let otherChannel = info.remoteChannelName
+        let otherToken = info.myTokenOnRemoteChannel
+        let otherUid = info.myIdOnRemoteChannel
         media.startRelayingMediaStreamOf(currentChannel: currentChannel,
                                          currentSourceToken: currentToken,
                                          to: otherChannel,

@@ -419,7 +419,6 @@
 		A758851F242DF21E0011FCCF /* SharedView */ = {
 			isa = PBXGroup;
 			children = (
-				A719060C24666D580031E91C /* Popover.swift */,
 				A7053A40241A2C290061E5E2 /* BeautySettingsViewController.swift */,
 				A7952A48241624C700479811 /* MediaSettingsViewController.swift */,
 				A791F33B2428A014008D8BC9 /* GiftAudienceViewController.swift */,
@@ -438,6 +437,7 @@
 				A795CEC12451683700220EF4 /* LabelShadowView.swift */,
 				A768B6132452F3980073510D /* GIFView.swift */,
 				A7EA40BB2459825000301AE3 /* ToastView.swift */,
+				A719060C24666D580031E91C /* Popover.swift */,
 			);
 			name = SharedView;
 			sourceTree = "<group>";

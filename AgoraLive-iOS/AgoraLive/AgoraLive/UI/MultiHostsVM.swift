@@ -36,6 +36,10 @@ class MultiHostsVM: NSObject {
     var receivedInvitation = PublishRelay<Invitation>()
     var applicationByRejected = PublishRelay<Application>()
     
+    //
+    var audienceBecameBroadcaster = PublishRelay<LiveRole>()
+    var broadcasterBecameAudience = PublishRelay<LiveRole>()
+    
     override init() {
         super.init()
         observe()
@@ -210,6 +214,16 @@ private extension MultiHostsVM {
                 assert(false)
                 break
             }
+        }
+        
+        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+            guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self),
+                let strongSelf = self else {
+                return
+            }
+            
+            // strongSelf.audienceBecameBroadcaster
+            // 
         }
     }
 }

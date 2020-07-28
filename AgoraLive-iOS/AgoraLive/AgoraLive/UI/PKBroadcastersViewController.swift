@@ -106,7 +106,6 @@ class PKViewController: UIViewController {
         let x: CGFloat = ((self.view.bounds.width - wh) * 0.5)
         self.showResultImgeView(newFrame: CGRect(x: x, y: y, width: wh, height: wh),
                                 completion: completion)
-        
     }
     
     private func showResultImgeView(newFrame: CGRect, completion: Completion = nil) {
@@ -255,26 +254,17 @@ extension PKBroadcastersViewController {
         ownerView.backgroundColor = tintColor
         
         owner.subscribe(onNext: { [unowned self] (owner) in
-            switch owner {
-            case .localUser(let user):
-                self.ownerView.label.text = user.info.name
-                self.ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
-                self.deviceVM.camera = .on
-                self.deviceVM.mic = .on
-                self.pkView?.intoOtherButton.isHidden = true
-                self.pkButton.isHidden = false
-            case .otherUser(let remote):
-                self.ownerView.label.text = remote.info.name
-                self.ownerView.imageView.image = images.getHead(index: remote.info.imageIndex)
-                self.deviceVM.camera = .off
-                self.deviceVM.mic = .off
-                self.pkView?.intoOtherButton.isHidden = false
-                self.pkButton.isHidden = true
-            }
+            let user = owner.user
+            self.ownerView.label.text = user.info.name
+            self.ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
+            self.deviceVM.camera = owner.isLocal ? .on : .off
+            self.deviceVM.mic = owner.isLocal ? .on : .off
+            self.pkView?.intoOtherButton.isHidden = owner.isLocal
+            self.pkButton.isHidden = !owner.isLocal
         }).disposed(by: bag)
         
         bottomToolsVC?.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
-            if self.pkVM.statistics.value.state.isDuring {
+            if self.pkVM.state.value.isDuration {
                 self.showAlert(NSLocalizedString("End_PK"),
                                message: NSLocalizedString("End_PK_Message"),
                                action1: NSLocalizedString("Cancel"),
@@ -295,14 +285,7 @@ extension PKBroadcastersViewController {
     }
     
     func PK(session: LiveSession) {
-        pkView?.intoOtherButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.intoOtherRoom()
-        }).disposed(by: bag)
-        
-        pkVM.statistics.subscribe(onNext: { [unowned self] (statistics) in
-            self.showResult(statistics: statistics)
-        }).disposed(by: bag)
-        
+        // View
         pkButton.rx.tap.subscribe(onNext: { [unowned self] in
             self.showMaskView(color: UIColor.clear) { [unowned self] in
                 self.hiddenMaskView()
@@ -312,176 +295,137 @@ extension PKBroadcastersViewController {
             self.presentInviteList()
         }).disposed(by: bag)
         
-        // PK VM
-        let roomId = session.roomId
+        pkView?.intoOtherButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.intoRemoteRoom()
+        }).disposed(by: bag)
         
-        pkVM.receivedPKInvite.subscribe(onNext: { [unowned self] (room) in
+        // VM
+        pkVM.event.subscribe(onNext: { [weak self] (event) in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            switch event {
+            case .start:
+                break
+            case .end(let result):
+                strongSelf.show(result: result)
+            case .rankChanged(let local, let remote):
+                strongSelf.pkView?.giftBar.leftValue = local
+                strongSelf.pkView?.giftBar.rightValue = remote
+            }
+        }).disposed(by: bag)
+        
+        pkVM.state.subscribe(onNext: { [unowned self] (state) in
+            guard let session = ALCenter.shared().liveSession else {
+                return
+            }
+            
+            self.renderView.isHidden = state.isDuration
+            self.pkContainerView.isHidden = !state.isDuration
+            
+            let owner = session.owner.value
+            self.pkButton.isHidden = owner.isLocal
+            
+            
+            switch state {
+            case .duration(let info):
+                guard let leftRender = self.pkView?.leftRenderView,
+                    let rightRender = self.pkView?.rightRenderView else {
+                    return
+                }
+                
+                self.playerVM.startRenderVideoStreamOf(user: owner.user,
+                                                       on: leftRender)
+                self.playerVM.startRenderVideoStreamOf(user: info.remoteRoom.owner,
+                                                       on: rightRender)
+                
+                self.pkView?.startCountingDown()
+                self.pkView?.giftBar.leftValue = info.localRank
+                self.pkView?.giftBar.rightValue = info.remoteRank
+                self.pkView?.rightLabel.text = info.remoteRoom.owner.info.name
+                self.pkView?.countDown = info.countDown
+                let height = UIScreen.main.bounds.height - self.pkContainerView.frame.maxY - UIScreen.main.heightOfSafeAreaBottom - 20 - self.bottomToolsVC!.view.bounds.height
+                self.chatViewHeight.constant = height
+            case .none:
+                self.pkView?.stopCountingDown()
+                self.chatViewHeight.constant = 219
+            default:
+                break
+            }
+        }).disposed(by: bag)
+        
+        pkVM.receivedInvitation.subscribe(onNext: { (battle) in
             self.showAlert(message: NSLocalizedString("PK_Recieved_Invite"),
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Confirm"),
                            handler1: { [unowned self] (_) in
-                            guard let role = ALCenter.shared().liveSession?.role else {
-                                assert(false)
-                                return
-                            }
-                            
-                            self.pkVM.rejectPK(localRoom: roomId, localUser: role, inviteRoom: room)
+                            self.pkVM.reject(invitation: battle)
             }) { [unowned self] (_) in
-                self.pkVM.startPK(action: .on,
-                                  roomId: roomId,
-                                  opponentRoomId: room.roomId) { [unowned self] (_) in
-                                    self.showAlert(message: NSLocalizedString("PK_Invite_Fail"))
-                }
+                self.pkVM.accpet(invitation: battle)
             }
         }).disposed(by: bag)
         
-        pkVM.receivedPKReject.subscribe(onNext: { [unowned self] (room) in
-            self.showAlert(message: NSLocalizedString("PK_Invite_Reject"))
+        pkVM.invitationIsByRejected.subscribe(onNext: { (battle) in
+            self.showTextToast(text: NSLocalizedString("PK_Invite_Reject"))
         }).disposed(by: bag)
     }
     
-    func intoOtherRoom() {
-        guard let session = ALCenter.shared().liveSession else {
+    func intoRemoteRoom() {
+        guard let session = ALCenter.shared().liveSession,
+            let pkInfo = self.pkVM.state.value.pkInfo else {
             assert(false)
             return
         }
         
         session.leave()
         
-        let fail: Completion = {
-            self.showAlert(NSLocalizedString("Join_Other_Live_Room_Fail"))
-        }
-        
         let settings = LocalLiveSettings(title: "")
+        let owner = pkInfo.remoteRoom.owner
+        let role = session.role
         
-        
-        let info = BasicUserInfo(userId: "", name: "")
-        let owner = LiveOwner(info: info,
-                              permission: [.camera, .mic, .chat],
-                              agUId: 0)
-        let role = LiveLocalUser(type: .audience,
-                                 info: info,
-                                 permission: [],
-                                 agUId: 0)
-        
-        let newSession = LiveSession(roomId: pkVM.statistics.value.opponentRoomId,
+        let newSession = LiveSession(roomId: pkInfo.remoteRoom.roomId,
                                      settings: settings,
                                      type: .pk,
                                      owner: .otherUser(owner),
                                      role: role)
         
         newSession.join(success: { [unowned newSession, unowned self] (joinedInfo) in
+            guard let pkInfo = joinedInfo.pkInfo,
+                let vm = try? PKVM(dic: pkInfo),
+                let navigation = self.navigationController else {
+                    assert(false)
+                    return
+            }
+            
             ALCenter.shared().liveSession = newSession
             let newPk = UIStoryboard.initViewController(of: "PKBroadcastersViewController",
                                                         class: PKBroadcastersViewController.self)
+            newPk.pkVM = vm
             
-            var statistics: PKStatistics
-            
-            if let pkInfo = joinedInfo.pkInfo {
-                statistics = try! PKStatistics(dic: pkInfo)
-            } else {
-                statistics = PKStatistics(state: .none)
-            }
-            
-            newPk.pkVM = PKVM(statistics: statistics)
-            guard let navigation = self.navigationController else {
-                return
-            }
             navigation.popViewController(animated: false)
             navigation.pushViewController(newPk, animated: false)
-        }, fail: fail)
+        }) { [weak self] in
+            self?.showTextToast(text: NSLocalizedString("Join_Other_Live_Room_Fail"))
+        }
     }
 }
 
 private extension PKBroadcastersViewController {
-    func showResult(statistics: PKStatistics) {
-        if let result = statistics.state.hasResult {
-            let completion = { [weak self] in
-                let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
-                view.text = NSLocalizedString("PK_End")
-                self?.showToastView(view, duration: 0.2)
-                self?.updateViewsWith(statistics: statistics)
-            }
-            
-            switch result {
-            case .success:
-                self.pkView?.showWinner(isLeft: true, completion: completion)
-            case .fail:
-                self.pkView?.showWinner(isLeft: false, completion: completion)
-            case .draw:
-                self.pkView?.showDraw(completion: completion)
-            }
-        } else {
-            updateViewsWith(statistics: statistics)
-        }
-    }
-    
-    func updateViewsWith(statistics: PKStatistics) {
-        guard let session = ALCenter.shared().liveSession else {
-                return
+    func show(result: PKResult) {
+        let completion = { [weak self] in
+            let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
+            view.text = NSLocalizedString("PK_End")
+            self?.showToastView(view, duration: 0.2)
         }
         
-        let owner = session.owner
-        renderView.isHidden = statistics.state.isDuring
-        pkContainerView.isHidden = !statistics.state.isDuring
-        
-        switch (owner.value, statistics.state.isDuring) {
-        case (.localUser(let user), false):
-            playerVM.startRenderVideoStreamOf(user: user,
-                                              on: renderView)
-            pkButton.isHidden = false
-        case (.otherUser(let user), false):
-            playerVM.startRenderVideoStreamOf(user: user,
-                                              on: renderView)
-            pkButton.isHidden = true
-        case (.localUser(let user), true):
-            guard let pkView = self.pkView else {
-                assert(false)
-                return
-            }
-            
-            let leftRenderView = pkView.leftRenderView
-            let rightRenderView = pkView.rightRenderView
-            
-            playerVM.startRenderVideoStreamOf(user: user,
-                                              on: leftRenderView!)
-            
-            let opponentUser = statistics.opponentOwner!
-            playerVM.startRenderVideoStreamOf(user: opponentUser,
-                                              on: rightRenderView!)
-            
-            pkButton.isHidden = true
-        case (.otherUser(let user), true):
-            guard let pkView = self.pkView else {
-                assert(false)
-                return
-            }
-            
-            let leftRenderView = pkView.leftRenderView
-            let rightRenderView = pkView.rightRenderView
-            
-            playerVM.startRenderVideoStreamOf(user: user,
-                                              on: leftRenderView!)
-            
-            let opponentUser = statistics.opponentOwner!
-            
-            playerVM.startRenderVideoStreamOf(user: opponentUser,
-                                              on: rightRenderView!)
-            pkButton.isHidden = true
-        }
-        
-        self.pkView?.countDown = statistics.countDown
-        
-        if statistics.state.isDuring {
-            self.pkView?.startCountingDown()
-            self.pkView?.giftBar.leftValue = statistics.currentGift
-            self.pkView?.giftBar.rightValue = statistics.opponentGift
-            self.pkView?.rightLabel.text = statistics.opponentOwner!.info.name
-            let height = UIScreen.main.bounds.height - self.pkContainerView.frame.maxY - UIScreen.main.heightOfSafeAreaBottom - 20 - self.bottomToolsVC!.view.bounds.height
-            self.chatViewHeight.constant = height
-        } else {
-            self.pkView?.stopCountingDown()
-            self.chatViewHeight.constant = 219
+        switch result {
+        case .win:
+            self.pkView?.showWinner(isLeft: true, completion: completion)
+        case .draw:
+            self.pkView?.showWinner(isLeft: false, completion: completion)
+        case .lose:
+            self.pkView?.showDraw(completion: completion)
         }
     }
     
@@ -491,7 +435,6 @@ private extension PKBroadcastersViewController {
                 return
         }
         
-        let role = session.role
         let roomId = session.roomId
         
         let inviteVC = UIStoryboard.initViewController(of: "UserListViewController",
@@ -537,11 +480,10 @@ private extension PKBroadcastersViewController {
             self.hiddenMaskView()
             self.hiddenInviteList()
             
-            self.pkVM.invitePK(localRoom: roomId, localUser: role, inviteRoom: room) { (error) in
-                self.showAlert(message: NSLocalizedString("PK_Invite_Fail"))
+            self.pkVM.sendInvitationTo(room: room) { [unowned self] (error) in
+                self.showTextToast(text: NSLocalizedString("PK_Invite_Fail"))
             }
         }).disposed(by: bag)
-        
         
         if let userListVC = userListVC {
             roomListVM.presentingList.map { (list) -> [RoomBrief] in

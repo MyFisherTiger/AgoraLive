@@ -158,5 +158,5 @@ Confirm_Apply_For_Broadcasting="你确定要\“申请上麦\”吗？";
 Broadcasting_Invitation="上麦邀请";
 Confirm_Accept_Broadcasting_Invitation="邀请您上麦是否接受？";
 
-Ending_Broadcasting="终止连麦";
-Confirm_Ending_Broadcasting="确定终止连麦？";
+End_Broadcasting="终止连麦";
+Confirm_End_Broadcasting="确定终止连麦？";

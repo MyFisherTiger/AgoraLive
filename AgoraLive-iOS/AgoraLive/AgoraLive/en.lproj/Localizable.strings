@@ -156,5 +156,5 @@ Confirm_Apply_For_Broadcasting="你确定要\“申请上麦\”吗？";
 Broadcasting_Invitation="Invite host";
 Confirm_Accept_Broadcasting_Invitation="Do you agree to become a host？";
 
-Ending_Broadcasting="End";
-Confirm_Ending_Broadcasting="Are you sure to end this?";
+End_Broadcasting="End";
+Confirm_End_Broadcasting="Are you sure to end this?";

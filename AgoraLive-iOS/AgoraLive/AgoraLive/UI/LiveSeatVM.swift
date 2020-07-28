@@ -11,17 +11,9 @@ import RxSwift
 import RxRelay
 import AlamoClient
 
+// state: 0空位 1正常 2封麦
 enum SeatState: Int {
     case empty = 0, normal, close
-}
-
-struct SeatMessage {
-    enum `Type`: Int {
-        case invitationOfOwner = 1, applicationOfAudience, ownerRejectedApplication, audienceRejectedInvitation
-    }
-    
-    var index: Int
-    var type: `Type`
 }
 
 struct LiveSeat {
@@ -39,7 +31,7 @@ struct LiveSeat {
         let seatJson = try dic.getDictionaryValue(of: "seat")
         self.index = try seatJson.getIntValue(of: "no")
         self.state = try seatJson.getEnum(of: "state", type: SeatState.self)
-        
+         
         if self.state == .normal {
             let broadcaster = try dic.getDictionaryValue(of: "user")
             self.user = try LiveBroadcaster(dic: broadcaster)
@@ -69,24 +61,13 @@ class LiveSeatVM: NSObject {
         rtm.removeReceivedChannelMessage(observer: self)
     }
     
-    func update(seatState: SeatState, index: Int, of roomId: String, fail: ErrorCompletion) {
-        tempUpdateSeat(index: index,
-                       state: seatState.rawValue,
-                       userId: "0",
-                       of: roomId,
-                       fail: fail)
-    }
-}
-
-private extension LiveSeatVM {
-    // state: 0空位 1正常 2封麦
-    func tempUpdateSeat(index: Int, state: Int, userId: String, of roomId: String, fail: ErrorCompletion) {
+    func update(state: SeatState, index: Int, of roomId: String, fail: ErrorCompletion) {
         let client = ALCenter.shared().centerProvideRequestHelper()
         let task = RequestTask(event: RequestEvent(name: "multi-seat-state \(state)"),
                                type: .http(.post, url: URLGroup.liveSeatCommand(roomId: roomId)),
                                timeout: .medium,
                                header: ["token": ALKeys.ALUserToken],
-                               parameters: ["no": index, "state": state, "userId": userId])
+                               parameters: ["no": index, "state": state.rawValue])
         client.request(task: task) { (error) -> RetryOptions in
             if let fail = fail {
                 fail(error)
@@ -94,12 +75,14 @@ private extension LiveSeatVM {
             return .resign
         }
     }
-    
+}
+
+private extension LiveSeatVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
             guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self),
-                cmd == .seats,
+                cmd == .seatList,
                 let strongSelf = self else {
                 return
             }

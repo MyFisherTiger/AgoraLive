@@ -120,25 +120,12 @@ extension SingleBroadcasterViewController {
         ownerView.label.font = UIFont.systemFont(ofSize: 11)
         
         session.owner.subscribe(onNext: { [unowned self] (owner) in
-            let images = ALCenter.shared().centerProvideImagesHelper()
+            let user = owner.user
+            self.playerVM.startRenderVideoStreamOf(user: user,
+                                                   on: self.renderView)
             
-            switch owner {
-            case .localUser(let user):
-                self.ownerView.label.text = user.info.name
-                self.ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
-                self.playerVM.startRenderVideoStreamOf(user: user,
-                                                       on: self.renderView)
-                
-                self.deviceVM.camera = .on
-                self.deviceVM.mic = .on
-            case .otherUser(let remote):
-                self.ownerView.label.text = remote.info.name
-                self.ownerView.imageView.image = images.getHead(index: remote.info.imageIndex)
-                self.playerVM.startRenderVideoStreamOf(user: remote,
-                                                       on: self.renderView)
-                self.deviceVM.camera = .off
-                self.deviceVM.mic = .off
-            }
+            self.deviceVM.camera = owner.isLocal ? .on : .off
+            self.deviceVM.mic = owner.isLocal ? .on : .off
         }).disposed(by: bag)
     }
     

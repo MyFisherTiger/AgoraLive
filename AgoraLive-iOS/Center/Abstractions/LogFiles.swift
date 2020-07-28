@@ -66,11 +66,7 @@ private extension LogFiles {
                                timeout: .medium,
                                parameters: parameters)
         
-        let successCallback: DicEXCompletion = { [weak self] (json: ([String: Any])) in
-            guard let strongSelf = self else {
-                return
-            }
-            
+        let successCallback: DicEXCompletion = { (json: ([String: Any])) in
             let data = try json.getDataObject()
             let bucketName = try data.getStringValue(of: "bucketName")
             let callbackBody = try data.getStringValue(of: "callbackBody")

@@ -190,7 +190,7 @@ extension MultiBroadcastersViewController {
             // seat state
             case .release, .close:
                 let handler: ((UIAlertAction) -> Void)? = { [unowned self] (_) in
-                    self.seatVM.update(seatState: action.command == .release ? .normal : .close,
+                    self.seatVM.update(state: action.command == .release ? .normal : .close,
                                        index: action.seat.index,
                                        of: roomId) { [unowned self] (_) in
                                         self.showTextToast(text: "update seat fail")
@@ -313,30 +313,18 @@ private extension MultiBroadcastersViewController {
         ownerRenderView.backgroundColor = tintColor
         
         owner.subscribe(onNext: { [unowned self] (owner) in
-            switch owner {
-            case .localUser(let user):
-                let images = ALCenter.shared().centerProvideImagesHelper()
-                
-                self.ownerRenderView.imageView.image = images.getOrigin(index: user.info.imageIndex)
-                self.ownerRenderView.label.text = user.info.name
-                self.playerVM.startRenderVideoStreamOf(user: user,
-                                                       on: self.ownerRenderView.renderView)
-                
-                self.deviceVM.camera = .on
-                self.deviceVM.mic = .on
-            case .otherUser(let remote):
-                let images = ALCenter.shared().centerProvideImagesHelper()
-                self.ownerRenderView.imageView.image = images.getOrigin(index: remote.info.imageIndex)
-                self.ownerRenderView.label.text  = remote.info.name
-                self.playerVM.startRenderVideoStreamOf(user: remote,
-                                                       on: self.ownerRenderView.renderView)
-                
-                self.deviceVM.camera = .off
-                self.deviceVM.mic = .off
-            }
+            let images = ALCenter.shared().centerProvideImagesHelper()
+            let user = owner.user
+            self.ownerRenderView.imageView.image = images.getOrigin(index: user.info.imageIndex)
+            self.ownerRenderView.label.text = user.info.name
+            self.playerVM.startRenderVideoStreamOf(user: user,
+                                                   on: self.ownerRenderView.renderView)
             
-            self.ownerRenderView.imageView.isHidden = owner.user.permission.contains(.camera)
-            self.ownerRenderView.audioSilenceTag.isHidden = owner.user.permission.contains(.mic)
+            self.deviceVM.camera = owner.isLocal ? .on : .off
+            self.deviceVM.mic = owner.isLocal ? .on : .off
+            
+            self.ownerRenderView.imageView.isHidden = user.permission.contains(.camera)
+            self.ownerRenderView.audioSilenceTag.isHidden = user.permission.contains(.mic)
         }).disposed(by: bag)
         
         self.roomLabel.text = NSLocalizedString("Live_Room") + ": "
@@ -344,121 +332,83 @@ private extension MultiBroadcastersViewController {
     }
     
     func liveRole(session: LiveSession) {
-        let localRole = session.role
         let roomId = session.roomId
         
-        // Owner
-        switch localRole.type {
-        case .owner:
-            multiHostsVM.receivedApplication.subscribe(onNext: { (application) in
-                self.showAlert(message: "\"\(application.initiator.info.name)\" " + NSLocalizedString("Apply_For_Broadcasting"),
-                               action1: NSLocalizedString("Reject"),
-                               action2: NSLocalizedString("Confirm"), handler1: { (_) in
-                                self.multiHostsVM.reject(application: application, of: roomId)
-                }) {[unowned self] (_) in
-                    self.multiHostsVM.accept(application: application, of: roomId)
+        // owner
+        multiHostsVM.receivedApplication.subscribe(onNext: { (application) in
+            self.showAlert(message: "\"\(application.initiator.info.name)\" " + NSLocalizedString("Apply_For_Broadcasting"),
+                           action1: NSLocalizedString("Reject"),
+                           action2: NSLocalizedString("Confirm"), handler1: { (_) in
+                            self.multiHostsVM.reject(application: application, of: roomId)
+            }) {[unowned self] (_) in
+                self.multiHostsVM.accept(application: application, of: roomId)
+            }
+        }).disposed(by: bag)
+        
+        multiHostsVM.invitationByRejected.subscribe(onNext: { (invitation) in
+            if DeviceAssistant.Language.isChinese {
+                self.showTextToast(text: invitation.receiver.info.name + "拒绝了这次邀请")
+            } else {
+                self.showTextToast(text: invitation.receiver.info.name + "rejected this invitation")
+            }
+        }).disposed(by: bag)
+        
+        // broadcaster
+        multiHostsVM.receivedEndBroadcasting.subscribe(onNext: {
+            if DeviceAssistant.Language.isChinese {
+                self.showTextToast(text: "房主强迫你下麦")
+            } else {
+                self.showTextToast(text: "Owner forced you to becmoe a audience")
+            }
+        }).disposed(by: bag)
+        
+        // audience
+        multiHostsVM.receivedInvitation.subscribe(onNext: { (invitation) in
+            self.showAlert(NSLocalizedString("Invite_Broadcasting"),
+                           message: NSLocalizedString("Confirm_Accept_Broadcasting_Invitation"),
+                           action1: NSLocalizedString("Reject"),
+                           action2: NSLocalizedString("Confirm"),
+                           handler1: {[unowned self] (_) in
+                            self.multiHostsVM.reject(invitation: invitation, of: roomId)
+            }) {[unowned self] (_) in
+                self.multiHostsVM.accept(invitation: invitation, of: roomId) { (_) in
+                    self.showTextToast(text: "accept invitation fail")
                 }
-            }).disposed(by: bag)
-            
-            multiHostsVM.invitationByRejected.subscribe(onNext: { (invitation) in
-                if DeviceAssistant.Language.isChinese {
-                    self.showTextToast(text: invitation.receiver.info.name + "拒绝了这次邀请")
-                } else {
-                    self.showTextToast(text: invitation.receiver.info.name + "rejected this invitation")
-                }
-            }).disposed(by: bag)
-        case .broadcaster:
-            multiHostsVM.receivedEndBroadcasting.subscribe(onNext: {
-                if DeviceAssistant.Language.isChinese {
-                    self.showTextToast(text: "房主强迫你下麦")
-                } else {
-                    self.showTextToast(text: "Owner forced you to becmoe a audience")
-                }
-            }).disposed(by: bag)
-            break
-        case .audience:
-            multiHostsVM.receivedInvitation.subscribe(onNext: { (invitation) in
-                self.showAlert(NSLocalizedString("Invite_Broadcasting"),
-                               message: NSLocalizedString("Confirm_Accept_Broadcasting_Invitation"),
-                               action1: NSLocalizedString("Reject"),
-                               action2: NSLocalizedString("Confirm"),
-                               handler1: {[unowned self] (_) in
-                                self.multiHostsVM.reject(invitation: invitation, of: roomId)
-                }) {[unowned self] (_) in
-                    self.multiHostsVM.accept(invitation: invitation, of: roomId) { (_) in
-                        self.showTextToast(text: "accept invitation fail")
-                    }
-                }
-            }).disposed(by: bag)
-            
-            multiHostsVM.applicationByRejected.subscribe(onNext: { (application) in
-                if DeviceAssistant.Language.isChinese {
-                    self.showTextToast(text: "房间拒绝你的申请")
-                } else {
-                    self.showTextToast(text: "Owner rejected your application")
-                }
-            }).disposed(by: bag)
-        }
+            }
+        }).disposed(by: bag)
+        
+        multiHostsVM.applicationByRejected.subscribe(onNext: { (application) in
+            if DeviceAssistant.Language.isChinese {
+                self.showTextToast(text: "房间拒绝你的申请")
+            } else {
+                self.showTextToast(text: "Owner rejected your application")
+            }
+        }).disposed(by: bag)
+        
+        // role update
+        multiHostsVM.audienceBecameBroadcaster.subscribe(onNext: { [unowned self] (user) in
+            if DeviceAssistant.Language.isChinese {
+                let chat = Chat(name: user.info.name, text: " 上麦")
+                self.chatVM.newMessages([chat])
+            } else {
+                let chat = Chat(name: user.info.name, text: " became a broadcaster")
+                self.chatVM.newMessages([chat])
+            }
+        }).disposed(by: bag)
+        
+        multiHostsVM.broadcasterBecameAudience.subscribe(onNext: { [unowned self] (user) in
+            if DeviceAssistant.Language.isChinese {
+                let chat = Chat(name: user.info.name, text: " 下麦")
+                self.chatVM.newMessages([chat])
+            } else {
+                let chat = Chat(name: user.info.name, text: " became a audience")
+                self.chatVM.newMessages([chat])
+            }
+        }).disposed(by: bag)
     }
 }
 
 private extension MultiBroadcastersViewController {
-    func localUserRoleChangeWith(seatList: [LiveSeat]) {
-        guard let session = ALCenter.shared().liveSession else {
-                assert(false)
-                return
-        }
-        
-        let role = session.role
-        
-        switch role.type {
-        case .broadcaster:
-            var isBroadcaster = false
-            for seat in seatList where seat.state == .normal {
-                guard let user = seat.user else {
-                    assert(false)
-                    return
-                }
-                
-                if user.info.userId == role.info.userId {
-                    isBroadcaster = true
-                    break
-                }
-            }
-            
-            guard !isBroadcaster else {
-                return
-            }
-            
-            self.chatVM.sendMessage(NSLocalizedString("Stopped_Hosting"), local: role.info)
-            let role = session.broadcasterToAudience()
-            self.seatVC?.perspective = role.type
-        case .audience:
-            var isBroadcaster = false
-            for seat in seatList where seat.state == .normal {
-                guard let user = seat.user else {
-                    assert(false)
-                    return
-                }
-                
-                if user.info.userId == role.info.userId {
-                    isBroadcaster = true
-                    break
-                }
-            }
-            
-            guard isBroadcaster else {
-                return
-            }
-            
-            self.chatVM.sendMessage(NSLocalizedString("Became_A_Host"), local: role.info)
-            let role = session.audienceToBroadcaster()
-            self.seatVC?.perspective = role.type
-        case .owner:
-            break
-        }
-    }
-    
     func alertMessageOfSeatCommand(_ command: LiveSeatView.Command, with userName: String?) -> String {
         switch command {
         case .ban:
