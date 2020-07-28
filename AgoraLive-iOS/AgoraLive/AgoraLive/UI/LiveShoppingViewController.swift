@@ -11,6 +11,16 @@ import RxSwift
 import RxRelay
 
 class LiveShoppingViewController: MaskViewController, LiveViewController {
+    @IBOutlet weak var ownerView: IconTextView!
+    @IBOutlet weak var pkContainerView: UIView!
+    @IBOutlet weak var renderView: UIView!
+    @IBOutlet weak var pkButton: UIButton!
+    @IBOutlet weak var chatViewHeight: NSLayoutConstraint!
+    
+    private var pkView: PKViewController?
+    private var roomListVM = LiveListVM()
+    var pkVM: PKVM!
+    
     // LiveViewController
     var tintColor = UIColor(red: 0,
                             green: 0,

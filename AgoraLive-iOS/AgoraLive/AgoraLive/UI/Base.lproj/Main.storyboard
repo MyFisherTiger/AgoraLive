@@ -481,6 +481,7 @@
                         <segue destination="0Rq-8I-D5I" kind="show" identifier="SingleBroadcasterViewController" id="Q62-nz-nPv"/>
                         <segue destination="1nP-NJ-6fR" kind="show" identifier="PKBroadcastersViewController" id="fh7-g9-fFy"/>
                         <segue destination="XY0-cX-4Rz" kind="show" identifier="VirtualBroadcastersViewController" id="VtV-Zm-jwg"/>
+                        <segue destination="bPF-Xj-gFe" kind="showDetail" identifier="LiveShoppingViewController" id="cjG-9U-b4I"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oSZ-Nv-DGu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -2947,7 +2948,7 @@
         <!--Live Shopping View Controller-->
         <scene sceneID="8rH-Ms-luv">
             <objects>
-                <viewController storyboardIdentifier="LiveShoppingViewController" hidesBottomBarWhenPushed="YES" id="bPF-Xj-gFe" customClass="LiveShoppingViewController" customModule="AgoraLive" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LiveShoppingViewController" modalPresentationStyle="fullScreen" hidesBottomBarWhenPushed="YES" id="bPF-Xj-gFe" customClass="LiveShoppingViewController" customModule="AgoraLive" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="jG0-78-6BO">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3034,7 +3035,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="lya-Bs-3CK"/>
                     <connections>
-                        <outlet property="chatViewHeight" destination="feT-MR-sYG" id="Mg2-Bf-Mkz"/>
+                        <outlet property="chatViewHeight" destination="feT-MR-sYG" id="qO3-4l-Eqj"/>
                         <outlet property="ownerView" destination="kjm-K3-1VJ" id="Sl5-Ay-sBw"/>
                         <outlet property="personCountView" destination="thf-XA-0pp" id="2uw-LN-voc"/>
                         <outlet property="pkButton" destination="Q08-NW-ekG" id="Ynx-7U-X0T"/>
@@ -3044,16 +3045,16 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fpf-GJ-X3M" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6412" y="3260"/>
+            <point key="canvasLocation" x="6342" y="3260"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="BRB-IH-iNU"/>
-        <segue reference="8tO-8n-VDS"/>
+        <segue reference="VtV-Zm-jwg"/>
+        <segue reference="fh7-g9-fFy"/>
         <segue reference="3rl-lE-vD6"/>
-        <segue reference="Uvw-Ck-KIo"/>
+        <segue reference="Q62-nz-nPv"/>
         <segue reference="1OZ-Av-dpY"/>
-        <segue reference="uL9-kD-5nP"/>
+        <segue reference="q3I-2V-0Kx"/>
         <segue reference="ZMS-ad-BgQ"/>
     </inferredMetricsTieBreakers>
     <resources>

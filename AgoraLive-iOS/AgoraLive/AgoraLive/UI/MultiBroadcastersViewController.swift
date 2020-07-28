@@ -214,7 +214,7 @@ extension MultiBroadcastersViewController {
                         self.userListVC = nil
                     }
                 }
-                self.presentInviteList { (user) in
+                self.presentInvitationList { (user) in
                     let invitation = MultiHostsVM.Invitation(seatIndex: action.seat.index,
                                                              initiator: session.role,
                                                              receiver: session.owner.value.user)
@@ -285,7 +285,7 @@ extension MultiBroadcastersViewController {
     }
     
     //MARK: - User List
-    func presentInviteList(selected: ((LiveRole) -> Void)? = nil) {
+    func presentInvitationList(selected: ((LiveRole) -> Void)? = nil) {
         presentUserList(listType: .broadcasting)
         
         self.userListVC?.selectedUser.subscribe(onNext: { [unowned self] (user) in

@@ -292,7 +292,7 @@ extension PKBroadcastersViewController {
                 self.hiddenInviteList()
             }
             
-            self.presentInviteList()
+            self.presentInvitationList()
         }).disposed(by: bag)
         
         pkView?.intoOtherButton.rx.tap.subscribe(onNext: { [unowned self] in
@@ -429,7 +429,7 @@ private extension PKBroadcastersViewController {
         }
     }
     
-    func presentInviteList() {
+    func presentInvitationList() {
         guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return

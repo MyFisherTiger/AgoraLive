@@ -75,8 +75,6 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
             return
         }
         
-        updateViews()
-        
         liveSession(session)
         liveRoom(session: session)
         audience()
@@ -87,9 +85,11 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
         chatInput()
         musicList()
         broadcastingStatus()
-        liveSeat(roomId: session.roomId)
-        liveRole(roomId: session.roomId)
+        liveSeat()
+        liveRole(session: session)
         netMonitor()
+        
+        updateViews()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -124,13 +124,6 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
 
 extension VirtualBroadcastersViewController {
     func updateViews() {
-         updateVideoLayout(onlyOwner: true, animated: false)
-        
-//        ownerView.frame = CGRect(x: 0,
-//                                 y: 0,
-//                                 width: UIScreen.main.bounds.width,
-//                                 height: UIScreen.main.bounds.height)
-        
         videoContainer.backgroundColor = .white
         ownerRenderView.backgroundColor = .white
         broadcasterRenderView.backgroundColor = .white
@@ -179,7 +172,7 @@ extension VirtualBroadcastersViewController {
             
             switch (self.virtualVM.broadcasting.value, session.owner.value) {
             case (.single, .localUser):
-                self.presentInviteList()
+                self.presentInvitationList()
             case (.multi, .localUser):
                 self.forceBroadcasterToBeAudience()
             case (.multi, .otherUser):
@@ -192,7 +185,7 @@ extension VirtualBroadcastersViewController {
         }).disposed(by: bag)
     }
     
-    func liveSeat(roomId: String) {
+    func liveSeat() {
         seatVM.list.subscribe(onNext: { [unowned self] (list) in
             guard let session = ALCenter.shared().liveSession else {
                 assert(false)
@@ -207,7 +200,9 @@ extension VirtualBroadcastersViewController {
         }).disposed(by: bag)
     }
     
-    func liveRole(roomId: String) {
+    func liveRole(session: LiveSession) {
+        let roomId = session.roomId
+        
         // owner
         multiHostsVM.invitationByRejected.subscribe(onNext: { (invitation) in
             if DeviceAssistant.Language.isChinese {
@@ -335,7 +330,7 @@ extension VirtualBroadcastersViewController {
 }
 
 extension VirtualBroadcastersViewController {
-    func presentInviteList() {
+    func presentInvitationList() {
         guard let session = ALCenter.shared().liveSession else {
             return
         }
