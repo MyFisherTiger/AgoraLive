@@ -134,6 +134,11 @@ class PKVM: NSObject {
     func reject(invitation: Battle) {
         
     }
+    
+    deinit {
+        let rtm = ALCenter.shared().centerProvideRTMHelper()
+        rtm.removeReceivedChannelMessage(observer: self)
+    }
 }
 
 private extension PKVM {
@@ -182,7 +187,6 @@ private extension PKVM {
         }
         
         let owner = session.owner
-        
         
         // Event
         if let eventInt = try? dic.getIntValue(of: "event") {

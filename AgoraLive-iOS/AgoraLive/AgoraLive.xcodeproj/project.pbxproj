@@ -32,6 +32,7 @@
 		A72B7BEE24445EBB00E965FB /* PKBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BED24445EBB00E965FB /* PKBar.swift */; };
 		A7355F85240650010010CCD1 /* CreateLiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7355F84240650010010CCD1 /* CreateLiveViewController.swift */; };
 		A7355F88240658F40010CCD1 /* UIView+ExProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = A7355F86240658F40010CCD1 /* UIView+ExProperty.m */; };
+		A747ED7524CFF20C002F2DB0 /* GoodsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747ED7424CFF20C002F2DB0 /* GoodsVM.swift */; };
 		A754FAEF242B717D0062B2F5 /* FilletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAEE242B717D0062B2F5 /* FilletView.swift */; };
 		A754FAF4242C5A920062B2F5 /* ChatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF3242C5A920062B2F5 /* ChatVM.swift */; };
 		A754FAF6242C9B700062B2F5 /* LiveSeatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */; };
@@ -186,6 +187,7 @@
 		A7355F84240650010010CCD1 /* CreateLiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateLiveViewController.swift; sourceTree = "<group>"; };
 		A7355F86240658F40010CCD1 /* UIView+ExProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ExProperty.m"; sourceTree = "<group>"; };
 		A7355F87240658F40010CCD1 /* UIView+ExProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ExProperty.h"; sourceTree = "<group>"; };
+		A747ED7424CFF20C002F2DB0 /* GoodsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoodsVM.swift; sourceTree = "<group>"; };
 		A754FAEE242B717D0062B2F5 /* FilletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilletView.swift; sourceTree = "<group>"; };
 		A754FAF3242C5A920062B2F5 /* ChatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatVM.swift; sourceTree = "<group>"; };
 		A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSeatVM.swift; sourceTree = "<group>"; };
@@ -852,6 +854,7 @@
 				A72B7BE924445D5B00E965FB /* PKVM.swift */,
 				A7584B4A2484DB290088FACB /* VirtualVM.swift */,
 				A7D2D36B2417AA6100D327B5 /* MineVM.swift */,
+				A747ED7424CFF20C002F2DB0 /* GoodsVM.swift */,
 			);
 			name = ViewModel;
 			path = UI;
@@ -1105,6 +1108,7 @@
 				A7952A5324162BE600479811 /* Utils.swift in Sources */,
 				A7952ABC24162C1000479811 /* crypt.c in Sources */,
 				A7952AB524162C1000479811 /* DictionaryGetable.swift in Sources */,
+				A747ED7524CFF20C002F2DB0 /* GoodsVM.swift in Sources */,
 				A77E579224AE10FE00DD7670 /* NetworkMonitor.swift in Sources */,
 				A791F33E2428B121008D8BC9 /* LiveSeatViewController.swift in Sources */,
 				A7E3340A24C57213003DCA49 /* AGOSSClient.m in Sources */,
