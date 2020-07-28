@@ -245,8 +245,6 @@ extension PKBroadcastersViewController {
     func liveRoom(session: LiveSession) {
         let owner = session.owner
         
-        let images = ALCenter.shared().centerProvideImagesHelper()
-        
         ownerView.offsetLeftX = -14
         ownerView.offsetRightX = 5
         ownerView.label.textColor = .white
@@ -254,6 +252,7 @@ extension PKBroadcastersViewController {
         ownerView.backgroundColor = tintColor
         
         owner.subscribe(onNext: { [unowned self] (owner) in
+            let images = ALCenter.shared().centerProvideImagesHelper()
             let user = owner.user
             self.ownerView.label.text = user.info.name
             self.ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
@@ -327,7 +326,6 @@ extension PKBroadcastersViewController {
             let owner = session.owner.value
             self.pkButton.isHidden = owner.isLocal
             
-            
             switch state {
             case .duration(let info):
                 guard let leftRender = self.pkView?.leftRenderView,
@@ -348,6 +346,8 @@ extension PKBroadcastersViewController {
                 let height = UIScreen.main.bounds.height - self.pkContainerView.frame.maxY - UIScreen.main.heightOfSafeAreaBottom - 20 - self.bottomToolsVC!.view.bounds.height
                 self.chatViewHeight.constant = height
             case .none:
+                self.playerVM.startRenderVideoStreamOf(user: owner.user,
+                                                       on: self.renderView)
                 self.pkView?.stopCountingDown()
                 self.chatViewHeight.constant = 219
             default:

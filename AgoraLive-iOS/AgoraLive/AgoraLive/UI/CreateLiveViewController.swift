@@ -160,7 +160,6 @@ class CreateLiveViewController: MaskViewController {
             }
             
             let vc = segue.destination as? PKBroadcastersViewController
-            vc?.hidesBottomBarWhenPushed = true
             vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
             vc?.pkVM = vm
         case "VirtualBroadcastersViewController":
@@ -186,6 +185,18 @@ class CreateLiveViewController: MaskViewController {
             }
             
             vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
+        case "LiveShoppingViewController":
+            guard let sender = sender,
+                let info = sender as? LiveSession.JoinedInfo,
+                let pkInfo = info.pkInfo,
+                let vm = try? PKVM(dic: pkInfo) else {
+                    assert(false)
+                    return
+            }
+            
+            let vc = segue.destination as? PKBroadcastersViewController
+            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.pkVM = vm
         default:
             break
         }
@@ -274,9 +285,10 @@ private extension CreateLiveViewController {
     }
     
     func presentMediaSettings() {
-        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let identifier = "MediaSettingsNavigation"
-        let mediaSettingsNavi = storyboard.instantiateViewController(withIdentifier: identifier)
+        let mediaSettingsNavi = UIStoryboard.initViewController(of: "MediaSettingsNavigation",
+                                                       class: UINavigationController.self,
+                                                       on: "Popover")
+        
         let mediaSettingsVC = mediaSettingsNavi.children.first! as! MediaSettingsViewController
         self.mediaSettingsNavi = mediaSettingsNavi
         
@@ -302,7 +314,8 @@ private extension CreateLiveViewController {
     
     func presentBeautySettings() {
         let beautyVC = UIStoryboard.initViewController(of: "BeautySettingsViewController",
-                                                       class: BeautySettingsViewController.self)
+                                                       class: BeautySettingsViewController.self,
+                                                       on: "Popover")
         self.beautyVC = beautyVC
         
         beautyVC.view.cornerRadius(5)

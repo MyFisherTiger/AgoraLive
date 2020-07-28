@@ -339,7 +339,8 @@ extension LiveViewController {
         }
         
         let listVC = UIStoryboard.initViewController(of: "UserListViewController",
-                                                     class: UserListViewController.self)
+                                                     class: UserListViewController.self,
+                                                     on: "Popover")
         
         listVC.showType = listType
         self.userListVC = listVC
@@ -388,7 +389,8 @@ extension LiveViewController {
     // MARK: - Beauty Settings
     func presentBeautySettings() {
         let beautyVC = UIStoryboard.initViewController(of: "BeautySettingsViewController",
-                                                       class: BeautySettingsViewController.self)
+                                                       class: BeautySettingsViewController.self,
+                                                       on: "Popover")
         self.beautyVC = beautyVC
         
         beautyVC.view.cornerRadius(10)
@@ -413,7 +415,8 @@ extension LiveViewController {
     // MARK: - Music List
     func presentMusicList() {
         let musicVC = UIStoryboard.initViewController(of: "MusicViewController",
-                                                      class: MusicViewController.self)
+                                                      class: MusicViewController.self,
+                                                      on: "Popover")
         self.musicVC = musicVC
         
         musicVC.view.cornerRadius(10)
@@ -452,7 +455,8 @@ extension LiveViewController {
         
         let perspective = session.role.type
         let extensionVC = UIStoryboard.initViewController(of: "ExtensionViewController",
-                                                          class: ExtensionViewController.self)
+                                                          class: ExtensionViewController.self,
+                                                          on: "Popover")
         extensionVC.perspective = perspective
         extensionVC.liveType = session.type
         self.extensionVC = extensionVC
@@ -572,7 +576,8 @@ extension LiveViewController {
         }
         
         let mediaSettingsNavi = UIStoryboard.initViewController(of: "MediaSettingsNavigation",
-                                                                class: UINavigationController.self)
+                                                                class: UINavigationController.self,
+                                                                on: "Popover")
         
         let mediaSettingsVC = mediaSettingsNavi.children.first! as! MediaSettingsViewController
         self.mediaSettingsNavi = mediaSettingsNavi
@@ -612,7 +617,8 @@ extension LiveViewController {
         }
         
         let dataVC = UIStoryboard.initViewController(of: "RealDataViewController",
-                                                     class: RealDataViewController.self)
+                                                     class: RealDataViewController.self,
+                                                     on: "Popover")
         self.dataVC = dataVC
         
         dataVC.view.cornerRadius(10)
@@ -641,7 +647,8 @@ extension LiveViewController {
     // MARK: - Gift List
     func presentGiftList() {
         let giftVC = UIStoryboard.initViewController(of: "GiftViewController",
-                                                     class: GiftViewController.self)
+                                                     class: GiftViewController.self,
+                                                     on: "Popover")
         self.giftVC = giftVC
         
         giftVC.view.cornerRadius(10)
@@ -690,7 +697,8 @@ extension LiveViewController {
         self.hiddenMaskView()
         
         let gifVC = UIStoryboard.initViewController(of: "GIFViewController",
-                                                    class: GIFViewController.self)
+                                                    class: GIFViewController.self,
+                                                    on: "Popover")
         
         gifVC.view.cornerRadius(10)
         
