@@ -126,6 +126,18 @@ class LiveListTabViewController: MaskViewController {
             }
             
             vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
+        //        case "LiveShoppingViewController":
+        //            guard let sender = sender,
+        //                let info = sender as? LiveSession.JoinedInfo,
+        //                let pkInfo = info.pkInfo,
+        //                let vm = try? PKVM(dic: pkInfo) else {
+        //                    assert(false)
+        //                    return
+        //            }
+        //
+        //            let vc = segue.destination as? PKBroadcastersViewController
+        //            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+        //            vc?.pkVM = vm
         default:
             break
         }
@@ -343,7 +355,7 @@ extension LiveListTabViewController {
             case .virtual:
                 self.performSegue(withIdentifier: "VirtualBroadcastersViewController", sender: info)
             case .shopping:
-                self.performSegue(withIdentifier: "LiveShoppingLiveViewController", sender: info)
+                self.performSegue(withIdentifier: "LiveShoppingViewController", sender: info)
             }
         }) { [unowned self] in
             self.hiddenHUD()

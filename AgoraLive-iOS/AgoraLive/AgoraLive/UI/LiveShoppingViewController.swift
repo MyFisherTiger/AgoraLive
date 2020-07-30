@@ -18,8 +18,14 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     @IBOutlet weak var pkButton: UIButton!
     @IBOutlet weak var chatViewHeight: NSLayoutConstraint!
     
+    private var popover = Popover(options: [.type(.up),
+                                            .blackOverlayColor(UIColor.clear),
+                                            .cornerRadius(5.0),
+                                            .arrowSize(CGSize(width: 8, height: 4))])
+    
     private var pkView: PKViewController?
     private var roomListVM = LiveListVM()
+//    private var goodsVM = GoodsVM()
     var pkVM: PKVM!
     
     // LiveViewController
@@ -86,10 +92,11 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
         gift()
         
         bottomTools(session: session)
+        extralBottomTools(session: session)
         chatInput()
         musicList()
         netMonitor()
-        PK(session: session)
+//        PK(session: session)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -145,8 +152,22 @@ extension LiveShoppingViewController {
             self.pkView?.intoOtherButton.isHidden = owner.isLocal
             self.pkButton.isHidden = !owner.isLocal
         }).disposed(by: bag)
+    }
+    
+    func extralBottomTools(session: LiveSession) {
+        guard let bottomToolsVC = self.bottomToolsVC else {
+            return
+        }
         
-        bottomToolsVC?.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
+        bottomToolsVC.shoppingButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.presentGoodsList()
+        }).disposed(by: bag)
+        
+        bottomToolsVC.pkButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.presentInvitationList()
+        }).disposed(by: bag)
+        
+        bottomToolsVC.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
             if self.pkVM.state.value.isDuration {
                 self.showAlert(NSLocalizedString("End_PK"),
                                message: NSLocalizedString("End_PK_Message"),
@@ -170,10 +191,7 @@ extension LiveShoppingViewController {
     func PK(session: LiveSession) {
         // View
         pkButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.showMaskView(color: UIColor.clear) { [unowned self] in
-                self.hiddenMaskView()
-                self.hiddenInviteList()
-            }
+            
             
             self.presentInvitationList()
         }).disposed(by: bag)
@@ -255,6 +273,38 @@ extension LiveShoppingViewController {
         }).disposed(by: bag)
     }
     
+    func presentGoodsList() {
+        self.showMaskView(color: UIColor.clear) { [unowned self] in
+            
+            
+        }
+        
+        guard let session = ALCenter.shared().liveSession else {
+                assert(false)
+                return
+        }
+        
+        let roomId = session.roomId
+        
+        let vc = UIStoryboard.initViewController(of: "GoodsListViewController",
+                                                 class: GoodsListViewController.self,
+                                                 on: "Popover")
+        
+        
+        vc.view.cornerRadius(10)
+        
+        let presenetedHeight: CGFloat = UIScreen.main.bounds.height - 82 - 50
+        let y = UIScreen.main.bounds.height - presenetedHeight
+        let presentedFrame = CGRect(x: 0,
+                                    y: y,
+                                    width: UIScreen.main.bounds.width,
+                                    height: presenetedHeight)
+        
+        self.presentChild(vc,
+                          animated: true,
+                          presentedFrame: presentedFrame)
+    }
+    
     func intoRemoteRoom() {
         guard let session = ALCenter.shared().liveSession,
             let pkInfo = self.pkVM.state.value.pkInfo else {
@@ -314,6 +364,10 @@ private extension LiveShoppingViewController {
     }
     
     func presentInvitationList() {
+        self.showMaskView(color: UIColor.clear) { [unowned self] in
+            self.userListVC = nil
+        }
+        
         guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
@@ -321,13 +375,14 @@ private extension LiveShoppingViewController {
         
         let roomId = session.roomId
         
-        let inviteVC = UIStoryboard.initViewController(of: "UserListViewController",
-                                                       class: UserListViewController.self)
+        let vc = UIStoryboard.initViewController(of: "UserListViewController",
+                                                       class: UserListViewController.self,
+                                                       on: "Popover")
         
-        self.userListVC = inviteVC
+        self.userListVC = vc
         
-        inviteVC.showType = .pk
-        inviteVC.view.cornerRadius(10)
+        vc.showType = .pk
+        vc.view.cornerRadius(10)
         
         let presenetedHeight: CGFloat = UIScreen.main.heightOfSafeAreaTop + 526.0 + 50.0
         let y = UIScreen.main.bounds.height - presenetedHeight
@@ -336,7 +391,7 @@ private extension LiveShoppingViewController {
                                     width: UIScreen.main.bounds.width,
                                     height: presenetedHeight)
         
-        self.presentChild(inviteVC,
+        self.presentChild(vc,
                           animated: true,
                           presentedFrame: presentedFrame)
         
@@ -344,25 +399,25 @@ private extension LiveShoppingViewController {
         roomListVM.presentingType = .pk
         roomListVM.refetch()
         
-        inviteVC.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned inviteVC] in
+        vc.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned vc] in
             self.roomListVM.refetch(success: {
-                inviteVC.tableView.mj_header?.endRefreshing()
-            }) { [unowned inviteVC] in // fail
-                inviteVC.tableView.mj_header?.endRefreshing()
+                vc.tableView.mj_header?.endRefreshing()
+            }) { [unowned vc] in // fail
+                vc.tableView.mj_header?.endRefreshing()
             }
         })
         
-        inviteVC.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned inviteVC] in
+        vc.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned vc] in
             self.roomListVM.fetch(success: {
-                inviteVC.tableView.mj_footer?.endRefreshing()
-            }) { [unowned inviteVC] in // fail
-                inviteVC.tableView.mj_footer?.endRefreshing()
+                vc.tableView.mj_footer?.endRefreshing()
+            }) { [unowned vc] in // fail
+                vc.tableView.mj_footer?.endRefreshing()
             }
         })
         
-        inviteVC.selectedInviteRoom.subscribe(onNext: { [unowned self] (room) in
+        vc.selectedInviteRoom.subscribe(onNext: { [unowned self] (room) in
             self.hiddenMaskView()
-            self.hiddenInviteList()
+            self.userListVC = nil
             
             self.pkVM.sendInvitationTo(room: room) { [unowned self] (error) in
                 self.showTextToast(text: NSLocalizedString("PK_Invite_Fail"))
@@ -382,13 +437,6 @@ private extension LiveShoppingViewController {
                 
                 return newList
             }.bind(to: userListVC.roomList).disposed(by: bag)
-        }
-    }
-    
-    func hiddenInviteList() {
-        if let vc = self.userListVC {
-            self.dismissChild(vc, animated: true)
-            self.userListVC = nil
         }
     }
 }

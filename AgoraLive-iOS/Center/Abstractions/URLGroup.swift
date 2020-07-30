@@ -89,4 +89,16 @@ struct URLGroup {
     static func multiInvitaionApplication(userId: String, roomId: String) -> String {
         return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/users/\(userId)/seats/notice"
     }
+    
+    static func goodsPurchase(roomId: String) -> String {
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/commerce/purchase"
+    }
+    
+    static func goodsList(roomId: String) -> String {
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/commerce/products"
+    }
+    
+    static func goodsOnShelf(roomId: String, state: Int, goodsId: String) -> String {
+        return URLGroup.host + URLGroup.mainPath +  "room/\(roomId)/commerce/products/\(goodsId)/state/\(state)"
+    }
 }

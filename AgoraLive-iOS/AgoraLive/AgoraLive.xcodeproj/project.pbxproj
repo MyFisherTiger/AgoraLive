@@ -35,6 +35,7 @@
 		A747ED7524CFF20C002F2DB0 /* GoodsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747ED7424CFF20C002F2DB0 /* GoodsVM.swift */; };
 		A747ED7724CFF4E8002F2DB0 /* Popover.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A747ED7624CFF4E8002F2DB0 /* Popover.storyboard */; };
 		A747ED7924CFF810002F2DB0 /* Live.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A747ED7824CFF810002F2DB0 /* Live.storyboard */; };
+		A747ED7D24D1187F002F2DB0 /* GoodsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */; };
 		A754FAEF242B717D0062B2F5 /* FilletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAEE242B717D0062B2F5 /* FilletView.swift */; };
 		A754FAF4242C5A920062B2F5 /* ChatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF3242C5A920062B2F5 /* ChatVM.swift */; };
 		A754FAF6242C9B700062B2F5 /* LiveSeatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */; };
@@ -192,6 +193,7 @@
 		A747ED7424CFF20C002F2DB0 /* GoodsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoodsVM.swift; sourceTree = "<group>"; };
 		A747ED7624CFF4E8002F2DB0 /* Popover.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Popover.storyboard; sourceTree = "<group>"; };
 		A747ED7824CFF810002F2DB0 /* Live.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Live.storyboard; sourceTree = "<group>"; };
+		A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoodsListViewController.swift; sourceTree = "<group>"; };
 		A754FAEE242B717D0062B2F5 /* FilletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilletView.swift; sourceTree = "<group>"; };
 		A754FAF3242C5A920062B2F5 /* ChatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatVM.swift; sourceTree = "<group>"; };
 		A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSeatVM.swift; sourceTree = "<group>"; };
@@ -444,6 +446,8 @@
 				A768B6132452F3980073510D /* GIFView.swift */,
 				A7EA40BB2459825000301AE3 /* ToastView.swift */,
 				A719060C24666D580031E91C /* Popover.swift */,
+				A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */,
+				A72B7BED24445EBB00E965FB /* PKBar.swift */,
 			);
 			name = SharedView;
 			sourceTree = "<group>";
@@ -501,7 +505,6 @@
 				A7CA48C724559B7E00507435 /* Mine */,
 				A76BD14323F2852500B2732B /* ViewControllers */,
 				A758851F242DF21E0011FCCF /* SharedView */,
-				A76BD14423F2853600B2732B /* Views */,
 				A76BD14223F2851200B2732B /* Storyboard */,
 			);
 			path = UI;
@@ -543,15 +546,6 @@
 				A711AB93244059F400C2A3FD /* LiveViewController.swift */,
 			);
 			name = ViewControllers;
-			sourceTree = "<group>";
-		};
-		A76BD14423F2853600B2732B /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				A7FDB59A23FD07B600487FB9 /* TabSelectView.swift */,
-				A72B7BED24445EBB00E965FB /* PKBar.swift */,
-			);
-			name = Views;
 			sourceTree = "<group>";
 		};
 		A76BD14923F2A37900B2732B /* Utils */ = {
@@ -832,6 +826,7 @@
 			isa = PBXGroup;
 			children = (
 				A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */,
+				A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */,
 			);
 			name = LiveShopping;
 			sourceTree = "<group>";
@@ -1023,6 +1018,7 @@
 				A7952AA724162C1000479811 /* RTMClient.swift in Sources */,
 				A7053A41241A2C290061E5E2 /* BeautySettingsViewController.swift in Sources */,
 				A773BD50240E4CC1003ECBFD /* MainTabBarViewController.swift in Sources */,
+				A747ED7D24D1187F002F2DB0 /* GoodsListViewController.swift in Sources */,
 				A7355F85240650010010CCD1 /* CreateLiveViewController.swift in Sources */,
 				A7EB816A24C84BCB00F0A289 /* MultiHostsVM.swift in Sources */,
 				A7FDB59D23FD0E3C00487FB9 /* AppleExtension.swift in Sources */,

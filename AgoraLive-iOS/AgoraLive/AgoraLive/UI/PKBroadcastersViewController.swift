@@ -287,8 +287,7 @@ extension PKBroadcastersViewController {
         // View
         pkButton.rx.tap.subscribe(onNext: { [unowned self] in
             self.showMaskView(color: UIColor.clear) { [unowned self] in
-                self.hiddenMaskView()
-                self.hiddenInviteList()
+                self.userListVC = nil
             }
             
             self.presentInvitationList()
@@ -437,13 +436,14 @@ private extension PKBroadcastersViewController {
         
         let roomId = session.roomId
         
-        let inviteVC = UIStoryboard.initViewController(of: "UserListViewController",
-                                                       class: UserListViewController.self)
+        let vc = UIStoryboard.initViewController(of: "UserListViewController",
+                                                       class: UserListViewController.self,
+                                                       on: "Popover")
         
-        self.userListVC = inviteVC
+        self.userListVC = vc
         
-        inviteVC.showType = .pk
-        inviteVC.view.cornerRadius(10)
+        vc.showType = .pk
+        vc.view.cornerRadius(10)
         
         let presenetedHeight: CGFloat = UIScreen.main.heightOfSafeAreaTop + 526.0 + 50.0
         let y = UIScreen.main.bounds.height - presenetedHeight
@@ -452,7 +452,7 @@ private extension PKBroadcastersViewController {
                                     width: UIScreen.main.bounds.width,
                                     height: presenetedHeight)
         
-        self.presentChild(inviteVC,
+        self.presentChild(vc,
                           animated: true,
                           presentedFrame: presentedFrame)
         
@@ -460,25 +460,25 @@ private extension PKBroadcastersViewController {
         roomListVM.presentingType = .pk
         roomListVM.refetch()
         
-        inviteVC.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned inviteVC] in
+        vc.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned vc] in
             self.roomListVM.refetch(success: {
-                inviteVC.tableView.mj_header?.endRefreshing()
-            }) { [unowned inviteVC] in // fail
-                inviteVC.tableView.mj_header?.endRefreshing()
+                vc.tableView.mj_header?.endRefreshing()
+            }) { [unowned vc] in // fail
+                vc.tableView.mj_header?.endRefreshing()
             }
         })
         
-        inviteVC.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned inviteVC] in
+        vc.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned vc] in
             self.roomListVM.fetch(success: {
-                inviteVC.tableView.mj_footer?.endRefreshing()
-            }) { [unowned inviteVC] in // fail
-                inviteVC.tableView.mj_footer?.endRefreshing()
+                vc.tableView.mj_footer?.endRefreshing()
+            }) { [unowned vc] in // fail
+                vc.tableView.mj_footer?.endRefreshing()
             }
         })
         
-        inviteVC.selectedInviteRoom.subscribe(onNext: { [unowned self] (room) in
+        vc.selectedInviteRoom.subscribe(onNext: { [unowned self] (room) in
             self.hiddenMaskView()
-            self.hiddenInviteList()
+            self.userListVC = nil
             
             self.pkVM.sendInvitationTo(room: room) { [unowned self] (error) in
                 self.showTextToast(text: NSLocalizedString("PK_Invite_Fail"))
@@ -498,13 +498,6 @@ private extension PKBroadcastersViewController {
                 
                 return newList
             }.bind(to: userListVC.roomList).disposed(by: bag)
-        }
-    }
-    
-    func hiddenInviteList() {
-        if let vc = self.userListVC {
-            self.dismissChild(vc, animated: true)
-            self.userListVC = nil
         }
     }
 }

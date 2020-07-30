@@ -15,8 +15,6 @@ class GiftCell: UICollectionViewCell {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var priceLabel: UILabel!
     
-    private var fillet = FilletView(frame: CGRect.zero, filletRadius: 3)
-    
     var isSelectedNow: Bool = false {
         didSet {
             if isSelectedNow {

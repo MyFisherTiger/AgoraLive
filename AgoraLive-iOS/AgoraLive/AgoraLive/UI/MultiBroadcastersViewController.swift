@@ -208,11 +208,7 @@ extension MultiBroadcastersViewController {
             // owner
             case .invitation:
                 self.showMaskView(color: UIColor.clear) {
-                    self.hiddenMaskView()
-                    if let vc = self.userListVC {
-                        self.dismissChild(vc, animated: true)
-                        self.userListVC = nil
-                    }
+                    self.userListVC = nil
                 }
                 self.presentInvitationList { (user) in
                     let invitation = MultiHostsVM.Invitation(seatIndex: action.seat.index,

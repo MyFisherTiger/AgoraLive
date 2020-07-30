@@ -170,90 +170,33 @@ extension LiveViewController {
 extension LiveViewController {
     // MARK: - Bottom Tools
     func bottomTools(session: LiveSession) {
-        let perspective = session.role.type
-        
         guard let bottomToolsVC = self.bottomToolsVC else {
             return
         }
         
         bottomToolsVC.liveType = session.type
-        bottomToolsVC.perspective = perspective
+        bottomToolsVC.perspective = session.role.type
         bottomToolsVC.tintColor = tintColor
         
         enhancementVM.beauty.map { (action) -> Bool in
             return action.boolValue
         }.bind(to: bottomToolsVC.beautyButton.rx.isSelected).disposed(by: bag)
         
-        switch perspective {
-        case .owner, .broadcaster:
-            bottomToolsVC.beautyButton.rx.tap.subscribe(onNext: { [unowned self] () in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let beautyVC = self.beautyVC {
-                        self.dismissChild(beautyVC, animated: true)
-                        self.beautyVC = nil
-                    }
-                }
-                self.presentBeautySettings()
-            }).disposed(by: bag)
-            
-            bottomToolsVC.musicButton.rx.tap.subscribe(onNext: { [unowned self] () in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let musicVC = self.musicVC {
-                        self.dismissChild(musicVC, animated: true)
-                        self.musicVC = nil
-                    }
-                }
-                self.presentMusicList()
-            }).disposed(by: bag)
-            
-            bottomToolsVC.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let extensionVC = self.extensionVC {
-                        self.dismissChild(extensionVC, animated: true)
-                        self.extensionVC = nil
-                    }
-                }
-                self.presentExtensionFunctions()
-            }).disposed(by: bag)
-            
-            if perspective == .broadcaster {
-                bottomToolsVC.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
-                    self.showMaskView(color: UIColor.clear) { [unowned self] in
-                        self.hiddenMaskView()
-                        if let giftVC = self.giftVC {
-                            self.dismissChild(giftVC, animated: true)
-                            self.giftVC = nil
-                        }
-                    }
-                    self.presentGiftList()
-                }).disposed(by: bag)
-            }
-        case .audience:
-            bottomToolsVC.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let giftVC = self.giftVC {
-                        self.dismissChild(giftVC, animated: true)
-                        self.giftVC = nil
-                    }
-                }
-                self.presentGiftList()
-            }).disposed(by: bag)
-            
-            bottomToolsVC.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let extensionVC = self.extensionVC {
-                        self.dismissChild(extensionVC, animated: true)
-                        self.extensionVC = nil
-                    }
-                }
-                self.presentExtensionFunctions()
-            }).disposed(by: bag)
-        }
+        bottomToolsVC.musicButton.rx.tap.subscribe(onNext: { [unowned self] () in
+            self.presentMusicList()
+        }).disposed(by: bag)
+        
+        bottomToolsVC.beautyButton.rx.tap.subscribe(onNext: { [unowned self] () in
+            self.presentBeautySettings()
+        }).disposed(by: bag)
+        
+        bottomToolsVC.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.presentGiftList()
+        }).disposed(by: bag)
+        
+        bottomToolsVC.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.presentExtensionFunctions()
+        }).disposed(by: bag)
         
         bottomToolsVC.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
             if self is PKBroadcastersViewController {
@@ -368,7 +311,7 @@ extension LiveViewController {
         
         let roomId = session.roomId
         
-        // Invite VC
+        // Invitation VC
         listVC.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self] in
             self.audienceListVM.refetch(roomId: roomId, onlyAudience: isOnlyAudience, success: { [unowned self] in
                 self.userListVC?.tableView.mj_header?.endRefreshing()
@@ -388,6 +331,10 @@ extension LiveViewController {
     
     // MARK: - Beauty Settings
     func presentBeautySettings() {
+        self.showMaskView(color: UIColor.clear) { [unowned self] in
+            self.beautyVC = nil
+        }
+        
         let beautyVC = UIStoryboard.initViewController(of: "BeautySettingsViewController",
                                                        class: BeautySettingsViewController.self,
                                                        on: "Popover")
@@ -414,6 +361,10 @@ extension LiveViewController {
     
     // MARK: - Music List
     func presentMusicList() {
+        self.showMaskView(color: UIColor.clear) { [unowned self] in
+            self.musicVC = nil
+        }
+        
         let musicVC = UIStoryboard.initViewController(of: "MusicViewController",
                                                       class: MusicViewController.self,
                                                       on: "Popover")
@@ -448,6 +399,10 @@ extension LiveViewController {
     
     // MARK: - ExtensionFunctions
     func presentExtensionFunctions() {
+        self.showMaskView(color: UIColor.clear) { [unowned self] in
+            self.extensionVC = nil
+        }
+        
         guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
@@ -560,11 +515,21 @@ extension LiveViewController {
         
         extensionVC.audioLoopButton.rx.tap.subscribe(onNext: { [unowned extensionVC, unowned self] in
             guard self.deviceVM.audioOutput.value.isSupportLoop else {
-                self.showAlert(NSLocalizedString("Please_Input_Headset"))
+                self.showTextToast(text: NSLocalizedString("Please_Input_Headset"))
                 return
             }
             extensionVC.audioLoopButton.isSelected.toggle()
             self.deviceVM.audioLoop(extensionVC.audioLoopButton.isSelected ? .off : .on)
+        }).disposed(by: bag)
+        
+        extensionVC.beautyButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.hiddenMaskView()
+            self.presentBeautySettings()
+        }).disposed(by: bag)
+        
+        extensionVC.musicButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.hiddenMaskView()
+            self.presentMusicList()
         }).disposed(by: bag)
     }
     
@@ -646,6 +611,10 @@ extension LiveViewController {
     
     // MARK: - Gift List
     func presentGiftList() {
+        self.showMaskView(color: UIColor.clear) { [unowned self] in
+            self.giftVC = nil
+        }
+        
         let giftVC = UIStoryboard.initViewController(of: "GiftViewController",
                                                      class: GiftViewController.self,
                                                      on: "Popover")

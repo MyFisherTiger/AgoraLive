@@ -11,6 +11,10 @@ import RxSwift
 import RxRelay
 
 class TabSelectView: UIScrollView {
+    enum Aligment {
+        case left, center
+    }
+    
     struct TitleProperty {
         var color: UIColor
         var font: UIFont
@@ -24,15 +28,17 @@ class TabSelectView: UIScrollView {
     
     private var titles: [String]?
     private var titleButtons: [UIButton]?
+    private var needLayoutButtons = false {
+        didSet {
+            if needLayoutButtons {
+                layoutIfNeeded()
+            }
+        }
+    }
     
     private let bag = DisposeBag()
     
-    var selectedIndex = BehaviorRelay(value: 0) {
-        didSet {
-            updateSelectedButton(selectedIndex.value)
-            updateUnderlinePosition()
-        }
-    }
+    let selectedIndex = BehaviorRelay(value: 0)
     
     var underlineColor: UIColor = UIColor(hexString: "#0088EB") {
         didSet {
@@ -46,6 +52,7 @@ class TabSelectView: UIScrollView {
     var selectedTitle = TitleProperty(color: UIColor.black,
                                       font: UIFont.systemFont(ofSize: 16, weight: .medium))
     
+    var alignment = Aligment.left
     var titleSpace: CGFloat = 28.0
     var underlineWidth: CGFloat? = nil
     var underlineHeight: CGFloat = 5
@@ -55,6 +62,15 @@ class TabSelectView: UIScrollView {
         self.layer.masksToBounds = true
         self.showsHorizontalScrollIndicator = false
         self.showsVerticalScrollIndicator = false
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if needLayoutButtons, let titles = titles {
+            needLayoutButtons = false
+            layoutButtons(titles: titles, space: titleSpace)
+        }
     }
 }
 
@@ -72,11 +88,11 @@ extension TabSelectView {
         }
         
         self.titles = titles
+        needLayoutButtons = true
         
-        layoutButtons(titles: titles, space: titleSpace)
         selectedIndex.accept(0)
         
-        selectedIndex.asObservable().subscribe(onNext: { [unowned self] (index) in
+        selectedIndex.subscribe(onNext: { [unowned self] (index) in
             self.updateSelectedButton(index)
             self.updateUnderlinePosition()
         }).disposed(by: bag)
@@ -85,17 +101,19 @@ extension TabSelectView {
 
 private extension TabSelectView {
     func layoutButtons(titles: [String], space: CGFloat) {
-        var lastButtonMaxX: CGFloat?
+        var lastButtonMaxX: CGFloat? = nil
         var buttons = [UIButton]()
         
         for (index, title) in titles.enumerated() {
             let textSize = title.size(font: selectedTitle.font,
                                       drawRange: CGSize(width: CGFloat(MAXFLOAT), height: bounds.height))
             
-            let button = UIButton(frame: CGRect(x: lastButtonMaxX ?? 0,
-                                                y: 0,
-                                                width: textSize.width,
-                                                height: textSize.height))
+            let frame = CGRect(x: lastButtonMaxX ?? 0,
+                               y: 0,
+                               width: textSize.width,
+                               height: textSize.height)
+            
+            let button = UIButton(frame: frame)
             button.setTitle(title, for: .normal)
             button.titleLabel?.font = unselectedTitle.font
             button.tag = index
@@ -116,6 +134,24 @@ private extension TabSelectView {
                                      y: 0)
                 strongSelf.setContentOffset(offset, animated: true)
             }).disposed(by: bag)
+        }
+        
+        lastButtonMaxX = nil
+        
+        if alignment == .center {
+            let totalLength = buttons.last!.frame.maxX
+            let beginX = (bounds.width - totalLength) * 0.5
+            
+            for item in buttons {
+                var frame = item.frame
+                var pointer = frame.origin
+                
+                pointer.x = lastButtonMaxX ?? beginX
+                frame.origin = pointer
+                item.frame = frame
+                
+                lastButtonMaxX = item.frame.maxX + space
+            }
         }
         
         self.contentSize = CGSize(width: buttons.last!.frame.maxX,
@@ -167,9 +203,7 @@ private extension TabSelectView {
         var offsetX: CGFloat = (x + w) - boundsWidth
         offsetX = offsetX >= 0 ? offsetX : 0
         
-        if self.contentOffset.x < offsetX {
-            self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
-        }
+        self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
         
         UIView.animate(withDuration: 0.3) { [unowned self] in
             self.underline.frame = CGRect(x: x,

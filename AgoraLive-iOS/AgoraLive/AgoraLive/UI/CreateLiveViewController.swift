@@ -185,18 +185,18 @@ class CreateLiveViewController: MaskViewController {
             }
             
             vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
-        case "LiveShoppingViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let pkInfo = info.pkInfo,
-                let vm = try? PKVM(dic: pkInfo) else {
-                    assert(false)
-                    return
-            }
-            
-            let vc = segue.destination as? PKBroadcastersViewController
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            vc?.pkVM = vm
+//        case "LiveShoppingViewController":
+//            guard let sender = sender,
+//                let info = sender as? LiveSession.JoinedInfo,
+//                let pkInfo = info.pkInfo,
+//                let vm = try? PKVM(dic: pkInfo) else {
+//                    assert(false)
+//                    return
+//            }
+//            
+//            let vc = segue.destination as? PKBroadcastersViewController
+//            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+//            vc?.pkVM = vm
         default:
             break
         }
@@ -227,7 +227,6 @@ class CreateLiveViewController: MaskViewController {
     
     @IBAction func doBeautyPressed(_ sender: UIButton) {
         self.showMaskView(color: UIColor.clear) { [unowned self] in
-            self.hiddenMaskView()
             self.hiddenSubSettings()
         }
         presentBeautySettings()
@@ -235,7 +234,6 @@ class CreateLiveViewController: MaskViewController {
     
     @IBAction func doRoomSettingsPressed(_ sender: UIButton) {
         self.showMaskView(color: UIColor.clear) { [unowned self] in
-            self.hiddenMaskView()
             self.hiddenSubSettings()
         }
         presentMediaSettings()

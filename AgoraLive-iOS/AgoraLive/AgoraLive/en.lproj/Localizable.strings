@@ -158,3 +158,13 @@ Confirm_Accept_Broadcasting_Invitation="Do you agree to become a host？";
 
 End_Broadcasting="End";
 Confirm_End_Broadcasting="Are you sure to end this?";
+
+// Live Shopping
+Product_List="Product list";
+Product_Pending="Pending";
+Product_OnShelf="On shelf";
+Product_Has_Been_Added_On_Shelf="Product has been added on shelf";
+Product_Is_No_Longer_Available="Product is no longer available";
+Product_Launch="Launch";
+Product_Off_Shelf="Off shelf";
+Product_Go="Go";

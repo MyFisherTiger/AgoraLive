@@ -87,11 +87,11 @@ class ExtensionViewController: UIViewController {
             if liveType == .shopping {
                 musicButton.setImage(UIImage(named: "icon-music-shopping"), for: .normal)
                 musicButton.setTitle(NSLocalizedString("Music"), for: .normal)
-                view.addSubview(settingsButton)
+                view.addSubview(musicButton)
                 
                 beautyButton.setImage(UIImage(named: "icon-美颜"), for: .normal)
                 beautyButton.setTitle(NSLocalizedString("Beauty"), for: .normal)
-                view.addSubview(switchCameraButton)
+                view.addSubview(beautyButton)
             }
             
             micButton.setImage(UIImage(named: "icon-speaker on"), for: .normal)
@@ -106,6 +106,11 @@ class ExtensionViewController: UIViewController {
             audioLoopButton.setTitle(NSLocalizedString("Audio_Loop"), for: .selected)
             view.addSubview(audioLoopButton)
         case .audience:
+            if liveType == .shopping {
+                broadcastingButton.setImage(UIImage(named: "icon-连麦"), for: .normal)
+                broadcastingButton.setTitle("", for: .normal)
+                view.addSubview(broadcastingButton)
+            }
             break
         }
     }

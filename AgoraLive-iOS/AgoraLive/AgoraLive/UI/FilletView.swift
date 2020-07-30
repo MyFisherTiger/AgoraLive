@@ -8,33 +8,16 @@
 
 import UIKit
 
-class FilletView: UIView {
-    var insideBackgroundColor: UIColor? {
-        didSet {
-            self.setNeedsDisplay()
-        }
-    }
+protocol Fillet where Self: UIView {
+    var insideBackgroundColor: UIColor? {get set}
+    var strokeColor: UIColor? {get set}
+    var filletRadius: CGFloat {get set}
     
-    var filletRadius: CGFloat = 0.0 {
-        didSet {
-            guard filletRadius <= self.bounds.height * 0.5 else {
-                filletRadius = self.bounds.height * 0.5
-                return
-            }
-            self.setNeedsDisplay()
-        }
-    }
-    
-    init(frame: CGRect, filletRadius: CGFloat = 0.0) {
-        self.filletRadius = filletRadius
-        super.init(frame: frame)
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(frame: CGRect.zero)
-    }
-    
-    override func draw(_ rect: CGRect) {
+    func drawFillet()
+}
+
+extension Fillet {
+    func drawFillet() {
         let bezier = UIBezierPath(arcCenter: CGPoint(x: filletRadius, y: filletRadius),
                                   radius: filletRadius,
                                   startAngle: CGFloat.pi,
@@ -73,5 +56,42 @@ class FilletView: UIView {
         
         insideBackgroundColor?.setFill()
         bezier.fill()
+    }
+}
+
+class FilletView: UIView, Fillet {
+    var insideBackgroundColor: UIColor? {
+        didSet {
+            self.setNeedsDisplay()
+        }
+    }
+    
+    var strokeColor: UIColor? {
+        didSet {
+            self.setNeedsDisplay()
+        }
+    }
+    
+    var filletRadius: CGFloat = 0.0 {
+        didSet {
+            guard filletRadius <= self.bounds.height * 0.5 else {
+                filletRadius = self.bounds.height * 0.5
+                return
+            }
+            self.setNeedsDisplay()
+        }
+    }
+    
+    init(frame: CGRect, filletRadius: CGFloat = 0.0) {
+        self.filletRadius = filletRadius
+        super.init(frame: frame)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    override func draw(_ rect: CGRect) {
+        drawFillet()
     }
 }

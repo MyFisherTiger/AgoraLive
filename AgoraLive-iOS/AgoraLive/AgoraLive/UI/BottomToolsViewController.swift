@@ -256,6 +256,15 @@ private extension BottomToolsViewController {
             
             self.view.addSubview(shoppingButton)
             self.view.addSubview(pkButton)
+        case (.shopping, .audience):
+            shoppingButton.isHidden = false
+            giftButton.isHidden = false
+            
+            shoppingButton.setImage(UIImage(named: "icon-货架"), for: .normal)
+            giftButton.setImage(UIImage(named:"icon-gift"), for: .normal)
+            
+            self.view.addSubview(shoppingButton)
+            self.view.addSubview(giftButton)
         default: fatalError()
         }
     }

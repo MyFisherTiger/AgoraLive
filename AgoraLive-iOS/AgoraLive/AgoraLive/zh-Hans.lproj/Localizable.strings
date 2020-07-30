@@ -160,3 +160,13 @@ Confirm_Accept_Broadcasting_Invitation="邀请您上麦是否接受？";
 
 End_Broadcasting="终止连麦";
 Confirm_End_Broadcasting="确定终止连麦？";
+
+// Live Shopping
+Product_List="商品列表";
+Product_Pending="待上架";
+Product_OnShelf="已上架";
+Product_Has_Been_Added_On_Shelf="商品已上架";
+Product_Is_No_Longer_Available="商品已下架";
+Product_Launch="上架";
+Product_Off_Shelf="下架";
+Product_Go="去看看";

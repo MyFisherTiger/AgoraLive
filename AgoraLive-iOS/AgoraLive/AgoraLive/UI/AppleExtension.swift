@@ -347,6 +347,11 @@ class MaskViewController: UIViewController, ShowAlertProtocol, PresentChildProto
     }
     
     func hiddenMaskView() {
+        if let presentingChild = presentingChild {
+            self.dismissChild(presentingChild, animated: true)
+            self.presentingChild = nil
+        }
+        
         self.maskTapBlock = nil
         maskView.isHidden = true
         maskView.removeFromSuperview()
@@ -355,9 +360,9 @@ class MaskViewController: UIViewController, ShowAlertProtocol, PresentChildProto
     @objc private func tapMaskView(_ mask: UIControl) {
         if let maskTapBlock = maskTapBlock {
             maskTapBlock()
-        } else {
-            maskView.isHidden = true
         }
+        
+        self.hiddenMaskView()
     }
 }
 
