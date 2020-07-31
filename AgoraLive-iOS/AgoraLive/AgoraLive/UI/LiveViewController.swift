@@ -33,7 +33,7 @@ protocol LiveViewController: RxViewController where Self: MaskViewController {
     var giftVC: GiftViewController? {get set}
     
     // View
-    var personCountView: IconTextView! {get set}
+    var personCountView: RemindIconTextView! {get set}
     
     // View Model
     var audienceListVM: LiveRoomAudienceList {get set}
@@ -218,9 +218,6 @@ extension LiveViewController {
         chatInputView.textView.rx.controlEvent([.editingDidEndOnExit])
             .subscribe(onNext: { [unowned self] in
                 self.hiddenMaskView()
-                if !self.chatInputView.isHidden {
-                    self.view.endEditing(true)
-                }
                 self.view.endEditing(true)
                 
                 guard let session = ALCenter.shared().liveSession else {

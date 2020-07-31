@@ -36,6 +36,10 @@
 		A747ED7724CFF4E8002F2DB0 /* Popover.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A747ED7624CFF4E8002F2DB0 /* Popover.storyboard */; };
 		A747ED7924CFF810002F2DB0 /* Live.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A747ED7824CFF810002F2DB0 /* Live.storyboard */; };
 		A747ED7D24D1187F002F2DB0 /* GoodsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */; };
+		A747EDA124D2C78F002F2DB0 /* ShppoingSmallRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDA024D2C78E002F2DB0 /* ShppoingSmallRenderView.swift */; };
+		A747EDA624D2C87D002F2DB0 /* SubThreadTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = A747EDA524D2C87D002F2DB0 /* SubThreadTimer.m */; };
+		A747EDA824D2CD31002F2DB0 /* TimestampQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDA724D2CD31002F2DB0 /* TimestampQueue.swift */; };
+		A747EDAB24D2D03D002F2DB0 /* TimestampModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDAA24D2D03D002F2DB0 /* TimestampModel.swift */; };
 		A754FAEF242B717D0062B2F5 /* FilletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAEE242B717D0062B2F5 /* FilletView.swift */; };
 		A754FAF4242C5A920062B2F5 /* ChatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF3242C5A920062B2F5 /* ChatVM.swift */; };
 		A754FAF6242C9B700062B2F5 /* LiveSeatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */; };
@@ -194,6 +198,11 @@
 		A747ED7624CFF4E8002F2DB0 /* Popover.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Popover.storyboard; sourceTree = "<group>"; };
 		A747ED7824CFF810002F2DB0 /* Live.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Live.storyboard; sourceTree = "<group>"; };
 		A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoodsListViewController.swift; sourceTree = "<group>"; };
+		A747EDA024D2C78E002F2DB0 /* ShppoingSmallRenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShppoingSmallRenderView.swift; sourceTree = "<group>"; };
+		A747EDA424D2C87D002F2DB0 /* SubThreadTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SubThreadTimer.h; sourceTree = "<group>"; };
+		A747EDA524D2C87D002F2DB0 /* SubThreadTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SubThreadTimer.m; sourceTree = "<group>"; };
+		A747EDA724D2CD31002F2DB0 /* TimestampQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampQueue.swift; sourceTree = "<group>"; };
+		A747EDAA24D2D03D002F2DB0 /* TimestampModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampModel.swift; sourceTree = "<group>"; };
 		A754FAEE242B717D0062B2F5 /* FilletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilletView.swift; sourceTree = "<group>"; };
 		A754FAF3242C5A920062B2F5 /* ChatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatVM.swift; sourceTree = "<group>"; };
 		A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSeatVM.swift; sourceTree = "<group>"; };
@@ -560,6 +569,10 @@
 				A76BD14723F299D900B2732B /* ViewFrame.swift */,
 				A7FDB59C23FD0E3C00487FB9 /* AppleExtension.swift */,
 				A787ED7024C540D20094552D /* RxObject.swift */,
+				A747EDA424D2C87D002F2DB0 /* SubThreadTimer.h */,
+				A747EDA524D2C87D002F2DB0 /* SubThreadTimer.m */,
+				A747EDA724D2CD31002F2DB0 /* TimestampQueue.swift */,
+				A747EDAA24D2D03D002F2DB0 /* TimestampModel.swift */,
 			);
 			name = Utils;
 			path = UI;
@@ -827,6 +840,7 @@
 			children = (
 				A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */,
 				A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */,
+				A747EDA024D2C78E002F2DB0 /* ShppoingSmallRenderView.swift */,
 			);
 			name = LiveShopping;
 			sourceTree = "<group>";
@@ -1025,6 +1039,7 @@
 				A7FDB5A723FFB49300487FB9 /* UIColor+Hex.m in Sources */,
 				A7952C522416691600479811 /* URLGroup.swift in Sources */,
 				A7952ABE24162C1000479811 /* zip.c in Sources */,
+				A747EDA624D2C87D002F2DB0 /* SubThreadTimer.m in Sources */,
 				A719061624667DCE0031E91C /* UserData+CoreDataProperties.swift in Sources */,
 				A7952A5A24162BF600479811 /* AppAssistant.swift in Sources */,
 				A795CEC22451683700220EF4 /* LabelShadowView.swift in Sources */,
@@ -1050,6 +1065,7 @@
 				A773BD522410A001003ECBFD /* UserNameViewController.swift in Sources */,
 				A72B7BE42444161400E965FB /* SingleBroadcasterViewController.swift in Sources */,
 				A76BD14823F299D900B2732B /* ViewFrame.swift in Sources */,
+				A747EDA824D2CD31002F2DB0 /* TimestampQueue.swift in Sources */,
 				A711AB94244059F400C2A3FD /* LiveViewController.swift in Sources */,
 				A7CEF1EB2423495E004FB752 /* LiveSession.swift in Sources */,
 				A71AAF232434C09500820096 /* ExtensionViewController.swift in Sources */,
@@ -1093,6 +1109,7 @@
 				A7952ACC24162C1000479811 /* SSZipArchive.m in Sources */,
 				A711AB87243F034100C2A3FD /* GiftViewController.swift in Sources */,
 				A76BD13F23F26E0400B2732B /* LiveTypeViewController.swift in Sources */,
+				A747EDA124D2C78F002F2DB0 /* ShppoingSmallRenderView.swift in Sources */,
 				A7FDB5AA23FFBB9400487FB9 /* LiveListVM.swift in Sources */,
 				A7952AC124162C1000479811 /* ioapi_mem.c in Sources */,
 				A7952A49241624C800479811 /* MediaSettingsViewController.swift in Sources */,
@@ -1124,6 +1141,7 @@
 				A7952AAF24162C1000479811 /* TypeAlias.swift in Sources */,
 				A76BD12123F1035500B2732B /* AppDelegate.swift in Sources */,
 				A7CEF1ED24238389004FB752 /* LiveRole.swift in Sources */,
+				A747EDAB24D2D03D002F2DB0 /* TimestampModel.swift in Sources */,
 				A75D5B2A244FE77D00CE7528 /* CSNavigationController.swift in Sources */,
 				A7952AAB24162C1000479811 /* RTMProtocols.swift in Sources */,
 				A7952AAD24162C1000479811 /* DeviceAssistant.swift in Sources */,

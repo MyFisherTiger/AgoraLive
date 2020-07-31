@@ -32,8 +32,8 @@ class GoodsVM: RxObject {
     let onShelfList = BehaviorRelay(value: [GoodsItem]())
     let offShelfList = BehaviorRelay(value: [GoodsItem]())
     
-    let itemOnShelves = PublishRelay<GoodsItem>()
-    let itemOffShelves = PublishRelay<GoodsItem>()
+    let itemOnShelf = PublishRelay<GoodsItem>()
+    let itemOffShelf = PublishRelay<GoodsItem>()
     
     let requestError = PublishRelay<String>()
     
@@ -42,7 +42,7 @@ class GoodsVM: RxObject {
         observe()
     }
     
-    func fake() {
+//    func fake() {
 //        var temp = [GoodsItem]()
 //
 //        for i in 0 ..< 8 {
@@ -55,7 +55,7 @@ class GoodsVM: RxObject {
 //        }
 //
 //        list.accept(temp)
-    }
+//    }
     
     func itemOnShelf(_ item: GoodsItem, of roomId: String) {
         goods(item, onShelf: true, of: roomId)
@@ -155,14 +155,14 @@ private extension GoodsVM {
             
             if state == 1 {
                 tItem.isSale = true
-                strongSelf.itemOnShelves.accept(tItem)
+                strongSelf.itemOnShelf.accept(tItem)
             } else {
                 tItem.isSale = false
-                strongSelf.itemOnShelves.accept(tItem)
+                strongSelf.itemOnShelf.accept(tItem)
             }
         }
         
-        itemOnShelves.subscribe(onNext: { [unowned self] (item: GoodsItem) in
+        itemOnShelf.subscribe(onNext: { [unowned self] (item: GoodsItem) in
             var new = self.list.value
             let index = new.firstIndex { (goods) -> Bool in
                 return goods.id == item.id
@@ -176,7 +176,7 @@ private extension GoodsVM {
             self.list.accept(new)
         }).disposed(by: bag)
         
-        itemOffShelves.subscribe(onNext: { [unowned self] (item: GoodsItem) in
+        itemOffShelf.subscribe(onNext: { [unowned self] (item: GoodsItem) in
             var new = self.list.value
             let index = new.firstIndex { (goods) -> Bool in
                 return goods.id == item.id

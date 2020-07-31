@@ -69,7 +69,7 @@
                                     <segue destination="i35-M7-XdY" kind="embed" identifier="ChatViewController" id="UOK-ob-VPJ"/>
                                 </connections>
                             </containerView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zL9-kX-vSs" customClass="IconTextView" customModule="AgoraLive" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zL9-kX-vSs" customClass="RemindIconTextView" customModule="AgoraLive" customModuleProvider="target">
                                 <rect key="frame" x="343" y="59" width="56" height="28"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
@@ -187,7 +187,7 @@
                                     <segue destination="S0T-ga-cbR" kind="embed" identifier="ChatViewController" id="wIK-jH-qnW"/>
                                 </connections>
                             </containerView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bZN-iC-sGe" customClass="IconTextView" customModule="AgoraLive" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bZN-iC-sGe" customClass="RemindIconTextView" customModule="AgoraLive" customModuleProvider="target">
                                 <rect key="frame" x="343" y="59" width="56" height="28"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
@@ -285,7 +285,7 @@
                                     <segue destination="QNJ-sL-KLt" kind="embed" identifier="ChatViewController" id="A4Q-Dw-RuF"/>
                                 </connections>
                             </containerView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nZq-6D-ZHn" customClass="IconTextView" customModule="AgoraLive" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nZq-6D-ZHn" customClass="RemindIconTextView" customModule="AgoraLive" customModuleProvider="target">
                                 <rect key="frame" x="343" y="59" width="56" height="28"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
@@ -481,7 +481,7 @@
                                     <segue destination="2ad-IH-rMN" kind="embed" identifier="ChatViewController" id="t94-y8-jBT"/>
                                 </connections>
                             </containerView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iuL-xZ-x5J" customClass="IconTextView" customModule="AgoraLive" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iuL-xZ-x5J" customClass="RemindIconTextView" customModule="AgoraLive" customModuleProvider="target">
                                 <rect key="frame" x="343" y="59" width="56" height="28"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
@@ -600,7 +600,7 @@
                                     <segue destination="vjQ-q0-AbF" kind="embed" identifier="ChatViewController" id="Oxd-NC-hNL"/>
                                 </connections>
                             </containerView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nre-M7-Gp7" customClass="IconTextView" customModule="AgoraLive" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nre-M7-Gp7" customClass="RemindIconTextView" customModule="AgoraLive" customModuleProvider="target">
                                 <rect key="frame" x="343" y="59" width="56" height="28"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>

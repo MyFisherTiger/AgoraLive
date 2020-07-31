@@ -22,10 +22,11 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
                                             .blackOverlayColor(UIColor.clear),
                                             .cornerRadius(5.0),
                                             .arrowSize(CGSize(width: 8, height: 4))])
+    private var popoverContent = UILabel(frame: CGRect.zero)
     
     private var pkView: PKViewController?
     private var roomListVM = LiveListVM()
-//    private var goodsVM = GoodsVM()
+    private var goodsVM = GoodsVM()
     var pkVM: PKVM!
     
     // LiveViewController
@@ -50,7 +51,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     var gifVC: GIFViewController?
     
     // View
-    @IBOutlet weak var personCountView: IconTextView!
+    @IBOutlet weak var personCountView: RemindIconTextView!
     
     internal lazy var chatInputView: ChatInputView = {
         let chatHeight: CGFloat = 50.0
@@ -97,6 +98,8 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
         musicList()
         netMonitor()
 //        PK(session: session)
+        
+        goods(session: session)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -273,16 +276,38 @@ extension LiveShoppingViewController {
         }).disposed(by: bag)
     }
     
-    func presentGoodsList() {
-        self.showMaskView(color: UIColor.clear) { [unowned self] in
-            
-            
+    func goods(session: LiveSession) {
+        
+        guard !session.owner.value.isLocal else {
+            return
         }
         
+        // audience
+        goodsVM.itemOnShelf.subscribe(onNext: { [unowned self] (item) in
+            guard let shoppingButton = self.bottomToolsVC?.shoppingButton else {
+                return
+            }
+            
+            let notification = item.name + " " + NSLocalizedString("Product_On_Shelf_Notification")
+            let popoverContentHeight: CGFloat = 22
+            let size = notification.size(font: UIFont.systemFont(ofSize: 14),
+                              drawRange: CGSize(width: CGFloat(MAXFLOAT), height: popoverContentHeight))
+
+            self.popoverContent.frame = CGRect(x: 0,
+                                               y: 0,
+                                               width: size.width,
+                                               height: popoverContentHeight)
+            self.popover.show(self.popoverContent, fromView: shoppingButton)
+        }).disposed(by: bag)
+    }
+    
+    func presentGoodsList() {
         guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
         }
+        
+        self.showMaskView(color: UIColor.clear)
         
         let roomId = session.roomId
         
@@ -290,7 +315,7 @@ extension LiveShoppingViewController {
                                                  class: GoodsListViewController.self,
                                                  on: "Popover")
         
-        
+        vc.vm = goodsVM
         vc.view.cornerRadius(10)
         
         let presenetedHeight: CGFloat = UIScreen.main.bounds.height - 82 - 50

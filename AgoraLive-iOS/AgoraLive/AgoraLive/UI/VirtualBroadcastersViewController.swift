@@ -42,7 +42,7 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
     var gifVC: GIFViewController?
     
     // View
-    @IBOutlet weak var personCountView: IconTextView!
+    @IBOutlet weak var personCountView: RemindIconTextView!
     
     internal lazy var chatInputView: ChatInputView = {
         let chatHeight: CGFloat = 50.0
