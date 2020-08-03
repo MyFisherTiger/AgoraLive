@@ -55,10 +55,10 @@ class UserListViewController: UITableViewController {
     private let bag = DisposeBag()
     
     // Rx
-    private(set) var userList = BehaviorRelay(value: [LiveAudience]())
+    private(set) var userList = BehaviorRelay(value: [LiveRole]())
     private(set) var roomList = BehaviorRelay(value: [RoomBrief]())
     
-    var selectedUser = PublishRelay<LiveAudience>()
+    var selectedUser = PublishRelay<LiveRole>()
     var selectedInviteRoom = PublishRelay<RoomBrief>()
     
     var showType: ShowType = .broadcasting

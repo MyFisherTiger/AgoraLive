@@ -554,6 +554,7 @@
 				A7FDB59E23FD2B0C00487FB9 /* LiveListTabViewController.swift */,
 				A7FDB5A023FFA65F00487FB9 /* LiveListViewController.swift */,
 				A7355F84240650010010CCD1 /* CreateLiveViewController.swift */,
+				A747EDAE24D3FF53002F2DB0 /* CVUserListViewController.swift */,
 				A711AB93244059F400C2A3FD /* LiveViewController.swift */,
 			);
 			name = ViewControllers;
@@ -843,7 +844,6 @@
 				A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */,
 				A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */,
 				A747EDA024D2C78E002F2DB0 /* ShppoingSmallRenderView.swift */,
-				A747EDAE24D3FF53002F2DB0 /* CVUserListViewController.swift */,
 			);
 			name = LiveShopping;
 			sourceTree = "<group>";

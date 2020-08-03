@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MJRefresh
 import RxSwift
 import RxRelay
 
@@ -105,6 +106,8 @@ class CVUserListViewController: UIViewController {
     }
     
     private let bag = DisposeBag()
+    private var userListSubscribeOnMultiHosts: Disposable?
+    private var applyingUserListSubscribeOnMultiHosts: Disposable?
     
     // Rx
     private(set) var userList = BehaviorRelay(value: [LiveRole]())
@@ -125,7 +128,11 @@ class CVUserListViewController: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.rowHeight = 48
+        tableView.rowHeight = 48
+        tabView.underlineWidth = 68
+        tabView.alignment = .center
+        tabView.titleSpace = 80
+        tabView.underlineHeight = 3
         
         switch showType {
         case .multiHosts:
@@ -146,112 +153,126 @@ class CVUserListViewController: UIViewController {
         
         switch showType {
         case .onlyUser:
+            userListVM.refetch(onlyAudience: false)
             userListVM.list.bind(to: tableView.rx.items(cellIdentifier: "CVUserInvitationListCell",
                                                         cellType: CVUserInvitationListCell.self)) { [unowned images] (index, user, cell) in
+                                                            cell.nameLabel.text = user.info.name
                                                             cell.buttonState = .none
                                                             cell.headImageView.image = images.getHead(index: user.info.imageIndex)
             }.disposed(by: bag)
         case .multiHosts:
-            userListVM.list.bind(to: tableView.rx.items(cellIdentifier: "CVUserInvitationListCell",
-                                                        cellType: CVUserInvitationListCell.self)) { [unowned images, unowned self] (index, user, cell) in
-                                                            let local = ALCenter.shared().centerProvideLocalUser()
-                                                            var buttonState = CVUserInvitationListCell.InviteButtonState.avaliableInvite
-                                                            
-                                                            for item in self.multiHostsVM.applyingUserList.value where user.info.userId == item.info.userId {
-                                                                buttonState = .inviting
-                                                                break
-                                                            }
-                                                            
-                                                            if user.info.userId == local.info.value.userId {
-                                                                buttonState = .none
-                                                            }
-                                                            
-                                                            cell.buttonState = buttonState
-                                                            cell.inviteButton.isHidden = false
-                                                            cell.headImageView.image = images.getHead(index: user.info.imageIndex)
-                                                            cell.index = index
-                                                            cell.delegate = self
-            }.disposed(by: bag)
-            
-            multiHostsVM.applyingUserList.bind(to: tableView.rx.items(cellIdentifier: "CVUserApplicationListCell",
-                                                                      cellType: CVUserApplicationListCell.self)) { [unowned images, unowned self] (index, user, cell) in
-                                                                        cell.headImageView.image = images.getHead(index: user.info.imageIndex)
-                                                                        cell.index = index
-                                                                        cell.delegate = self
-            }.disposed(by: bag)
+            tabView.selectedIndex.subscribe(onNext: { [unowned self] (index) in
+                switch index {
+                case 0:
+                    if let subscribe = self.applyingUserListSubscribeOnMultiHosts {
+                        subscribe.dispose()
+                    }
+                    
+                    self.userListSubscribeOnMultiHosts = self.tableViewBindWithAllUser()
+                    self.userListSubscribeOnMultiHosts?.disposed(by: self.bag)
+                    
+                    self.userListVM.refetch(onlyAudience: false)
+                case 1:
+                    if let subscribe = self.userListSubscribeOnMultiHosts {
+                        subscribe.dispose()
+                    }
+                    
+                    self.applyingUserListSubscribeOnMultiHosts = self.tableViewBindWithApplicationsFromUser()
+                    self.applyingUserListSubscribeOnMultiHosts?.disposed(by: self.bag)
+                default:
+                    break
+                }
+            }).disposed(by: bag)
         case .pk:
             break
         }
+                
+        tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self] in
+            let endRefetch: Completion = { [unowned self] in
+                self.tableView.mj_header?.endRefreshing()
+            }
+            
+            switch self.showType {
+            case .onlyUser:
+                self.userListVM.refetch(onlyAudience: false, success: endRefetch, fail: endRefetch)
+            case .multiHosts:
+                if self.tabView.selectedIndex.value == 0 {
+                    self.userListVM.refetch(onlyAudience: false, success: endRefetch, fail: endRefetch)
+                } else {
+                    let list = self.multiHostsVM.applyingUserList.value
+                    self.multiHostsVM.applyingUserList.accept(list)
+                }
+            case .pk:
+                break
+            }
+        })
+        
+        tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self] in
+            let endRefetch: Completion = { [unowned self] in
+                self.tableView.mj_footer?.endRefreshing()
+            }
+            
+            switch self.showType {
+            case .onlyUser:
+                self.userListVM.fetch(onlyAudience: false, success: endRefetch, fail: endRefetch)
+            case .multiHosts:
+                if self.tabView.selectedIndex.value == 0 {
+                    self.userListVM.fetch(onlyAudience: false, success: endRefetch, fail: endRefetch)
+                } else {
+                    let list = self.multiHostsVM.applyingUserList.value
+                    self.multiHostsVM.applyingUserList.accept(list)
+                }
+            case .pk:
+                break
+            }
+        })
     }
 }
 
-/*
-extension CVUserListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch showType {
-        case .onlyUser:
-            return userListVM.list.value.count
-        case .multiHosts:
-            // All user
-            if tabView.selectedIndex.value == 0 {
-                return userListVM.list.value.count
-                
-            // Application
-            } else {
-                return multiHostsVM.applyingUserList.value.count
-            }
-        case .pk:
-            return roomListVM.presentingList.value.count
-        }
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+private extension CVUserListViewController {
+    func tableViewBindWithAllUser() -> Disposable {
         let images = ALCenter.shared().centerProvideImagesHelper()
         
-        switch showType {
-        case .onlyUser:
-            let user = userList.value[indexPath.row]
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CVUserInvitationListCell", for: indexPath) as! CVUserInvitationListCell
-            cell.buttonState = .none
-            cell.headImageView.image = images.getHead(index: user.info.imageIndex)
-            return cell
-        case .multiHosts:
-            let local = ALCenter.shared().centerProvideLocalUser()
-            let user = userList.value[indexPath.row]
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CVUserInvitationListCell", for: indexPath) as! CVUserInvitationListCell
-            
-            // All user
-            if tabView.selectedIndex.value == 0 {
-                var buttonState = CVUserInvitationListCell.InviteButtonState.avaliableInvite
-                
-                for item in multiHostsVM.applyingUserList.value where user.info.userId == item.info.userId {
-                    buttonState = .inviting
-                    break
-                }
-                
-                if user.info.userId == local.info.value.userId {
-                    buttonState = .none
-                }
-                
-                cell.buttonState = buttonState
-                cell.inviteButton.isHidden = false
-                cell.headImageView.image = images.getHead(index: user.info.imageIndex)
-                return cell
-                
-            // Application
-            } else {
-                let user = multiHostsVM.applyingUserList.value[indexPath.row]
-                let cell = tableView.dequeueReusableCell(withIdentifier: "CVUserApplicationListCell", for: indexPath) as! CVUserApplicationListCell
-                cell.headImageView.image = images.getHead(index: user.info.imageIndex)
-                return cell
-            }
-        default:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CVUserApplicationListCell", for: indexPath) as! CVUserApplicationListCell
-            return cell
+        let subscribe = userListVM.list.bind(to: tableView
+            .rx.items(cellIdentifier: "CVUserInvitationListCell",
+                      cellType: CVUserInvitationListCell.self)) { [unowned images, unowned self] (index, user, cell) in
+                        let local = ALCenter.shared().centerProvideLocalUser()
+                        var buttonState = CVUserInvitationListCell.InviteButtonState.avaliableInvite
+                        
+                        for item in self.multiHostsVM.applyingUserList.value where user.info.userId == item.info.userId {
+                            buttonState = .inviting
+                            break
+                        }
+                        
+                        if user.info.userId == local.info.value.userId {
+                            buttonState = .none
+                        }
+                        
+                        cell.nameLabel.text = user.info.name
+                        cell.buttonState = buttonState
+                        cell.headImageView.image = images.getHead(index: user.info.imageIndex)
+                        cell.index = index
+                        cell.delegate = self
         }
+        
+        return subscribe
+    }
+    
+    func tableViewBindWithApplicationsFromUser() -> Disposable {
+        let images = ALCenter.shared().centerProvideImagesHelper()
+        
+        let subscribe =  multiHostsVM.applyingUserList.bind(to: tableView
+            .rx.items(cellIdentifier: "CVUserApplicationListCell",
+                      cellType: CVUserApplicationListCell.self)) { [unowned images, unowned self] (index, user, cell) in
+                        cell.nameLabel.text = user.info.name
+                        cell.headImageView.image = images.getHead(index: user.info.imageIndex)
+                        cell.index = index
+                        cell.delegate = self
+        }
+        
+        return subscribe
     }
 }
- */
 
 extension CVUserListViewController: CVUserInvitationListCellDelegate {
     func cell(_ cell: CVUserInvitationListCell, didTapInvitationButton: UIButton, on index: Int) {

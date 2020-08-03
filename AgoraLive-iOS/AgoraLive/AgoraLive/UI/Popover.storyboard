@@ -1239,17 +1239,17 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d1v-zy-aMq" customClass="TabSelectView" customModule="AgoraLive" customModuleProvider="target">
-                                <rect key="frame" x="10" y="106" width="394" height="28"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <rect key="frame" x="10" y="105" width="394" height="34"/>
+                                <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="28" id="HFJ-2p-dVy"/>
+                                    <constraint firstAttribute="height" constant="34" id="HFJ-2p-dVy"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="hexBackgroundColor" value="#FAFAFA"/>
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="130" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bwc-hR-bxM">
-                                <rect key="frame" x="15" y="145" width="384" height="667"/>
+                                <rect key="frame" x="15" y="139" width="384" height="673"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="CVUserInvitationListCell" rowHeight="133" id="Pvz-Gc-tPo" customClass="CVUserInvitationListCell" customModule="AgoraLive" customModuleProvider="target">
@@ -1297,6 +1297,9 @@
                                                 <constraint firstItem="XX6-ba-ZoT" firstAttribute="centerY" secondItem="tZC-aQ-RdM" secondAttribute="centerY" id="ftu-Zb-RvL"/>
                                                 <constraint firstItem="tZC-aQ-RdM" firstAttribute="centerY" secondItem="uND-G5-toV" secondAttribute="centerY" id="pOA-5h-EY3"/>
                                             </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="hexBackgroundColor" value="#FAFAFA"/>
+                                            </userDefinedRuntimeAttributes>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="headImageView" destination="tZC-aQ-RdM" id="Fh5-ph-iUm"/>
@@ -1363,6 +1366,9 @@
                                                 <constraint firstItem="ohO-zf-kFJ" firstAttribute="centerY" secondItem="NuQ-7c-kbR" secondAttribute="centerY" id="gre-xE-zHL"/>
                                                 <constraint firstItem="NuQ-7c-kbR" firstAttribute="centerY" secondItem="D4c-Hj-Ir5" secondAttribute="centerY" id="hDb-3A-GSy"/>
                                             </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="hexBackgroundColor" value="#FAFAFA"/>
+                                            </userDefinedRuntimeAttributes>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="acceptButton" destination="ohO-zf-kFJ" id="YZi-WX-hW4"/>
@@ -1380,7 +1386,7 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="bwc-hR-bxM" firstAttribute="top" secondItem="w6g-Vf-87n" secondAttribute="bottom" constant="53" id="12i-QV-LAO"/>
+                            <constraint firstItem="bwc-hR-bxM" firstAttribute="top" secondItem="w6g-Vf-87n" secondAttribute="bottom" constant="47" id="12i-QV-LAO"/>
                             <constraint firstItem="oH5-zo-9Q8" firstAttribute="trailing" secondItem="bwc-hR-bxM" secondAttribute="trailing" constant="15" id="6ia-VQ-afq"/>
                             <constraint firstItem="w6g-Vf-87n" firstAttribute="centerX" secondItem="h47-HB-z0B" secondAttribute="centerX" id="F2I-Px-wd5"/>
                             <constraint firstItem="w6g-Vf-87n" firstAttribute="top" secondItem="h47-HB-z0B" secondAttribute="bottom" constant="14" id="I1M-8r-nSj"/>
@@ -1391,7 +1397,7 @@
                             <constraint firstItem="oH5-zo-9Q8" firstAttribute="trailing" secondItem="w6g-Vf-87n" secondAttribute="trailing" constant="15" id="csf-0E-KJJ"/>
                             <constraint firstItem="oH5-zo-9Q8" firstAttribute="bottom" secondItem="bwc-hR-bxM" secondAttribute="bottom" constant="50" id="fkh-wH-3uS"/>
                             <constraint firstItem="h47-HB-z0B" firstAttribute="centerX" secondItem="J5Z-lA-a7P" secondAttribute="centerX" id="le9-BD-SZI"/>
-                            <constraint firstItem="d1v-zy-aMq" firstAttribute="top" secondItem="w6g-Vf-87n" secondAttribute="bottom" constant="14" id="rLJ-t7-D0t"/>
+                            <constraint firstItem="d1v-zy-aMq" firstAttribute="top" secondItem="w6g-Vf-87n" secondAttribute="bottom" constant="13" id="rLJ-t7-D0t"/>
                             <constraint firstItem="w6g-Vf-87n" firstAttribute="leading" secondItem="oH5-zo-9Q8" secondAttribute="leading" constant="15" id="uTZ-Jx-0Q3"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="oH5-zo-9Q8"/>

@@ -54,6 +54,7 @@ class TabSelectView: UIScrollView {
     
     var alignment = Aligment.left
     var titleSpace: CGFloat = 28.0
+    var titleTopSpace: CGFloat = 0
     var underlineWidth: CGFloat? = nil
     var underlineHeight: CGFloat = 5
     
@@ -109,7 +110,7 @@ private extension TabSelectView {
                                       drawRange: CGSize(width: CGFloat(MAXFLOAT), height: bounds.height))
             
             let frame = CGRect(x: lastButtonMaxX ?? 0,
-                               y: 0,
+                               y: titleTopSpace,
                                width: textSize.width,
                                height: textSize.height)
             

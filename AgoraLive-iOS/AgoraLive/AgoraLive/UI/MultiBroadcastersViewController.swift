@@ -18,8 +18,8 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
     
     private weak var seatVC: LiveSeatViewController?
     
+    private var multiHostsVM = MultiHostsVM()
     var seatVM: LiveSeatVM!
-    var multiHostsVM = MultiHostsVM()
     
     // LiveViewController
     var tintColor = UIColor(red: 0,
@@ -30,17 +30,9 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
     var bag = DisposeBag()
     
     // ViewController
-    var userListVC: UserListViewController?
     var giftAudienceVC: GiftAudienceViewController?
-    var chatVC: ChatViewController?
     var bottomToolsVC: BottomToolsViewController?
-    var beautyVC: BeautySettingsViewController?
-    var musicVC: MusicViewController?
-    var dataVC: RealDataViewController?
-    var extensionVC: ExtensionViewController?
-    var mediaSettingsNavi: UIViewController?
-    var giftVC: GiftViewController?
-    var gifVC: GIFViewController?
+    var chatVC: ChatViewController?
     
     // View
     @IBOutlet weak var personCountView: RemindIconTextView!
@@ -57,7 +49,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
     }()
     
     // ViewModel
-    var audienceListVM = LiveUserListVM()
+    var userListVM: LiveUserListVM!
     var musicVM = MusicVM()
     var chatVM = ChatVM()
     var giftVM = GiftVM()
@@ -190,7 +182,7 @@ extension MultiBroadcastersViewController {
             // seat state
             case .release, .close:
                 let handler: ((UIAlertAction) -> Void)? = { [unowned self] (_) in
-                    self.seatVM.update(state: action.command == .release ? .normal : .close,
+                    self.seatVM.update(state: action.command == .release ? .empty : .close,
                                        index: action.seat.index,
                                        of: roomId) { [unowned self] (_) in
                                         self.showTextToast(text: "update seat fail")
@@ -207,15 +199,8 @@ extension MultiBroadcastersViewController {
                                handler2: handler)
             // owner
             case .invitation:
-                self.showMaskView(color: UIColor.clear) {
-                    self.userListVC = nil
-                }
                 self.presentInvitationList { (user) in
-                    let invitation = MultiHostsVM.Invitation(seatIndex: action.seat.index,
-                                                             initiator: session.role,
-                                                             receiver: session.owner.value.user)
-                    
-                    self.multiHostsVM.send(invitation: invitation, of: roomId) { (_) in
+                    self.multiHostsVM.sendInvitation(to: user, on: action.seat.index, of: roomId) { (_) in
                         self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
                     }
                 }
@@ -282,19 +267,33 @@ extension MultiBroadcastersViewController {
     
     //MARK: - User List
     func presentInvitationList(selected: ((LiveRole) -> Void)? = nil) {
-        presentUserList(listType: .broadcasting)
+        self.showMaskView(color: UIColor.clear)
         
-        self.userListVC?.selectedUser.subscribe(onNext: { [unowned self] (user) in
-            self.hiddenMaskView()
-            if let vc = self.userListVC {
-                self.dismissChild(vc, animated: true)
-                self.userListVC = nil
-            }
-            
+        let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
+                                                 class: CVUserListViewController.self,
+                                                 on: "Popover")
+        
+        vc.userListVM = userListVM
+        vc.multiHostsVM = multiHostsVM
+        vc.showType = .multiHosts
+        vc.view.cornerRadius(10)
+        
+        let presenetedHeight: CGFloat = 526.0
+        let y = UIScreen.main.bounds.height - presenetedHeight - UIScreen.main.heightOfSafeAreaTop
+        let presentedFrame = CGRect(x: 0,
+                                    y: y,
+                                    width: UIScreen.main.bounds.width,
+                                    height: presenetedHeight)
+        
+        vc.inviteUser.subscribe(onNext: { (user) in
             if let selected = selected {
                 selected(user)
             }
         }).disposed(by: bag)
+        
+        self.presentChild(vc,
+                          animated: true,
+                          presentedFrame: presentedFrame)
     }
 }
 

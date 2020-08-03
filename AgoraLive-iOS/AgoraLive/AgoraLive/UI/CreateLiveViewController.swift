@@ -127,52 +127,43 @@ class CreateLiveViewController: MaskViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let segueId = segue.identifier else {
+        guard let segueId = segue.identifier,
+            let sender = sender,
+            let info = sender as? LiveSession.JoinedInfo,
+            let vc = segue.destination as? LiveViewController else {
             return
         }
         
+        vc.userListVM = LiveUserListVM(roomId: info.roomId)
+        vc.userListVM.updateGiftListWithJson(list: info.giftAudience)
+        
         switch segueId {
         case "MultiBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let seatInfo = info.seatInfo else {
-                    fatalError()
+            guard let seatInfo = info.seatInfo,
+                let vm = try? LiveSeatVM(list: seatInfo) else {
+                    assert(false)
+                    return
             }
             
             let vc = segue.destination as? MultiBroadcastersViewController
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            vc?.seatVM = try! LiveSeatVM(list: seatInfo)
-        case "SingleBroadcasterViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo else {
-                    fatalError()
-            }
-            
-            let vc = segue.destination as? SingleBroadcasterViewController
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.seatVM = vm
         case "PKBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let pkInfo = info.pkInfo,
+            guard let pkInfo = info.pkInfo,
                 let vm = try? PKVM(dic: pkInfo) else {
                     assert(false)
                     return
             }
             
             let vc = segue.destination as? PKBroadcastersViewController
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
             vc?.pkVM = vm
         case "VirtualBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let seatInfo = info.seatInfo,
+            guard let seatInfo = info.seatInfo,
+                let seatVM = try? LiveSeatVM(list: seatInfo),
                 let session = ALCenter.shared().liveSession else {
                     fatalError()
             }
             
             let vc = segue.destination as? VirtualBroadcastersViewController
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            let seatVM = try! LiveSeatVM(list: seatInfo)
             vc?.seatVM = seatVM
             
             var broadcasting: VirtualVM.Broadcasting
@@ -195,7 +186,7 @@ class CreateLiveViewController: MaskViewController {
 //            }
 //            
 //            let vc = segue.destination as? PKBroadcastersViewController
-//            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+//            vc?.userListVM.updateGiftListWithJson(list: info.giftAudience)
 //            vc?.pkVM = vm
         default:
             break

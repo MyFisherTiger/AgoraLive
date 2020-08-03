@@ -616,19 +616,10 @@
                                     <constraint firstAttribute="height" constant="32" id="w2a-uE-zE4"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mW2-oI-hV4">
-                                <rect key="frame" x="316" y="712" width="86" height="86"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="86" id="cT0-dq-doO"/>
-                                    <constraint firstAttribute="width" constant="86" id="pB1-gT-Rev"/>
-                                </constraints>
-                                <state key="normal" image="pic-PK"/>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="chO-wb-3eQ" firstAttribute="centerY" secondItem="faB-xq-xCc" secondAttribute="centerY" id="0l4-5w-zhU"/>
-                            <constraint firstItem="cwx-QK-l6d" firstAttribute="trailing" secondItem="mW2-oI-hV4" secondAttribute="trailing" constant="12" id="1kx-es-Y5j"/>
                             <constraint firstItem="cwx-QK-l6d" firstAttribute="trailing" secondItem="p3C-qx-wKA" secondAttribute="trailing" id="2Ra-xd-A29"/>
                             <constraint firstItem="p3C-qx-wKA" firstAttribute="top" secondItem="chO-wb-3eQ" secondAttribute="bottom" constant="15" id="4KY-uS-qL3"/>
                             <constraint firstAttribute="bottom" secondItem="Iyg-e5-cTa" secondAttribute="bottom" id="6FK-HE-ek0"/>
@@ -643,7 +634,6 @@
                             <constraint firstItem="Nre-M7-Gp7" firstAttribute="leading" secondItem="faB-xq-xCc" secondAttribute="trailing" constant="10" id="XTX-if-mB5"/>
                             <constraint firstItem="F5A-au-UM1" firstAttribute="leading" secondItem="cwx-QK-l6d" secondAttribute="leading" id="YDg-mE-e8Z"/>
                             <constraint firstItem="G5Q-q8-KJY" firstAttribute="leading" secondItem="cwx-QK-l6d" secondAttribute="leading" id="fWo-lS-qLd"/>
-                            <constraint firstItem="F5A-au-UM1" firstAttribute="top" secondItem="mW2-oI-hV4" secondAttribute="bottom" constant="11" id="fri-gR-ugk"/>
                             <constraint firstItem="cwx-QK-l6d" firstAttribute="trailing" secondItem="F5A-au-UM1" secondAttribute="trailing" id="j1c-IG-fB8"/>
                             <constraint firstItem="Nre-M7-Gp7" firstAttribute="top" secondItem="cwx-QK-l6d" secondAttribute="top" constant="15" id="oPm-j6-UhU"/>
                             <constraint firstItem="cwx-QK-l6d" firstAttribute="bottom" secondItem="F5A-au-UM1" secondAttribute="bottom" constant="15" id="v8j-Ed-EiB"/>
@@ -656,7 +646,6 @@
                         <outlet property="chatViewHeight" destination="FMo-Yw-NzV" id="7xN-nH-nSu"/>
                         <outlet property="ownerView" destination="chO-wb-3eQ" id="wZF-zg-08r"/>
                         <outlet property="personCountView" destination="Nre-M7-Gp7" id="iO0-3f-bFK"/>
-                        <outlet property="pkButton" destination="mW2-oI-hV4" id="SDW-92-Wua"/>
                         <outlet property="pkContainerView" destination="p3C-qx-wKA" id="BVo-ez-yIl"/>
                         <outlet property="renderView" destination="Iyg-e5-cTa" id="MxS-mc-SeB"/>
                     </connections>

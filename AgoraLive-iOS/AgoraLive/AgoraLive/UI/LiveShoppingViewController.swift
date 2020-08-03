@@ -15,7 +15,6 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     @IBOutlet weak var ownerView: IconTextView!
     @IBOutlet weak var pkContainerView: UIView!
     @IBOutlet weak var renderView: UIView!
-    @IBOutlet weak var pkButton: UIButton!
     @IBOutlet weak var chatViewHeight: NSLayoutConstraint!
     
     private var popover = Popover(options: [.type(.up),
@@ -27,6 +26,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     private var pkView: PKViewController?
     private var roomListVM = LiveListVM()
     private var goodsVM = GoodsVM()
+    private var multiHostsVM = MultiHostsVM()
     var pkVM: PKVM!
     
     // LiveViewController
@@ -65,7 +65,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     }()
     
     // ViewModel
-    var audienceListVM = LiveUserListVM()
+    var userListVM: LiveUserListVM!
     var musicVM = MusicVM()
     var chatVM = ChatVM()
     var giftVM = GiftVM()
@@ -92,6 +92,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
         chatList()
         gift()
         
+        userList()
         bottomTools(session: session)
         extralBottomTools(session: session)
         chatInput()
@@ -153,7 +154,13 @@ extension LiveShoppingViewController {
             self.deviceVM.camera = owner.isLocal ? .on : .off
             self.deviceVM.mic = owner.isLocal ? .on : .off
             self.pkView?.intoOtherButton.isHidden = owner.isLocal
-            self.pkButton.isHidden = !owner.isLocal
+            self.bottomToolsVC?.pkButton.isHidden = !owner.isLocal
+        }).disposed(by: bag)
+    }
+    
+    func userList() {
+        personCountView.rx.controlEvent(.touchUpInside).subscribe(onNext: { [unowned self] in
+            self.presentUserList(type: .multiHosts)
         }).disposed(by: bag)
     }
     
@@ -167,7 +174,7 @@ extension LiveShoppingViewController {
         }).disposed(by: bag)
         
         bottomToolsVC.pkButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.presentInvitationList()
+            self.presentUserList(type: .pk)
         }).disposed(by: bag)
         
         bottomToolsVC.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
@@ -193,12 +200,6 @@ extension LiveShoppingViewController {
     
     func PK(session: LiveSession) {
         // View
-        pkButton.rx.tap.subscribe(onNext: { [unowned self] in
-            
-            
-            self.presentInvitationList()
-        }).disposed(by: bag)
-        
         pkView?.intoOtherButton.rx.tap.subscribe(onNext: { [unowned self] in
             self.intoRemoteRoom()
         }).disposed(by: bag)
@@ -229,7 +230,7 @@ extension LiveShoppingViewController {
             self.pkContainerView.isHidden = !state.isDuration
             
             let owner = session.owner.value
-            self.pkButton.isHidden = owner.isLocal
+            self.bottomToolsVC?.pkButton.isHidden = owner.isLocal
             
             switch state {
             case .duration(let info):
@@ -277,7 +278,6 @@ extension LiveShoppingViewController {
     }
     
     func goods(session: LiveSession) {
-        
         guard !session.owner.value.isLocal else {
             return
         }
@@ -388,9 +388,9 @@ private extension LiveShoppingViewController {
         }
     }
     
-    func presentInvitationList() {
+    func presentUserList(type: CVUserListViewController.ShowType) {
         self.showMaskView(color: UIColor.clear) { [unowned self] in
-            self.userListVC = nil
+            
         }
         
         guard let session = ALCenter.shared().liveSession else {
@@ -400,17 +400,17 @@ private extension LiveShoppingViewController {
         
         let roomId = session.roomId
         
-        let vc = UIStoryboard.initViewController(of: "UserListViewController",
-                                                       class: UserListViewController.self,
-                                                       on: "Popover")
+        let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
+                                                 class: CVUserListViewController.self,
+                                                 on: "Popover")
         
-        self.userListVC = vc
-        
-        vc.showType = .pk
+        vc.userListVM = userListVM
+        vc.multiHostsVM = multiHostsVM
+        vc.showType = type
         vc.view.cornerRadius(10)
         
-        let presenetedHeight: CGFloat = UIScreen.main.heightOfSafeAreaTop + 526.0 + 50.0
-        let y = UIScreen.main.bounds.height - presenetedHeight
+        let presenetedHeight: CGFloat = 526.0
+        let y = UIScreen.main.bounds.height - presenetedHeight - UIScreen.main.heightOfSafeAreaTop
         let presentedFrame = CGRect(x: 0,
                                     y: y,
                                     width: UIScreen.main.bounds.width,
@@ -421,47 +421,47 @@ private extension LiveShoppingViewController {
                           presentedFrame: presentedFrame)
         
         // Room List
-        roomListVM.presentingType = .pk
-        roomListVM.refetch()
+//        roomListVM.presentingType = .pk
+//        roomListVM.refetch()
         
-        vc.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned vc] in
-            self.roomListVM.refetch(success: {
-                vc.tableView.mj_header?.endRefreshing()
-            }) { [unowned vc] in // fail
-                vc.tableView.mj_header?.endRefreshing()
-            }
-        })
+//        vc.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned vc] in
+//            self.roomListVM.refetch(success: {
+//                vc.tableView.mj_header?.endRefreshing()
+//            }) { [unowned vc] in // fail
+//                vc.tableView.mj_header?.endRefreshing()
+//            }
+//        })
+//
+//        vc.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned vc] in
+//            self.roomListVM.fetch(success: {
+//                vc.tableView.mj_footer?.endRefreshing()
+//            }) { [unowned vc] in // fail
+//                vc.tableView.mj_footer?.endRefreshing()
+//            }
+//        })
+//
+//        vc.selectedInviteRoom.subscribe(onNext: { [unowned self] (room) in
+//            self.hiddenMaskView()
+//            self.userListVC = nil
+//
+//            self.pkVM.sendInvitationTo(room: room) { [unowned self] (error) in
+//                self.showTextToast(text: NSLocalizedString("PK_Invite_Fail"))
+//            }
+//        }).disposed(by: bag)
         
-        vc.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned vc] in
-            self.roomListVM.fetch(success: {
-                vc.tableView.mj_footer?.endRefreshing()
-            }) { [unowned vc] in // fail
-                vc.tableView.mj_footer?.endRefreshing()
-            }
-        })
-        
-        vc.selectedInviteRoom.subscribe(onNext: { [unowned self] (room) in
-            self.hiddenMaskView()
-            self.userListVC = nil
-            
-            self.pkVM.sendInvitationTo(room: room) { [unowned self] (error) in
-                self.showTextToast(text: NSLocalizedString("PK_Invite_Fail"))
-            }
-        }).disposed(by: bag)
-        
-        if let userListVC = userListVC {
-            roomListVM.presentingList.map { (list) -> [RoomBrief] in
-                var newList = list
-                let index = newList.firstIndex { (room) -> Bool in
-                    return roomId == room.roomId
-                }
-                
-                if let index = index {
-                    newList.remove(at: index)
-                }
-                
-                return newList
-            }.bind(to: userListVC.roomList).disposed(by: bag)
-        }
+//        if let userListVC = userListVC {
+//            roomListVM.presentingList.map { (list) -> [RoomBrief] in
+//                var newList = list
+//                let index = newList.firstIndex { (room) -> Bool in
+//                    return roomId == room.roomId
+//                }
+//
+//                if let index = index {
+//                    newList.remove(at: index)
+//                }
+//
+//                return newList
+//            }.bind(to: userListVC.roomList).disposed(by: bag)
+//        }
     }
 }

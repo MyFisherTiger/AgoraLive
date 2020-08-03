@@ -54,8 +54,7 @@ class LiveListTabViewController: MaskViewController {
         case "LiveListViewController":
             listVC = segue.destination as? LiveListViewController
         case "CreateLiveNavigation":
-            guard let sender = sender,
-                let type = sender as? LiveType,
+            guard let type = sender as? LiveType,
                 let navi = segue.destination as? UINavigationController,
                 let vc = navi.viewControllers.first as? CreateLiveViewController else {
                     assert(false)
@@ -63,53 +62,46 @@ class LiveListTabViewController: MaskViewController {
             }
             
             vc.liveType = type
+        default:
+            break
+        }
+        
+        guard let sender = sender,
+            let info = sender as? LiveSession.JoinedInfo,
+            let vc = segue.destination as? LiveViewController else {
+            return
+        }
+        
+        vc.userListVM = LiveUserListVM(roomId: info.roomId)
+        vc.userListVM.updateGiftListWithJson(list: info.giftAudience)
+        
+        switch segueId {
         case "MultiBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let seatInfo = info.seatInfo else {
+            guard let seatInfo = info.seatInfo,
+                let vm = try? LiveSeatVM(list: seatInfo) else {
                     assert(false)
                     return
             }
             
             let vc = segue.destination as? MultiBroadcastersViewController
-            vc?.hidesBottomBarWhenPushed = true
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            vc?.seatVM = try! LiveSeatVM(list: seatInfo)
-        case "SingleBroadcasterViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo else {
-                    assert(false)
-                    return
-            }
-            
-            let vc = segue.destination as? SingleBroadcasterViewController
-            vc?.hidesBottomBarWhenPushed = true
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.seatVM = vm
         case "PKBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let pkInfo = info.pkInfo,
+            guard let pkInfo = info.pkInfo,
                 let vm = try? PKVM(dic: pkInfo) else {
                     assert(false)
                     return
             }
             
             let vc = segue.destination as? PKBroadcastersViewController
-            vc?.hidesBottomBarWhenPushed = true
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
             vc?.pkVM = vm
         case "VirtualBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let seatInfo = info.seatInfo,
+            guard let seatInfo = info.seatInfo,
+                let seatVM = try? LiveSeatVM(list: seatInfo),
                 let session = ALCenter.shared().liveSession else {
                     fatalError()
             }
             
             let vc = segue.destination as? VirtualBroadcastersViewController
-            vc?.hidesBottomBarWhenPushed = true
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            let seatVM = try! LiveSeatVM(list: seatInfo)
             vc?.seatVM = seatVM
             
             var broadcasting: VirtualVM.Broadcasting
@@ -119,10 +111,6 @@ class LiveListTabViewController: MaskViewController {
                 broadcasting = .multi([session.owner.value.user, remote])
             } else {
                 broadcasting = .single(session.owner.value.user)
-            }
-            
-            if let virtualAppearance = info.virtualAppearance {
-                vc?.enhancementVM.virtualAppearance(VirtualAppearance.item(virtualAppearance))
             }
             
             vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
@@ -136,7 +124,7 @@ class LiveListTabViewController: MaskViewController {
         //            }
         //
         //            let vc = segue.destination as? PKBroadcastersViewController
-        //            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+        //            vc?.userListVM.updateGiftListWithJson(list: info.giftAudience)
         //            vc?.pkVM = vm
         default:
             break
@@ -191,7 +179,7 @@ private extension LiveListTabViewController {
     
     func updateLiveListVC() {
         guard let vc = listVC else {
-            assert(false)
+    
             return
         }
         

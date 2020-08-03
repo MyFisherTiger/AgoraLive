@@ -39,16 +39,19 @@ fileprivate extension Array where Element == LiveAudience {
 }
 
 class LiveUserListVM: NSObject {
+    private var roomId: String
+    
     var giftList = BehaviorRelay(value: [LiveAudience]())
     
-    var list = BehaviorRelay(value: [LiveAudience]())
+    var list = BehaviorRelay(value: [LiveRole]())
     var audienceList = BehaviorRelay(value: [LiveAudience]())
     
     var join = PublishRelay<[LiveAudience]>()
     var left = PublishRelay<[LiveAudience]>()
     var total = BehaviorRelay(value: 0)
     
-    override init() {
+    init(roomId: String) {
+        self.roomId = roomId
         super.init()
         observe()
     }
@@ -62,7 +65,7 @@ class LiveUserListVM: NSObject {
         giftList.accept(tList)
     }
     
-    func fetch(count: Int = 10, roomId: String, onlyAudience: Bool = true, success: Completion = nil, fail: Completion = nil) {
+    func fetch(count: Int = 10, onlyAudience: Bool = true, success: Completion = nil, fail: Completion = nil) {
         guard let last = self.list.value.last else {
             return
         }
@@ -115,7 +118,7 @@ class LiveUserListVM: NSObject {
         client.request(task: task, success: response, failRetry: retry)
     }
     
-    func refetch(roomId: String, onlyAudience: Bool = true, success: Completion = nil, fail: Completion = nil) {
+    func refetch(onlyAudience: Bool = true, success: Completion = nil, fail: Completion = nil) {
         let client = ALCenter.shared().centerProvideRequestHelper()
         var parameters: StringAnyDic = ["type": onlyAudience ? 2 : 1]
         

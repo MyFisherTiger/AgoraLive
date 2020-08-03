@@ -77,7 +77,7 @@ class LiveSession: NSObject {
         self.observe()
     }
     
-    typealias JoinedInfo = (seatInfo: [StringAnyDic]?, giftAudience: [StringAnyDic]?, pkInfo: StringAnyDic?, virtualAppearance: String?)
+    typealias JoinedInfo = (roomId: String, seatInfo: [StringAnyDic]?, giftAudience: [StringAnyDic]?, pkInfo: StringAnyDic?, virtualAppearance: String?)
     
     static func create(roomSettings: LocalLiveSettings, type: LiveType, extra: [String: Any]? = nil, success: ((LiveSession) -> Void)? = nil, fail: Completion = nil) {
         let url = URLGroup.liveCreate
@@ -188,12 +188,16 @@ class LiveSession: NSObject {
             
             let giftAudience = try? liveRoom.getListValue(of: "rankUsers")
             
-            rtm.joinChannel(channel, success: {
+            rtm.joinChannel(channel, success: { [weak self] in
+                guard let strongSelf = self else {
+                    return
+                }
+                
                 guard let success = success else {
                     return
                 }
                 do {
-                    try success((seatInfo, giftAudience, pkInfo, virtualAppearance))
+                    try success((strongSelf.roomId, seatInfo, giftAudience, pkInfo, virtualAppearance))
                 } catch {
                     if let fail = fail {
                         fail()

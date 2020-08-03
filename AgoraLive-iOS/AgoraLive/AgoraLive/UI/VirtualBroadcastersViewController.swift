@@ -56,7 +56,7 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
     }()
     
     // ViewModel
-    var audienceListVM = LiveUserListVM()
+    var userListVM: LiveUserListVM!
     var musicVM = MusicVM()
     var chatVM = ChatVM()
     var giftVM = GiftVM()
@@ -342,7 +342,7 @@ extension VirtualBroadcastersViewController {
             }
         }
         
-        presentUserList(listType: .broadcasting)
+//        presentUserList(listType: .broadcasting)
         
         let roomId = session.roomId
         
@@ -358,11 +358,7 @@ extension VirtualBroadcastersViewController {
                 self.userListVC = nil
             }
             
-            let invitation = MultiHostsVM.Invitation(seatIndex: 1,
-                                                     initiator: session.role,
-                                                     receiver: session.owner.value.user)
-            
-            self.multiHostsVM.send(invitation: invitation, of: roomId) { (_) in
+            self.multiHostsVM.sendInvitation(to: user, on: 1, of: roomId) { (_) in
                 self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
             }
         }).disposed(by: bag)

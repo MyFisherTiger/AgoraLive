@@ -76,13 +76,13 @@ class MultiHostsVM: RxObject {
 
 // MARK: Owner
 extension MultiHostsVM {
-    func send(invitation: Invitation, of roomId: String, fail: ErrorCompletion = nil) {
-        request(seatIndex: invitation.seatIndex,
+    func sendInvitation(to user: LiveRole, on seatIndex: Int, of roomId: String, fail: ErrorCompletion = nil) {
+        request(seatIndex: seatIndex,
                 type: 1,
-                userId: "\(invitation.receiver.info.userId)",
+                userId: "\(user.info.userId)",
                 roomId: roomId,
                 success: { [weak self] (json) in
-                    self?.invitationQueue.append(invitation)
+                    
                 }, fail: fail)
     }
     
