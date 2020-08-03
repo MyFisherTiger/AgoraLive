@@ -57,7 +57,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
     }()
     
     // ViewModel
-    var audienceListVM = LiveRoomAudienceList()
+    var audienceListVM = LiveUserListVM()
     var musicVM = MusicVM()
     var chatVM = ChatVM()
     var giftVM = GiftVM()

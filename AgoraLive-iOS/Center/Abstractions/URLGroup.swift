@@ -66,7 +66,7 @@ struct URLGroup {
         return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/exit"
     }
     
-    static func audienceList(roomId: String) -> String {
+    static func userList(roomId: String) -> String {
         return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/user/page"
     }
     

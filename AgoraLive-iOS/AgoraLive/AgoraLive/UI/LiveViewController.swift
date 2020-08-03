@@ -36,7 +36,7 @@ protocol LiveViewController: RxViewController where Self: MaskViewController {
     var personCountView: RemindIconTextView! {get set}
     
     // View Model
-    var audienceListVM: LiveRoomAudienceList {get set}
+    var audienceListVM: LiveUserListVM {get set}
     var musicVM: MusicVM {get set}
     var chatVM: ChatVM {get set}
     var giftVM: GiftVM {get set}

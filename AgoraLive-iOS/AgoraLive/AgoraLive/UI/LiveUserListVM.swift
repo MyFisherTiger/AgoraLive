@@ -1,5 +1,5 @@
 //
-//  LiveRoomAudienceList.swift
+//  LiveUserListVM.swift
 //  AgoraLive
 //
 //  Created by CavanSu on 2020/3/20.
@@ -38,10 +38,12 @@ fileprivate extension Array where Element == LiveAudience {
     }
 }
 
-class LiveRoomAudienceList: NSObject {
+class LiveUserListVM: NSObject {
     var giftList = BehaviorRelay(value: [LiveAudience]())
     
     var list = BehaviorRelay(value: [LiveAudience]())
+    var audienceList = BehaviorRelay(value: [LiveAudience]())
+    
     var join = PublishRelay<[LiveAudience]>()
     var left = PublishRelay<[LiveAudience]>()
     var total = BehaviorRelay(value: 0)
@@ -70,7 +72,7 @@ class LiveRoomAudienceList: NSObject {
                                         "count": count,
                                         "type": onlyAudience ? 2 : 1]
         
-        let url = URLGroup.audienceList(roomId: roomId)
+        let url = URLGroup.userList(roomId: roomId)
         let event = RequestEvent(name: "live-audience-list")
         let task = RequestTask(event: event,
                                type: .http(.get, url: url),
@@ -86,9 +88,16 @@ class LiveRoomAudienceList: NSObject {
             let data = try json.getDataObject()
             let listJson = try data.getListValue(of: "list")
             let new = try Array(dicList: listJson)
-            var list = strongSelf.list.value
-            list.append(contentsOf: new)
-            strongSelf.list.accept(list)
+            
+            if onlyAudience {
+                var list = strongSelf.audienceList.value
+                list.append(contentsOf: new)
+                strongSelf.audienceList.accept(list)
+            } else {
+                var list = strongSelf.list.value
+                list.append(contentsOf: new)
+                strongSelf.list.accept(list)
+            }
             
             if let success = success {
                 success()
@@ -114,7 +123,7 @@ class LiveRoomAudienceList: NSObject {
             parameters["count"] = list.value.count
         }
         
-        let url = URLGroup.audienceList(roomId: roomId)
+        let url = URLGroup.userList(roomId: roomId)
         let event = RequestEvent(name: "live-audience-list")
         let task = RequestTask(event: event,
                                type: .http(.get, url: url),
@@ -130,7 +139,12 @@ class LiveRoomAudienceList: NSObject {
             let data = try json.getDataObject()
             let listJson = try data.getListValue(of: "list")
             let list = try Array(dicList: listJson)
-            strongSelf.list.accept(list)
+            
+            if onlyAudience {
+                strongSelf.audienceList.accept(list)
+            } else {
+                strongSelf.list.accept(list)
+            }
             
             if let success = success {
                 success()
@@ -154,7 +168,7 @@ class LiveRoomAudienceList: NSObject {
     }
 }
 
-private extension LiveRoomAudienceList {
+private extension LiveUserListVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in

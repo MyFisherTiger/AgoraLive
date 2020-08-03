@@ -40,6 +40,7 @@
 		A747EDA624D2C87D002F2DB0 /* SubThreadTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = A747EDA524D2C87D002F2DB0 /* SubThreadTimer.m */; };
 		A747EDA824D2CD31002F2DB0 /* TimestampQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDA724D2CD31002F2DB0 /* TimestampQueue.swift */; };
 		A747EDAB24D2D03D002F2DB0 /* TimestampModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDAA24D2D03D002F2DB0 /* TimestampModel.swift */; };
+		A747EDAF24D3FF53002F2DB0 /* CVUserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDAE24D3FF53002F2DB0 /* CVUserListViewController.swift */; };
 		A754FAEF242B717D0062B2F5 /* FilletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAEE242B717D0062B2F5 /* FilletView.swift */; };
 		A754FAF4242C5A920062B2F5 /* ChatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF3242C5A920062B2F5 /* ChatVM.swift */; };
 		A754FAF6242C9B700062B2F5 /* LiveSeatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */; };
@@ -137,7 +138,7 @@
 		A795CEC22451683700220EF4 /* LabelShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A795CEC12451683700220EF4 /* LabelShadowView.swift */; };
 		A7CEF1EB2423495E004FB752 /* LiveSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EA2423495E004FB752 /* LiveSession.swift */; };
 		A7CEF1ED24238389004FB752 /* LiveRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EC24238389004FB752 /* LiveRole.swift */; };
-		A7CEF1EF24249BC0004FB752 /* LiveAudienceListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EE24249BC0004FB752 /* LiveAudienceListVM.swift */; };
+		A7CEF1EF24249BC0004FB752 /* LiveUserListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CEF1EE24249BC0004FB752 /* LiveUserListVM.swift */; };
 		A7D2D36C2417AA6100D327B5 /* MineVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36B2417AA6100D327B5 /* MineVM.swift */; };
 		A7D2D36F2418D0B600D327B5 /* CenterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */; };
 		A7D89D4C247E79060048B7EC /* VirtualAppearanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */; };
@@ -203,6 +204,7 @@
 		A747EDA524D2C87D002F2DB0 /* SubThreadTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SubThreadTimer.m; sourceTree = "<group>"; };
 		A747EDA724D2CD31002F2DB0 /* TimestampQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampQueue.swift; sourceTree = "<group>"; };
 		A747EDAA24D2D03D002F2DB0 /* TimestampModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampModel.swift; sourceTree = "<group>"; };
+		A747EDAE24D3FF53002F2DB0 /* CVUserListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVUserListViewController.swift; sourceTree = "<group>"; };
 		A754FAEE242B717D0062B2F5 /* FilletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilletView.swift; sourceTree = "<group>"; };
 		A754FAF3242C5A920062B2F5 /* ChatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatVM.swift; sourceTree = "<group>"; };
 		A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSeatVM.swift; sourceTree = "<group>"; };
@@ -334,7 +336,7 @@
 		A795CEC12451683700220EF4 /* LabelShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelShadowView.swift; sourceTree = "<group>"; };
 		A7CEF1EA2423495E004FB752 /* LiveSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSession.swift; sourceTree = "<group>"; };
 		A7CEF1EC24238389004FB752 /* LiveRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRole.swift; sourceTree = "<group>"; };
-		A7CEF1EE24249BC0004FB752 /* LiveAudienceListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveAudienceListVM.swift; sourceTree = "<group>"; };
+		A7CEF1EE24249BC0004FB752 /* LiveUserListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveUserListVM.swift; sourceTree = "<group>"; };
 		A7D2D36B2417AA6100D327B5 /* MineVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineVM.swift; sourceTree = "<group>"; };
 		A7D2D36E2418D0B600D327B5 /* CenterHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterHelper.swift; path = ../Center/ALCenter/CenterHelper.swift; sourceTree = "<group>"; };
 		A7D89D4B247E79060048B7EC /* VirtualAppearanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualAppearanceViewController.swift; sourceTree = "<group>"; };
@@ -841,6 +843,7 @@
 				A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */,
 				A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */,
 				A747EDA024D2C78E002F2DB0 /* ShppoingSmallRenderView.swift */,
+				A747EDAE24D3FF53002F2DB0 /* CVUserListViewController.swift */,
 			);
 			name = LiveShopping;
 			sourceTree = "<group>";
@@ -849,7 +852,7 @@
 			isa = PBXGroup;
 			children = (
 				A7847F982458216600469187 /* VideoEnhancementVM.swift */,
-				A7CEF1EE24249BC0004FB752 /* LiveAudienceListVM.swift */,
+				A7CEF1EE24249BC0004FB752 /* LiveUserListVM.swift */,
 				A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */,
 				A7FDB5A923FFBB9300487FB9 /* LiveListVM.swift */,
 				A77718152456FBDA00BF1F21 /* PlayerVM.swift */,
@@ -1065,6 +1068,7 @@
 				A773BD522410A001003ECBFD /* UserNameViewController.swift in Sources */,
 				A72B7BE42444161400E965FB /* SingleBroadcasterViewController.swift in Sources */,
 				A76BD14823F299D900B2732B /* ViewFrame.swift in Sources */,
+				A747EDAF24D3FF53002F2DB0 /* CVUserListViewController.swift in Sources */,
 				A747EDA824D2CD31002F2DB0 /* TimestampQueue.swift in Sources */,
 				A711AB94244059F400C2A3FD /* LiveViewController.swift in Sources */,
 				A7CEF1EB2423495E004FB752 /* LiveSession.swift in Sources */,
@@ -1072,7 +1076,7 @@
 				A7952AA824162C1000479811 /* AGEError.swift in Sources */,
 				A7952ABD24162C1000479811 /* unzip.c in Sources */,
 				A7952AC224162C1000479811 /* minishared.c in Sources */,
-				A7CEF1EF24249BC0004FB752 /* LiveAudienceListVM.swift in Sources */,
+				A7CEF1EF24249BC0004FB752 /* LiveUserListVM.swift in Sources */,
 				A7FDB5A123FFA65F00487FB9 /* LiveListViewController.swift in Sources */,
 				A7952AAE24162C1000479811 /* LCLLogFile.m in Sources */,
 				A7847F992458216600469187 /* VideoEnhancementVM.swift in Sources */,

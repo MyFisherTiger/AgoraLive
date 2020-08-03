@@ -43,6 +43,9 @@ class MultiHostsVM: RxObject {
     let invitationQueue = TimestampQueue(name: "multi-hosts-invitation")
     let applicationQueue = TimestampQueue(name: "multi-hosts-application")
     
+    let invitingUserList = BehaviorRelay(value: [LiveRole]())
+    let applyingUserList = BehaviorRelay(value: [LiveRole]())
+     
     // Owner
     var invitationByRejected = PublishRelay<Invitation>()
     var invitationByAccepted = PublishRelay<Invitation>()
@@ -196,10 +199,19 @@ private extension MultiHostsVM {
             }
             
             switch cmd {
+            // Owner
             case  101: // receivedApplication:
                 let index = try data.getIntValue(of: "coindex")
                 let application = Application(seatIndex: index, initiator: role, receiver: local)
                 strongSelf.receivedApplication.accept(application)
+            case  104: // audience rejected invitation
+                let invitation = Invitation(seatIndex: 0, initiator: local, receiver: role)
+                strongSelf.invitationByRejected.accept(invitation)
+            case  106: // audience accpeted invitation:
+                let index = try data.getIntValue(of: "coindex")
+                let invitation = Invitation(seatIndex: index, initiator: local, receiver: role)
+                strongSelf.invitationByAccepted.accept(invitation)
+            // Audience
             case  102: // receivedInvitation
                 let index = try data.getIntValue(of: "coindex")
                 let invitation = Invitation(seatIndex: index, initiator: role, receiver: local)
@@ -207,20 +219,10 @@ private extension MultiHostsVM {
             case  103: // applicationByRejected
                 let application = Application(seatIndex: 0, initiator: local, receiver: role)
                 strongSelf.applicationByRejected.accept(application)
-            case  104: // invitationByRejected
-                let invitation = Invitation(seatIndex: 0, initiator: local, receiver: role)
-                strongSelf.invitationByRejected.accept(invitation)
             case  105: // applicationByAccepted:
                 let index = try data.getIntValue(of: "coindex")
                 let application = Application(seatIndex: index, initiator: local, receiver: role)
                 strongSelf.applicationByAccepted.accept(application)
-                break
-            case  106: // .acceptInvitingRequest:
-                break
-            case  201: // .invitePK:
-                break
-            case  202: // .rejectPK:
-                break
             default:
                 assert(false)
                 break
@@ -234,16 +236,40 @@ private extension MultiHostsVM {
             }
             
             // strongSelf.audienceBecameBroadcaster
-            // 
         }
         
-        //
+        // Owner
         invitationByRejected.subscribe(onNext: { [weak self] (invitaion) in
             self?.invitationQueue.remove(invitaion)
         }).disposed(by: bag)
         
         invitationByAccepted.subscribe(onNext: { [weak self] (invitaion) in
             self?.invitationQueue.remove(invitaion)
+        }).disposed(by: bag)
+        
+        //
+        invitationQueue.queueChanged.subscribe(onNext: { [unowned self] (list) in
+            guard let tList = list as? [Invitation] else {
+                return
+            }
+            
+            let users = tList.map { (invitation) -> LiveRole in
+                return invitation.receiver
+            }
+            
+            self.invitingUserList.accept(users)
+        }).disposed(by: bag)
+        
+        applicationQueue.queueChanged.subscribe(onNext: { [unowned self] (list) in
+            guard let tList = list as? [Application] else {
+                return
+            }
+            
+            let users = tList.map { (invitation) -> LiveRole in
+                return invitation.initiator
+            }
+            
+            self.applyingUserList.accept(users)
         }).disposed(by: bag)
     }
 }

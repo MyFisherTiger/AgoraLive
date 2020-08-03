@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxRelay
 
 class TimestampQueue: NSObject {
     private var timer: SubThreadTimer
@@ -18,10 +20,14 @@ class TimestampQueue: NSObject {
             } else {
                 self.timer.stop()
             }
+            
+            queueChanged.accept(list)
         }
     }
     
-    var max = 5
+    let queueChanged = PublishRelay<[TimestampModel]>()
+    
+    var max = 10
     
     init(name: String) {
         self.timer = SubThreadTimer(threadName: name)
