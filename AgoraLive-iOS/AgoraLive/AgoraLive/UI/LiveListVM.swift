@@ -19,7 +19,7 @@ struct Room {
     var imageIndex: Int
     var owner: LiveRole
     
-    init(name: String = "", roomId: String, imageURL: String = "", personCount: Int = 0, owner: LiveOwner) {
+    init(name: String = "", roomId: String, imageURL: String = "", personCount: Int = 0, owner: LiveRole) {
         self.name = name
         self.roomId = roomId
         self.imageURL = imageURL

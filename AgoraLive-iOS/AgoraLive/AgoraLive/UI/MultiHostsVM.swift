@@ -40,7 +40,7 @@ class MultiHostsVM: RxObject {
         }
     }
     
-    private var roomId: String
+    private var room: Room
     
     let invitationQueue = TimestampQueue(name: "multi-hosts-invitation")
     let applicationQueue = TimestampQueue(name: "multi-hosts-application")
@@ -65,8 +65,8 @@ class MultiHostsVM: RxObject {
     var audienceBecameBroadcaster = PublishRelay<LiveRole>()
     var broadcasterBecameAudience = PublishRelay<LiveRole>()
     
-    init(roomId: String) {
-        self.roomId = roomId
+    init(room: Room) {
+        self.room = room
         super.init()
         observe()
     }
@@ -83,7 +83,7 @@ extension MultiHostsVM {
         request(seatIndex: seatIndex,
                 type: 1,
                 userId: "\(user.info.userId)",
-                roomId: roomId,
+                roomId: room.roomId,
                 success: { [weak self] (json) in
                     print("json: \(json)")
                 }, fail: fail)
@@ -93,7 +93,7 @@ extension MultiHostsVM {
         request(seatIndex: application.seatIndex,
                 type: 5,
                 userId: "\(application.initiator.info.userId)",
-                roomId: roomId,
+                roomId: room.roomId,
                 success: { [weak self] (json) in
                     self?.applicationQueue.remove(application)
                 }, fail: fail)
@@ -104,7 +104,7 @@ extension MultiHostsVM {
         request(seatIndex: application.seatIndex,
                 type: 3,
                 userId: "\(application.initiator.info.userId)",
-                roomId: roomId,
+                roomId: room.roomId,
                 success: { [weak self] (json) in
                     self?.applicationQueue.remove(application)
                 }, fail: fail)
@@ -114,7 +114,7 @@ extension MultiHostsVM {
         request(seatIndex: seatIndex,
                 type: 7,
                 userId: "\(user.info.userId)",
-                roomId: roomId,
+                roomId: room.roomId,
                 success: { (_) in
                     if let success = success {
                         success()
@@ -129,7 +129,7 @@ extension MultiHostsVM {
         request(seatIndex: seatIndex,
                 type: 8,
                 userId: "\(user.info.userId)",
-                roomId: roomId,
+                roomId: room.roomId,
                 fail: fail)
     }
 }
@@ -140,7 +140,7 @@ extension MultiHostsVM {
         request(seatIndex: application.seatIndex,
                 type: 2,
                 userId: "\(application.initiator.info.userId)",
-                roomId: roomId,
+                roomId: room.roomId,
                 fail: fail)
     }
     
@@ -148,7 +148,7 @@ extension MultiHostsVM {
         request(seatIndex: invitation.seatIndex,
                 type: 6,
                 userId: "\(invitation.initiator.info.userId)",
-                roomId: roomId,
+                roomId: room.roomId,
                 fail: fail)
     }
     
@@ -156,7 +156,7 @@ extension MultiHostsVM {
         request(seatIndex: invitation.seatIndex,
                 type: 4,
                 userId: "\(invitation.initiator.info.userId)",
-                roomId: roomId,
+                roomId: room.roomId,
                 fail: fail)
     }
 }

@@ -379,19 +379,23 @@ extension PKBroadcastersViewController {
         
         session.leave()
         
-        let settings = LocalLiveSettings(title: "")
         let owner = pkInfo.remoteRoom.owner
         let role = session.role
+        let room = Room(name: "",
+                        roomId: pkInfo.remoteRoom.roomId,
+                        imageURL: "",
+                        personCount: 0,
+                        owner: pkInfo.remoteRoom.owner)
         
-        let newSession = LiveSession(roomId: pkInfo.remoteRoom.roomId,
-                                     settings: settings,
+        let newSession = LiveSession(room: room,
+                                     videoConfiguration: VideoConfiguration(),
                                      type: .pk,
                                      owner: .otherUser(owner),
                                      role: role)
         
         newSession.join(success: { [unowned newSession, unowned self] (joinedInfo) in
             guard let pkInfo = joinedInfo.pkInfo,
-                let vm = try? PKVM(dic: pkInfo),
+                let vm = try? PKVM(room: joinedInfo.room, state: pkInfo),
                 let navigation = self.navigationController else {
                     assert(false)
                     return
@@ -434,7 +438,7 @@ private extension PKBroadcastersViewController {
                 return
         }
         
-        let roomId = session.roomId
+        let roomId = session.room.roomId
         
         let vc = UIStoryboard.initViewController(of: "UserListViewController",
                                                        class: UserListViewController.self,

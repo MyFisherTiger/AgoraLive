@@ -106,7 +106,7 @@ fileprivate enum RelayState {
 }
 
 class PKVM: NSObject {
-//    private var roomId: String
+    private var room: Room
     fileprivate var relayState = RelayState.none
     private(set) var mediaRelayConfiguration: MediaRelayConfiguration?
     
@@ -120,10 +120,10 @@ class PKVM: NSObject {
     let state = BehaviorRelay(value: PKState.none)
     let event = PublishRelay<PKEvent>()
     
-    init(dic: StringAnyDic) throws {
-        
+    init(room: Room, state: StringAnyDic) throws {
+        self.room = room
         super.init()
-        try self.parseJson(dic: dic)
+        try self.parseJson(dic: state)
         self.observe()
     }
     

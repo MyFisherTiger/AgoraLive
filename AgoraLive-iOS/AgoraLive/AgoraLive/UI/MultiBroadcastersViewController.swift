@@ -76,7 +76,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         liveRoom(session: session)
         multiHosts()
         audience()
-        liveSeat(roomId: session.roomId)
+        liveSeat(roomId: session.room.roomId)
         chatList()
         gift()
         
@@ -184,8 +184,7 @@ extension MultiBroadcastersViewController {
                 let handler: ((UIAlertAction) -> Void)? = { [unowned self] (_) in
                     let update = { [unowned self] in
                         self.seatVM.update(state: action.command == .release ? .empty : .close,
-                                           index: action.seat.index,
-                                           of: roomId) { [unowned self] (_) in
+                                           index: action.seat.index) { [unowned self] (_) in
                                             self.showTextToast(text: "update seat fail")
                         }
                     }
@@ -348,7 +347,7 @@ private extension MultiBroadcastersViewController {
         }).disposed(by: bag)
         
         self.roomLabel.text = NSLocalizedString("Live_Room") + ": "
-        self.roomNameLabel.text = session.settings.title
+        self.roomNameLabel.text = session.room.name
     }
     
     func multiHosts() {

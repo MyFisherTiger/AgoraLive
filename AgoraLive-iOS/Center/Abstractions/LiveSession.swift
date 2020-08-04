@@ -10,6 +10,13 @@ import UIKit
 import RxSwift
 import RxRelay
 import AlamoClient
+import AgoraRtcKit
+
+struct VideoConfiguration {
+    var resolution: CGSize = AgoraVideoDimension640x360
+    var frameRate: AgoraVideoFrameRate = .fps15
+    var bitRate: Int = AgoraVideoBitrateStandard
+}
 
 enum LiveType: Int {
     case single = 1, multi, pk, virtual, shopping
@@ -65,11 +72,11 @@ class LiveSession: NSObject {
     private(set) var type: LiveType
     private(set) var role: LiveLocalUser
     
-    var settings: LocalLiveSettings
+    var videoConfiguration: VideoConfiguration
     
-    init(room: Room, settings: LocalLiveSettings, type: LiveType, owner: Owner, role: LiveLocalUser) {
+    init(room: Room, videoConfiguration: VideoConfiguration, type: LiveType, owner: Owner, role: LiveLocalUser) {
         self.room = room
-        self.settings = settings
+        self.videoConfiguration = videoConfiguration
         self.type = type
         self.owner = BehaviorRelay(value: owner)
         self.role = role
@@ -77,22 +84,13 @@ class LiveSession: NSObject {
         self.observe()
     }
     
-    typealias JoinedInfo = (roomId: String, seatInfo: [StringAnyDic]?, giftAudience: [StringAnyDic]?, pkInfo: StringAnyDic?, virtualAppearance: String?)
+    typealias JoinedInfo = (room: Room, seatInfo: [StringAnyDic]?, giftAudience: [StringAnyDic]?, pkInfo: StringAnyDic?, virtualAppearance: String?)
     
-    static func create(roomSettings: LocalLiveSettings, type: LiveType, ownerInfo: BasicUserInfo, extra: [String: Any]? = nil, success: ((LiveSession) -> Void)? = nil, fail: Completion = nil) {
-        
-        
-        
+    static func create(roomName: String, videoConfiguration: VideoConfiguration, type: LiveType, ownerInfo: BasicUserInfo, success: ((LiveSession) -> Void)? = nil, fail: Completion = nil) {
         let url = URLGroup.liveCreate
         let event = RequestEvent(name: "live-session-create")
-        var parameter: StringAnyDic = ["roomName": roomSettings.title,
+        var parameter: StringAnyDic = ["roomName": roomName,
                                        "type": type.rawValue]
-        
-        if let extra = extra {
-            for (key, value) in extra {
-                parameter[key] = value
-            }
-        }
         
         let task = RequestTask(event: event,
                                type: .http(.post, url: url),
@@ -102,22 +100,21 @@ class LiveSession: NSObject {
         
         let successCallback: DicEXCompletion = { (json: ([String: Any])) throws in
             let roomId = try json.getStringValue(of: "data")
-            let localUser = ALCenter.shared().centerProvideLocalUser()
             
             let role = LiveLocalUser(type: .owner,
-                                     info: localUser.info.value,
+                                     info: ownerInfo,
                                      permission: [.camera, .mic, .chat],
                                      agUId: 0)
             
             let owner = Owner.localUser(role)
-            let room = Room(name: roomSettings.title,
+            let room = Room(name: roomName,
                             roomId: roomId,
                             imageURL: "",
                             personCount: 0,
-                            owner: LiveOwner(info: localUser.info.value, permission: [.camera, .mic, .chat], agUId: 0))
+                            owner: role)
             
             let session = LiveSession(room: room,
-                                      settings: roomSettings,
+                                      videoConfiguration: videoConfiguration,
                                       type: type,
                                       owner: owner,
                                       role: role)
@@ -166,7 +163,7 @@ class LiveSession: NSObject {
             let channel = try liveRoom.getStringValue(of: "channelName")
             let agUId = try localUserJson.getIntValue(of: "uid")
             let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-            self.setupPublishedVideoStream(self.settings.media)
+            self.setupPublishedVideoStream(self.videoConfiguration)
             
             mediaKit.join(channel: channel, token: ALKeys.AgoraRtcToken, streamId: agUId) { [unowned self] in
                 mediaKit.channelReport.subscribe(onNext: { [weak self] (statistic) in
@@ -208,7 +205,7 @@ class LiveSession: NSObject {
                     return
                 }
                 do {
-                    try success((strongSelf.roomId, seatInfo, giftAudience, pkInfo, virtualAppearance))
+                    try success((strongSelf.room, seatInfo, giftAudience, pkInfo, virtualAppearance))
                 } catch {
                     if let fail = fail {
                         fail()
@@ -230,7 +227,7 @@ class LiveSession: NSObject {
         client.request(task: task, success: response, failRetry: retry)
     }
     
-    func setupPublishedVideoStream(_ settings: LocalLiveSettings.VideoConfiguration) {
+    func setupPublishedVideoStream(_ settings: VideoConfiguration) {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
         
         mediaKit.setupPublishedVideoStream(resolution: settings.resolution,
@@ -249,7 +246,7 @@ class LiveSession: NSObject {
         rtm.leaveChannel()
         
         let event = RequestEvent(name: "live-session-leave")
-        let url = URLGroup.leaveLive(roomId: self.roomId)
+        let url = URLGroup.leaveLive(roomId: room.roomId)
         let task = RequestTask(event: event, type: .http(.post, url: url))
         client.request(task: task)
     }
@@ -277,7 +274,7 @@ extension LiveSession {
                                  agUId: audience.agUId,
                                  giftRank: audience.giftRank)
         self.role = role
-        self.setupPublishedVideoStream(settings.media)
+        self.setupPublishedVideoStream(videoConfiguration)
         return role
     }
     
@@ -344,7 +341,7 @@ private extension LiveSession {
     
     func userMediaOperation(user: LiveRole, parameters: StringAnyDic, success: Completion = nil, fail: Completion = nil) {
         let client = ALCenter.shared().centerProvideRequestHelper()
-        let url = URLGroup.userCommand(userId: user.info.userId, roomId: roomId)
+        let url = URLGroup.userCommand(userId: user.info.userId, roomId: room.roomId)
         let event = RequestEvent(name: "live-user-media-operation")
         
         let token = ["token": ALKeys.ALUserToken]

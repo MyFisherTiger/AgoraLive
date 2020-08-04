@@ -76,7 +76,7 @@ class GoodsListViewController: UIViewController, RxViewController {
         }
         
         views()
-        vm.refetchList(of: session.roomId)
+        vm.refetchList()
     }
 }
 
@@ -141,17 +141,13 @@ private extension GoodsListViewController {
 
 extension GoodsListViewController: GoodsCellDelegate {
     func cell(_ cell: GoodsCell, didTapButton: UIButton, on index: Int, for event: GoodsCell.ButtonType) {
-        guard let session = ALCenter.shared().liveSession else {
-            return
-        }
-        
         let item = vm.list.value[index]
         
         switch event {
         case .onShelf:
-            vm.itemOnShelf(item, of: session.roomId)
+            vm.itemOnShelf(item)
         case .offShelf:
-            vm.itemOffShelf(item, of: session.roomId)
+            vm.itemOffShelf(item)
         case .detail:
             break
         }

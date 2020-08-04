@@ -39,7 +39,7 @@ fileprivate extension Array where Element == LiveAudience {
 }
 
 class LiveUserListVM: NSObject {
-    private var roomId: String
+    private var room: Room
     
     var giftList = BehaviorRelay(value: [LiveAudience]())
     
@@ -50,8 +50,8 @@ class LiveUserListVM: NSObject {
     var left = PublishRelay<[LiveAudience]>()
     var total = BehaviorRelay(value: 0)
     
-    init(roomId: String) {
-        self.roomId = roomId
+    init(room: Room) {
+        self.room = room
         super.init()
         observe()
     }
@@ -75,7 +75,7 @@ class LiveUserListVM: NSObject {
                                         "count": count,
                                         "type": onlyAudience ? 2 : 1]
         
-        let url = URLGroup.userList(roomId: roomId)
+        let url = URLGroup.userList(roomId: room.roomId)
         let event = RequestEvent(name: "live-user-list")
         let task = RequestTask(event: event,
                                type: .http(.get, url: url),
@@ -126,7 +126,7 @@ class LiveUserListVM: NSObject {
             parameters["count"] = list.value.count
         }
         
-        let url = URLGroup.userList(roomId: roomId)
+        let url = URLGroup.userList(roomId: room.roomId)
         let event = RequestEvent(name: "live-audience-list")
         let task = RequestTask(event: event,
                                type: .http(.get, url: url),

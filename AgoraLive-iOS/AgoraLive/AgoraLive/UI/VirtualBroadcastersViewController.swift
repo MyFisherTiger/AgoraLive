@@ -328,37 +328,37 @@ extension VirtualBroadcastersViewController {
 
 extension VirtualBroadcastersViewController {
     func presentInvitationList() {
-        guard let session = ALCenter.shared().liveSession else {
-            return
-        }
-        
-        showMaskView { [unowned self] in
-            self.hiddenMaskView()
-            if let vc = self.userListVC {
-                self.dismissChild(vc, animated: true)
-            }
-        }
-        
-//        presentUserList(listType: .broadcasting)
-        
-        let roomId = session.roomId
-        
-        self.userListVC?.selectedUser.subscribe(onNext: { [unowned self] (user) in
-            guard let session = ALCenter.shared().liveSession,
-                session.owner.value.isLocal else {
-                return
-            }
-            
-            self.hiddenMaskView()
-            if let vc = self.userListVC {
-                self.dismissChild(vc, animated: true)
-                self.userListVC = nil
-            }
-            
-            self.multiHostsVM.sendInvitation(to: user, on: 1) { (_) in
-                self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
-            }
-        }).disposed(by: bag)
+//        guard let session = ALCenter.shared().liveSession else {
+//            return
+//        }
+//
+//        showMaskView { [unowned self] in
+//            self.hiddenMaskView()
+//            if let vc = self.userListVC {
+//                self.dismissChild(vc, animated: true)
+//            }
+//        }
+//
+////        presentUserList(listType: .broadcasting)
+//
+//        let roomId = session.roomId
+//
+//        self.userListVC?.selectedUser.subscribe(onNext: { [unowned self] (user) in
+//            guard let session = ALCenter.shared().liveSession,
+//                session.owner.value.isLocal else {
+//                return
+//            }
+//
+//            self.hiddenMaskView()
+//            if let vc = self.userListVC {
+//                self.dismissChild(vc, animated: true)
+//                self.userListVC = nil
+//            }
+//
+//            self.multiHostsVM.sendInvitation(to: user, on: 1) { (_) in
+//                self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
+//            }
+//        }).disposed(by: bag)
     }
     
     func presentVirtualAppearance(close: Completion, confirm: Completion) {
@@ -393,7 +393,6 @@ extension VirtualBroadcastersViewController {
                 session.owner.value.isLocal else {
                 return
             }
-            let roomId = session.roomId
             
             guard let user = self.seatVM.list.value.first?.user else {
                 return
@@ -421,7 +420,7 @@ extension VirtualBroadcastersViewController {
                 session.role.type == .broadcaster else {
                 return
             }
-            let roomId = session.roomId
+            
             self.multiHostsVM.endBroadcasting(seatIndex: 1,
                                               user: session.role)
         }

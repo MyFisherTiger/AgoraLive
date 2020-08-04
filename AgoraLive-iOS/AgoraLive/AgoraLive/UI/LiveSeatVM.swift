@@ -40,9 +40,12 @@ struct LiveSeat {
 }
 
 class LiveSeatVM: NSObject {
+    private var room: Room
     private(set) var list: BehaviorRelay<[LiveSeat]>
     
-    init(list: [StringAnyDic]) throws {
+    init(room: Room, list: [StringAnyDic]) throws {
+        self.room = room
+        
         var tempList = [LiveSeat]()
         
         for item in list {
@@ -61,10 +64,10 @@ class LiveSeatVM: NSObject {
         rtm.removeReceivedChannelMessage(observer: self)
     }
     
-    func update(state: SeatState, index: Int, of roomId: String, fail: ErrorCompletion) {
+    func update(state: SeatState, index: Int, fail: ErrorCompletion) {
         let client = ALCenter.shared().centerProvideRequestHelper()
         let task = RequestTask(event: RequestEvent(name: "multi-seat-state \(state)"),
-                               type: .http(.post, url: URLGroup.liveSeatCommand(roomId: roomId)),
+                               type: .http(.post, url: URLGroup.liveSeatCommand(roomId: room.roomId)),
                                timeout: .medium,
                                header: ["token": ALKeys.ALUserToken],
                                parameters: ["no": index, "state": state.rawValue])

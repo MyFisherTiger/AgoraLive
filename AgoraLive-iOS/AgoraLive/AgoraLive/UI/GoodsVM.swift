@@ -28,6 +28,8 @@ struct GoodsItem {
 }
 
 class GoodsVM: RxObject {
+    private var room: Room
+    
     let list = BehaviorRelay(value: [GoodsItem]())
     let onShelfList = BehaviorRelay(value: [GoodsItem]())
     let offShelfList = BehaviorRelay(value: [GoodsItem]())
@@ -37,7 +39,8 @@ class GoodsVM: RxObject {
     
     let requestError = PublishRelay<String>()
     
-    override init() {
+    init(room: Room) {
+        self.room = room
         super.init()
         observe()
     }
@@ -57,18 +60,18 @@ class GoodsVM: RxObject {
 //        list.accept(temp)
 //    }
     
-    func itemOnShelf(_ item: GoodsItem, of roomId: String) {
-        goods(item, onShelf: true, of: roomId)
+    func itemOnShelf(_ item: GoodsItem) {
+        goods(item, onShelf: true, of: room.roomId)
     }
     
-    func itemOffShelf(_ item: GoodsItem, of roomId: String) {
-        goods(item, onShelf: false, of: roomId)
+    func itemOffShelf(_ item: GoodsItem) {
+        goods(item, onShelf: false, of: room.roomId)
     }
     
-    func refetchList(of roomId: String) {
+    func refetchList() {
         let client = ALCenter.shared().centerProvideRequestHelper()
         let task = RequestTask(event: RequestEvent(name: "goods-list"),
-                               type: .http(.post, url: URLGroup.goodsList(roomId: roomId)),
+                               type: .http(.post, url: URLGroup.goodsList(roomId: room.roomId)),
                                timeout: .medium,
                                header: ["token": ALKeys.ALUserToken])
         

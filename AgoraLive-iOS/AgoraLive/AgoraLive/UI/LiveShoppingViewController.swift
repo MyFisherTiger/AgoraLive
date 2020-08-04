@@ -25,7 +25,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     
     private var pkView: PKViewController?
     private var roomListVM = LiveListVM()
-    private var goodsVM = GoodsVM()
+    var goodsVM: GoodsVM!
     var multiHostsVM: MultiHostsVM!
     var pkVM: PKVM!
     
@@ -309,8 +309,6 @@ extension LiveShoppingViewController {
         
         self.showMaskView(color: UIColor.clear)
         
-        let roomId = session.roomId
-        
         let vc = UIStoryboard.initViewController(of: "GoodsListViewController",
                                                  class: GoodsListViewController.self,
                                                  on: "Popover")
@@ -339,19 +337,24 @@ extension LiveShoppingViewController {
         
         session.leave()
         
-        let settings = LocalLiveSettings(title: "")
         let owner = pkInfo.remoteRoom.owner
         let role = session.role
         
-        let newSession = LiveSession(roomId: pkInfo.remoteRoom.roomId,
-                                     settings: settings,
+        let room = Room(name: "",
+                        roomId: pkInfo.remoteRoom.roomId,
+                        imageURL: "",
+                        personCount: 0,
+                        owner: owner)
+        
+        let newSession = LiveSession(room: room,
+                                     videoConfiguration: VideoConfiguration(),
                                      type: .pk,
                                      owner: .otherUser(owner),
                                      role: role)
         
         newSession.join(success: { [unowned newSession, unowned self] (joinedInfo) in
             guard let pkInfo = joinedInfo.pkInfo,
-                let vm = try? PKVM(dic: pkInfo),
+                let vm = try? PKVM(room: joinedInfo.room, state: pkInfo),
                 let navigation = self.navigationController else {
                     assert(false)
                     return
@@ -397,8 +400,6 @@ private extension LiveShoppingViewController {
                 assert(false)
                 return
         }
-        
-        let roomId = session.roomId
         
         let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
                                                  class: CVUserListViewController.self,

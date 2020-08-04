@@ -72,23 +72,23 @@ class LiveListTabViewController: MaskViewController {
             return
         }
         
-        vc.userListVM = LiveUserListVM(roomId: info.roomId)
+        vc.userListVM = LiveUserListVM(room: info.room)
         vc.userListVM.updateGiftListWithJson(list: info.giftAudience)
         
         switch segueId {
         case "MultiBroadcastersViewController":
             guard let seatInfo = info.seatInfo,
-                let vm = try? LiveSeatVM(list: seatInfo) else {
+                let vm = try? LiveSeatVM(room: info.room, list: seatInfo) else {
                     assert(false)
                     return
             }
             
             let vc = segue.destination as? MultiBroadcastersViewController
-            vc?.multiHostsVM = MultiHostsVM(roomId: info.roomId)
+            vc?.multiHostsVM = MultiHostsVM(room: info.room)
             vc?.seatVM = vm
         case "PKBroadcastersViewController":
             guard let pkInfo = info.pkInfo,
-                let vm = try? PKVM(dic: pkInfo) else {
+                let vm = try? PKVM(room: info.room, state: pkInfo) else {
                     assert(false)
                     return
             }
@@ -97,13 +97,13 @@ class LiveListTabViewController: MaskViewController {
             vc?.pkVM = vm
         case "VirtualBroadcastersViewController":
             guard let seatInfo = info.seatInfo,
-                let seatVM = try? LiveSeatVM(list: seatInfo),
+                let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
                 let session = ALCenter.shared().liveSession else {
                     fatalError()
             }
             
             let vc = segue.destination as? VirtualBroadcastersViewController
-            vc?.multiHostsVM = MultiHostsVM(roomId: info.roomId)
+            vc?.multiHostsVM = MultiHostsVM(room: info.room)
             vc?.seatVM = seatVM
             
             var broadcasting: VirtualVM.Broadcasting
@@ -223,8 +223,8 @@ private extension LiveListTabViewController {
         
         vc.collectionView.rx.modelSelected(Room.self).subscribe(onNext: { [unowned self] (room) in
             let type = self.listVM.presentingType
-            var settings = LocalLiveSettings(title: room.name)
-            var media = settings.media
+            
+            var media = VideoConfiguration()
             
             switch type {
             case .multi:
@@ -249,15 +249,13 @@ private extension LiveListTabViewController {
                 media.bitRate = 600
             }
             
-            settings.media = media
-            
             let local = ALCenter.shared().centerProvideLocalUser()
             let role = LiveLocalUser(type: .audience,
                                      info: local.info.value,
                                      permission: [],
                                      agUId: 0)
-            let session = LiveSession(roomId: room.roomId,
-                                      settings: settings,
+            let session = LiveSession(room: room,
+                                      videoConfiguration: media,
                                       type: type,
                                       owner: LiveSession.Owner.otherUser(room.owner),
                                       role: role)

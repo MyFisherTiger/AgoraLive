@@ -66,7 +66,6 @@
 		A776F72024BEA711001B16B1 /* bg.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A776F71C24BEA711001B16B1 /* bg.bundle */; };
 		A776F72124BEA711001B16B1 /* girl.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A776F71D24BEA711001B16B1 /* girl.bundle */; };
 		A77718162456FBDA00BF1F21 /* PlayerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A77718152456FBDA00BF1F21 /* PlayerVM.swift */; };
-		A7779C2B244DC7DC002A285A /* LocalLiveSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7779C2A244DC7DC002A285A /* LocalLiveSettings.swift */; };
 		A77E574724A8955700DD7670 /* SuperBell.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573824A8955600DD7670 /* SuperBell.gif */; };
 		A77E574824A8955700DD7670 /* SuperCake.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573924A8955600DD7670 /* SuperCake.gif */; };
 		A77E574924A8955700DD7670 /* SuperWatch.gif in Resources */ = {isa = PBXBuildFile; fileRef = A77E573A24A8955600DD7670 /* SuperWatch.gif */; };
@@ -238,7 +237,6 @@
 		A776F71D24BEA711001B16B1 /* girl.bundle */ = {isa = PBXFileReference; lastKnownFileType = file; path = girl.bundle; sourceTree = "<group>"; };
 		A776F71E24BEA711001B16B1 /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
 		A77718152456FBDA00BF1F21 /* PlayerVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerVM.swift; sourceTree = "<group>"; };
-		A7779C2A244DC7DC002A285A /* LocalLiveSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalLiveSettings.swift; sourceTree = "<group>"; };
 		A77E573824A8955600DD7670 /* SuperBell.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperBell.gif; sourceTree = "<group>"; };
 		A77E573924A8955600DD7670 /* SuperCake.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperCake.gif; sourceTree = "<group>"; };
 		A77E573A24A8955600DD7670 /* SuperWatch.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = SuperWatch.gif; sourceTree = "<group>"; };
@@ -499,7 +497,6 @@
 			children = (
 				A76BD14023F27F0F00B2732B /* UI */,
 				A7FDB5A823FFBB7100487FB9 /* ViewModel */,
-				A7779C28244DC56E002A285A /* Model */,
 				A719060E24667DCE0031E91C /* LocalStorage */,
 				A76BD14923F2A37900B2732B /* Utils */,
 				A76BD14123F27F2300B2732B /* Supporting Files */,
@@ -600,14 +597,6 @@
 				A776F71D24BEA711001B16B1 /* girl.bundle */,
 			);
 			path = Animoji;
-			sourceTree = "<group>";
-		};
-		A7779C28244DC56E002A285A /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				A7779C2A244DC7DC002A285A /* LocalLiveSettings.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		A77E572C24A8955600DD7670 /* Resource */ = {
@@ -1119,7 +1108,6 @@
 				A7FDB5AA23FFBB9400487FB9 /* LiveListVM.swift in Sources */,
 				A7952AC124162C1000479811 /* ioapi_mem.c in Sources */,
 				A7952A49241624C800479811 /* MediaSettingsViewController.swift in Sources */,
-				A7779C2B244DC7DC002A285A /* LocalLiveSettings.swift in Sources */,
 				A7952AAA24162C1000479811 /* LogTube.swift in Sources */,
 				A758851E242DF20E0011FCCF /* UserListViewController.swift in Sources */,
 				A7952AB624162C1000479811 /* MediaModels.swift in Sources */,
@@ -1477,7 +1465,7 @@
 				CURRENT_PROJECT_VERSION = 323;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = SW3CA7M752;
+				DEVELOPMENT_TEAM = GM72UGLGZW;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
@@ -1563,7 +1551,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D FU_67";
 				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
 				PRODUCT_NAME = AgoraLive;
-				PROVISIONING_PROFILE_SPECIFIER = AgoraAppsDevProfile;
+				PROVISIONING_PROFILE_SPECIFIER = App;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FU_67=0";
 				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";

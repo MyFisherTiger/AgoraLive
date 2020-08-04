@@ -421,7 +421,7 @@ extension LiveViewController {
                 permission.remove(.camera)
             }
             
-            role.updateLocal(permission: permission, of: session.roomId)
+            role.updateLocal(permission: permission, of: session.room.roomId)
         }).disposed(by: bag)
         
         extensionVC.micButton.isSelected = !self.deviceVM.mic.boolValue
@@ -444,7 +444,7 @@ extension LiveViewController {
                 permission.remove(.mic)
             }
             
-            role.updateLocal(permission: permission, of: session.roomId)
+            role.updateLocal(permission: permission, of: session.room.roomId)
         }).disposed(by: bag)
         
         extensionVC.audioLoopButton.rx.tap.subscribe(onNext: { [unowned extensionVC, unowned self] in
@@ -482,17 +482,14 @@ extension LiveViewController {
         
         let mediaSettingsVC = mediaSettingsNavi.children.first! as! MediaSettingsViewController
         
-        mediaSettingsVC.settings = BehaviorRelay(value: session.settings.media)
+        mediaSettingsVC.settings = BehaviorRelay(value: session.videoConfiguration)
         mediaSettingsVC.settings?.subscribe(onNext: { (newMedia) in
             guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
             
-            var newSettings = session.settings
-            newSettings.media = newMedia
-            session.settings = newSettings
-            
+            session.videoConfiguration = newMedia
             session.setupPublishedVideoStream(newMedia)
         }).disposed(by: bag)
         
@@ -578,7 +575,7 @@ extension LiveViewController {
                 self.giftVM.present(gift: gift,
                                     to: remote.info,
                                     from: session.role.info,
-                                    of: session.roomId) {
+                                    of: session.room.roomId) {
                                         self.showAlert(message: NSLocalizedString("Present_Gift_Fail"))
                 }
             case .localUser:
