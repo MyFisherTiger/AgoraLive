@@ -18,11 +18,11 @@ class MultiHostsVM: RxObject {
         var receiver: LiveRole
         var timestamp: TimeInterval
         
-        init(seatIndex: Int, initiator: LiveRole, receiver: LiveRole) {
+        init(seatIndex: Int, initiator: LiveRole, receiver: LiveRole, timestamp: TimeInterval) {
             self.seatIndex = seatIndex
             self.initiator = initiator
             self.receiver = receiver
-            self.timestamp = NSDate().timeIntervalSince1970
+            self.timestamp = timestamp
         }
     }
     
@@ -39,6 +39,8 @@ class MultiHostsVM: RxObject {
             self.timestamp = NSDate().timeIntervalSince1970
         }
     }
+    
+    private var roomId: String
     
     let invitationQueue = TimestampQueue(name: "multi-hosts-invitation")
     let applicationQueue = TimestampQueue(name: "multi-hosts-application")
@@ -63,7 +65,8 @@ class MultiHostsVM: RxObject {
     var audienceBecameBroadcaster = PublishRelay<LiveRole>()
     var broadcasterBecameAudience = PublishRelay<LiveRole>()
     
-    override init() {
+    init(roomId: String) {
+        self.roomId = roomId
         super.init()
         observe()
     }
@@ -76,17 +79,17 @@ class MultiHostsVM: RxObject {
 
 // MARK: Owner
 extension MultiHostsVM {
-    func sendInvitation(to user: LiveRole, on seatIndex: Int, of roomId: String, fail: ErrorCompletion = nil) {
+    func sendInvitation(to user: LiveRole, on seatIndex: Int, fail: ErrorCompletion = nil) {
         request(seatIndex: seatIndex,
                 type: 1,
                 userId: "\(user.info.userId)",
                 roomId: roomId,
                 success: { [weak self] (json) in
-                    
+                    print("json: \(json)")
                 }, fail: fail)
     }
     
-    func accept(application: Application, of roomId: String, fail: ErrorCompletion = nil) {
+    func accept(application: Application, fail: ErrorCompletion = nil) {
         request(seatIndex: application.seatIndex,
                 type: 5,
                 userId: "\(application.initiator.info.userId)",
@@ -97,7 +100,7 @@ extension MultiHostsVM {
                 
     }
     
-    func reject(application: Application, of roomId: String, fail: ErrorCompletion = nil) {
+    func reject(application: Application, fail: ErrorCompletion = nil) {
         request(seatIndex: application.seatIndex,
                 type: 3,
                 userId: "\(application.initiator.info.userId)",
@@ -107,18 +110,22 @@ extension MultiHostsVM {
                 }, fail: fail)
     }
     
-    func forceEndBroadcasting(user: LiveRole, on seatIndex: Int, of roomId: String, fail: ErrorCompletion = nil) {
+    func forceEndBroadcasting(user: LiveRole, on seatIndex: Int, success: Completion = nil, fail: ErrorCompletion = nil) {
         request(seatIndex: seatIndex,
                 type: 7,
                 userId: "\(user.info.userId)",
                 roomId: roomId,
-                fail: fail)
+                success: { (_) in
+                    if let success = success {
+                        success()
+                    }
+                }, fail: fail)
     }
 }
 
 // MARK: Broadcaster
 extension MultiHostsVM {
-    func endBroadcasting(seatIndex: Int, user: LiveRole, of roomId: String, fail: ErrorCompletion = nil) {
+    func endBroadcasting(seatIndex: Int, user: LiveRole, fail: ErrorCompletion = nil) {
         request(seatIndex: seatIndex,
                 type: 8,
                 userId: "\(user.info.userId)",
@@ -129,7 +136,7 @@ extension MultiHostsVM {
 
 // MARK: Audience
 extension MultiHostsVM {
-    func send(application: Application, of roomId: String, fail: ErrorCompletion = nil) {
+    func send(application: Application, fail: ErrorCompletion = nil) {
         request(seatIndex: application.seatIndex,
                 type: 2,
                 userId: "\(application.initiator.info.userId)",
@@ -137,7 +144,7 @@ extension MultiHostsVM {
                 fail: fail)
     }
     
-    func accept(invitation: Invitation, of roomId: String, extral: StringAnyDic? = nil, fail: ErrorCompletion = nil) {
+    func accept(invitation: Invitation, success: Completion = nil, fail: ErrorCompletion = nil) {
         request(seatIndex: invitation.seatIndex,
                 type: 6,
                 userId: "\(invitation.initiator.info.userId)",
@@ -145,7 +152,7 @@ extension MultiHostsVM {
                 fail: fail)
     }
     
-    func reject(invitation: Invitation, of roomId: String, fail: ErrorCompletion = nil) {
+    func reject(invitation: Invitation, fail: ErrorCompletion = nil) {
         request(seatIndex: invitation.seatIndex,
                 type: 4,
                 userId: "\(invitation.initiator.info.userId)",
@@ -158,8 +165,8 @@ private extension MultiHostsVM {
     // type: 1.房主邀请 2.观众申请 3.房主拒绝 4.观众拒绝 5.房主同意观众申请 6.观众接受房主邀请 7.房主让主播下麦 8.主播下麦
     func request(seatIndex: Int, type: Int, userId: String, roomId: String, success: DicEXCompletion = nil, fail: ErrorCompletion) {
         let client = ALCenter.shared().centerProvideRequestHelper()
-        let task = RequestTask(event: RequestEvent(name: "multi-invitation-or-application-type: \(type)"),
-                               type: .http(.post, url: URLGroup.multiInvitaionApplication(userId: userId, roomId: roomId)),
+        let task = RequestTask(event: RequestEvent(name: "multi-action: \(type)"),
+                               type: .http(.post, url: URLGroup.multiHosts(userId: userId, roomId: roomId)),
                                timeout: .medium,
                                header: ["token": ALKeys.ALUserToken],
                                parameters: ["no": seatIndex, "type": type])
@@ -179,17 +186,21 @@ private extension MultiHostsVM {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         
         rtm.addReceivedPeerMessage(observer: self) { [weak self] (json) in
-            guard let type = try? json.getEnum(of: "cmd", type: ALPeerMessage.AType.self),
-                type == .broadcasting,
+            guard let cmd = try? json.getEnum(of: "cmd", type: ALPeerMessage.AType.self),
+                cmd == .multiHosts,
                 let strongSelf = self else {
                 return
             }
             
             let data = try json.getDataObject()
-            let cmd = try data.getIntValue(of: "operate")
-            let userName = try data.getStringValue(of: "account")
-            let userId = try data.getStringValue(of: "userId")
-            let agoraUid = try data.getIntValue(of: "agoraUid")
+            
+            let type = try data.getIntValue(of: "type")
+            let seatIndex = try data.getIntValue(of: "no")
+            
+            let userJson = try data.getDictionaryValue(of: "fromUser")
+            let userName = try userJson.getStringValue(of: "userName")
+            let userId = try userJson.getStringValue(of: "userId")
+            let agoraUid = try userJson.getIntValue(of: "uid")
             
             let info = BasicUserInfo(userId: userId, name: userName)
             let role = LiveAudience(info: info, agUId: agoraUid)
@@ -198,30 +209,31 @@ private extension MultiHostsVM {
                 return
             }
             
-            switch cmd {
+            switch type {
             // Owner
-            case  101: // receivedApplication:
-                let index = try data.getIntValue(of: "coindex")
-                let application = Application(seatIndex: index, initiator: role, receiver: local)
+            case  2: // receivedApplication:
+                let application = Application(seatIndex: seatIndex, initiator: role, receiver: local)
                 strongSelf.receivedApplication.accept(application)
-            case  104: // audience rejected invitation
-                let invitation = Invitation(seatIndex: 0, initiator: local, receiver: role)
+            case  4: // audience rejected invitation
+                let invitation = Invitation(seatIndex: seatIndex, initiator: local, receiver: role, timestamp: 1)
                 strongSelf.invitationByRejected.accept(invitation)
-            case  106: // audience accpeted invitation:
-                let index = try data.getIntValue(of: "coindex")
-                let invitation = Invitation(seatIndex: index, initiator: local, receiver: role)
+            case  6: // audience accepted invitation:
+                let invitation = Invitation(seatIndex: seatIndex, initiator: local, receiver: role, timestamp: 1)
                 strongSelf.invitationByAccepted.accept(invitation)
+            
+            // Broadcaster
+            case 7: //
+                strongSelf.receivedEndBroadcasting.accept(())
+                
             // Audience
-            case  102: // receivedInvitation
-                let index = try data.getIntValue(of: "coindex")
-                let invitation = Invitation(seatIndex: index, initiator: role, receiver: local)
+            case  1: // receivedInvitation
+                let invitation = Invitation(seatIndex: seatIndex, initiator: role, receiver: local, timestamp: 1)
                 strongSelf.receivedInvitation.accept(invitation)
-            case  103: // applicationByRejected
-                let application = Application(seatIndex: 0, initiator: local, receiver: role)
+            case  3: // applicationByRejected
+                let application = Application(seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.applicationByRejected.accept(application)
-            case  105: // applicationByAccepted:
-                let index = try data.getIntValue(of: "coindex")
-                let application = Application(seatIndex: index, initiator: local, receiver: role)
+            case  5: // applicationByAccepted:
+                let application = Application(seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.applicationByAccepted.accept(application)
             default:
                 assert(false)

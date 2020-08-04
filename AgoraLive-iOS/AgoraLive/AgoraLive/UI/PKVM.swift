@@ -13,8 +13,8 @@ import AlamoClient
 
 struct Battle {
     var id: String
-    var initatorRoom: RoomBrief
-    var receiverRoom: RoomBrief
+    var initatorRoom: Room
+    var receiverRoom: Room
 }
 
 struct PKInfo {
@@ -106,33 +106,43 @@ fileprivate enum RelayState {
 }
 
 class PKVM: NSObject {
+//    private var roomId: String
     fileprivate var relayState = RelayState.none
-    
-    private(set) var receivedInvitation = PublishRelay<Battle>()
-    private(set) var invitationIsByRejected = PublishRelay<Battle>()
-    private(set) var InvitationIsByAccepted = PublishRelay<Battle>()
-    private(set) var invitationTimeout = PublishRelay<Battle>()
-    
-    private(set) var state = BehaviorRelay(value: PKState.none)
-    private(set) var event = PublishRelay<PKEvent>()
     private(set) var mediaRelayConfiguration: MediaRelayConfiguration?
     
+    let requestError = PublishRelay<String>()
+    
+    let receivedInvitation = PublishRelay<Battle>()
+    let invitationIsByRejected = PublishRelay<Battle>()
+    let InvitationIsByAccepted = PublishRelay<Battle>()
+    let invitationTimeout = PublishRelay<Battle>()
+    
+    let state = BehaviorRelay(value: PKState.none)
+    let event = PublishRelay<PKEvent>()
+    
     init(dic: StringAnyDic) throws {
+        
         super.init()
         try self.parseJson(dic: dic)
         self.observe()
     }
     
-    func sendInvitationTo(room: RoomBrief, fail: ErrorCompletion) {
-        
+    func sendInvitationTo(room: Room) {
+//        request(type: 1, roomId: roomId, to: room.roomId) { [unowned self] (_) in
+//            self.requestError.accept("pk invitation fail")
+//        }
     }
     
-    func accpet(invitation: Battle) {
-        
+    func accept(invitation: Battle) {
+//        request(type: 2, roomId: roomId, to: invitation.initatorRoom.roomId) { [unowned self] (_) in
+//            self.requestError.accept("pk accept fail")
+//        }
     }
     
     func reject(invitation: Battle) {
-        
+//        request(type: 3, roomId: roomId, to: invitation.initatorRoom.roomId) { [unowned self] (_) in
+//            self.requestError.accept("pk reject fail")
+//        }
     }
     
     deinit {
@@ -142,6 +152,25 @@ class PKVM: NSObject {
 }
 
 private extension PKVM {
+    func request(type: Int, roomId: String, to destinationRoomId: String, success: DicEXCompletion = nil, fail: ErrorCompletion) {
+        let client = ALCenter.shared().centerProvideRequestHelper()
+        let task = RequestTask(event: RequestEvent(name: "pk-action: \(type)"),
+                               type: .http(.post, url: URLGroup.pkLiveBattle(roomId: roomId)),
+                               timeout: .medium,
+                               header: ["token": ALKeys.ALUserToken],
+                               parameters: ["roomId": destinationRoomId, "type": type])
+        client.request(task: task, success: ACResponse.json({ (json) in
+            if let success = success {
+                try success(json)
+            }
+        })) { (error) -> RetryOptions in
+            if let fail = fail {
+                fail(error)
+            }
+            return .resign
+        }
+    }
+    
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         
@@ -167,15 +196,28 @@ private extension PKVM {
                 return
             }
             
-            guard let type = try? json.getEnum(of: "cmd", type: ALPeerMessage.AType.self) else {
+            guard let cmd = try? json.getEnum(of: "cmd", type: ALPeerMessage.AType.self) else {
                 return
             }
             
-            guard type == .pk else  {
+            guard cmd == .pk else  {
                 return
             }
             
             let data = try json.getDataObject()
+            let type = try data.getIntValue(of: "type")
+            
+            // 1.邀请pk 2接受pk 3拒绝pk 4超时
+//            switch type {
+//                //
+//            case 1:
+//                Room(name: <#T##String#>, roomId: <#T##String#>, imageURL: <#T##String#>, personCount: <#T##Int#>, owner: <#T##LiveOwner#>)
+//                let battle = Battle(id: <#T##String#>, initatorRoom: <#T##Room#>, receiverRoom: <#T##Room#>)
+//            case 2:
+//            case 3:
+//            case 4:
+//                
+//            }
             
             //
         }

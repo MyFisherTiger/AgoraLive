@@ -281,7 +281,7 @@ extension LiveViewController {
         vc.view.cornerRadius(10)
         
         let presenetedHeight: CGFloat = 526.0
-        let y = UIScreen.main.bounds.height - presenetedHeight - UIScreen.main.heightOfSafeAreaTop
+        let y = UIScreen.main.bounds.height - presenetedHeight
         let presentedFrame = CGRect(x: 0,
                                     y: y,
                                     width: UIScreen.main.bounds.width,
@@ -354,12 +354,12 @@ extension LiveViewController {
     
     // MARK: - ExtensionFunctions
     func presentExtensionFunctions() {
-        self.showMaskView(color: UIColor.clear)
-        
         guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
         }
+        
+        self.showMaskView(color: UIColor.clear)
         
         let perspective = session.role.type
         let extensionVC = UIStoryboard.initViewController(of: "ExtensionViewController",

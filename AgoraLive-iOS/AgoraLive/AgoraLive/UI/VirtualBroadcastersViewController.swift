@@ -20,6 +20,8 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
     private var ownerRenderView = UIView()
     private var broadcasterRenderView = UIView()
     
+    var multiHostsVM: MultiHostsVM!
+    
     // LiveViewController
     var tintColor = UIColor(red: 0,
                             green: 0,
@@ -63,7 +65,6 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
     var deviceVM = MediaDeviceVM()
     var playerVM = PlayerVM()
     var enhancementVM = VideoEnhancementVM()
-    var multiHostsVM = MultiHostsVM()
     var seatVM: LiveSeatVM!
     var virtualVM: VirtualVM!
     var monitor = NetworkMonitor(host: "www.apple.com")
@@ -86,7 +87,7 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
         musicList()
         broadcastingStatus()
         liveSeat()
-        liveRole(session: session)
+        multiHosts()
         netMonitor()
         
         updateViews()
@@ -200,9 +201,7 @@ extension VirtualBroadcastersViewController {
         }).disposed(by: bag)
     }
     
-    func liveRole(session: LiveSession) {
-        let roomId = session.roomId
-        
+    func multiHosts() {
         // owner
         multiHostsVM.invitationByRejected.subscribe(onNext: { (invitation) in
             if DeviceAssistant.Language.isChinese {
@@ -228,15 +227,13 @@ extension VirtualBroadcastersViewController {
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Accept"),
                            handler1: { [unowned self] (_) in
-                            self.multiHostsVM.reject(invitation: invitation, of: roomId)
+                            self.multiHostsVM.reject(invitation: invitation)
             }) { [unowned self] (_) in
                 self.presentVirtualAppearance(close: { [unowned self] in
-                    self.multiHostsVM.reject(invitation: invitation, of: roomId)
+                    self.multiHostsVM.reject(invitation: invitation)
                 }) { [unowned self] in
-                    self.multiHostsVM.accept(invitation: invitation,
-                                             of: roomId,
-                                             extral: ["virtualAvatar": self.enhancementVM.virtualAppearance.value.item]) { (_) in
-                                                self.showTextToast(text: "accept invitation fail")
+                    self.multiHostsVM.accept(invitation: invitation) { (_) in
+                        self.showTextToast(text: "accept invitation fail")
                     }
                 }
             }
@@ -358,7 +355,7 @@ extension VirtualBroadcastersViewController {
                 self.userListVC = nil
             }
             
-            self.multiHostsVM.sendInvitation(to: user, on: 1, of: roomId) { (_) in
+            self.multiHostsVM.sendInvitation(to: user, on: 1) { (_) in
                 self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
             }
         }).disposed(by: bag)
@@ -403,8 +400,7 @@ extension VirtualBroadcastersViewController {
             }
             
             self.multiHostsVM.forceEndBroadcasting(user: user,
-                                                   on: 1,
-                                                   of: roomId) { (_) in
+                                                   on: 1) { (_) in
                                                     self.showTextToast(text: "force user end broadcasting")
             }
         }
@@ -427,8 +423,7 @@ extension VirtualBroadcastersViewController {
             }
             let roomId = session.roomId
             self.multiHostsVM.endBroadcasting(seatIndex: 1,
-                                              user: session.role,
-                                              of: roomId)
+                                              user: session.role)
         }
     }
 }

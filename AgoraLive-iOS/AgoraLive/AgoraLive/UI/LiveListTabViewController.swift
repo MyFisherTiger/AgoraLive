@@ -84,6 +84,7 @@ class LiveListTabViewController: MaskViewController {
             }
             
             let vc = segue.destination as? MultiBroadcastersViewController
+            vc?.multiHostsVM = MultiHostsVM(roomId: info.roomId)
             vc?.seatVM = vm
         case "PKBroadcastersViewController":
             guard let pkInfo = info.pkInfo,
@@ -102,6 +103,7 @@ class LiveListTabViewController: MaskViewController {
             }
             
             let vc = segue.destination as? VirtualBroadcastersViewController
+            vc?.multiHostsVM = MultiHostsVM(roomId: info.roomId)
             vc?.seatVM = seatVM
             
             var broadcasting: VirtualVM.Broadcasting
@@ -219,7 +221,7 @@ private extension LiveListTabViewController {
             }
         })
         
-        vc.collectionView.rx.modelSelected(RoomBrief.self).subscribe(onNext: { [unowned self] (room) in
+        vc.collectionView.rx.modelSelected(Room.self).subscribe(onNext: { [unowned self] (room) in
             let type = self.listVM.presentingType
             var settings = LocalLiveSettings(title: room.name)
             var media = settings.media

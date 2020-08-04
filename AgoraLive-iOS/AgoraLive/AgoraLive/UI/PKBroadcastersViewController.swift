@@ -361,7 +361,7 @@ extension PKBroadcastersViewController {
                            handler1: { [unowned self] (_) in
                             self.pkVM.reject(invitation: battle)
             }) { [unowned self] (_) in
-                self.pkVM.accpet(invitation: battle)
+                self.pkVM.accept(invitation: battle)
             }
         }).disposed(by: bag)
         
@@ -480,13 +480,13 @@ private extension PKBroadcastersViewController {
             self.hiddenMaskView()
             self.userListVC = nil
             
-            self.pkVM.sendInvitationTo(room: room) { [unowned self] (error) in
-                self.showTextToast(text: NSLocalizedString("PK_Invite_Fail"))
-            }
+//            self.pkVM.sendInvitationTo(room: room) { [unowned self] (error) in
+//                self.showTextToast(text: NSLocalizedString("PK_Invite_Fail"))
+//            }
         }).disposed(by: bag)
         
         if let userListVC = userListVC {
-            roomListVM.presentingList.map { (list) -> [RoomBrief] in
+            roomListVM.presentingList.map { (list) -> [Room] in
                 var newList = list
                 let index = newList.firstIndex { (room) -> Bool in
                     return roomId == room.roomId

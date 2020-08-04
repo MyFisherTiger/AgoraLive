@@ -61,14 +61,14 @@ class LiveSession: NSObject {
     private(set) var rtcChannelReport: BehaviorRelay<ChannelReport>?
     private(set) var end = PublishRelay<()>()
     
-    private(set) var roomId: String
+    private(set) var room: Room
     private(set) var type: LiveType
     private(set) var role: LiveLocalUser
     
     var settings: LocalLiveSettings
     
-    init(roomId: String, settings: LocalLiveSettings, type: LiveType, owner: Owner, role: LiveLocalUser) {
-        self.roomId = roomId
+    init(room: Room, settings: LocalLiveSettings, type: LiveType, owner: Owner, role: LiveLocalUser) {
+        self.room = room
         self.settings = settings
         self.type = type
         self.owner = BehaviorRelay(value: owner)
@@ -79,10 +79,14 @@ class LiveSession: NSObject {
     
     typealias JoinedInfo = (roomId: String, seatInfo: [StringAnyDic]?, giftAudience: [StringAnyDic]?, pkInfo: StringAnyDic?, virtualAppearance: String?)
     
-    static func create(roomSettings: LocalLiveSettings, type: LiveType, extra: [String: Any]? = nil, success: ((LiveSession) -> Void)? = nil, fail: Completion = nil) {
+    static func create(roomSettings: LocalLiveSettings, type: LiveType, ownerInfo: BasicUserInfo, extra: [String: Any]? = nil, success: ((LiveSession) -> Void)? = nil, fail: Completion = nil) {
+        
+        
+        
         let url = URLGroup.liveCreate
         let event = RequestEvent(name: "live-session-create")
-        var parameter: StringAnyDic = ["roomName": roomSettings.title, "type": type.rawValue]
+        var parameter: StringAnyDic = ["roomName": roomSettings.title,
+                                       "type": type.rawValue]
         
         if let extra = extra {
             for (key, value) in extra {
@@ -99,13 +103,20 @@ class LiveSession: NSObject {
         let successCallback: DicEXCompletion = { (json: ([String: Any])) throws in
             let roomId = try json.getStringValue(of: "data")
             let localUser = ALCenter.shared().centerProvideLocalUser()
+            
             let role = LiveLocalUser(type: .owner,
                                      info: localUser.info.value,
                                      permission: [.camera, .mic, .chat],
                                      agUId: 0)
             
             let owner = Owner.localUser(role)
-            let session = LiveSession(roomId: roomId,
+            let room = Room(name: roomSettings.title,
+                            roomId: roomId,
+                            imageURL: "",
+                            personCount: 0,
+                            owner: LiveOwner(info: localUser.info.value, permission: [.camera, .mic, .chat], agUId: 0))
+            
+            let session = LiveSession(room: room,
                                       settings: roomSettings,
                                       type: type,
                                       owner: owner,
@@ -130,7 +141,7 @@ class LiveSession: NSObject {
     
     func join(success: ((JoinedInfo) throws -> Void)? = nil, fail: Completion = nil ) {
         let client = ALCenter.shared().centerProvideRequestHelper()
-        let url = URLGroup.joinLive(roomId: self.roomId)
+        let url = URLGroup.joinLive(roomId: self.room.roomId)
         let event = RequestEvent(name: "live-session-join")
         let task = RequestTask(event: event,
                                type: .http(.post, url: url),
@@ -382,7 +393,9 @@ private extension LiveSession {
                 let data = try json.getDataObject()
                 let owner = try LiveOwner(dic: data)
                 
-                if !strongSelf.owner.value.isLocal {
+                if strongSelf.owner.value.isLocal {
+                    strongSelf.owner.accept(.localUser(owner))
+                } else {
                     strongSelf.owner.accept(.otherUser(owner))
                 }
             default:

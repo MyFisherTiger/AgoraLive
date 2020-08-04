@@ -27,7 +27,7 @@ extension DictionaryGetable {
 
 struct ALPeerMessage {
     enum AType: Int {
-        case broadcasting = 1, pk = 2
+        case multiHosts = 1, pk = 2
     }
     
     enum Command {
@@ -70,7 +70,7 @@ struct ALPeerMessage {
         }
     }
     
-    var type: AType = .broadcasting
+    var type: AType = .multiHosts
     var command: Command
     var userName: String
     var userId: String

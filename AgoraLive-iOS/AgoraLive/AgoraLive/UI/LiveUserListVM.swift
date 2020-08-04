@@ -76,7 +76,7 @@ class LiveUserListVM: NSObject {
                                         "type": onlyAudience ? 2 : 1]
         
         let url = URLGroup.userList(roomId: roomId)
-        let event = RequestEvent(name: "live-audience-list")
+        let event = RequestEvent(name: "live-user-list")
         let task = RequestTask(event: event,
                                type: .http(.get, url: url),
                                timeout: .low,

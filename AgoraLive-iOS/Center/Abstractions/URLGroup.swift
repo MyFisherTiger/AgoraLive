@@ -86,8 +86,12 @@ struct URLGroup {
         return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/pk"
     }
     
-    static func multiInvitaionApplication(userId: String, roomId: String) -> String {
-        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/users/\(userId)/seats/notice"
+    static func pkLiveBattle(roomId: String) -> String {
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/pk/notice"
+    }
+    
+    static func multiHosts(userId: String, roomId: String) -> String {
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/users/\(userId)/seat"
     }
     
     static func goodsPurchase(roomId: String) -> String {

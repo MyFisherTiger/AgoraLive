@@ -146,6 +146,7 @@ class CreateLiveViewController: MaskViewController {
             }
             
             let vc = segue.destination as? MultiBroadcastersViewController
+            vc?.multiHostsVM = MultiHostsVM(roomId: info.roomId)
             vc?.seatVM = vm
         case "PKBroadcastersViewController":
             guard let pkInfo = info.pkInfo,
@@ -164,6 +165,7 @@ class CreateLiveViewController: MaskViewController {
             }
             
             let vc = segue.destination as? VirtualBroadcastersViewController
+            vc?.multiHostsVM = MultiHostsVM(roomId: info.roomId)
             vc?.seatVM = seatVM
             
             var broadcasting: VirtualVM.Broadcasting

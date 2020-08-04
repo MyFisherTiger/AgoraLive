@@ -11,13 +11,13 @@ import RxSwift
 import RxRelay
 import AlamoClient
 
-struct RoomBrief {
+struct Room {
     var name: String
     var roomId: String
     var imageURL: String
     var personCount: Int
     var imageIndex: Int
-    var owner: LiveOwner
+    var owner: LiveRole
     
     init(name: String = "", roomId: String, imageURL: String = "", personCount: Int = 0, owner: LiveOwner) {
         self.name = name
@@ -44,11 +44,11 @@ struct RoomBrief {
     }
 }
 
-fileprivate extension Array where Element == RoomBrief {
+fileprivate extension Array where Element == Room {
     init(dicList: [StringAnyDic]) throws {
-        var array = [RoomBrief]()
+        var array = [Room]()
         for item in dicList {
-            let room = try RoomBrief(dic: item)
+            let room = try Room(dic: item)
             array.append(room)
         }
         self = array
@@ -56,7 +56,7 @@ fileprivate extension Array where Element == RoomBrief {
 }
 
 class LiveListVM: NSObject {
-    fileprivate var multiList = [RoomBrief]() {
+    fileprivate var multiList = [Room]() {
         didSet {
             switch presentingType {
             case .multi:
@@ -67,7 +67,7 @@ class LiveListVM: NSObject {
         }
     }
     
-    fileprivate var singleList = [RoomBrief](){
+    fileprivate var singleList = [Room](){
         didSet {
             switch presentingType {
             case .single:
@@ -78,7 +78,7 @@ class LiveListVM: NSObject {
         }
     }
     
-    fileprivate var pkList = [RoomBrief]() {
+    fileprivate var pkList = [Room]() {
         didSet {
             switch presentingType {
             case .pk:
@@ -89,7 +89,7 @@ class LiveListVM: NSObject {
         }
     }
     
-    fileprivate var virtualList = [RoomBrief]() {
+    fileprivate var virtualList = [Room]() {
         didSet {
             switch presentingType {
             case .virtual:
@@ -100,7 +100,7 @@ class LiveListVM: NSObject {
         }
     }
     
-    fileprivate var shoppingList = [RoomBrief]() {
+    fileprivate var shoppingList = [Room]() {
         didSet {
             switch presentingType {
             case .shopping:
@@ -128,7 +128,7 @@ class LiveListVM: NSObject {
         }
     }
     
-    var presentingList = BehaviorRelay(value: [RoomBrief]())
+    var presentingList = BehaviorRelay(value: [Room]())
 }
 
 extension LiveListVM {
@@ -158,7 +158,7 @@ extension LiveListVM {
             
             let object = try json.getDataObject()
             let jsonList = try object.getValue(of: "list", type: [StringAnyDic].self)
-            let list = try [RoomBrief](dicList: jsonList)
+            let list = try [Room](dicList: jsonList)
             
             switch requestListType {
             case .multi:
@@ -212,7 +212,7 @@ extension LiveListVM {
             try json.getCodeCheck()
             let object = try json.getDataObject()
             let jsonList = try object.getValue(of: "list", type: [StringAnyDic].self)
-            let list = try [RoomBrief](dicList: jsonList)
+            let list = try [Room](dicList: jsonList)
             
             switch requestListType {
             case .multi:

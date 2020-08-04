@@ -130,10 +130,10 @@ private extension TabSelectView {
                 }
                 strongSelf.selectedIndex.accept(tButton.tag)
                 
-                let offsetX = tButton.frame.maxX - strongSelf.frame.width
-                let offset = CGPoint(x: offsetX > 0 ? offsetX : 0,
-                                     y: 0)
-                strongSelf.setContentOffset(offset, animated: true)
+//                let offsetX = tButton.frame.maxX - strongSelf.frame.width
+//                let offset = CGPoint(x: offsetX > 0 ? offsetX : 0,
+//                                     y: 0)
+//                strongSelf.setContentOffset(offset, animated: true)
             }).disposed(by: bag)
         }
         
@@ -204,8 +204,12 @@ private extension TabSelectView {
         var offsetX: CGFloat = (x + w) - boundsWidth
         offsetX = offsetX >= 0 ? offsetX : 0
         
-        self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
-        
+        if (contentOffset.x + boundsWidth) < (x + w) {
+            self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+        } else if (contentOffset.x > x) {
+            self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+        }
+                
         UIView.animate(withDuration: 0.3) { [unowned self] in
             self.underline.frame = CGRect(x: x,
                                           y: y,

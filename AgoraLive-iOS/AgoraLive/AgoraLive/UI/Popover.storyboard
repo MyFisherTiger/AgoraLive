@@ -840,10 +840,6 @@
                                 </connections>
                             </tableViewCell>
                         </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="6r1-aL-F6x" id="zJ7-xh-0Q7"/>
-                            <outlet property="delegate" destination="6r1-aL-F6x" id="yzA-Va-EHs"/>
-                        </connections>
                     </tableView>
                     <connections>
                         <outlet property="musicLinkLabel" destination="XHn-kX-gIV" id="NXo-UC-Ixe"/>
@@ -1249,7 +1245,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="130" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bwc-hR-bxM">
-                                <rect key="frame" x="15" y="139" width="384" height="673"/>
+                                <rect key="frame" x="15" y="139" width="384" height="723"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="CVUserInvitationListCell" rowHeight="133" id="Pvz-Gc-tPo" customClass="CVUserInvitationListCell" customModule="AgoraLive" customModuleProvider="target">
@@ -1395,7 +1391,7 @@
                             <constraint firstItem="bwc-hR-bxM" firstAttribute="leading" secondItem="oH5-zo-9Q8" secondAttribute="leading" constant="15" id="O2v-G4-zMO"/>
                             <constraint firstItem="h47-HB-z0B" firstAttribute="top" secondItem="oH5-zo-9Q8" secondAttribute="top" constant="16" id="Yrz-2x-Yhy"/>
                             <constraint firstItem="oH5-zo-9Q8" firstAttribute="trailing" secondItem="w6g-Vf-87n" secondAttribute="trailing" constant="15" id="csf-0E-KJJ"/>
-                            <constraint firstItem="oH5-zo-9Q8" firstAttribute="bottom" secondItem="bwc-hR-bxM" secondAttribute="bottom" constant="50" id="fkh-wH-3uS"/>
+                            <constraint firstItem="oH5-zo-9Q8" firstAttribute="bottom" secondItem="bwc-hR-bxM" secondAttribute="bottom" id="fkh-wH-3uS"/>
                             <constraint firstItem="h47-HB-z0B" firstAttribute="centerX" secondItem="J5Z-lA-a7P" secondAttribute="centerX" id="le9-BD-SZI"/>
                             <constraint firstItem="d1v-zy-aMq" firstAttribute="top" secondItem="w6g-Vf-87n" secondAttribute="bottom" constant="13" id="rLJ-t7-D0t"/>
                             <constraint firstItem="w6g-Vf-87n" firstAttribute="leading" secondItem="oH5-zo-9Q8" secondAttribute="leading" constant="15" id="uTZ-Jx-0Q3"/>
@@ -1408,6 +1404,7 @@
                     <connections>
                         <outlet property="tabView" destination="d1v-zy-aMq" id="sQW-fz-upT"/>
                         <outlet property="tableView" destination="bwc-hR-bxM" id="GIh-80-kCs"/>
+                        <outlet property="tableViewBottom" destination="fkh-wH-3uS" id="Pc7-4D-YNP"/>
                         <outlet property="tableViewTop" destination="12i-QV-LAO" id="xw4-R7-NRN"/>
                         <outlet property="titleLabel" destination="h47-HB-z0B" id="IVk-zR-8xc"/>
                     </connections>

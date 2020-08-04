@@ -26,7 +26,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     private var pkView: PKViewController?
     private var roomListVM = LiveListVM()
     private var goodsVM = GoodsVM()
-    private var multiHostsVM = MultiHostsVM()
+    var multiHostsVM: MultiHostsVM!
     var pkVM: PKVM!
     
     // LiveViewController
@@ -268,7 +268,7 @@ extension LiveShoppingViewController {
                            handler1: { [unowned self] (_) in
                             self.pkVM.reject(invitation: battle)
             }) { [unowned self] (_) in
-                self.pkVM.accpet(invitation: battle)
+                self.pkVM.accept(invitation: battle)
             }
         }).disposed(by: bag)
         
@@ -450,7 +450,7 @@ private extension LiveShoppingViewController {
 //        }).disposed(by: bag)
         
 //        if let userListVC = userListVC {
-//            roomListVM.presentingList.map { (list) -> [RoomBrief] in
+//            roomListVM.presentingList.map { (list) -> [Room] in
 //                var newList = list
 //                let index = newList.firstIndex { (room) -> Bool in
 //                    return roomId == room.roomId

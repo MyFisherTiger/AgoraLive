@@ -18,7 +18,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
     
     private weak var seatVC: LiveSeatViewController?
     
-    private var multiHostsVM = MultiHostsVM()
+    var multiHostsVM: MultiHostsVM!
     var seatVM: LiveSeatVM!
     
     // LiveViewController
@@ -74,7 +74,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         
         liveSession(session)
         liveRoom(session: session)
-        liveRole(session: session)
+        multiHosts()
         audience()
         liveSeat(roomId: session.roomId)
         chatList()
@@ -182,10 +182,26 @@ extension MultiBroadcastersViewController {
             // seat state
             case .release, .close:
                 let handler: ((UIAlertAction) -> Void)? = { [unowned self] (_) in
-                    self.seatVM.update(state: action.command == .release ? .empty : .close,
-                                       index: action.seat.index,
-                                       of: roomId) { [unowned self] (_) in
-                                        self.showTextToast(text: "update seat fail")
+                    let update = { [unowned self] in
+                        self.seatVM.update(state: action.command == .release ? .empty : .close,
+                                           index: action.seat.index,
+                                           of: roomId) { [unowned self] (_) in
+                                            self.showTextToast(text: "update seat fail")
+                        }
+                    }
+                    
+                    if action.command == .release {
+                        update()
+                    } else {
+                        if let user = action.seat.user {
+                            self.multiHostsVM.forceEndBroadcasting(user: user, on: action.seat.index, success: {
+                                update()
+                            }) { [unowned self] (_) in
+                                self.showTextToast(text: "owner end broadcasting fail")
+                            }
+                        } else {
+                            update()
+                        }
                     }
                 }
                 
@@ -200,9 +216,19 @@ extension MultiBroadcastersViewController {
             // owner
             case .invitation:
                 self.presentInvitationList { (user) in
-                    self.multiHostsVM.sendInvitation(to: user, on: action.seat.index, of: roomId) { (_) in
-                        self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
+                    self.hiddenMaskView()
+                    
+                    let handler: ((UIAlertAction) -> Void)? = { [unowned self] (_) in
+                        self.multiHostsVM.sendInvitation(to: user, on: action.seat.index) { (_) in
+                            self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
+                        }
                     }
+                    let message = self.alertMessageOfSeatCommand(action.command, with: user.info.name)
+                    self.showAlert(action.command.description,
+                                   message: message,
+                                   action1: NSLocalizedString("Cancel"),
+                                   action2: NSLocalizedString("Confirm"),
+                                   handler2: handler)
                 }
             case .ban, .unban, .forceToAudience:
                 guard let user = action.seat.user else {
@@ -224,8 +250,7 @@ extension MultiBroadcastersViewController {
                         }
                     } else if action.command == .forceToAudience {
                         self.multiHostsVM.forceEndBroadcasting(user: user,
-                                                               on: action.seat.index,
-                                                               of: roomId) { (_) in
+                                                               on: action.seat.index) { (_) in
                                                                 self.showTextToast(text: "force user end broadcasting")
                         }
                     }
@@ -250,7 +275,7 @@ extension MultiBroadcastersViewController {
                                         return
                                 }
                                 
-                                self.multiHostsVM.endBroadcasting(seatIndex: action.seat.index, user: user, of: roomId)
+                                self.multiHostsVM.endBroadcasting(seatIndex: action.seat.index, user: user)
                                 session.broadcasterToAudience()
                 }
             // audience
@@ -258,7 +283,7 @@ extension MultiBroadcastersViewController {
                 let application = MultiHostsVM.Application(seatIndex: action.seat.index,
                                                            initiator: session.role,
                                                            receiver: session.owner.value.user)
-                self.multiHostsVM.send(application: application, of: roomId) { (_) in
+                self.multiHostsVM.send(application: application) { (_) in
                     self.showTextToast(text: "send application fail")
                 }
             }
@@ -278,8 +303,8 @@ extension MultiBroadcastersViewController {
         vc.showType = .multiHosts
         vc.view.cornerRadius(10)
         
-        let presenetedHeight: CGFloat = 526.0
-        let y = UIScreen.main.bounds.height - presenetedHeight - UIScreen.main.heightOfSafeAreaTop
+        let presenetedHeight: CGFloat = 526.0 + UIScreen.main.heightOfSafeAreaTop
+        let y = UIScreen.main.bounds.height - presenetedHeight
         let presentedFrame = CGRect(x: 0,
                                     y: y,
                                     width: UIScreen.main.bounds.width,
@@ -326,17 +351,15 @@ private extension MultiBroadcastersViewController {
         self.roomNameLabel.text = session.settings.title
     }
     
-    func liveRole(session: LiveSession) {
-        let roomId = session.roomId
-        
+    func multiHosts() {
         // owner
         multiHostsVM.receivedApplication.subscribe(onNext: { (application) in
             self.showAlert(message: "\"\(application.initiator.info.name)\" " + NSLocalizedString("Apply_For_Broadcasting"),
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Confirm"), handler1: { (_) in
-                            self.multiHostsVM.reject(application: application, of: roomId)
+                            self.multiHostsVM.reject(application: application)
             }) {[unowned self] (_) in
-                self.multiHostsVM.accept(application: application, of: roomId)
+                self.multiHostsVM.accept(application: application)
             }
         }).disposed(by: bag)
         
@@ -355,6 +378,12 @@ private extension MultiBroadcastersViewController {
             } else {
                 self.showTextToast(text: "Owner forced you to becmoe a audience")
             }
+            
+            guard let session = ALCenter.shared().liveSession else {
+                return
+            }
+            
+            session.broadcasterToAudience()
         }).disposed(by: bag)
         
         // audience
@@ -364,9 +393,15 @@ private extension MultiBroadcastersViewController {
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Confirm"),
                            handler1: {[unowned self] (_) in
-                            self.multiHostsVM.reject(invitation: invitation, of: roomId)
+                            self.multiHostsVM.reject(invitation: invitation)
             }) {[unowned self] (_) in
-                self.multiHostsVM.accept(invitation: invitation, of: roomId) { (_) in
+                self.multiHostsVM.accept(invitation: invitation, success: {
+                    guard let session = ALCenter.shared().liveSession else {
+                        return
+                    }
+                    
+                    session.audienceToBroadcaster()
+                }) { [unowned self] (_) in
                     self.showTextToast(text: "accept invitation fail")
                 }
             }
@@ -432,6 +467,12 @@ private extension MultiBroadcastersViewController {
             }
         case .release:
             return NSLocalizedString("Seat_Release_Description")
+        case .invitation:
+            if DeviceAssistant.Language.isChinese {
+                return "你是否要邀请\"\(userName!)\"上麦?"
+            } else {
+                return "Do you want to invite \"\(userName!)\" to co-video?"
+            }
         default:
             assert(false)
             return ""

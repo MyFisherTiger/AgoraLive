@@ -42,10 +42,18 @@ class CVUserInvitationListCell: UITableViewCell {
                 inviteButton.isHidden = false
                 inviteButton.isEnabled = false
                 inviteButton.setTitle(NSLocalizedString("Inviting"), for: .disabled)
+                inviteButton.setTitleColor(.white, for: .normal)
+                inviteButton.backgroundColor = UIColor(hexString: "#CCCCCC")
+                inviteButton.cornerRadius(16)
             case .avaliableInvite:
                 inviteButton.isHidden = false
                 inviteButton.isEnabled = true
                 inviteButton.setTitle(NSLocalizedString("Invite"), for: .normal)
+                inviteButton.setTitleColor(UIColor(hexString: "#0088EB"), for: .normal)
+                inviteButton.backgroundColor = .white
+                inviteButton.layer.borderWidth = 2
+                inviteButton.layer.borderColor = UIColor(hexString: "#CCCCCC").cgColor
+                inviteButton.cornerRadius(16)
             }
         }
     }
@@ -100,6 +108,7 @@ class CVUserListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tabView: TabSelectView!
     @IBOutlet weak var tableViewTop: NSLayoutConstraint!
+    @IBOutlet weak var tableViewBottom: NSLayoutConstraint!
     
     enum ShowType {
         case multiHosts, pk, onlyUser
@@ -111,16 +120,17 @@ class CVUserListViewController: UIViewController {
     
     // Rx
     private(set) var userList = BehaviorRelay(value: [LiveRole]())
-    private(set) var roomList = BehaviorRelay(value: [RoomBrief]())
+    private(set) var roomList = BehaviorRelay(value: [Room]())
     
     let inviteUser = PublishRelay<LiveRole>()
     
     let rejectApplicationOfUser = PublishRelay<LiveRole>()
     let accepteApplicationOfUser = PublishRelay<LiveRole>()
     
-    let inviteRoom = PublishRelay<RoomBrief>()
+    let inviteRoom = PublishRelay<Room>()
     
     var showType: ShowType = .onlyUser
+    
     
     var userListVM: LiveUserListVM!
     var roomListVM: LiveListVM!
@@ -129,6 +139,8 @@ class CVUserListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = 48
+        tableViewBottom.constant = UIScreen.main.heightOfSafeAreaBottom
+        
         tabView.underlineWidth = 68
         tabView.alignment = .center
         tabView.titleSpace = 80
