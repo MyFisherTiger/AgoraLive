@@ -46,7 +46,6 @@
 		A754FAF6242C9B700062B2F5 /* LiveSeatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */; };
 		A7584B09248114EA0088FACB /* VirtualBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7584B08248114EA0088FACB /* VirtualBroadcastersViewController.swift */; };
 		A7584B4B2484DB290088FACB /* VirtualVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7584B4A2484DB290088FACB /* VirtualVM.swift */; };
-		A758851E242DF20E0011FCCF /* UserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A758851D242DF20E0011FCCF /* UserListViewController.swift */; };
 		A7588528242E01C10011FCCF /* BottomToolsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7588527242E01C10011FCCF /* BottomToolsViewController.swift */; };
 		A75A56D124A054C100D0089E /* FUClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A75A56D024A054C100D0089E /* FUClient.m */; };
 		A75D5B2A244FE77D00CE7528 /* CSNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D5B29244FE77D00CE7528 /* CSNavigationController.swift */; };
@@ -210,7 +209,6 @@
 		A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSeatVM.swift; sourceTree = "<group>"; };
 		A7584B08248114EA0088FACB /* VirtualBroadcastersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualBroadcastersViewController.swift; sourceTree = "<group>"; };
 		A7584B4A2484DB290088FACB /* VirtualVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualVM.swift; sourceTree = "<group>"; };
-		A758851D242DF20E0011FCCF /* UserListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewController.swift; sourceTree = "<group>"; };
 		A7588527242E01C10011FCCF /* BottomToolsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomToolsViewController.swift; sourceTree = "<group>"; };
 		A75A56CF24A054C100D0089E /* FUClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FUClient.h; sourceTree = "<group>"; };
 		A75A56D024A054C100D0089E /* FUClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FUClient.m; sourceTree = "<group>"; };
@@ -443,7 +441,6 @@
 				A791F33B2428A014008D8BC9 /* GiftAudienceViewController.swift */,
 				A7588527242E01C10011FCCF /* BottomToolsViewController.swift */,
 				A791F340242B0ADF008D8BC9 /* ChatViewController.swift */,
-				A758851D242DF20E0011FCCF /* UserListViewController.swift */,
 				A71AAF17243354C500820096 /* MusicViewController.swift */,
 				A71AAF222434C09500820096 /* ExtensionViewController.swift */,
 				A71AAF292435D8BE00820096 /* RealDataViewController.swift */,
@@ -1109,7 +1106,6 @@
 				A7952AC124162C1000479811 /* ioapi_mem.c in Sources */,
 				A7952A49241624C800479811 /* MediaSettingsViewController.swift in Sources */,
 				A7952AAA24162C1000479811 /* LogTube.swift in Sources */,
-				A758851E242DF20E0011FCCF /* UserListViewController.swift in Sources */,
 				A7952AB624162C1000479811 /* MediaModels.swift in Sources */,
 				A72B7BE8244459F000E965FB /* PKBroadcastersViewController.swift in Sources */,
 				A791F33A242898DC008D8BC9 /* MultiBroadcastersViewController.swift in Sources */,

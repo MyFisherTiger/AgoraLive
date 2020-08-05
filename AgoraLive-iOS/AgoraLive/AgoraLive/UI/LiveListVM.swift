@@ -33,25 +33,16 @@ struct Room {
         self.roomId = try dic.getStringValue(of: "roomId")
         self.imageURL = try dic.getStringValue(of: "thumbnail")
         self.personCount = try dic.getIntValue(of: "currentUsers")
+        
+        let ownerUserId = try dic.getStringValue(of: "ownerUserId")
         let ownerAgoraUid = try dic.getIntValue(of: "ownerUid")
         
-        let info = BasicUserInfo(userId: "", name: "")
+        let info = BasicUserInfo(userId: ownerUserId, name: "")
         let owner = LiveRoleItem(type: .owner, info: info, permission: [.camera, .mic, .chat], agUId: ownerAgoraUid)
         self.owner = owner
         
         #warning("next version")
         self.imageIndex = Int(Int64(self.roomId)! % 12)
-    }
-}
-
-fileprivate extension Array where Element == Room {
-    init(dicList: [StringAnyDic]) throws {
-        var array = [Room]()
-        for item in dicList {
-            let room = try Room(dic: item)
-            array.append(room)
-        }
-        self = array
     }
 }
 
@@ -241,5 +232,16 @@ extension LiveListVM {
         }
         
         client.request(task: task, success: response, failRetry: retry)
+    }
+}
+
+fileprivate extension Array where Element == Room {
+    init(dicList: [StringAnyDic]) throws {
+        var array = [Room]()
+        for item in dicList {
+            let room = try Room(dic: item)
+            array.append(room)
+        }
+        self = array
     }
 }

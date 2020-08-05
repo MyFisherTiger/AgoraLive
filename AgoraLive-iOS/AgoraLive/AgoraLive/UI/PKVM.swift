@@ -11,10 +11,18 @@ import RxSwift
 import RxRelay
 import AlamoClient
 
-struct Battle {
-    var id: String
+struct Battle: TimestampModel {
+    var id: Int
+    var timestamp: TimeInterval
     var initatorRoom: Room
     var receiverRoom: Room
+    
+    init(id: Int, initatorRoom: Room, receiverRoom: Room) {
+        self.id = id
+        self.initatorRoom = initatorRoom
+        self.receiverRoom = receiverRoom
+        self.timestamp = NSDate().timeIntervalSince1970
+    }
 }
 
 struct PKInfo {
@@ -106,9 +114,20 @@ fileprivate enum RelayState {
 }
 
 class PKVM: NSObject {
-    private var room: Room
+    private let bag = DisposeBag()
+    
     fileprivate var relayState = RelayState.none
     private(set) var mediaRelayConfiguration: MediaRelayConfiguration?
+    private var room: Room
+    private var type: LiveType
+    
+    let invitationQueue = TimestampQueue(name: "pk-invitation")
+    let applicationQueue = TimestampQueue(name: "pk-application")
+    
+    let invitingRoomList = BehaviorRelay(value: [Room]())
+    let applyingRoomList = BehaviorRelay(value: [Room]())
+    
+    let availableRooms = BehaviorRelay(value: [Room]())
     
     let requestError = PublishRelay<String>()
     
@@ -120,7 +139,8 @@ class PKVM: NSObject {
     let state = BehaviorRelay(value: PKState.none)
     let event = PublishRelay<PKEvent>()
     
-    init(room: Room, state: StringAnyDic) throws {
+    init(room: Room, type: LiveType = .pk, state: StringAnyDic) throws {
+        self.type = type
         self.room = room
         super.init()
         try self.parseJson(dic: state)
@@ -128,19 +148,33 @@ class PKVM: NSObject {
     }
     
     func sendInvitationTo(room: Room) {
-        request(type: 1, roomId: self.room.roomId, to: room.roomId) { [unowned self] (_) in
+        request(type: 1, roomId: self.room.roomId, to: room.roomId, success: { [weak self] (json) in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            let id = try json.getIntValue(of: "data")
+            let invitation = Battle(id: id,
+                                    initatorRoom: strongSelf.room,
+                                    receiverRoom: room)
+            strongSelf.invitationQueue.append(invitation)
+        }) { [unowned self] (_) in
             self.requestError.accept("pk invitation fail")
         }
     }
     
     func accept(invitation: Battle) {
-        request(type: 2, roomId: self.room.roomId, to: invitation.initatorRoom.roomId) { [unowned self] (_) in
-            self.requestError.accept("pk accept fail")
+        request(type: 2, roomId: room.roomId, to: invitation.initatorRoom.roomId, success: { (json) in
+            self.applicationQueue.remove(invitation)
+        }) { [unowned self] (_) in
+            self.requestError.accept("pk accpet fail")
         }
     }
     
     func reject(invitation: Battle) {
-        request(type: 3, roomId: room.roomId, to: invitation.initatorRoom.roomId) { [unowned self] (_) in
+        request(type: 3, roomId: room.roomId, to: invitation.initatorRoom.roomId, success: { (json) in
+            self.applicationQueue.remove(invitation)
+        }) { [unowned self] (_) in
             self.requestError.accept("pk reject fail")
         }
     }
@@ -206,28 +240,53 @@ private extension PKVM {
             
             let data = try json.getDataObject()
             let type = try data.getIntValue(of: "type")
+            let id = try data.getIntValue(of: "processId")
             let room = try data.getDictionaryValue(of: "fromRoom")
             let remoteRoom = try Room(dic: room)
             
             // 1.邀请pk 2接受pk 3拒绝pk 4超时
             switch type {
-                //
             case 1:
-                let battle = Battle(id: "", initatorRoom: remoteRoom, receiverRoom: strongSelf.room)
+                let battle = Battle(id: id, initatorRoom: remoteRoom, receiverRoom: strongSelf.room)
                 strongSelf.receivedInvitation.accept(battle)
             case 2:
-                let battle = Battle(id: "", initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
+                let battle = Battle(id: id, initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
                 strongSelf.invitationIsByAccepted.accept(battle)
             case 3:
-                let battle = Battle(id: "", initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
+                let battle = Battle(id: id, initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
                 strongSelf.invitationIsByRejected.accept(battle)
             case 4:
-//                let battle = Battle(id: "", initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
-                break
+                let battle = Battle(id: id, initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
+                strongSelf.invitationQueue.remove(battle)
+                strongSelf.applicationQueue.remove(battle)
             default:
                 break
             }
         }
+        
+        invitationQueue.queueChanged.subscribe(onNext: { [unowned self] (list) in
+            guard let tList = list as? [Battle] else {
+                return
+            }
+            
+            let rooms = tList.map { (invitation) -> Room in
+                return invitation.receiverRoom
+            }
+            
+            self.invitingRoomList.accept(rooms)
+        }).disposed(by: bag)
+        
+        applicationQueue.queueChanged.subscribe(onNext: { [unowned self] (list) in
+            guard let tList = list as? [Battle] else {
+                return
+            }
+            
+            let rooms = tList.map { (invitation) -> Room in
+                return invitation.initatorRoom
+            }
+            
+            self.applyingRoomList.accept(rooms)
+        }).disposed(by: bag)
     }
     
     func parseJson(dic: StringAnyDic) throws {
@@ -324,5 +383,107 @@ private extension PKVM {
     func stopRelayingMediaStream() {
         let media = ALCenter.shared().centerProvideMediaHelper()
         media.stopRelayingMediaStream()
+    }
+}
+
+extension PKVM {
+    func fetch(count: Int = 10, success: Completion = nil, fail: Completion = nil) {
+        guard let lastRoom = self.availableRooms.value.last else {
+            return
+        }
+        
+        let client = ALCenter.shared().centerProvideRequestHelper()
+        let parameters: StringAnyDic = ["nextId": lastRoom.roomId,
+                                        "count": count,
+                                        "type": type.rawValue,
+                                        "pkState": 0]
+        
+        let url = URLGroup.roomPage
+        let event = RequestEvent(name: "room-page")
+        let task = RequestTask(event: event,
+                               type: .http(.get, url: url),
+                               timeout: .low,
+                               header: ["token": ALKeys.ALUserToken],
+                               parameters: parameters)
+        
+        let successCallback: DicEXCompletion = { [weak self] (json: ([String: Any])) in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            let object = try json.getDataObject()
+            let jsonList = try object.getValue(of: "list", type: [StringAnyDic].self)
+            let list = try [Room](dicList: jsonList)
+            strongSelf.availableRooms.accept(list)
+            
+            if let success = success {
+                success()
+            }
+        }
+        let response = ACResponse.json(successCallback)
+        
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
+            if let fail = fail {
+                fail()
+            }
+            return .resign
+        }
+        
+        client.request(task: task, success: response, failRetry: retry)
+    }
+    
+    func refetch(success: Completion = nil, fail: Completion = nil) {
+        let client = ALCenter.shared().centerProvideRequestHelper()
+        
+        let currentCount = availableRooms.value.count <= 10 ? 10 : availableRooms.value.count
+        let parameters: StringAnyDic = ["count": currentCount,
+                                        "type": type.rawValue,
+                                        "pkState": 0]
+        
+        let url = URLGroup.roomPage
+        let event = RequestEvent(name: "room-page-refetch")
+        let task = RequestTask(event: event,
+                               type: .http(.get, url: url),
+                               timeout: .low,
+                               header: ["token": ALKeys.ALUserToken],
+                               parameters: parameters)
+        
+        let successCallback: DicEXCompletion = { [weak self] (json: ([String: Any])) in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            try json.getCodeCheck()
+            let object = try json.getDataObject()
+            let jsonList = try object.getValue(of: "list", type: [StringAnyDic].self)
+            let list = try [Room](dicList: jsonList)
+            
+            strongSelf.availableRooms.accept(list)
+            
+            if let success = success {
+                success()
+            }
+        }
+        let response = ACResponse.json(successCallback)
+        
+        let retry: ACErrorRetryCompletion = { (error: Error) -> RetryOptions in
+            if let fail = fail {
+                fail()
+            }
+            return .resign
+        }
+        
+        client.request(task: task, success: response, failRetry: retry)
+    }
+}
+
+fileprivate extension Array where Element == Room {
+    init(dicList: [StringAnyDic]) throws {
+        var array = [Room]()
+        for item in dicList {
+            let room = try Room(dic: item)
+            array.append(room)
+        }
+        self = array
     }
 }

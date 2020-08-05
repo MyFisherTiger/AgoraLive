@@ -38,17 +38,9 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     var bag: DisposeBag = DisposeBag()
     
     // ViewController
-    var userListVC: UserListViewController?
     var giftAudienceVC: GiftAudienceViewController?
-    var chatVC: ChatViewController?
     var bottomToolsVC: BottomToolsViewController?
-    var beautyVC: BeautySettingsViewController?
-    var musicVC: MusicViewController?
-    var dataVC: RealDataViewController?
-    var extensionVC: ExtensionViewController?
-    var mediaSettingsNavi: UIViewController?
-    var giftVC: GiftViewController?
-    var gifVC: GIFViewController?
+    var chatVC: ChatViewController?
     
     // View
     @IBOutlet weak var personCountView: RemindIconTextView!
@@ -72,8 +64,6 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     var deviceVM = MediaDeviceVM()
     var playerVM = PlayerVM()
     var enhancementVM = VideoEnhancementVM()
-    var seatVM: LiveSeatVM!
-    var virtualVM: VirtualVM!
     var monitor = NetworkMonitor(host: "www.apple.com")
     
     override func viewDidLoad() {

@@ -279,9 +279,14 @@ extension MultiBroadcastersViewController {
                 }
             // audience
             case .application:
-                self.multiHostsVM.sendApplication(by: session.role,
-                                                  for: action.seat.index) { [unowned self] (_) in
-                                                    self.showTextToast(text: "send application fail")
+                self.showAlert(action.command.description,
+                               message: NSLocalizedString("Confirm_Apply_For_Broadcasting"),
+                               action1: NSLocalizedString("Cancel"),
+                               action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                                self.multiHostsVM.sendApplication(by: session.role,
+                                                                  for: action.seat.index) { [unowned self] (_) in
+                                                                    self.showTextToast(text: "send application fail")
+                                }
                 }
             }
         }).disposed(by: bag)

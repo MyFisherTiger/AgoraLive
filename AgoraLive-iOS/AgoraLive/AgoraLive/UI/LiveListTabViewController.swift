@@ -348,6 +348,7 @@ extension LiveListTabViewController {
         }) { [unowned self] in
             self.hiddenHUD()
             self.showAlert(message:"join live fail")
+            self.roomListRefresh()
         }
     }
 }

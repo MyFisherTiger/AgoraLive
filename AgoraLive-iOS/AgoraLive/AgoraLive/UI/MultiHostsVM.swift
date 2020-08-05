@@ -152,7 +152,7 @@ extension MultiHostsVM {
     func sendApplication(by local: LiveRole, for seatIndex: Int, fail: ErrorCompletion = nil) {
         request(seatIndex: seatIndex,
                 type: 2,
-                userId: "\(local.info.userId)",
+                userId: "\(room.owner.info.userId)",
                 roomId: room.roomId,
                 fail: fail)
     }

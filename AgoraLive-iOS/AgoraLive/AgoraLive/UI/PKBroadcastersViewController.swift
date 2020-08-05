@@ -137,7 +137,6 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
     @IBOutlet weak var chatViewHeight: NSLayoutConstraint!
     
     private var pkView: PKViewController?
-    private var roomListVM = LiveListVM()
     var pkVM: PKVM!
     
     // LiveViewController
@@ -149,17 +148,9 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
     var bag: DisposeBag = DisposeBag()
     
     // ViewController
-    var userListVC: UserListViewController?
     var giftAudienceVC: GiftAudienceViewController?
-    var chatVC: ChatViewController?
     var bottomToolsVC: BottomToolsViewController?
-    var beautyVC: BeautySettingsViewController?
-    var musicVC: MusicViewController?
-    var dataVC: RealDataViewController?
-    var extensionVC: ExtensionViewController?
-    var mediaSettingsNavi: UIViewController?
-    var giftVC: GiftViewController?
-    var gifVC: GIFViewController?
+    var chatVC: ChatViewController?
     
     // View
     @IBOutlet weak var personCountView: RemindIconTextView!
@@ -259,6 +250,7 @@ extension PKBroadcastersViewController {
             self.deviceVM.camera = owner.isLocal ? .on : .off
             self.deviceVM.mic = owner.isLocal ? .on : .off
             self.pkView?.intoOtherButton.isHidden = owner.isLocal
+            print("isLocal: \(owner.isLocal)")
             self.pkButton.isHidden = !owner.isLocal
         }).disposed(by: bag)
         
@@ -286,11 +278,9 @@ extension PKBroadcastersViewController {
     func PK(session: LiveSession) {
         // View
         pkButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.showMaskView(color: UIColor.clear) { [unowned self] in
-                self.userListVC = nil
+            self.presentInvitationList { (room) in
+                
             }
-            
-            self.presentInvitationList()
         }).disposed(by: bag)
         
         pkView?.intoOtherButton.rx.tap.subscribe(onNext: { [unowned self] in
@@ -323,7 +313,7 @@ extension PKBroadcastersViewController {
             self.pkContainerView.isHidden = !state.isDuration
             
             let owner = session.owner.value
-            self.pkButton.isHidden = owner.isLocal
+            self.pkButton.isHidden = !owner.isLocal
             
             switch state {
             case .duration(let info):
@@ -432,76 +422,32 @@ private extension PKBroadcastersViewController {
         }
     }
     
-    func presentInvitationList() {
-        guard let session = ALCenter.shared().liveSession else {
-                assert(false)
-                return
-        }
+    func presentInvitationList(selected: ((Room) -> Void)? = nil) {
+        self.showMaskView(color: UIColor.clear)
         
-        let roomId = session.room.roomId
+        let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
+                                                 class: CVUserListViewController.self,
+                                                 on: "Popover")
         
-        let vc = UIStoryboard.initViewController(of: "UserListViewController",
-                                                       class: UserListViewController.self,
-                                                       on: "Popover")
-        
-        self.userListVC = vc
-        
+        vc.pkVM = pkVM
         vc.showType = .pk
         vc.view.cornerRadius(10)
         
-        let presenetedHeight: CGFloat = UIScreen.main.heightOfSafeAreaTop + 526.0 + 50.0
+        let presenetedHeight: CGFloat = 526.0 + UIScreen.main.heightOfSafeAreaTop
         let y = UIScreen.main.bounds.height - presenetedHeight
         let presentedFrame = CGRect(x: 0,
                                     y: y,
                                     width: UIScreen.main.bounds.width,
                                     height: presenetedHeight)
         
+        vc.inviteRoom.subscribe(onNext: { (room) in
+            if let selected = selected {
+                selected(room)
+            }
+        }).disposed(by: bag)
+        
         self.presentChild(vc,
                           animated: true,
                           presentedFrame: presentedFrame)
-        
-        // Room List
-        roomListVM.presentingType = .pk
-        roomListVM.refetch()
-        
-        vc.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned vc] in
-            self.roomListVM.refetch(success: {
-                vc.tableView.mj_header?.endRefreshing()
-            }) { [unowned vc] in // fail
-                vc.tableView.mj_header?.endRefreshing()
-            }
-        })
-        
-        vc.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned vc] in
-            self.roomListVM.fetch(success: {
-                vc.tableView.mj_footer?.endRefreshing()
-            }) { [unowned vc] in // fail
-                vc.tableView.mj_footer?.endRefreshing()
-            }
-        })
-        
-        vc.selectedInviteRoom.subscribe(onNext: { [unowned self] (room) in
-            self.hiddenMaskView()
-            self.userListVC = nil
-            
-//            self.pkVM.sendInvitationTo(room: room) { [unowned self] (error) in
-//                self.showTextToast(text: NSLocalizedString("PK_Invite_Fail"))
-//            }
-        }).disposed(by: bag)
-        
-        if let userListVC = userListVC {
-            roomListVM.presentingList.map { (list) -> [Room] in
-                var newList = list
-                let index = newList.firstIndex { (room) -> Bool in
-                    return roomId == room.roomId
-                }
-                
-                if let index = index {
-                    newList.remove(at: index)
-                }
-                
-                return newList
-            }.bind(to: userListVC.roomList).disposed(by: bag)
-        }
     }
 }

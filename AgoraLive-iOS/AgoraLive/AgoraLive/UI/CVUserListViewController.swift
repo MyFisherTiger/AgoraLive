@@ -22,7 +22,7 @@ protocol CVUserApplicationListCellDelegate: NSObjectProtocol {
 
 class CVUserInvitationListCell: UITableViewCell {
     enum InviteButtonState {
-        case none, inviting, avaliableInvite
+        case none, inviting, availableInvite
     }
     
     @IBOutlet var headImageView: UIImageView!
@@ -45,7 +45,7 @@ class CVUserInvitationListCell: UITableViewCell {
                 inviteButton.setTitleColor(.white, for: .normal)
                 inviteButton.backgroundColor = UIColor(hexString: "#CCCCCC")
                 inviteButton.cornerRadius(16)
-            case .avaliableInvite:
+            case .availableInvite:
                 inviteButton.isHidden = false
                 inviteButton.isEnabled = true
                 inviteButton.setTitle(NSLocalizedString("Invite"), for: .normal)
@@ -133,8 +133,9 @@ class CVUserListViewController: UIViewController {
     
     
     var userListVM: LiveUserListVM!
-    var roomListVM: LiveListVM!
     var multiHostsVM: MultiHostsVM!
+    
+    var pkVM: PKVM!
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -196,7 +197,9 @@ class CVUserListViewController: UIViewController {
                 }
             }).disposed(by: bag)
         case .pk:
-            break
+            tabView.selectedIndex.subscribe(onNext: { (index) in
+                
+            }).disposed(by: bag)
         }
                 
         tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self] in
@@ -248,7 +251,7 @@ private extension CVUserListViewController {
         let subscribe = userListVM.list.bind(to: tableView
             .rx.items(cellIdentifier: "CVUserInvitationListCell",
                       cellType: CVUserInvitationListCell.self)) { [unowned images, unowned self] (index, user, cell) in
-                        var buttonState = CVUserInvitationListCell.InviteButtonState.avaliableInvite
+                        var buttonState = CVUserInvitationListCell.InviteButtonState.availableInvite
                         
                         for item in self.multiHostsVM.invitingUserList.value where user.info.userId == item.info.userId {
                             buttonState = .inviting
@@ -272,11 +275,49 @@ private extension CVUserListViewController {
     func tableViewBindWithApplicationsFromUser() -> Disposable {
         let images = ALCenter.shared().centerProvideImagesHelper()
         
-        let subscribe =  multiHostsVM.applyingUserList.bind(to: tableView
+        let subscribe = multiHostsVM.applyingUserList.bind(to: tableView
             .rx.items(cellIdentifier: "CVUserApplicationListCell",
                       cellType: CVUserApplicationListCell.self)) { [unowned images, unowned self] (index, user, cell) in
                         cell.nameLabel.text = user.info.name
                         cell.headImageView.image = images.getHead(index: user.info.imageIndex)
+                        cell.index = index
+                        cell.delegate = self
+        }
+        
+        return subscribe
+    }
+    
+    func tableViewBindWithAvailableRooms() -> Disposable {
+        let images = ALCenter.shared().centerProvideImagesHelper()
+        
+        let subscribe = pkVM.availableRooms.bind(to: tableView
+            .rx.items(cellIdentifier: "CVUserInvitationListCell",
+                      cellType: CVUserInvitationListCell.self)) { [unowned images, unowned self] (index, room, cell) in
+                        var buttonState = CVUserInvitationListCell.InviteButtonState.availableInvite
+                        
+                        for item in self.pkVM.invitingRoomList.value where room.roomId == item.roomId {
+                            buttonState = .inviting
+                            break
+                        }
+                        
+                        cell.nameLabel.text = room.name
+                        cell.buttonState = buttonState
+                        cell.headImageView.image = images.getRoom(index: room.imageIndex)
+                        cell.index = index
+                        cell.delegate = self
+        }
+        
+        return subscribe
+    }
+    
+    func tableViewBindWithApplicationsFromRom() -> Disposable {
+        let images = ALCenter.shared().centerProvideImagesHelper()
+        
+        let subscribe = pkVM.applyingRoomList.bind(to: tableView
+            .rx.items(cellIdentifier: "CVUserApplicationListCell",
+                      cellType: CVUserApplicationListCell.self)) { [unowned images, unowned self] (index, room, cell) in
+                        cell.nameLabel.text = room.name
+                        cell.headImageView.image = images.getRoom(index: room.imageIndex)
                         cell.index = index
                         cell.delegate = self
         }

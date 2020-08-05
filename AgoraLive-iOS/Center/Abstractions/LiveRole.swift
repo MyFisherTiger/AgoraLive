@@ -72,8 +72,14 @@ struct LiveRoleItem: LiveRole {
     
     init(dic: StringAnyDic) throws {
         self.info = try BasicUserInfo(dic: dic)
-        self.agUId = try dic.getIntValue(of: "uid")
+        
         self.type = try dic.getEnum(of: "role", type: LiveRoleType.self)
+        
+        if let agUId = try? dic.getIntValue(of: "uid") {
+            self.agUId = agUId
+        } else {
+            self.agUId = 0
+        }
         
         if let permission = try? LivePermission.permission(dic: dic) {
             self.permission = permission
