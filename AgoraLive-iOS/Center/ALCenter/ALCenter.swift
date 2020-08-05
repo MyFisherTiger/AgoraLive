@@ -192,6 +192,8 @@ extension ALCenter: ACLogTube {
         var description: String
         if let cError = error as? ACError {
             description = cError.localizedDescription
+        } else if let aError = error as? AGEError {
+            description = aError.localizedDescription
         } else {
             description = error.localizedDescription
         }

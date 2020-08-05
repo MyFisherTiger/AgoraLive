@@ -9,5 +9,6 @@
 import UIKit
 
 protocol TimestampModel {
+    var id: Int {get set}
     var timestamp: TimeInterval {get set}
 }

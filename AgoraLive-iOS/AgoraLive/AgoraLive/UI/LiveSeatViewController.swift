@@ -292,8 +292,8 @@ class LiveSeatViewController: UIViewController {
         return self.view as! AGEVideoContainer
     }
     
-    private(set) var userRender = PublishRelay<(view: UIView, user: LiveBroadcaster)>()
-    private(set) var userAudioSilence = PublishRelay<LiveBroadcaster>()
+    private(set) var userRender = PublishRelay<(view: UIView, user: LiveRoleItem)>()
+    private(set) var userAudioSilence = PublishRelay<LiveRoleItem>()
     private(set) var actionFire = PublishRelay<LiveSeatAction>()
     
     var perspective: LiveRoleType = .audience

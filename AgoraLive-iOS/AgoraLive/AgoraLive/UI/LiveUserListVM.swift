@@ -15,11 +15,11 @@ fileprivate enum UserJoinOrLeft: Int {
     case left, join
 }
 
-fileprivate extension Array where Element == (UserJoinOrLeft, LiveAudience) {
+fileprivate extension Array where Element == (UserJoinOrLeft, LiveRoleItem) {
     init(list: [StringAnyDic]) throws {
-        var array = [(UserJoinOrLeft, LiveAudience)]()
+        var array = [(UserJoinOrLeft, LiveRoleItem)]()
         for item in list {
-            let user = try LiveAudience(dic: item)
+            let user = try LiveRoleItem(dic: item)
             let join = try item.getEnum(of: "state", type: UserJoinOrLeft.self)
             array.append((join, user))
         }
@@ -27,11 +27,11 @@ fileprivate extension Array where Element == (UserJoinOrLeft, LiveAudience) {
     }
 }
 
-fileprivate extension Array where Element == LiveAudience {
+fileprivate extension Array where Element == LiveRoleItem {
     init(dicList: [StringAnyDic]) throws {
-        var array = [LiveAudience]()
+        var array = [LiveRoleItem]()
         for item in dicList {
-            let user = try LiveAudience(dic: item)
+            let user = try LiveRoleItem(dic: item)
             array.append(user)
         }
         self = array
@@ -41,13 +41,13 @@ fileprivate extension Array where Element == LiveAudience {
 class LiveUserListVM: NSObject {
     private var room: Room
     
-    var giftList = BehaviorRelay(value: [LiveAudience]())
+    var giftList = BehaviorRelay(value: [LiveRoleItem]())
     
     var list = BehaviorRelay(value: [LiveRole]())
-    var audienceList = BehaviorRelay(value: [LiveAudience]())
+    var audienceList = BehaviorRelay(value: [LiveRoleItem]())
     
-    var join = PublishRelay<[LiveAudience]>()
-    var left = PublishRelay<[LiveAudience]>()
+    var join = PublishRelay<[LiveRoleItem]>()
+    var left = PublishRelay<[LiveRoleItem]>()
     var total = BehaviorRelay(value: 0)
     
     init(room: Room) {
@@ -192,21 +192,21 @@ private extension LiveUserListVM {
             
             switch cmd {
             case .userJoinOrLeave:
-                var list: [(UserJoinOrLeft, LiveAudience)]
+                var list: [(UserJoinOrLeft, LiveRoleItem)]
                 if let tList = listJson {
                     list = try Array(list: tList)
                 } else {
-                    list = [(UserJoinOrLeft, LiveAudience)]()
+                    list = [(UserJoinOrLeft, LiveRoleItem)]()
                 }
                 strongSelf.userJoinOrLeft(list)
                 let total = try data.getIntValue(of: "total")
                 strongSelf.total.accept(total)
             case .ranks:
-                var list: [LiveAudience]
+                var list: [LiveRoleItem]
                 if let tList = listJson {
                     list = try Array(dicList: tList)
                 } else {
-                    list = [LiveAudience]()
+                    list = [LiveRoleItem]()
                 }
                 strongSelf.giftList.accept(list)
             default:
@@ -215,22 +215,22 @@ private extension LiveUserListVM {
         }
     }
     
-    func fake(count: Int) -> [LiveAudience] {
-        var list = [LiveAudience]()
+    func fake(count: Int) -> [LiveRoleItem] {
+        var list = [LiveRoleItem]()
         for i in 0..<count {
             let dic: StringAnyDic = ["userId": "1000\(i)",
                                     "userName": "fakeUserName-\(i)",
                                     "avatar": "fakeHead",
                                     "uid": i + 100]
-            let user = try! LiveAudience(dic: dic)
+            let user = try! LiveRoleItem(dic: dic)
             list.append(user)
         }
         return list
     }
     
-    func userJoinOrLeft(_ list: [(UserJoinOrLeft, LiveAudience)]) {
-        var joins = [LiveAudience]()
-        var lefts = [LiveAudience]()
+    func userJoinOrLeft(_ list: [(UserJoinOrLeft, LiveRoleItem)]) {
+        var joins = [LiveRoleItem]()
+        var lefts = [LiveRoleItem]()
         
         for item in list {
             switch item.0 {

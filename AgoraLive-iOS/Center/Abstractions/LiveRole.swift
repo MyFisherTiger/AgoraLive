@@ -52,54 +52,18 @@ protocol LiveRole {
     var type: LiveRoleType {get set}
     var permission: LivePermission {get set}
     var agUId: Int {get set}
+    var giftRank: Int {get set}
 }
 
-// MARK: - Object
-// MARK: - Audience
-class LiveAudience: NSObject, LiveRole {
-    var type: LiveRoleType = .audience
-    var permission: LivePermission
+struct LiveRoleItem: LiveRole {
     var info: BasicUserInfo
+    var type: LiveRoleType
+    var permission: LivePermission
     var agUId: Int
-    
     var giftRank: Int
     
-    init(info: BasicUserInfo, agUId: Int, giftRank: Int = 0) {
-        self.info = info
-        self.permission = LivePermission(rawValue: 0)
-        self.agUId = agUId
-        self.giftRank = giftRank
-    }
-    
-    init(dic: StringAnyDic) throws {
-        self.permission = LivePermission(rawValue: 0)
-        self.info = try BasicUserInfo(dic: dic)
-        self.giftRank = 0
-        
-        if let uid = try? dic.getIntValue(of: "uid") {
-            self.agUId = uid
-        } else {
-            self.agUId = -1
-        }
-        
-        if let rank = try? dic.getIntValue(of: "rank") {
-            self.giftRank = rank
-        } else {
-            self.giftRank = 0
-        }
-    }
-}
-
-// MARK: - Broadcaster
-class LiveBroadcaster: NSObject, LiveRole {
-    var type: LiveRoleType = .broadcaster
-    var permission: LivePermission
-    var info: BasicUserInfo
-    var agUId: Int
-    
-    var giftRank: Int
-    
-    init(info: BasicUserInfo, permission: LivePermission, agUId: Int, giftRank: Int = 0) {
+    init(type: LiveRoleType, info: BasicUserInfo, permission: LivePermission, agUId: Int, giftRank: Int = 0) {
+        self.type = type
         self.permission = permission
         self.info = info
         self.agUId = agUId
@@ -107,35 +71,21 @@ class LiveBroadcaster: NSObject, LiveRole {
     }
     
     init(dic: StringAnyDic) throws {
-        self.permission = try LivePermission.permission(dic: dic)
         self.info = try BasicUserInfo(dic: dic)
         self.agUId = try dic.getIntValue(of: "uid")
+        self.type = try dic.getEnum(of: "role", type: LiveRoleType.self)
+        
+        if let permission = try? LivePermission.permission(dic: dic) {
+            self.permission = permission
+        } else {
+            self.permission = []
+        }
         
         if let rank = try? dic.getIntValue(of: "rank") {
             self.giftRank = rank
         } else {
             self.giftRank = 0
         }
-    }
-}
-
-// MARK: - Owner
-class LiveOwner: NSObject, LiveRole {
-    var type: LiveRoleType = .owner
-    var permission: LivePermission
-    var info: BasicUserInfo
-    var agUId: Int
-    
-    init(info: BasicUserInfo, permission: LivePermission, agUId: Int) {
-        self.permission = permission
-        self.info = info
-        self.agUId = agUId
-    }
-    
-    init(dic: StringAnyDic) throws {
-        self.permission = try LivePermission.permission(dic: dic)
-        self.info = try BasicUserInfo(dic: dic)
-        self.agUId = try dic.getIntValue(of: "uid")
     }
 }
 
@@ -156,10 +106,15 @@ class LiveLocalUser : NSObject, LiveRole {
     }
     
     init(dic: StringAnyDic) throws {
-        self.permission = try LivePermission.permission(dic: dic)
         self.type = try dic.getEnum(of: "role", type: LiveRoleType.self)
         self.info = try BasicUserInfo(dic: dic)
         self.agUId = try dic.getIntValue(of: "uid")
+        
+        if let permission = try? LivePermission.permission(dic: dic) {
+            self.permission = permission
+        } else {
+            self.permission = []
+        }
         
         if let rank = try? dic.getIntValue(of: "rank") {
             self.giftRank = rank

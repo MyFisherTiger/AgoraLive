@@ -17,11 +17,11 @@ enum SeatState: Int {
 }
 
 struct LiveSeat {
-    var user: LiveBroadcaster?
+    var user: LiveRoleItem?
     var index: Int // 1 ... 6
     var state: SeatState
     
-    init(user: LiveBroadcaster? = nil, index: Int, state: SeatState) {
+    init(user: LiveRoleItem? = nil, index: Int, state: SeatState) {
         self.user = user
         self.index = index
         self.state = state
@@ -34,7 +34,7 @@ struct LiveSeat {
          
         if self.state == .normal {
             let broadcaster = try dic.getDictionaryValue(of: "user")
-            self.user = try LiveBroadcaster(dic: broadcaster)
+            self.user = try LiveRoleItem(dic: broadcaster)
         }
     }
 }

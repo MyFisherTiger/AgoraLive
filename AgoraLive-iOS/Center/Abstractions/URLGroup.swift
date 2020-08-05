@@ -91,7 +91,7 @@ struct URLGroup {
     }
     
     static func multiHosts(userId: String, roomId: String) -> String {
-        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/users/\(userId)/seat"
+        return URLGroup.host + URLGroup.mainPath + "room/\(roomId)/users/\(userId)/seats"
     }
     
     static func goodsPurchase(roomId: String) -> String {

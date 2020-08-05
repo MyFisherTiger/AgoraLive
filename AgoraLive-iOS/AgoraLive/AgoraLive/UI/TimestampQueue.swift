@@ -45,7 +45,7 @@ class TimestampQueue: NSObject {
     
     func remove(_ item: TimestampModel) {
         let index = list.firstIndex { (model) -> Bool in
-            return model.timestamp == item.timestamp
+            return model.id == item.id
         }
         
         guard let tIndex = index else {

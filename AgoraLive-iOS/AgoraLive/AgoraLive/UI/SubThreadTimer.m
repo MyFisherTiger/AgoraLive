@@ -41,9 +41,11 @@
     [self.timer invalidate];
     self.timer = nil;
     
-    CFRunLoopRef runloop = [self.subRunLoop getCFRunLoop];
-    CFRunLoopStop(runloop);
-    self.subRunLoop = nil;
+    if (self.subRunLoop) {
+        CFRunLoopRef runloop = [self.subRunLoop getCFRunLoop];
+        CFRunLoopStop(runloop);
+        self.subRunLoop = nil;
+    }
 }
 
 - (void)run {

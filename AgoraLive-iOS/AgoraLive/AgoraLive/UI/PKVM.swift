@@ -33,7 +33,7 @@ struct PKInfo {
             let agId = try owner.getIntValue(of: "uid")
             
             let info = BasicUserInfo(userId: userId, name: userName)
-            let ownerObj = LiveOwner(info: info, permission: [.camera, .mic, .chat], agUId: agId)
+            let ownerObj = LiveRoleItem(type: .owner, info: info, permission: [.camera, .mic, .chat], agUId: agId)
             
             self.roomId = roomId
             self.channel = channel
@@ -114,7 +114,7 @@ class PKVM: NSObject {
     
     let receivedInvitation = PublishRelay<Battle>()
     let invitationIsByRejected = PublishRelay<Battle>()
-    let InvitationIsByAccepted = PublishRelay<Battle>()
+    let invitationIsByAccepted = PublishRelay<Battle>()
     let invitationTimeout = PublishRelay<Battle>()
     
     let state = BehaviorRelay(value: PKState.none)
@@ -128,21 +128,21 @@ class PKVM: NSObject {
     }
     
     func sendInvitationTo(room: Room) {
-//        request(type: 1, roomId: roomId, to: room.roomId) { [unowned self] (_) in
-//            self.requestError.accept("pk invitation fail")
-//        }
+        request(type: 1, roomId: self.room.roomId, to: room.roomId) { [unowned self] (_) in
+            self.requestError.accept("pk invitation fail")
+        }
     }
     
     func accept(invitation: Battle) {
-//        request(type: 2, roomId: roomId, to: invitation.initatorRoom.roomId) { [unowned self] (_) in
-//            self.requestError.accept("pk accept fail")
-//        }
+        request(type: 2, roomId: self.room.roomId, to: invitation.initatorRoom.roomId) { [unowned self] (_) in
+            self.requestError.accept("pk accept fail")
+        }
     }
     
     func reject(invitation: Battle) {
-//        request(type: 3, roomId: roomId, to: invitation.initatorRoom.roomId) { [unowned self] (_) in
-//            self.requestError.accept("pk reject fail")
-//        }
+        request(type: 3, roomId: room.roomId, to: invitation.initatorRoom.roomId) { [unowned self] (_) in
+            self.requestError.accept("pk reject fail")
+        }
     }
     
     deinit {
@@ -206,20 +206,27 @@ private extension PKVM {
             
             let data = try json.getDataObject()
             let type = try data.getIntValue(of: "type")
+            let room = try data.getDictionaryValue(of: "fromRoom")
+            let remoteRoom = try Room(dic: room)
             
             // 1.邀请pk 2接受pk 3拒绝pk 4超时
-//            switch type {
-//                //
-//            case 1:
-//                Room(name: <#T##String#>, roomId: <#T##String#>, imageURL: <#T##String#>, personCount: <#T##Int#>, owner: <#T##LiveOwner#>)
-//                let battle = Battle(id: <#T##String#>, initatorRoom: <#T##Room#>, receiverRoom: <#T##Room#>)
-//            case 2:
-//            case 3:
-//            case 4:
-//                
-//            }
-            
-            //
+            switch type {
+                //
+            case 1:
+                let battle = Battle(id: "", initatorRoom: remoteRoom, receiverRoom: strongSelf.room)
+                strongSelf.receivedInvitation.accept(battle)
+            case 2:
+                let battle = Battle(id: "", initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
+                strongSelf.invitationIsByAccepted.accept(battle)
+            case 3:
+                let battle = Battle(id: "", initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
+                strongSelf.invitationIsByRejected.accept(battle)
+            case 4:
+//                let battle = Battle(id: "", initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
+                break
+            default:
+                break
+            }
         }
     }
     

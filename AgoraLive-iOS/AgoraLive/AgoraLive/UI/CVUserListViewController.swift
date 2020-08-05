@@ -248,15 +248,14 @@ private extension CVUserListViewController {
         let subscribe = userListVM.list.bind(to: tableView
             .rx.items(cellIdentifier: "CVUserInvitationListCell",
                       cellType: CVUserInvitationListCell.self)) { [unowned images, unowned self] (index, user, cell) in
-                        let local = ALCenter.shared().centerProvideLocalUser()
                         var buttonState = CVUserInvitationListCell.InviteButtonState.avaliableInvite
                         
-                        for item in self.multiHostsVM.applyingUserList.value where user.info.userId == item.info.userId {
+                        for item in self.multiHostsVM.invitingUserList.value where user.info.userId == item.info.userId {
                             buttonState = .inviting
                             break
                         }
                         
-                        if user.info.userId == local.info.value.userId {
+                        if user.type != .audience {
                             buttonState = .none
                         }
                         

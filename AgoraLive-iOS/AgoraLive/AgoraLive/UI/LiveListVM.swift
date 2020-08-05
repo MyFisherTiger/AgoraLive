@@ -36,7 +36,7 @@ struct Room {
         let ownerAgoraUid = try dic.getIntValue(of: "ownerUid")
         
         let info = BasicUserInfo(userId: "", name: "")
-        let owner = LiveOwner(info: info, permission: [.camera, .mic, .chat], agUId: ownerAgoraUid)
+        let owner = LiveRoleItem(type: .owner, info: info, permission: [.camera, .mic, .chat], agUId: ownerAgoraUid)
         self.owner = owner
         
         #warning("next version")

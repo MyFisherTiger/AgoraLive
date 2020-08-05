@@ -279,11 +279,9 @@ extension MultiBroadcastersViewController {
                 }
             // audience
             case .application:
-                let application = MultiHostsVM.Application(seatIndex: action.seat.index,
-                                                           initiator: session.role,
-                                                           receiver: session.owner.value.user)
-                self.multiHostsVM.send(application: application) { (_) in
-                    self.showTextToast(text: "send application fail")
+                self.multiHostsVM.sendApplication(by: session.role,
+                                                  for: action.seat.index) { [unowned self] (_) in
+                                                    self.showTextToast(text: "send application fail")
                 }
             }
         }).disposed(by: bag)

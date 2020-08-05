@@ -89,7 +89,7 @@ class LiveSession: NSObject {
     static func create(roomName: String, videoConfiguration: VideoConfiguration, type: LiveType, ownerInfo: BasicUserInfo, success: ((LiveSession) -> Void)? = nil, fail: Completion = nil) {
         let url = URLGroup.liveCreate
         let event = RequestEvent(name: "live-session-create")
-        var parameter: StringAnyDic = ["roomName": roomName,
+        let parameter: StringAnyDic = ["roomName": roomName,
                                        "type": type.rawValue]
         
         let task = RequestTask(event: event,
@@ -323,7 +323,9 @@ private extension LiveSession {
         // Live room owner
         var ownerJson = try info.getDictionaryValue(of: "owner")
         ownerJson["avatar"] = "Fake"
-        let ownerObj = try LiveOwner(dic: ownerJson)
+        ownerJson["role"] = 1
+        
+        let ownerObj = try LiveRoleItem(dic: ownerJson)
         
         if ownerObj.info.userId == self.role.info.userId {
             self.owner.accept(.localUser(ownerObj))
@@ -388,7 +390,7 @@ private extension LiveSession {
                 strongSelf.end.accept(())
             case .owner:
                 let data = try json.getDataObject()
-                let owner = try LiveOwner(dic: data)
+                let owner = try LiveRoleItem(dic: data)
                 
                 if strongSelf.owner.value.isLocal {
                     strongSelf.owner.accept(.localUser(owner))

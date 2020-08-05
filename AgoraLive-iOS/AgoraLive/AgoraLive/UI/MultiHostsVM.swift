@@ -13,26 +13,30 @@ import AlamoClient
 
 class MultiHostsVM: RxObject {
     struct Invitation: TimestampModel {
+        var id: Int
         var seatIndex: Int
         var initiator: LiveRole
         var receiver: LiveRole
         var timestamp: TimeInterval
         
-        init(seatIndex: Int, initiator: LiveRole, receiver: LiveRole, timestamp: TimeInterval) {
+        init(id: Int, seatIndex: Int, initiator: LiveRole, receiver: LiveRole) {
+            self.id = id
             self.seatIndex = seatIndex
             self.initiator = initiator
             self.receiver = receiver
-            self.timestamp = timestamp
+            self.timestamp = NSDate().timeIntervalSince1970
         }
     }
     
     struct Application: TimestampModel {
+        var id: Int
         var seatIndex: Int
         var initiator: LiveRole
         var receiver: LiveRole
         var timestamp: TimeInterval
         
-        init(seatIndex: Int, initiator: LiveRole, receiver: LiveRole) {
+        init(id: Int, seatIndex: Int, initiator: LiveRole, receiver: LiveRole) {
+            self.id = id
             self.seatIndex = seatIndex
             self.initiator = initiator
             self.receiver = receiver
@@ -85,7 +89,16 @@ extension MultiHostsVM {
                 userId: "\(user.info.userId)",
                 roomId: room.roomId,
                 success: { [weak self] (json) in
-                    print("json: \(json)")
+                    guard let strongSelf = self else {
+                        return
+                    }
+                    
+                    let id = try json.getIntValue(of: "data")
+                    let invitation = Invitation(id: id,
+                                                seatIndex: seatIndex,
+                                                initiator: strongSelf.room.owner,
+                                                receiver: user)
+                    strongSelf.invitationQueue.append(invitation)
                 }, fail: fail)
     }
     
@@ -136,10 +149,10 @@ extension MultiHostsVM {
 
 // MARK: Audience
 extension MultiHostsVM {
-    func send(application: Application, fail: ErrorCompletion = nil) {
-        request(seatIndex: application.seatIndex,
+    func sendApplication(by local: LiveRole, for seatIndex: Int, fail: ErrorCompletion = nil) {
+        request(seatIndex: seatIndex,
                 type: 2,
-                userId: "\(application.initiator.info.userId)",
+                userId: "\(local.info.userId)",
                 roomId: room.roomId,
                 fail: fail)
     }
@@ -196,14 +209,9 @@ private extension MultiHostsVM {
             
             let type = try data.getIntValue(of: "type")
             let seatIndex = try data.getIntValue(of: "no")
-            
+            let id = try data.getIntValue(of: "processId")
             let userJson = try data.getDictionaryValue(of: "fromUser")
-            let userName = try userJson.getStringValue(of: "userName")
-            let userId = try userJson.getStringValue(of: "userId")
-            let agoraUid = try userJson.getIntValue(of: "uid")
-            
-            let info = BasicUserInfo(userId: userId, name: userName)
-            let role = LiveAudience(info: info, agUId: agoraUid)
+            let role = try LiveRoleItem(dic: userJson)
             
             guard let local = ALCenter.shared().liveSession?.role else {
                 return
@@ -212,13 +220,13 @@ private extension MultiHostsVM {
             switch type {
             // Owner
             case  2: // receivedApplication:
-                let application = Application(seatIndex: seatIndex, initiator: role, receiver: local)
+                let application = Application(id: id, seatIndex: seatIndex, initiator: role, receiver: local)
                 strongSelf.receivedApplication.accept(application)
             case  4: // audience rejected invitation
-                let invitation = Invitation(seatIndex: seatIndex, initiator: local, receiver: role, timestamp: 1)
+                let invitation = Invitation(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.invitationByRejected.accept(invitation)
             case  6: // audience accepted invitation:
-                let invitation = Invitation(seatIndex: seatIndex, initiator: local, receiver: role, timestamp: 1)
+                let invitation = Invitation(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.invitationByAccepted.accept(invitation)
             
             // Broadcaster
@@ -227,13 +235,13 @@ private extension MultiHostsVM {
                 
             // Audience
             case  1: // receivedInvitation
-                let invitation = Invitation(seatIndex: seatIndex, initiator: role, receiver: local, timestamp: 1)
+                let invitation = Invitation(id: id, seatIndex: seatIndex, initiator: role, receiver: local)
                 strongSelf.receivedInvitation.accept(invitation)
             case  3: // applicationByRejected
-                let application = Application(seatIndex: seatIndex, initiator: local, receiver: role)
+                let application = Application(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.applicationByRejected.accept(application)
             case  5: // applicationByAccepted:
-                let application = Application(seatIndex: seatIndex, initiator: local, receiver: role)
+                let application = Application(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.applicationByAccepted.accept(application)
             default:
                 assert(false)

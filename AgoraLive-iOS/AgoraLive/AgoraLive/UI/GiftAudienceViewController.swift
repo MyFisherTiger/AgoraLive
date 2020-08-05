@@ -25,7 +25,7 @@ class GiftAudienceCell: UICollectionViewCell {
 }
 
 class GiftAudienceViewController: UICollectionViewController {
-    private(set) var list = BehaviorRelay(value: [LiveAudience]())
+    private(set) var list = BehaviorRelay(value: [LiveRoleItem]())
     private let bag = DisposeBag()
     
     override func viewDidLoad() {
