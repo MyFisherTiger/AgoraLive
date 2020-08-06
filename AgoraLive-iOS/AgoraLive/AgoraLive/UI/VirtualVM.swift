@@ -28,7 +28,3 @@ class VirtualVM: NSObject {
         self.broadcasting = broadcasting
     }
 }
-
-private extension VirtualVM {
-    
-}

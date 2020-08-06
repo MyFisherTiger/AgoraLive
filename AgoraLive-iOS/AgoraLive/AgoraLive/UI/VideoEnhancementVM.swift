@@ -20,7 +20,7 @@ class VideoEnhancementVM: NSObject {
     private(set) lazy var thinning = BehaviorRelay(value: enhancement.getFilterItem(with: .thinning).value)
     private(set) lazy var eyeEnlarge = BehaviorRelay(value: enhancement.getFilterItem(with: .eye).value)
     
-    private(set) lazy var virtualAppearance = BehaviorRelay(value: enhancement.appearance)
+    private(set) lazy var virtualAppearance = BehaviorRelay(value: VirtualAppearance.girl)
     
     var minSmooth: Float {
         return enhancement.getFilterItem(with: .smooth).minValue
@@ -90,9 +90,14 @@ extension VideoEnhancementVM {
     func virtualAppearance(_ appearance: VirtualAppearance) {
         enhancement.virtualAppearance(appearance, success: { [weak self] in
             UserDefaults.standard.set(appearance.item, forKey: "VirtualAppearance")
-            self?.virtualAppearance.accept(appearance)
+            DispatchQueue.main.async { [weak self] in
+                self?.virtualAppearance.accept(appearance)
+            }
+            
         }) { [weak self] in
-            self?.virtualAppearance.accept(.none)
+            DispatchQueue.main.async { [weak self] in
+                self?.virtualAppearance.accept(.none)
+            }
         }
     }
     
