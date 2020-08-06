@@ -152,7 +152,8 @@ class CreateLiveViewController: MaskViewController {
             guard let seatInfo = info.seatInfo,
                 let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
                 let session = ALCenter.shared().liveSession else {
-                    fatalError()
+                    assert(false)
+                    return
             }
             
             let vc = segue.destination as? VirtualBroadcastersViewController
@@ -169,18 +170,21 @@ class CreateLiveViewController: MaskViewController {
             }
             
             vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
-//        case "LiveShoppingViewController":
-//            guard let sender = sender,
-//                let info = sender as? LiveSession.JoinedInfo,
-//                let pkInfo = info.pkInfo,
-//                let vm = try? PKVM(dic: pkInfo) else {
-//                    assert(false)
-//                    return
-//            }
-//            
-//            let vc = segue.destination as? PKBroadcastersViewController
-//            vc?.userListVM.updateGiftListWithJson(list: info.giftAudience)
-//            vc?.pkVM = vm
+        case "LiveShoppingViewController":
+            print("info: \(info)")
+            guard let seatInfo = info.seatInfo,
+                let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
+                let pkInfo = info.pkInfo,
+                let pkVM = try? PKVM(room: info.room, state: pkInfo) else {
+                    assert(false)
+                    return
+            }
+            
+            let vc = segue.destination as? LiveShoppingViewController
+            vc?.userListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.multiHostsVM = MultiHostsVM(room: info.room)
+            vc?.seatVM = seatVM
+            vc?.pkVM = pkVM
         default:
             break
         }
@@ -308,9 +312,7 @@ private extension CreateLiveViewController {
                           animated: true,
                           presentedFrame: presentedFrame)
         
-        beautyVC.workSwitch.rx.value.subscribe(onNext: { [unowned self] (value) in
-            self.beautyButton.isSelected = value
-        }).disposed(by: bag)
+        beautyVC.workSwitch.rx.value.bind(to: beautyButton.rx.isSelected).disposed(by: bag)
     }
 }
 

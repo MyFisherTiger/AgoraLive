@@ -62,6 +62,7 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
         }
         
         liveSession(session)
+        liveRole(session)
         liveRoom(session: session)
         audience()
         chatList()
@@ -88,7 +89,7 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
                     assert(false)
                     return
             }
-            let role = session.role
+            let role = session.role.value
             let vc = segue.destination as! BottomToolsViewController
             vc.perspective = role.type
             vc.liveType = session.type
@@ -118,9 +119,6 @@ extension SingleBroadcasterViewController {
             self.ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
             self.playerVM.startRenderVideoStreamOf(user: user,
                                                    on: self.renderView)
-            
-            self.deviceVM.camera = owner.isLocal ? .on : .off
-            self.deviceVM.mic = owner.isLocal ? .on : .off
         }).disposed(by: bag)
     }
     

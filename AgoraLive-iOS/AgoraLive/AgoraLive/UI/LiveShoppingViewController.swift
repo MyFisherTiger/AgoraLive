@@ -27,6 +27,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     private var roomListVM = LiveListVM()
     var goodsVM: GoodsVM!
     var multiHostsVM: MultiHostsVM!
+    var seatVM: LiveSeatVM!
     var pkVM: PKVM!
     
     // LiveViewController
@@ -88,7 +89,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
         chatInput()
         musicList()
         netMonitor()
-//        PK(session: session)
+        PK(session: session)
         
         goods(session: session)
     }
@@ -107,7 +108,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
                 assert(false)
                 return
             }
-            let role = session.role
+            let role = session.role.value
             let vc = segue.destination as! BottomToolsViewController
             vc.perspective = role.type
             vc.liveType = session.type
@@ -292,11 +293,6 @@ extension LiveShoppingViewController {
     }
     
     func presentGoodsList() {
-        guard let session = ALCenter.shared().liveSession else {
-                assert(false)
-                return
-        }
-        
         self.showMaskView(color: UIColor.clear)
         
         let vc = UIStoryboard.initViewController(of: "GoodsListViewController",
@@ -328,7 +324,7 @@ extension LiveShoppingViewController {
         session.leave()
         
         let owner = pkInfo.remoteRoom.owner
-        let role = session.role
+        let role = session.role.value
         
         let room = Room(name: "",
                         roomId: pkInfo.remoteRoom.roomId,
@@ -382,14 +378,7 @@ private extension LiveShoppingViewController {
     }
     
     func presentUserList(type: CVUserListViewController.ShowType) {
-        self.showMaskView(color: UIColor.clear) { [unowned self] in
-            
-        }
-        
-        guard let session = ALCenter.shared().liveSession else {
-                assert(false)
-                return
-        }
+        self.showMaskView(color: UIColor.clear)
         
         let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
                                                  class: CVUserListViewController.self,
@@ -410,49 +399,5 @@ private extension LiveShoppingViewController {
         self.presentChild(vc,
                           animated: true,
                           presentedFrame: presentedFrame)
-        
-        // Room List
-//        roomListVM.presentingType = .pk
-//        roomListVM.refetch()
-        
-//        vc.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned vc] in
-//            self.roomListVM.refetch(success: {
-//                vc.tableView.mj_header?.endRefreshing()
-//            }) { [unowned vc] in // fail
-//                vc.tableView.mj_header?.endRefreshing()
-//            }
-//        })
-//
-//        vc.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned vc] in
-//            self.roomListVM.fetch(success: {
-//                vc.tableView.mj_footer?.endRefreshing()
-//            }) { [unowned vc] in // fail
-//                vc.tableView.mj_footer?.endRefreshing()
-//            }
-//        })
-//
-//        vc.selectedInviteRoom.subscribe(onNext: { [unowned self] (room) in
-//            self.hiddenMaskView()
-//            self.userListVC = nil
-//
-//            self.pkVM.sendInvitationTo(room: room) { [unowned self] (error) in
-//                self.showTextToast(text: NSLocalizedString("PK_Invite_Fail"))
-//            }
-//        }).disposed(by: bag)
-        
-//        if let userListVC = userListVC {
-//            roomListVM.presentingList.map { (list) -> [Room] in
-//                var newList = list
-//                let index = newList.firstIndex { (room) -> Bool in
-//                    return roomId == room.roomId
-//                }
-//
-//                if let index = index {
-//                    newList.remove(at: index)
-//                }
-//
-//                return newList
-//            }.bind(to: userListVC.roomList).disposed(by: bag)
-//        }
     }
 }

@@ -69,6 +69,8 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
         }
         
         liveSession(session)
+        liveRole(session)
+        extralLiveRole(session)
         liveRoom(session: session)
         audience()
         chatList()
@@ -101,7 +103,7 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
             }
             
             let vc = segue.destination as! BottomToolsViewController
-            vc.perspective = session.role.type
+            vc.perspective = session.role.value.type
             vc.liveType = session.type
             self.bottomToolsVC = vc
         case "ChatViewController":
@@ -149,15 +151,6 @@ extension VirtualBroadcastersViewController {
                                                    on: self.ownerRenderView)
         }).disposed(by: bag)
         
-        if session.role.type != .audience {
-            enhancementVM.localVirtualAppearance()
-            deviceVM.camera = .on
-            deviceVM.mic = .on
-        } else {
-            deviceVM.camera = .off
-            deviceVM.mic = .off
-        }
-        
         inviteButton.rx.tap.subscribe(onNext: { [unowned self] in
             guard let session = ALCenter.shared().liveSession else {
                 assert(false)
@@ -170,12 +163,29 @@ extension VirtualBroadcastersViewController {
             case (.multi, .localUser):
                 self.forceBroadcasterToBeAudience()
             case (.multi, .otherUser):
-                guard session.role.type == .broadcaster else {
+                guard session.role.value.type == .broadcaster else {
                     return
                 }
                 self.presentEndBroadcasting()
             default: break
             }
+        }).disposed(by: bag)
+    }
+    
+    func extralLiveRole(_ session: LiveSession) {
+        let role = session.role
+        role.subscribe(onNext: { (local) in
+            switch local.type {
+            case .owner:
+                self.inviteButton.isHidden = false
+                self.inviteButton.setTitle(NSLocalizedString("Invite_Broadcasting"), for: .normal)
+            case .broadcaster:
+                self.inviteButton.isHidden = false
+                self.inviteButton.setTitle(NSLocalizedString("End_Broadcasting"), for: .normal)
+            case .audience:
+                self.inviteButton.isHidden = true
+            }
+            
         }).disposed(by: bag)
     }
     
@@ -282,19 +292,13 @@ extension VirtualBroadcastersViewController {
                 }
                 
                 for user in list where user.info != session.owner.value.user.info {
-                    if user.info == session.role.info {
-                        self.inviteButton.isHidden = false
-                        self.inviteButton.setTitle(NSLocalizedString("End_Broadcasting"), for: .normal)
-                        self.playerVM.startRenderVideoStreamOf(user: user,
-                                                               on: self.broadcasterRenderView)
-                    }
+                    self.playerVM.startRenderVideoStreamOf(user: user,
+                                                           on: self.broadcasterRenderView)
                 }
             case .single:
                 if session.owner.value.isLocal {
                     self.inviteButton.isHidden = false
                     self.inviteButton.setTitle(NSLocalizedString("Invite_Broadcasting"), for: .normal)
-                } else {
-                    self.inviteButton.isHidden = true
                 }
             }
             
@@ -435,12 +439,12 @@ extension VirtualBroadcastersViewController {
         }) { [unowned self] (_) in
             self.hiddenMaskView()
             
-            guard let session = ALCenter.shared().liveSession,
-                session.role.type == .broadcaster else {
+            guard let role = ALCenter.shared().liveSession?.role.value,
+                role.type == .broadcaster else {
                 return
             }
             
-            self.multiHostsVM.endBroadcasting(seatIndex: 1, user: session.role, success: {
+            self.multiHostsVM.endBroadcasting(seatIndex: 1, user: role, success: {
                 guard let session = ALCenter.shared().liveSession else {
                     assert(false)
                     return

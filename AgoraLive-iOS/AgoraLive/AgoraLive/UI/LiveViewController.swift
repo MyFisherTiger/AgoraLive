@@ -160,6 +160,17 @@ extension LiveViewController {
             }
         }).disposed(by: bag)
     }
+    
+    func liveRole(_ session: LiveSession) {
+        let role = session.role
+        
+        role.subscribe(onNext: { [unowned self] (local) in
+            self.deviceVM.camera = (local.type == .audience) ? .off : .on
+            self.deviceVM.mic = (local.type == .audience) ? .off : .on
+            self.hiddenMaskView()
+            self.bottomToolsVC?.perspective = local.type
+        }).disposed(by: bag)
+    }
 }
 
 // MARK: - View
@@ -171,7 +182,7 @@ extension LiveViewController {
         }
         
         bottomToolsVC.liveType = session.type
-        bottomToolsVC.perspective = session.role.type
+        bottomToolsVC.perspective = session.role.value.type
         bottomToolsVC.tintColor = tintColor
         
         enhancementVM.beauty.map { (action) -> Bool in
@@ -221,7 +232,7 @@ extension LiveViewController {
                         return
                 }
                 
-                let role = session.role
+                let role = session.role.value
                 if let text = self.chatInputView.textView.text, text.count > 0 {
                     self.chatInputView.textView.text = nil
                     self.chatVM.sendMessage(text, local: role.info) { [weak self] (_) in
@@ -361,7 +372,7 @@ extension LiveViewController {
         
         self.showMaskView(color: UIColor.clear)
         
-        let perspective = session.role.type
+        let perspective = session.role.value.type
         let extensionVC = UIStoryboard.initViewController(of: "ExtensionViewController",
                                                           class: ExtensionViewController.self,
                                                           on: "Popover")
@@ -412,7 +423,7 @@ extension LiveViewController {
                 return
             }
             
-            let role = session.role
+            let role = session.role.value
             var permission = role.permission
             switch self.deviceVM.camera {
             case .on:
@@ -435,7 +446,7 @@ extension LiveViewController {
                 return
             }
             
-            let role = session.role
+            let role = session.role.value
             var permission = role.permission
             switch self.deviceVM.mic {
             case .on:
@@ -574,7 +585,7 @@ extension LiveViewController {
             case .otherUser(let remote):
                 self.giftVM.present(gift: gift,
                                     to: remote.info,
-                                    from: session.role.info,
+                                    from: session.role.value.info,
                                     of: session.room.roomId) {
                                         self.showAlert(message: NSLocalizedString("Present_Gift_Fail"))
                 }

@@ -221,7 +221,7 @@ private extension MultiHostsVM {
             let userJson = try data.getDictionaryValue(of: "fromUser")
             let role = try LiveRoleItem(dic: userJson)
             
-            guard let local = ALCenter.shared().liveSession?.role else {
+            guard let local = ALCenter.shared().liveSession?.role.value else {
                 return
             }
             

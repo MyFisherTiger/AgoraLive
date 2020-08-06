@@ -116,18 +116,20 @@ class LiveListTabViewController: MaskViewController {
             }
             
             vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
-        //        case "LiveShoppingViewController":
-        //            guard let sender = sender,
-        //                let info = sender as? LiveSession.JoinedInfo,
-        //                let pkInfo = info.pkInfo,
-        //                let vm = try? PKVM(dic: pkInfo) else {
-        //                    assert(false)
-        //                    return
-        //            }
-        //
-        //            let vc = segue.destination as? PKBroadcastersViewController
-        //            vc?.userListVM.updateGiftListWithJson(list: info.giftAudience)
-        //            vc?.pkVM = vm
+        case "LiveShoppingViewController":
+            guard let seatInfo = info.seatInfo,
+                let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
+                let pkInfo = info.pkInfo,
+                let pkVM = try? PKVM(room: info.room, state: pkInfo) else {
+                    assert(false)
+                    return
+            }
+            
+            let vc = segue.destination as? LiveShoppingViewController
+            vc?.userListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.multiHostsVM = MultiHostsVM(room: info.room)
+            vc?.seatVM = seatVM
+            vc?.pkVM = pkVM
         default:
             break
         }

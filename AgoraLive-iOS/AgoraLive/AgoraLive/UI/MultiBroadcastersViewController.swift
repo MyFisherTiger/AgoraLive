@@ -73,6 +73,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         }
         
         liveSession(session)
+        liveRole(session)
         liveRoom(session: session)
         multiHosts()
         audience()
@@ -94,7 +95,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         
         switch identifier {
         case "LiveSeatViewController":
-            guard let type = ALCenter.shared().liveSession?.role.type else {
+            guard let type = ALCenter.shared().liveSession?.role.value.type else {
                 assert(false)
                 return
             }
@@ -106,7 +107,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
             let vc = segue.destination as! GiftAudienceViewController
             self.giftAudienceVC = vc
         case "BottomToolsViewController":
-            guard let type = ALCenter.shared().liveSession?.role.type else {
+            guard let type = ALCenter.shared().liveSession?.role.value.type else {
                 assert(false)
                 return
             }
@@ -162,7 +163,7 @@ extension MultiBroadcastersViewController {
         
         seatVC.userAudioSilence.subscribe(onNext: { [unowned self] (user) in
             guard let session = ALCenter.shared().liveSession,
-                session.role.agUId == user.agUId else {
+                session.role.value.agUId == user.agUId else {
                     return
             }
             
@@ -287,7 +288,7 @@ extension MultiBroadcastersViewController {
                                message: NSLocalizedString("Confirm_Apply_For_Broadcasting"),
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                                self.multiHostsVM.sendApplication(by: session.role,
+                                self.multiHostsVM.sendApplication(by: session.role.value,
                                                                   for: action.seat.index) { [unowned self] (_) in
                                                                     self.showTextToast(text: "send application fail")
                                 }
@@ -332,7 +333,6 @@ private extension MultiBroadcastersViewController {
     // MARK: - Live Room
     func liveRoom(session: LiveSession) {
         let owner = session.owner
-        
         ownerRenderView.cornerRadius(5)
         ownerRenderView.layer.masksToBounds = true
         ownerRenderView.imageView.isHidden = true
@@ -345,9 +345,6 @@ private extension MultiBroadcastersViewController {
             self.ownerRenderView.label.text = user.info.name
             self.playerVM.startRenderVideoStreamOf(user: user,
                                                    on: self.ownerRenderView.renderView)
-            
-            self.deviceVM.camera = owner.isLocal ? .on : .off
-            self.deviceVM.mic = owner.isLocal ? .on : .off
             
             self.ownerRenderView.imageView.isHidden = user.permission.contains(.camera)
             self.ownerRenderView.audioSilenceTag.isHidden = user.permission.contains(.mic)
@@ -405,12 +402,20 @@ private extension MultiBroadcastersViewController {
                     guard let session = ALCenter.shared().liveSession else {
                         return
                     }
-                    
                     session.audienceToBroadcaster()
                 }) { [unowned self] (_) in
                     self.showTextToast(text: "accept invitation fail")
                 }
             }
+        }).disposed(by: bag)
+        
+        multiHostsVM.applicationByAccepted.subscribe(onNext: { [weak self] (_) in
+            guard let strongSelf = self,
+                let session = ALCenter.shared().liveSession else {
+                return
+            }
+            strongSelf.hiddenMaskView()
+            session.audienceToBroadcaster()
         }).disposed(by: bag)
         
         multiHostsVM.applicationByRejected.subscribe(onNext: { (application) in

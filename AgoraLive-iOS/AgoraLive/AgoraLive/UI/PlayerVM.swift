@@ -32,7 +32,7 @@ class PlayerVM: RxObject {
         }
          
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        let local = session.role
+        let local = session.role.value
         
         if local.agUId == user.agUId {
             mediaKit.player.startRenderLocalVideoStream(id: user.agUId,

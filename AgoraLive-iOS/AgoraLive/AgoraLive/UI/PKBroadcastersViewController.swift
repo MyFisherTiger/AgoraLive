@@ -188,6 +188,7 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
         
         liveSession(session)
         liveRoom(session: session)
+        liveRole(session)
         audience()
         chatList()
         gift()
@@ -213,7 +214,7 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
                 assert(false)
                 return
             }
-            let role = session.role
+            let role = session.role.value
             let vc = segue.destination as! BottomToolsViewController
             vc.perspective = role.type
             vc.liveType = session.type
@@ -367,7 +368,7 @@ extension PKBroadcastersViewController {
         session.leave()
         
         let owner = pkInfo.remoteRoom.owner
-        let role = session.role
+        let role = session.role.value
         let room = Room(name: "",
                         roomId: pkInfo.remoteRoom.roomId,
                         imageURL: "",

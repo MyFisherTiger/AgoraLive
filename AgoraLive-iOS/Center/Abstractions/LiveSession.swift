@@ -70,7 +70,7 @@ class LiveSession: NSObject {
     
     private(set) var room: Room
     private(set) var type: LiveType
-    private(set) var role: LiveLocalUser
+    private(set) var role: BehaviorRelay<LiveLocalUser>
     
     var videoConfiguration: VideoConfiguration
     
@@ -79,7 +79,7 @@ class LiveSession: NSObject {
         self.videoConfiguration = videoConfiguration
         self.type = type
         self.owner = BehaviorRelay(value: owner)
-        self.role = role
+        self.role = BehaviorRelay(value: role)
         super.init()
         self.observe()
     }
@@ -150,8 +150,8 @@ class LiveSession: NSObject {
             
             // Local User
             let localUserJson = try data.getDictionaryValue(of: "user")
-            self.role = try LiveLocalUser(dic: localUserJson)
-            // try self.initRoleiWhenJoiningWith(info: localUserJson)
+            let user = try LiveLocalUser(dic: localUserJson)
+            self.role = BehaviorRelay(value: user)
             
             // Live Room
             let liveRoom = try data.getDictionaryValue(of: "room")
@@ -178,14 +178,14 @@ class LiveSession: NSObject {
             
             // multiBroadcasters, virtualBroadcasters have seatInfo
             var seatInfo: [StringAnyDic]?
-            if self.type == .multi || self.type == .virtual {
-                seatInfo = try liveRoom.getListValue(of: "coVideoSeats")
+            if let info = try? liveRoom.getListValue(of: "coVideoSeats") {
+                seatInfo = info
             }
             
             // only pkBroadcaster has pkInfo
             var pkInfo: StringAnyDic?
-            if self.type == .pk {
-                pkInfo = try liveRoom.getDictionaryValue(of: "pk")
+            if let info = try? liveRoom.getDictionaryValue(of: "pk") {
+                pkInfo = info
             }
             
             let giftAudience = try? liveRoom.getListValue(of: "rankUsers")
@@ -253,7 +253,7 @@ class LiveSession: NSObject {
 
 extension LiveSession {
     @discardableResult func audienceToBroadcaster() -> LiveRole {
-        let audience = self.role
+        let audience = self.role.value
         
         let media = ALCenter.shared().centerProvideMediaHelper()
         media.capture.audio = .on
@@ -267,13 +267,14 @@ extension LiveSession {
                                  permission: permission,
                                  agUId: audience.agUId,
                                  giftRank: audience.giftRank)
-        self.role = role
+        
+        self.role.accept(role)
         self.setupPublishedVideoStream(videoConfiguration)
         return role
     }
     
     @discardableResult func broadcasterToAudience() -> LiveRole {
-        let broadcaster = self.role
+        let broadcaster = self.role.value
         
         let media = ALCenter.shared().centerProvideMediaHelper()
         media.capture.audio = .off
@@ -288,7 +289,7 @@ extension LiveSession {
                                  agUId: broadcaster.agUId,
                                  giftRank: broadcaster.giftRank)
         
-        self.role = role
+        self.role.accept(role)
         return role
     }
     
@@ -321,7 +322,7 @@ private extension LiveSession {
         
         let ownerObj = try LiveRoleItem(dic: ownerJson)
         
-        if ownerObj.info.userId == self.role.info.userId {
+        if ownerObj.info == self.role.value.info {
             self.owner.accept(.localUser(ownerObj))
         } else {
             self.owner.accept(.otherUser(ownerObj))

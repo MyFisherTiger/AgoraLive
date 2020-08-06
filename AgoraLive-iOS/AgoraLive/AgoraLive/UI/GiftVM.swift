@@ -130,7 +130,7 @@ private extension GiftVM {
             let userId = try data.getStringValue(of: "fromUserId")
             let userName = try data.getStringValue(of: "fromUserName")
             
-            guard let user = ALCenter.shared().liveSession?.role else {
+            guard let user = ALCenter.shared().liveSession?.role.value else {
                 return
             }
             
