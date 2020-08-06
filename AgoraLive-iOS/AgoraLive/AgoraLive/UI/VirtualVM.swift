@@ -17,7 +17,7 @@ class VirtualVM: NSObject {
         var isSingle: Bool {
             switch self {
             case .single: return true
-            case .multi:  return true
+            case .multi:  return false
             }
         }
     }

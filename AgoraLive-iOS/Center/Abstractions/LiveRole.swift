@@ -56,6 +56,11 @@ protocol LiveRole {
 }
 
 struct LiveRoleItem: LiveRole {
+    
+    static func == (left: LiveRoleItem, right: LiveRoleItem) -> Bool {
+        return left.info.userId == right.info.userId
+    }
+    
     var info: BasicUserInfo
     var type: LiveRoleType
     var permission: LivePermission
@@ -100,7 +105,7 @@ struct LiveRoleItem: LiveRole {
 }
 
 class LiveLocalUser : NSObject, LiveRole {
-    var type: LiveRoleType = .broadcaster
+    var type: LiveRoleType
     var permission: LivePermission
     var info: BasicUserInfo
     var agUId: Int
@@ -108,6 +113,7 @@ class LiveLocalUser : NSObject, LiveRole {
     var giftRank: Int
     
     init(type: LiveRoleType, info: BasicUserInfo, permission: LivePermission, agUId: Int, giftRank: Int = 0) {
+        self.type = type
         self.permission = permission
         self.info = info
         

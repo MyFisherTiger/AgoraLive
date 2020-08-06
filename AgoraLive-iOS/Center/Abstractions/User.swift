@@ -30,6 +30,14 @@ struct BasicUserInfo {
         self.headURL = headURL
         self.imageIndex = 0
     }
+    
+    static func == (left: BasicUserInfo, right: BasicUserInfo) -> Bool {
+        return left.userId == right.userId
+    }
+    
+    static func !=(left: BasicUserInfo, right: BasicUserInfo) -> Bool {
+        return left.userId != right.userId
+    }
 }
 
 class CurrentUser: NSObject {

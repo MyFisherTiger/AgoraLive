@@ -111,7 +111,7 @@ class CVUserListViewController: UIViewController {
     @IBOutlet weak var tableViewBottom: NSLayoutConstraint!
     
     enum ShowType {
-        case multiHosts, pk, onlyUser, onlyInvitationOfMultiHosts
+        case multiHosts, pk, onlyUser, onlyInvitationOfMultiHosts, onlyInvitationOfPK
     }
     
     // Rx
@@ -159,6 +159,10 @@ class CVUserListViewController: UIViewController {
             titleLabel.text = NSLocalizedString("Online_User")
             let titles = [NSLocalizedString("All"), NSLocalizedString("ApplicationOfBroadcasting")]
             tabView.update(titles)
+        case .onlyInvitationOfPK:
+            titleLabel.text = NSLocalizedString("Invite_PK")
+            tabView.isHidden = true
+            tableViewTop.constant = 0
         case .pk:
             titleLabel.text = NSLocalizedString("Invite_PK")
             let titles = [NSLocalizedString("PK_Invitation"), NSLocalizedString("PK_Application")]
@@ -206,6 +210,9 @@ class CVUserListViewController: UIViewController {
                     break
                 }
             }).disposed(by: bag)
+        case .onlyInvitationOfPK:
+            self.pkVM.refetch()
+            tableViewBindWithAvailableRooms().disposed(by: bag)
         case .pk:
             tabView.selectedIndex.subscribe(onNext: { [unowned self] (index) in
                 switch index {
@@ -247,6 +254,8 @@ class CVUserListViewController: UIViewController {
                     let list = self.multiHostsVM.applyingUserList.value
                     self.multiHostsVM.applyingUserList.accept(list)
                 }
+            case .onlyInvitationOfPK:
+                self.pkVM.refetch(success: endRefetch, fail: endRefetch)
             case .pk:
                 if self.tabView.selectedIndex.value == 0 {
                     self.pkVM.refetch(success: endRefetch, fail: endRefetch)
@@ -274,6 +283,8 @@ class CVUserListViewController: UIViewController {
                     let list = self.multiHostsVM.applyingUserList.value
                     self.multiHostsVM.applyingUserList.accept(list)
                 }
+            case .onlyInvitationOfPK:
+                self.pkVM.fetch(success: endRefetch, fail: endRefetch)
             case .pk:
                 if self.tabView.selectedIndex.value == 0 {
                     self.pkVM.fetch(success: endRefetch, fail: endRefetch)
@@ -377,7 +388,7 @@ extension CVUserListViewController: CVUserInvitationListCellDelegate {
         case .onlyInvitationOfMultiHosts:
             let user = userListVM.audienceList.value[index]
             inviteUser.accept(user)
-        case .pk:
+        case .pk, .onlyInvitationOfPK:
             let room = pkVM.availableRooms.value[index]
             inviteRoom.accept(room)
         default:

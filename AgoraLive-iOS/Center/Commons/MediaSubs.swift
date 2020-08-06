@@ -313,6 +313,7 @@ class VideoEnhancement: FUClient , AGELogBase {
             }
         case .none:
             self.appearance = .none
+            self.log(info: "cancel animoji")
         }
     }
     

@@ -269,13 +269,17 @@ extension MultiBroadcastersViewController {
                                message: NSLocalizedString("Confirm_End_Broadcasting"),
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                                guard let user = action.seat.user,
-                                    let session = ALCenter.shared().liveSession else {
+                                guard let user = action.seat.user else {
                                         return
                                 }
                                 
-                                self.multiHostsVM.endBroadcasting(seatIndex: action.seat.index, user: user)
-                                session.broadcasterToAudience()
+                                self.multiHostsVM.endBroadcasting(seatIndex: action.seat.index, user: user, success: {
+                                    guard let session = ALCenter.shared().liveSession else {
+                                        assert(false)
+                                        return
+                                    }
+                                    session.broadcasterToAudience()
+                                })
                 }
             // audience
             case .application:

@@ -31,7 +31,7 @@ PK_Live="PK Host-in";
 PK_Live_Description="Merge 2 streams from different channels";
 Virtual_Live="Virtual Hosts";
 Virtual_Live_Description="Avatar-based simulation for call or live streaming";
-Live_Shopping="Live Stream Shopping";
+Live_Shopping="Live Shopping";
 Live_Shopping_Description="Engage audience and other hosts in online shopping";
 
 // Create Room Page

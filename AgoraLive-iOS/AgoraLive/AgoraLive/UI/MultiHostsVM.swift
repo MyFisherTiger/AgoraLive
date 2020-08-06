@@ -138,12 +138,16 @@ extension MultiHostsVM {
 
 // MARK: Broadcaster
 extension MultiHostsVM {
-    func endBroadcasting(seatIndex: Int, user: LiveRole, fail: ErrorCompletion = nil) {
+    func endBroadcasting(seatIndex: Int, user: LiveRole, success: Completion = nil, fail: ErrorCompletion = nil) {
         request(seatIndex: seatIndex,
                 type: 8,
                 userId: "\(user.info.userId)",
                 roomId: room.roomId,
-                fail: fail)
+                success: { (_) in
+                    if let success = success {
+                        success()
+                    }
+                }, fail: fail)
     }
 }
 
@@ -162,7 +166,11 @@ extension MultiHostsVM {
                 type: 6,
                 userId: "\(invitation.initiator.info.userId)",
                 roomId: room.roomId,
-                fail: fail)
+                success: { (_) in
+                    if let success = success {
+                        success()
+                    }
+                }, fail: fail)
     }
     
     func reject(invitation: Invitation, fail: ErrorCompletion = nil) {
@@ -209,7 +217,7 @@ private extension MultiHostsVM {
             
             let type = try data.getIntValue(of: "type")
             let seatIndex = try data.getIntValue(of: "no")
-            let id = try data.getIntValue(of: "processId")
+            
             let userJson = try data.getDictionaryValue(of: "fromUser")
             let role = try LiveRoleItem(dic: userJson)
             
@@ -220,12 +228,15 @@ private extension MultiHostsVM {
             switch type {
             // Owner
             case  2: // receivedApplication:
+                let id = try data.getIntValue(of: "processId")
                 let application = Application(id: id, seatIndex: seatIndex, initiator: role, receiver: local)
                 strongSelf.receivedApplication.accept(application)
             case  4: // audience rejected invitation
+                let id = try data.getIntValue(of: "processId")
                 let invitation = Invitation(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.invitationByRejected.accept(invitation)
             case  6: // audience accepted invitation:
+                let id = try data.getIntValue(of: "processId")
                 let invitation = Invitation(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.invitationByAccepted.accept(invitation)
             
@@ -235,14 +246,20 @@ private extension MultiHostsVM {
                 
             // Audience
             case  1: // receivedInvitation
+                let id = try data.getIntValue(of: "processId")
                 let invitation = Invitation(id: id, seatIndex: seatIndex, initiator: role, receiver: local)
                 strongSelf.receivedInvitation.accept(invitation)
             case  3: // applicationByRejected
+                let id = try data.getIntValue(of: "processId")
                 let application = Application(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.applicationByRejected.accept(application)
             case  5: // applicationByAccepted:
+                let id = try data.getIntValue(of: "processId")
                 let application = Application(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
                 strongSelf.applicationByAccepted.accept(application)
+            // broadcaster end live
+            case 8:
+                break
             default:
                 assert(false)
                 break
