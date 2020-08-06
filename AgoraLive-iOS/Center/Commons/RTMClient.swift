@@ -286,7 +286,7 @@ private extension RTMClient {
 // MARK: - AgoraRtmDelegate
 extension RTMClient: AgoraRtmDelegate {
     func rtmKit(_ kit: AgoraRtmKit, messageReceived message: AgoraRtmMessage, fromPeer peerId: String) {
-        let index = peerId.index(peerId.endIndex, offsetBy: -(peerId.count - 5))
+        let index = peerId.index(peerId.endIndex, offsetBy: -(peerId.count - 6))
         let new = peerId.suffix(from: index)
         received(jsonString: message.text, type: .peer(Int(new)!))
     }

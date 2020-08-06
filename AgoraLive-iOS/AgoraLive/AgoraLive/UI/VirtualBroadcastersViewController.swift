@@ -150,6 +150,7 @@ extension VirtualBroadcastersViewController {
         }).disposed(by: bag)
         
         if session.role.type != .audience {
+            enhancementVM.localVirtualAppearance()
             deviceVM.camera = .on
             deviceVM.mic = .on
         } else {

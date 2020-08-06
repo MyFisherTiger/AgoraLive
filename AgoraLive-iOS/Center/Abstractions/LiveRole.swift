@@ -73,7 +73,11 @@ struct LiveRoleItem: LiveRole {
     init(dic: StringAnyDic) throws {
         self.info = try BasicUserInfo(dic: dic)
         
-        self.type = try dic.getEnum(of: "role", type: LiveRoleType.self)
+        if let type = try? dic.getEnum(of: "role", type: LiveRoleType.self) {
+            self.type = type
+        } else {
+            self.type = .owner
+        }
         
         if let agUId = try? dic.getIntValue(of: "uid") {
             self.agUId = agUId

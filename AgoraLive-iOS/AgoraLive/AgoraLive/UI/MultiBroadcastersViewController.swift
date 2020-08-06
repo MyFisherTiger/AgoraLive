@@ -302,7 +302,7 @@ extension MultiBroadcastersViewController {
         
         vc.userListVM = userListVM
         vc.multiHostsVM = multiHostsVM
-        vc.showType = .multiHosts
+        vc.showType = .onlyInvitationOfMultiHosts
         vc.view.cornerRadius(10)
         
         let presenetedHeight: CGFloat = 526.0 + UIScreen.main.heightOfSafeAreaTop

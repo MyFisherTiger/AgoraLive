@@ -111,26 +111,29 @@ class CVUserListViewController: UIViewController {
     @IBOutlet weak var tableViewBottom: NSLayoutConstraint!
     
     enum ShowType {
-        case multiHosts, pk, onlyUser
+        case multiHosts, pk, onlyUser, onlyInvitationOfMultiHosts
     }
     
+    // Rx
     private let bag = DisposeBag()
+    
+    // multi hosts
     private var userListSubscribeOnMultiHosts: Disposable?
     private var applyingUserListSubscribeOnMultiHosts: Disposable?
     
-    // Rx
-    private(set) var userList = BehaviorRelay(value: [LiveRole]())
-    private(set) var roomList = BehaviorRelay(value: [Room]())
-    
     let inviteUser = PublishRelay<LiveRole>()
+    let rejectApplicationOfUser = PublishRelay<MultiHostsVM.Application>()
+    let accepteApplicationOfUser = PublishRelay<MultiHostsVM.Application>()
     
-    let rejectApplicationOfUser = PublishRelay<LiveRole>()
-    let accepteApplicationOfUser = PublishRelay<LiveRole>()
-    
+    // pk
+    private var availableRoomsSubscribeOnPK: Disposable?
+    private var applyingRoomsSubscribeOnOnPK: Disposable?
+   
     let inviteRoom = PublishRelay<Room>()
+    let rejectApplicationOfRoom = PublishRelay<Battle>()
+    let accepteApplicationOfRoom = PublishRelay<Battle>()
     
     var showType: ShowType = .onlyUser
-    
     
     var userListVM: LiveUserListVM!
     var multiHostsVM: MultiHostsVM!
@@ -148,6 +151,10 @@ class CVUserListViewController: UIViewController {
         tabView.underlineHeight = 3
         
         switch showType {
+        case .onlyInvitationOfMultiHosts:
+            titleLabel.text = NSLocalizedString("Online_User")
+            tabView.isHidden = true
+            tableViewTop.constant = 0
         case .multiHosts:
             titleLabel.text = NSLocalizedString("Online_User")
             let titles = [NSLocalizedString("All"), NSLocalizedString("ApplicationOfBroadcasting")]
@@ -173,6 +180,9 @@ class CVUserListViewController: UIViewController {
                                                             cell.buttonState = .none
                                                             cell.headImageView.image = images.getHead(index: user.info.imageIndex)
             }.disposed(by: bag)
+        case .onlyInvitationOfMultiHosts:
+            userListVM.refetch(onlyAudience: true)
+            tableViewBindWithUser(userListVM.audienceList).disposed(by: bag)
         case .multiHosts:
             tabView.selectedIndex.subscribe(onNext: { [unowned self] (index) in
                 switch index {
@@ -181,7 +191,7 @@ class CVUserListViewController: UIViewController {
                         subscribe.dispose()
                     }
                     
-                    self.userListSubscribeOnMultiHosts = self.tableViewBindWithAllUser()
+                    self.userListSubscribeOnMultiHosts = self.tableViewBindWithUser(self.userListVM.list)
                     self.userListSubscribeOnMultiHosts?.disposed(by: self.bag)
                     
                     self.userListVM.refetch(onlyAudience: false)
@@ -197,8 +207,26 @@ class CVUserListViewController: UIViewController {
                 }
             }).disposed(by: bag)
         case .pk:
-            tabView.selectedIndex.subscribe(onNext: { (index) in
-                
+            tabView.selectedIndex.subscribe(onNext: { [unowned self] (index) in
+                switch index {
+                case 0:
+                    if let subscribe = self.applyingRoomsSubscribeOnOnPK {
+                        subscribe.dispose()
+                    }
+                    
+                    self.availableRoomsSubscribeOnPK = self.tableViewBindWithAvailableRooms()
+                    self.availableRoomsSubscribeOnPK?.disposed(by: self.bag)
+                    self.pkVM.refetch()
+                case 1:
+                    if let subscribe = self.availableRoomsSubscribeOnPK {
+                        subscribe.dispose()
+                    }
+                    
+                    self.applyingRoomsSubscribeOnOnPK = self.tableViewBindWithApplicationsFromRoom()
+                    self.applyingRoomsSubscribeOnOnPK?.disposed(by: self.bag)
+                default:
+                    break
+                }
             }).disposed(by: bag)
         }
                 
@@ -210,6 +238,8 @@ class CVUserListViewController: UIViewController {
             switch self.showType {
             case .onlyUser:
                 self.userListVM.refetch(onlyAudience: false, success: endRefetch, fail: endRefetch)
+            case .onlyInvitationOfMultiHosts:
+                self.userListVM.refetch(onlyAudience: true, success: endRefetch, fail: endRefetch)
             case .multiHosts:
                 if self.tabView.selectedIndex.value == 0 {
                     self.userListVM.refetch(onlyAudience: false, success: endRefetch, fail: endRefetch)
@@ -218,7 +248,12 @@ class CVUserListViewController: UIViewController {
                     self.multiHostsVM.applyingUserList.accept(list)
                 }
             case .pk:
-                break
+                if self.tabView.selectedIndex.value == 0 {
+                    self.pkVM.refetch(success: endRefetch, fail: endRefetch)
+                } else {
+                    let list = self.pkVM.applyingRoomList.value
+                    self.pkVM.applyingRoomList.accept(list)
+                }
             }
         })
         
@@ -230,6 +265,8 @@ class CVUserListViewController: UIViewController {
             switch self.showType {
             case .onlyUser:
                 self.userListVM.fetch(onlyAudience: false, success: endRefetch, fail: endRefetch)
+            case .onlyInvitationOfMultiHosts:
+                self.userListVM.fetch(onlyAudience: true, success: endRefetch, fail: endRefetch)
             case .multiHosts:
                 if self.tabView.selectedIndex.value == 0 {
                     self.userListVM.fetch(onlyAudience: false, success: endRefetch, fail: endRefetch)
@@ -238,17 +275,22 @@ class CVUserListViewController: UIViewController {
                     self.multiHostsVM.applyingUserList.accept(list)
                 }
             case .pk:
-                break
+                if self.tabView.selectedIndex.value == 0 {
+                    self.pkVM.fetch(success: endRefetch, fail: endRefetch)
+                } else {
+                    let list = self.pkVM.applyingRoomList.value
+                    self.pkVM.applyingRoomList.accept(list)
+                }
             }
         })
     }
 }
 
 private extension CVUserListViewController {
-    func tableViewBindWithAllUser() -> Disposable {
+    func tableViewBindWithUser(_ list: BehaviorRelay<[LiveRole]>) -> Disposable {
         let images = ALCenter.shared().centerProvideImagesHelper()
         
-        let subscribe = userListVM.list.bind(to: tableView
+        let subscribe = list.bind(to: tableView
             .rx.items(cellIdentifier: "CVUserInvitationListCell",
                       cellType: CVUserInvitationListCell.self)) { [unowned images, unowned self] (index, user, cell) in
                         var buttonState = CVUserInvitationListCell.InviteButtonState.availableInvite
@@ -310,7 +352,7 @@ private extension CVUserListViewController {
         return subscribe
     }
     
-    func tableViewBindWithApplicationsFromRom() -> Disposable {
+    func tableViewBindWithApplicationsFromRoom() -> Disposable {
         let images = ALCenter.shared().centerProvideImagesHelper()
         
         let subscribe = pkVM.applyingRoomList.bind(to: tableView
@@ -328,19 +370,94 @@ private extension CVUserListViewController {
 
 extension CVUserListViewController: CVUserInvitationListCellDelegate {
     func cell(_ cell: CVUserInvitationListCell, didTapInvitationButton: UIButton, on index: Int) {
-        let user = userListVM.list.value[index]
-        inviteUser.accept(user)
+        switch showType {
+        case .multiHosts:
+            let user = userListVM.list.value[index]
+            inviteUser.accept(user)
+        case .onlyInvitationOfMultiHosts:
+            let user = userListVM.audienceList.value[index]
+            inviteUser.accept(user)
+        case .pk:
+            let room = pkVM.availableRooms.value[index]
+            inviteRoom.accept(room)
+        default:
+            break
+        }
     }
 }
 
 extension CVUserListViewController: CVUserApplicationListCellDelegate {
     func cell(_ cell: CVUserApplicationListCell, didTapAcceptButton: UIButton, on index: Int) {
-        let user = multiHostsVM.applyingUserList.value[index]
-        accepteApplicationOfUser.accept(user)
+        switch showType {
+        case .multiHosts:
+            let user = multiHostsVM.applyingUserList.value[index]
+            guard let applicationList = multiHostsVM.applicationQueue.list as? [MultiHostsVM.Application] else {
+                return
+            }
+            
+            let application = applicationList.first { (item) -> Bool in
+                return item.initiator.info.userId == user.info.userId
+            }
+            
+            guard let tApplication = application else {
+                return
+            }
+            
+            accepteApplicationOfUser.accept(tApplication)
+        case .pk:
+            let room = pkVM.applyingRoomList.value[index]
+            guard let applicationList = pkVM.applicationQueue.list as? [Battle] else {
+                return
+            }
+            
+            let application = applicationList.first { (item) -> Bool in
+                return item.initatorRoom.roomId == room.roomId
+            }
+            
+            guard let tApplication = application else {
+                return
+            }
+            
+            accepteApplicationOfRoom.accept(tApplication)
+        default:
+            break
+        }
     }
     
     func cell(_ cell: CVUserApplicationListCell, didTapRejectButton: UIButton, on index: Int) {
-        let user = multiHostsVM.applyingUserList.value[index]
-        rejectApplicationOfUser.accept(user)
+        switch showType {
+        case .multiHosts:
+            let user = multiHostsVM.applyingUserList.value[index]
+            guard let applicationList = multiHostsVM.applicationQueue.list as? [MultiHostsVM.Application] else {
+                return
+            }
+            
+            let application = applicationList.first { (item) -> Bool in
+                return item.initiator.info.userId == user.info.userId
+            }
+            
+            guard let tApplication = application else {
+                return
+            }
+            
+            rejectApplicationOfUser.accept(tApplication)
+        case .pk:
+            let room = pkVM.applyingRoomList.value[index]
+            guard let applicationList = pkVM.applicationQueue.list as? [Battle] else {
+                return
+            }
+            
+            let application = applicationList.first { (item) -> Bool in
+                return item.initatorRoom.roomId == room.roomId
+            }
+            
+            guard let tApplication = application else {
+                return
+            }
+            
+            rejectApplicationOfRoom.accept(tApplication)
+        default:
+            break
+        }
     }
 }

@@ -413,8 +413,13 @@ extension PKVM {
             
             let object = try json.getDataObject()
             let jsonList = try object.getValue(of: "list", type: [StringAnyDic].self)
-            let list = try [Room](dicList: jsonList)
-            strongSelf.availableRooms.accept(list)
+            let list = try [Room](dicList: jsonList).filter({ [unowned strongSelf] (room) -> Bool in
+                return room.roomId != strongSelf.room.roomId
+            })
+            
+            var new = strongSelf.availableRooms.value
+            new.append(contentsOf: list)
+            strongSelf.availableRooms.accept(new)
             
             if let success = success {
                 success()
@@ -456,7 +461,9 @@ extension PKVM {
             try json.getCodeCheck()
             let object = try json.getDataObject()
             let jsonList = try object.getValue(of: "list", type: [StringAnyDic].self)
-            let list = try [Room](dicList: jsonList)
+            let list = try [Room](dicList: jsonList).filter({ [unowned strongSelf] (room) -> Bool in
+                return room.roomId != strongSelf.room.roomId
+            })
             
             strongSelf.availableRooms.accept(list)
             

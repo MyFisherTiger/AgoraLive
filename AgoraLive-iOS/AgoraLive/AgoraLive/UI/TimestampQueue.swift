@@ -13,7 +13,7 @@ import RxRelay
 class TimestampQueue: NSObject {
     private var timer: SubThreadTimer
     
-    private var list = [TimestampModel]() {
+    private(set) var list = [TimestampModel]() {
         didSet {
             if list.count > 0 {
                 self.timer.start()

@@ -44,7 +44,7 @@ class LiveUserListVM: NSObject {
     var giftList = BehaviorRelay(value: [LiveRoleItem]())
     
     var list = BehaviorRelay(value: [LiveRole]())
-    var audienceList = BehaviorRelay(value: [LiveRoleItem]())
+    var audienceList = BehaviorRelay(value: [LiveRole]())
     
     var join = PublishRelay<[LiveRoleItem]>()
     var left = PublishRelay<[LiveRoleItem]>()

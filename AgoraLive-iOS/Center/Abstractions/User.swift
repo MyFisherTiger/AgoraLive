@@ -19,7 +19,7 @@ struct BasicUserInfo {
     
     init(dic: StringAnyDic) throws {
         self.userId = try dic.getStringValue(of: "userId")
-        self.name = try dic.getStringValue(of: "userName")
+        self.name = (try? dic.getStringValue(of: "userName")) ?? ""
         self.headURL = (try? dic.getStringValue(of: "avatar")) ?? ""
         self.imageIndex = Int(Int64(self.userId)! % 12)
     }

@@ -250,7 +250,6 @@ extension PKBroadcastersViewController {
             self.deviceVM.camera = owner.isLocal ? .on : .off
             self.deviceVM.mic = owner.isLocal ? .on : .off
             self.pkView?.intoOtherButton.isHidden = owner.isLocal
-            print("isLocal: \(owner.isLocal)")
             self.pkButton.isHidden = !owner.isLocal
         }).disposed(by: bag)
         
@@ -278,9 +277,7 @@ extension PKBroadcastersViewController {
     func PK(session: LiveSession) {
         // View
         pkButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.presentInvitationList { (room) in
-                
-            }
+            self.presentInvitationRoomList()
         }).disposed(by: bag)
         
         pkView?.intoOtherButton.rx.tap.subscribe(onNext: { [unowned self] in
@@ -422,7 +419,7 @@ private extension PKBroadcastersViewController {
         }
     }
     
-    func presentInvitationList(selected: ((Room) -> Void)? = nil) {
+    func presentInvitationRoomList() {
         self.showMaskView(color: UIColor.clear)
         
         let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
@@ -440,9 +437,51 @@ private extension PKBroadcastersViewController {
                                     width: UIScreen.main.bounds.width,
                                     height: presenetedHeight)
         
-        vc.inviteRoom.subscribe(onNext: { (room) in
-            if let selected = selected {
-                selected(room)
+        vc.inviteRoom.subscribe(onNext: { [unowned self] (room) in
+            self.hiddenMaskView()
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要邀请\"\(room.name)\"进行PK?"
+            } else {
+                message = "Do you send a invitation to \"\(room.name)\"?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.pkVM.sendInvitationTo(room: room)
+            }
+        }).disposed(by: bag)
+        
+        vc.accepteApplicationOfRoom.subscribe(onNext: { [unowned self] (battle) in
+            self.hiddenMaskView()
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要接受\"\(battle.initatorRoom.name)\"的邀请?"
+            } else {
+                message = "Do you accept \(battle.initatorRoom.name)'s pk invitation?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.pkVM.accept(invitation: battle)
+            }
+        }).disposed(by: bag)
+        
+        vc.rejectApplicationOfRoom.subscribe(onNext: { [unowned self] (battle) in
+            self.hiddenMaskView()
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要拒绝\"\(battle.initatorRoom.name)\"的邀请?"
+            } else {
+                message = "Do you reject \(battle.initatorRoom.name)'s pk invitation?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.pkVM.reject(invitation: battle)
             }
         }).disposed(by: bag)
         

@@ -31,15 +31,21 @@ struct Room {
     init(dic: StringAnyDic) throws {
         self.name = try dic.getStringValue(of: "roomName")
         self.roomId = try dic.getStringValue(of: "roomId")
-        self.imageURL = try dic.getStringValue(of: "thumbnail")
-        self.personCount = try dic.getIntValue(of: "currentUsers")
         
-        let ownerUserId = try dic.getStringValue(of: "ownerUserId")
-        let ownerAgoraUid = try dic.getIntValue(of: "ownerUid")
+        if let personCount = try? dic.getIntValue(of: "currentUsers") {
+            self.personCount = personCount
+        } else {
+            self.personCount = 0
+        }
         
-        let info = BasicUserInfo(userId: ownerUserId, name: "")
-        let owner = LiveRoleItem(type: .owner, info: info, permission: [.camera, .mic, .chat], agUId: ownerAgoraUid)
-        self.owner = owner
+        if let imageURL = try? dic.getStringValue(of: "thumbnail") {
+            self.imageURL = imageURL
+        } else {
+            self.imageURL = ""
+        }
+        
+        let ownerJson = try dic.getDictionaryValue(of: "owner")
+        self.owner = try LiveRoleItem(dic: ownerJson)
         
         #warning("next version")
         self.imageIndex = Int(Int64(self.roomId)! % 12)

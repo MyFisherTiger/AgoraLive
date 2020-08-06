@@ -89,10 +89,20 @@ extension VideoEnhancementVM {
     
     func virtualAppearance(_ appearance: VirtualAppearance) {
         enhancement.virtualAppearance(appearance, success: { [weak self] in
+            UserDefaults.standard.set(appearance.item, forKey: "VirtualAppearance")
             self?.virtualAppearance.accept(appearance)
         }) { [weak self] in
             self?.virtualAppearance.accept(.none)
         }
+    }
+    
+    func localVirtualAppearance() {
+        guard let string = UserDefaults.standard.value(forKey: "VirtualAppearance") as? String else {
+            return
+        }
+        
+        let item = VirtualAppearance.item(string)
+        virtualAppearance(item)
     }
     
     func reset() {
