@@ -88,7 +88,7 @@ class LiveListTabViewController: MaskViewController {
             vc?.seatVM = vm
         case "PKBroadcastersViewController":
             guard let pkInfo = info.pkInfo,
-                let vm = try? PKVM(room: info.room, state: pkInfo) else {
+                let vm = try? PKVM(room: info.room, type: .pk, state: pkInfo) else {
                     assert(false)
                     return
             }
@@ -120,7 +120,7 @@ class LiveListTabViewController: MaskViewController {
             guard let seatInfo = info.seatInfo,
                 let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
                 let pkInfo = info.pkInfo,
-                let pkVM = try? PKVM(room: info.room, state: pkInfo) else {
+                let pkVM = try? PKVM(room: info.room, type: .shopping, state: pkInfo) else {
                     assert(false)
                     return
             }
@@ -128,6 +128,7 @@ class LiveListTabViewController: MaskViewController {
             let vc = segue.destination as? LiveShoppingViewController
             vc?.userListVM.updateGiftListWithJson(list: info.giftAudience)
             vc?.multiHostsVM = MultiHostsVM(room: info.room)
+            vc?.goodsVM = GoodsVM(room: info.room)
             vc?.seatVM = seatVM
             vc?.pkVM = pkVM
         default:

@@ -77,6 +77,7 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
         gift()
         
         bottomTools(session: session)
+        
         chatInput()
         musicList()
         broadcastingStatus()
@@ -103,8 +104,8 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
             }
             
             let vc = segue.destination as! BottomToolsViewController
-            vc.perspective = session.role.value.type
             vc.liveType = session.type
+            vc.perspective = session.role.value.type
             self.bottomToolsVC = vc
         case "ChatViewController":
             let vc = segue.destination as! ChatViewController

@@ -108,7 +108,7 @@ class ExtensionViewController: UIViewController {
         case .audience:
             if liveType == .shopping {
                 broadcastingButton.setImage(UIImage(named: "icon-连麦"), for: .normal)
-                broadcastingButton.setTitle("", for: .normal)
+                broadcastingButton.setTitle(NSLocalizedString("ApplicationOfBroadcasting"), for: .normal)
                 view.addSubview(broadcastingButton)
             }
             break

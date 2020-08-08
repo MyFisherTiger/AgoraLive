@@ -91,8 +91,8 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
             }
             let role = session.role.value
             let vc = segue.destination as! BottomToolsViewController
-            vc.perspective = role.type
             vc.liveType = session.type
+            vc.perspective = role.type
             self.bottomToolsVC = vc
         case "ChatViewController":
             let vc = segue.destination as! ChatViewController

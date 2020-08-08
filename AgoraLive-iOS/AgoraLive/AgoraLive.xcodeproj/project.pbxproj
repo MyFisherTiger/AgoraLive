@@ -36,7 +36,7 @@
 		A747ED7724CFF4E8002F2DB0 /* Popover.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A747ED7624CFF4E8002F2DB0 /* Popover.storyboard */; };
 		A747ED7924CFF810002F2DB0 /* Live.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A747ED7824CFF810002F2DB0 /* Live.storyboard */; };
 		A747ED7D24D1187F002F2DB0 /* GoodsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */; };
-		A747EDA124D2C78F002F2DB0 /* ShppoingSmallRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDA024D2C78E002F2DB0 /* ShppoingSmallRenderView.swift */; };
+		A747EDA124D2C78F002F2DB0 /* ShoppingSmallRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDA024D2C78E002F2DB0 /* ShoppingSmallRenderView.swift */; };
 		A747EDA624D2C87D002F2DB0 /* SubThreadTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = A747EDA524D2C87D002F2DB0 /* SubThreadTimer.m */; };
 		A747EDA824D2CD31002F2DB0 /* TimestampQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDA724D2CD31002F2DB0 /* TimestampQueue.swift */; };
 		A747EDAB24D2D03D002F2DB0 /* TimestampModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A747EDAA24D2D03D002F2DB0 /* TimestampModel.swift */; };
@@ -198,7 +198,7 @@
 		A747ED7624CFF4E8002F2DB0 /* Popover.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Popover.storyboard; sourceTree = "<group>"; };
 		A747ED7824CFF810002F2DB0 /* Live.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Live.storyboard; sourceTree = "<group>"; };
 		A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoodsListViewController.swift; sourceTree = "<group>"; };
-		A747EDA024D2C78E002F2DB0 /* ShppoingSmallRenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShppoingSmallRenderView.swift; sourceTree = "<group>"; };
+		A747EDA024D2C78E002F2DB0 /* ShoppingSmallRenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingSmallRenderView.swift; sourceTree = "<group>"; };
 		A747EDA424D2C87D002F2DB0 /* SubThreadTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SubThreadTimer.h; sourceTree = "<group>"; };
 		A747EDA524D2C87D002F2DB0 /* SubThreadTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SubThreadTimer.m; sourceTree = "<group>"; };
 		A747EDA724D2CD31002F2DB0 /* TimestampQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampQueue.swift; sourceTree = "<group>"; };
@@ -831,7 +831,7 @@
 			children = (
 				A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */,
 				A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */,
-				A747EDA024D2C78E002F2DB0 /* ShppoingSmallRenderView.swift */,
+				A747EDA024D2C78E002F2DB0 /* ShoppingSmallRenderView.swift */,
 			);
 			name = LiveShopping;
 			sourceTree = "<group>";
@@ -1101,7 +1101,7 @@
 				A7952ACC24162C1000479811 /* SSZipArchive.m in Sources */,
 				A711AB87243F034100C2A3FD /* GiftViewController.swift in Sources */,
 				A76BD13F23F26E0400B2732B /* LiveTypeViewController.swift in Sources */,
-				A747EDA124D2C78F002F2DB0 /* ShppoingSmallRenderView.swift in Sources */,
+				A747EDA124D2C78F002F2DB0 /* ShoppingSmallRenderView.swift in Sources */,
 				A7FDB5AA23FFBB9400487FB9 /* LiveListVM.swift in Sources */,
 				A7952AC124162C1000479811 /* ioapi_mem.c in Sources */,
 				A7952A49241624C800479811 /* MediaSettingsViewController.swift in Sources */,

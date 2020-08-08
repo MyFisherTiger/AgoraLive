@@ -216,8 +216,8 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
             }
             let role = session.role.value
             let vc = segue.destination as! BottomToolsViewController
-            vc.perspective = role.type
             vc.liveType = session.type
+            vc.perspective = role.type
             self.bottomToolsVC = vc
         case "ChatViewController":
             let vc = segue.destination as! ChatViewController
@@ -383,7 +383,7 @@ extension PKBroadcastersViewController {
         
         newSession.join(success: { [unowned newSession, unowned self] (joinedInfo) in
             guard let pkInfo = joinedInfo.pkInfo,
-                let vm = try? PKVM(room: joinedInfo.room, state: pkInfo),
+                let vm = try? PKVM(room: joinedInfo.room, type: .pk, state: pkInfo),
                 let navigation = self.navigationController else {
                     assert(false)
                     return
@@ -428,7 +428,7 @@ private extension PKBroadcastersViewController {
                                                  on: "Popover")
         
         vc.pkVM = pkVM
-        vc.showType = .pk
+        vc.showType = .onlyInvitationOfPK
         vc.view.cornerRadius(10)
         
         let presenetedHeight: CGFloat = 526.0 + UIScreen.main.heightOfSafeAreaTop

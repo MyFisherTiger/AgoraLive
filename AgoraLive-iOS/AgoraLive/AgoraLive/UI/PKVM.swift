@@ -33,19 +33,13 @@ struct PKInfo {
         
         init(dic: StringAnyDic) throws {
             let roomId = try dic.getStringValue(of: "roomId")
-            let channel = try dic.getStringValue(of: "channel")
-            let owner = try dic.getDictionaryValue(of: "owner")
-            
-            let userId = try owner.getStringValue(of: "userId")
-            let userName = try owner.getStringValue(of: "userName")
-            let agId = try owner.getIntValue(of: "uid")
-            
-            let info = BasicUserInfo(userId: userId, name: userName)
-            let ownerObj = LiveRoleItem(type: .owner, info: info, permission: [.camera, .mic, .chat], agUId: agId)
+            let channel = try dic.getStringValue(of: "channelName")
+            let ownerJson = try dic.getDictionaryValue(of: "owner")
+            let owner = try LiveRoleItem(dic: ownerJson)
             
             self.roomId = roomId
             self.channel = channel
-            self.owner = ownerObj
+            self.owner = owner
         }
     }
     
@@ -139,7 +133,7 @@ class PKVM: NSObject {
     let state = BehaviorRelay(value: PKState.none)
     let event = PublishRelay<PKEvent>()
     
-    init(room: Room, type: LiveType = .pk, state: StringAnyDic) throws {
+    init(room: Room, type: LiveType, state: StringAnyDic) throws {
         self.type = type
         self.room = room
         super.init()
@@ -167,7 +161,7 @@ class PKVM: NSObject {
         request(type: 2, roomId: room.roomId, to: invitation.initatorRoom.roomId, success: { (json) in
             self.applicationQueue.remove(invitation)
         }) { [unowned self] (_) in
-            self.requestError.accept("pk accpet fail")
+            self.requestError.accept("pk accept fail")
         }
     }
     
@@ -319,7 +313,7 @@ private extension PKVM {
                 startRelayingMediaStream(configuration)
             case 2:
                 let local = try dic.getIntValue(of: "remoteRank")
-                let remote = try dic.getIntValue(of: "localRoomRank")
+                let remote = try dic.getIntValue(of: "localRank")
                 event = .rankChanged(local: local, remote: remote)
             default:
                 assert(false)
@@ -340,21 +334,22 @@ private extension PKVM {
         case 0:
             state = .none
         case 1:
-            state = .inviting
-        case 2:
-            state = .isBeingInvited
-        case 3:
-            let room = try PKInfo.RemoteRoom(dic: dic)
+            let roomJson = try dic.getDictionaryValue(of: "remoteRoom")
+            let room = try PKInfo.RemoteRoom(dic: roomJson)
             let startTime = try dic.getIntValue(of: "startTime")
             let countDown = try dic.getIntValue(of: "countDown")
             let localRank = try dic.getIntValue(of: "localRank")
-            let remoteRank = try dic.getIntValue(of: "localRoomRank")
+            let remoteRank = try dic.getIntValue(of: "localRank")
             let info = PKInfo(remoteRoom: room,
                               startTime: startTime,
                               countDown: countDown,
                               localRank: localRank,
                               remoteRank: remoteRank)
             state = .duration(info)
+        case 2:
+            state = .inviting
+        case 3:
+            state = .isBeingInvited
         default:
             assert(false)
             return

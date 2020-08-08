@@ -90,3 +90,8 @@ class RemindIconTextView: IconTextView {
                                   height: h)
     }
 }
+
+protocol UIRemind {
+    var remindView: FilletView {get set}
+    var needRemind: Bool {get set}
+}

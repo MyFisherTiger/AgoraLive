@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxRelay
 import MBProgressHUD
 
 public func NSLocalizedString(_ key: String) -> String {
@@ -126,6 +128,9 @@ extension NotificationCenter {
 
 protocol PresentChildProtocol where Self: UIViewController {
     var presentingChild: UIViewController? {get set}
+    var presentedChild: PublishRelay<UIViewController> {get set}
+    var dimissChild: PublishRelay<UIViewController> {get set}
+    
     func presentChild(_ viewController: UIViewController, animated flag: Bool, presentedFrame: CGRect)
     func dismissChild(_ viewController: UIViewController, animated flag: Bool)
 }
@@ -155,6 +160,8 @@ extension PresentChildProtocol {
         
         self.addChild(viewController)
         viewController.didMove(toParent: self)
+        
+        presentedChild.accept(viewController)
     }
     
     func dismissChild(_ viewController: UIViewController, animated flag: Bool) {
@@ -298,6 +305,9 @@ extension ShowToastProtocol {
 }
 
 class MaskViewController: UIViewController, ShowAlertProtocol, PresentChildProtocol, ShowHudProtocol, ShowToastProtocol {
+    var presentedChild = PublishRelay<UIViewController>()
+    var dimissChild = PublishRelay<UIViewController>()
+    
     var presentingChild: UIViewController? = nil
     var presentingAlert: UIAlertController? = nil
     

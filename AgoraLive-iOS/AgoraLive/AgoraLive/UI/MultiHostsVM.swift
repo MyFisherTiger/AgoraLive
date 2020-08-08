@@ -51,7 +51,7 @@ class MultiHostsVM: RxObject {
     
     let invitingUserList = BehaviorRelay(value: [LiveRole]())
     let applyingUserList = BehaviorRelay(value: [LiveRole]())
-     
+    
     // Owner
     var invitationByRejected = PublishRelay<Invitation>()
     var invitationByAccepted = PublishRelay<Invitation>()
@@ -191,11 +191,19 @@ private extension MultiHostsVM {
                                timeout: .medium,
                                header: ["token": ALKeys.ALUserToken],
                                parameters: ["no": seatIndex, "type": type])
-        client.request(task: task, success: ACResponse.json({ (json) in
+        client.request(task: task, success: ACResponse.json({ [weak self] (json) in
+            guard let _ = self else {
+                return
+            }
+            
             if let success = success {
                 try success(json)
             }
-        })) { (error) -> RetryOptions in
+        })) { [weak self] (error) -> RetryOptions in
+            guard let _ = self else {
+                return .resign
+            }
+            
             if let fail = fail {
                 fail(error)
             }
@@ -230,14 +238,17 @@ private extension MultiHostsVM {
             case  2: // receivedApplication:
                 let id = try data.getIntValue(of: "processId")
                 let application = Application(id: id, seatIndex: seatIndex, initiator: role, receiver: local)
+                strongSelf.applicationQueue.append(application)
                 strongSelf.receivedApplication.accept(application)
             case  4: // audience rejected invitation
                 let id = try data.getIntValue(of: "processId")
                 let invitation = Invitation(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
+                strongSelf.invitationQueue.remove(invitation)
                 strongSelf.invitationByRejected.accept(invitation)
             case  6: // audience accepted invitation:
                 let id = try data.getIntValue(of: "processId")
                 let invitation = Invitation(id: id, seatIndex: seatIndex, initiator: local, receiver: role)
+                strongSelf.invitationQueue.remove(invitation)
                 strongSelf.invitationByAccepted.accept(invitation)
             
             // Broadcaster
@@ -264,15 +275,6 @@ private extension MultiHostsVM {
                 assert(false)
                 break
             }
-        }
-        
-        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
-            guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self),
-                let strongSelf = self else {
-                return
-            }
-            
-            // strongSelf.audienceBecameBroadcaster
         }
         
         // Owner

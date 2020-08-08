@@ -13,6 +13,7 @@ import AlamoClient
 
 struct GoodsItem {
     var name: String
+    var image: UIImage
     var description: String
     var price: Float
     var id: String
@@ -20,9 +21,10 @@ struct GoodsItem {
     
     init(dic: StringAnyDic) throws {
         self.id = try dic.getStringValue(of: "productId")
+        self.image = UIImage(named: "pic-商品0\(self.id)")!
         self.name = try dic.getStringValue(of: "productName")
-        self.price = try dic.getFloatInfoValue(of: "price")
-        self.isSale = try dic.getBoolInfoValue(of: "state")
+        self.price = 0 //try dic.getFloatInfoValue(of: "price")
+        self.isSale = (try dic.getBoolInfoValue(of: "state"))
         self.description = "description"
     }
 }
@@ -37,6 +39,7 @@ class GoodsVM: RxObject {
     let itemOnShelf = PublishRelay<GoodsItem>()
     let itemOffShelf = PublishRelay<GoodsItem>()
     
+    let requestSuccess = PublishRelay<String>()
     let requestError = PublishRelay<String>()
     
     init(room: Room) {
@@ -44,22 +47,7 @@ class GoodsVM: RxObject {
         super.init()
         observe()
     }
-    
-//    func fake() {
-//        var temp = [GoodsItem]()
-//
-//        for i in 0 ..< 8 {
-//            let item = GoodsItem(name: "name\(i)",
-//                          description: "description\(i)",
-//                                price: Float(i),
-//                                   id: i,
-//                               isSale: (i % 2) == 0 ? true : false)
-//            temp.append(item)
-//        }
-//
-//        list.accept(temp)
-//    }
-    
+        
     func itemOnShelf(_ item: GoodsItem) {
         goods(item, onShelf: true, of: room.roomId)
     }
@@ -71,14 +59,13 @@ class GoodsVM: RxObject {
     func refetchList() {
         let client = ALCenter.shared().centerProvideRequestHelper()
         let task = RequestTask(event: RequestEvent(name: "goods-list"),
-                               type: .http(.post, url: URLGroup.goodsList(roomId: room.roomId)),
+                               type: .http(.get, url: URLGroup.goodsList(roomId: room.roomId)),
                                timeout: .medium,
                                header: ["token": ALKeys.ALUserToken])
         
         client.request(task: task, success: ACResponse.json({ [unowned self] (json) in
             let data = try json.getListValue(of: "data")
             let list = try [GoodsItem](dicList: data)
-            
             self.list.accept(list)
         })) { [unowned self] (error) -> RetryOptions in
             self.requestError.accept("fetch product list fail")
@@ -86,10 +73,10 @@ class GoodsVM: RxObject {
         }
     }
     
-    func purchase(item: GoodsItem, count: Int, of roomId: String) {
+    func purchase(item: GoodsItem, count: Int = 1) {
         let client = ALCenter.shared().centerProvideRequestHelper()
         let task = RequestTask(event: RequestEvent(name: "goods-purchase"),
-                               type: .http(.post, url: URLGroup.goodsPurchase(roomId: roomId)),
+                               type: .http(.post, url: URLGroup.goodsPurchase(roomId: room.roomId)),
                                timeout: .medium,
                                header: ["token": ALKeys.ALUserToken],
                                parameters: ["productId": item.id, "count": count])
@@ -119,14 +106,47 @@ private extension GoodsVM {
                                type: .http(.post, url: URLGroup.goodsOnShelf(roomId: roomId, state: onShelf ? 1 : 0, goodsId: item.id)),
                                timeout: .medium,
                                header: ["token": ALKeys.ALUserToken])
-        client.request(task: task) { [unowned self] (error) -> RetryOptions in
+        
+        client.request(task: task, success: ACResponse.blank({ [weak self] in
+            guard let strongSelf = self else {
+                return
+            }
+            
             var message: String
             if onShelf {
-                message = "product on shelf fail"
+                if DeviceAssistant.Language.isChinese {
+                    message = "\"\(item.name)\" 已经上架"
+                } else {
+                    message = "\(item.name) has been added on shelf"
+                }
             } else {
-                message = "product off shelf fall"
+                if DeviceAssistant.Language.isChinese {
+                    message = "\"\(item.name)\" 已经下架"
+                } else {
+                    message = "\(item.name) is no longer available"
+                }
             }
-            self.requestError.accept(message)
+            strongSelf.requestSuccess.accept(message)
+        })) { [weak self] (_) -> RetryOptions in
+            guard let strongSelf = self else {
+                return .resign
+            }
+            
+            var message: String
+            if onShelf {
+                if DeviceAssistant.Language.isChinese {
+                    message = "\"\(item.name)\" 上架失败"
+                } else {
+                    message = "add \(item.name) on shelf fail"
+                }
+            } else {
+                if DeviceAssistant.Language.isChinese {
+                    message = "\"\(item.name)\" 下架失败"
+                } else {
+                    message = "put \(item.name) off shelf fail"
+                }
+            }
+            strongSelf.requestError.accept(message)
             return .resign
         }
     }

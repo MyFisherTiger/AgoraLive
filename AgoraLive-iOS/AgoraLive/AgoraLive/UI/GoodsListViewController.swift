@@ -49,6 +49,10 @@ class GoodsCell: UITableViewCell {
         filletView.insideBackgroundColor = .white
         filletView.filletRadius = 4
         
+        button.layer.borderWidth = 1
+        button.cornerRadius(20)
+        button.layer.borderColor = UIColor(hexString: "#EEEEEE").cgColor
+        
         button.rx.tap.subscribe(onNext: { [unowned self] in
             self.delegate?.cell(self, didTapButton: self.button, on: self.index, for: self.buttonType)
         }).disposed(by: bag)
@@ -59,7 +63,8 @@ class GoodsListViewController: UIViewController, RxViewController {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var tabView: TabSelectView!
     @IBOutlet weak var tableView: UITableView!
-    
+    @IBOutlet weak var tableViewBottom: NSLayoutConstraint!
+    @IBOutlet weak var tableViewTop: NSLayoutConstraint!
     
     private var onSelfSubscribe: Disposable?
     private var offSelfSubscribe: Disposable?
@@ -68,13 +73,12 @@ class GoodsListViewController: UIViewController, RxViewController {
     var bag = DisposeBag()
     var vm: GoodsVM!
     
+    let itemOnShelf = PublishRelay<GoodsItem>()
+    let itemOffShelf = PublishRelay<GoodsItem>()
+    let itemDetail = PublishRelay<GoodsItem>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let session = ALCenter.shared().liveSession else {
-            assert(false)
-            return
-        }
-        
         views()
         vm.refetchList()
     }
@@ -84,6 +88,16 @@ private extension GoodsListViewController {
     func views() {
         titleLabel.text = NSLocalizedString("Product_List")
         
+        if perspective == .owner {
+            ownerList()
+        } else {
+            audienceList()
+        }
+        
+        tableViewBottom.constant = UIScreen.main.heightOfSafeAreaBottom
+    }
+    
+    func ownerList() {
         let goodsTitles = [NSLocalizedString("Product_Pending"),
                             NSLocalizedString("Product_OnShelf")]
         
@@ -99,23 +113,31 @@ private extension GoodsListViewController {
         tabView.selectedIndex.subscribe(onNext: { [unowned self] (index) in
             switch index {
             case 0:
-                if let subscribe = self.offSelfSubscribe {
-                    subscribe.dispose()
-                }
-                    
-                self.onSelfSubscribe = self.tableViewBindWithList(self.vm.onShelfList)
-                self.onSelfSubscribe?.disposed(by: self.bag)
-            case 1:
                 if let subscribe = self.onSelfSubscribe {
                     subscribe.dispose()
                 }
-
+                
                 self.offSelfSubscribe = self.tableViewBindWithList(self.vm.offShelfList)
                 self.offSelfSubscribe?.disposed(by: self.bag)
+                
+                
+            case 1:
+                if let subscribe = self.offSelfSubscribe {
+                    subscribe.dispose()
+                }
+                
+                self.onSelfSubscribe = self.tableViewBindWithList(self.vm.onShelfList)
+                self.onSelfSubscribe?.disposed(by: self.bag)
             default:
                 break
             }
         }).disposed(by: bag)
+    }
+    
+    func audienceList() {
+        tabView.isHidden = true
+        tableViewTop.constant = 0
+        tableViewBindWithList(vm.onShelfList).disposed(by: bag)
     }
 }
 
@@ -123,13 +145,14 @@ private extension GoodsListViewController {
     func tableViewBindWithList(_ list: BehaviorRelay<[GoodsItem]>) -> Disposable {
         let subscribe = list.bind(to: self.tableView.rx.items(cellIdentifier: "GoodsCell",
                                                               cellType: GoodsCell.self)) { [unowned self] (index, goods, cell) in
+                                                                cell.goodsImageView.image = goods.image
                                                                 cell.descriptionLabel.text = goods.description
                                                                 cell.priceLabel.text = "\(goods.price)"
                                                                 
                                                                 cell.delegate = self
                                                                 
                                                                 if self.perspective == .owner {
-                                                                    cell.buttonType = goods.isSale ? .onShelf : .offShelf
+                                                                    cell.buttonType = goods.isSale ? .offShelf : .onShelf
                                                                 } else {
                                                                     cell.buttonType = .detail
                                                                 }
@@ -145,11 +168,11 @@ extension GoodsListViewController: GoodsCellDelegate {
         
         switch event {
         case .onShelf:
-            vm.itemOnShelf(item)
+            itemOnShelf.accept(item)
         case .offShelf:
-            vm.itemOffShelf(item)
+            itemOffShelf.accept(item)
         case .detail:
-            break
+            itemDetail.accept(item)
         }
     }
 }

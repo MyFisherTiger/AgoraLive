@@ -125,23 +125,22 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
     }
     
     func activeSpeaker() {
-        playerVM.activeSpeaker.subscribe(onNext: { [weak self] (speaker) in
-            guard let strongSelf = self,
-                let session = ALCenter.shared().liveSession else {
+        playerVM.activeSpeaker.subscribe(onNext: { [unowned self] (speaker) in
+            guard let session = ALCenter.shared().liveSession else {
                     return
             }
             
             switch (speaker, session.owner.value) {
             case (.local, .localUser):
-                strongSelf.ownerRenderView.startSpeakerAnimating()
+                self.ownerRenderView.startSpeakerAnimating()
             case (.other(agoraUid: let uid), .otherUser(let user)):
                 if uid == user.agUId {
-                    strongSelf.ownerRenderView.startSpeakerAnimating()
+                    self.ownerRenderView.startSpeakerAnimating()
                 } else {
                     fallthrough
                 }
             default:
-                strongSelf.seatVC?.activeSpeaker(speaker)
+                self.seatVC?.activeSpeaker(speaker)
             }
         }).disposed(by: bag)
     }
@@ -208,8 +207,7 @@ extension MultiBroadcastersViewController {
                 let message = self.alertMessageOfSeatCommand(action.command,
                                                              with: action.seat.user?.info.name)
                 
-                self.showAlert(action.command.description,
-                               message: message,
+                self.showAlert(message: message,
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm"),
                                handler2: handler)
@@ -224,8 +222,7 @@ extension MultiBroadcastersViewController {
                         }
                     }
                     let message = self.alertMessageOfSeatCommand(action.command, with: user.info.name)
-                    self.showAlert(action.command.description,
-                                   message: message,
+                    self.showAlert(message: message,
                                    action1: NSLocalizedString("Cancel"),
                                    action2: NSLocalizedString("Confirm"),
                                    handler2: handler)
@@ -251,7 +248,7 @@ extension MultiBroadcastersViewController {
                     } else if action.command == .forceToAudience {
                         self.multiHostsVM.forceEndBroadcasting(user: user,
                                                                on: action.seat.index) { (_) in
-                                                                self.showTextToast(text: "force user end broadcasting")
+                                                                self.showTextToast(text: "force user end broadcasting fail")
                         }
                     }
                 }
@@ -259,15 +256,13 @@ extension MultiBroadcastersViewController {
                 let message = self.alertMessageOfSeatCommand(action.command,
                                                              with: action.seat.user?.info.name)
                 
-                self.showAlert(action.command.description,
-                               message: message,
+                self.showAlert(message: message,
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm"),
                                handler2: handler)
             // broadcster
             case .endBroadcasting:
-                self.showAlert(action.command.description,
-                               message: NSLocalizedString("Confirm_End_Broadcasting"),
+                self.showAlert(message: NSLocalizedString("Confirm_End_Broadcasting"),
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
                                 guard let user = action.seat.user else {
@@ -284,8 +279,7 @@ extension MultiBroadcastersViewController {
                 }
             // audience
             case .application:
-                self.showAlert(action.command.description,
-                               message: NSLocalizedString("Confirm_Apply_For_Broadcasting"),
+                self.showAlert(message: NSLocalizedString("Confirm_Apply_For_Broadcasting"),
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
                                 self.multiHostsVM.sendApplication(by: session.role.value,
@@ -356,17 +350,17 @@ private extension MultiBroadcastersViewController {
     
     func multiHosts() {
         // owner
-        multiHostsVM.receivedApplication.subscribe(onNext: { (application) in
+        multiHostsVM.receivedApplication.subscribe(onNext: { [unowned self] (application) in
             self.showAlert(message: "\"\(application.initiator.info.name)\" " + NSLocalizedString("Apply_For_Broadcasting"),
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Confirm"), handler1: { (_) in
                             self.multiHostsVM.reject(application: application)
-            }) {[unowned self] (_) in
+            }) { [unowned self] (_) in
                 self.multiHostsVM.accept(application: application)
             }
         }).disposed(by: bag)
         
-        multiHostsVM.invitationByRejected.subscribe(onNext: { (invitation) in
+        multiHostsVM.invitationByRejected.subscribe(onNext: { [unowned self] (invitation) in
             if DeviceAssistant.Language.isChinese {
                 self.showTextToast(text: invitation.receiver.info.name + "拒绝了这次邀请")
             } else {
@@ -375,7 +369,7 @@ private extension MultiBroadcastersViewController {
         }).disposed(by: bag)
         
         // broadcaster
-        multiHostsVM.receivedEndBroadcasting.subscribe(onNext: {
+        multiHostsVM.receivedEndBroadcasting.subscribe(onNext: { [unowned self] in
             if DeviceAssistant.Language.isChinese {
                 self.showTextToast(text: "房主强迫你下麦")
             } else {
@@ -390,9 +384,8 @@ private extension MultiBroadcastersViewController {
         }).disposed(by: bag)
         
         // audience
-        multiHostsVM.receivedInvitation.subscribe(onNext: { (invitation) in
-            self.showAlert(NSLocalizedString("Invite_Broadcasting"),
-                           message: NSLocalizedString("Confirm_Accept_Broadcasting_Invitation"),
+        multiHostsVM.receivedInvitation.subscribe(onNext: { [unowned self] (invitation) in
+            self.showAlert(message: NSLocalizedString("Confirm_Accept_Broadcasting_Invitation"),
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Confirm"),
                            handler1: {[unowned self] (_) in
@@ -409,16 +402,15 @@ private extension MultiBroadcastersViewController {
             }
         }).disposed(by: bag)
         
-        multiHostsVM.applicationByAccepted.subscribe(onNext: { [weak self] (_) in
-            guard let strongSelf = self,
-                let session = ALCenter.shared().liveSession else {
+        multiHostsVM.applicationByAccepted.subscribe(onNext: { [unowned self] (_) in
+            guard let session = ALCenter.shared().liveSession else {
                 return
             }
-            strongSelf.hiddenMaskView()
+            self.hiddenMaskView()
             session.audienceToBroadcaster()
         }).disposed(by: bag)
         
-        multiHostsVM.applicationByRejected.subscribe(onNext: { (application) in
+        multiHostsVM.applicationByRejected.subscribe(onNext: { [unowned self] (application) in
             if DeviceAssistant.Language.isChinese {
                 self.showTextToast(text: "房间拒绝你的申请")
             } else {
@@ -456,25 +448,25 @@ private extension MultiBroadcastersViewController {
             if DeviceAssistant.Language.isChinese {
                 return "禁止\"\(userName!)\"发言?"
             } else {
-                return "mute \"\(userName!)\"?"
+                return "Mute \(userName!)?"
             }
         case .unban:
             if DeviceAssistant.Language.isChinese {
                 return "解除\"\(userName!)\"禁言?"
             } else {
-                return "unmute \"\(userName!)\"?"
+                return "Unmute \(userName!)?"
             }
         case .forceToAudience:
             if DeviceAssistant.Language.isChinese {
                 return "确定\"\(userName!)\"下麦?"
             } else {
-                return "Stop \"\(userName!)\" hosting"
+                return "Stop \(userName!) hosting"
             }
         case .close:
             if DeviceAssistant.Language.isChinese {
                 return "将关闭该麦位，如果该位置上有用户，将下麦该用户"
             } else {
-                return "block this position"
+                return "Block this position"
             }
         case .release:
             return NSLocalizedString("Seat_Release_Description")
@@ -482,7 +474,7 @@ private extension MultiBroadcastersViewController {
             if DeviceAssistant.Language.isChinese {
                 return "你是否要邀请\"\(userName!)\"上麦?"
             } else {
-                return "Do you want to invite \"\(userName!)\" to co-video?"
+                return "Do you send a invitation to \(userName!)?"
             }
         default:
             assert(false)

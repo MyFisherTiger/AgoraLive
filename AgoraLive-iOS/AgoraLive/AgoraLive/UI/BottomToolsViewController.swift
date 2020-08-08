@@ -31,12 +31,8 @@ class BottomToolsViewController: UIViewController {
             giftButton.backgroundColor = tintColor
         }
     }
-    var liveType: LiveType = .multi {
-        didSet {
-            updateViews()
-            viewDidLayoutSubviews()
-        }
-    }
+    
+    var liveType: LiveType = .multi
     
     var perspective: LiveRoleType = .owner {
         didSet {
@@ -154,6 +150,7 @@ class BottomToolsViewController: UIViewController {
                           space: space)
             
             lastButton = shoppingButton
+        case (.shopping, .broadcaster): fallthrough
         case (.shopping, .audience):
             buttonsLayout([giftButton, shoppingButton],
                           extensionButton: extensionButton,
@@ -256,6 +253,7 @@ private extension BottomToolsViewController {
             
             self.view.addSubview(shoppingButton)
             self.view.addSubview(pkButton)
+        case (.shopping, .broadcaster): fallthrough
         case (.shopping, .audience):
             shoppingButton.isHidden = false
             giftButton.isHidden = false

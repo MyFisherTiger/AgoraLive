@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ShppoingSmallRenderView: UIView {
+class ShoppingSmallRenderView: UIView {
     private let shadow = UIImageView()
     
     let nameLabel = UILabel()
@@ -25,6 +25,8 @@ class ShppoingSmallRenderView: UIView {
                                   y: renderY,
                                   width: renderWith,
                                   height: renderHeight)
+        renderView.layer.masksToBounds = true
+        renderView.cornerRadius(5)
         
         let shadowHeight: CGFloat = 28
         shadow.frame = CGRect(x: 0,
@@ -56,6 +58,7 @@ class ShppoingSmallRenderView: UIView {
     
     func initViews() {
         backgroundColor = .red
+        renderView.backgroundColor = .blue
         
         addSubview(renderView)
         
@@ -64,8 +67,10 @@ class ShppoingSmallRenderView: UIView {
         
         nameLabel.textColor = .white
         nameLabel.font = UIFont.systemFont(ofSize: 11)
+        nameLabel.textAlignment = .center
         renderView.addSubview(nameLabel)
         
+        closeButton.setImage(UIImage(named: "icon-close video"), for: .normal)
         addSubview(closeButton)
     }
 }
