@@ -17,7 +17,7 @@ class BottomToolsViewController: UIViewController {
     lazy var giftButton = UIButton()
     lazy var superRenderButton = UIButton()
     lazy var shoppingButton = UIButton()
-    lazy var pkButton = UIButton()
+    lazy var pkButton = RemindButton()
     
     var tintColor: UIColor = .black {
         didSet {

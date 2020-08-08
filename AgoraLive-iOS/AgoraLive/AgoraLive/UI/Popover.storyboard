@@ -668,6 +668,21 @@
             </objects>
             <point key="canvasLocation" x="-6648" y="2358"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="qlt-H2-0WV">
+            <objects>
+                <viewController id="71U-61-tLX" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="jVs-Tv-yNN">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="e52-ga-hLh"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hRD-LU-dND" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-5738" y="3629"/>
+        </scene>
         <!--Music View Controller-->
         <scene sceneID="Fsa-Kb-X2d">
             <objects>
@@ -1283,7 +1298,6 @@
                                             <outlet property="acceptButton" destination="ohO-zf-kFJ" id="YZi-WX-hW4"/>
                                             <outlet property="headImageView" destination="D4c-Hj-Ir5" id="1fC-E4-xiY"/>
                                             <outlet property="nameLabel" destination="NuQ-7c-kbR" id="zoR-2s-VW1"/>
-                                            <outlet property="q" destination="Tcg-wA-8BE" id="xNg-xj-h3X"/>
                                             <outlet property="rejectButton" destination="Tcg-wA-8BE" id="hA5-Zv-DsC"/>
                                         </connections>
                                     </tableViewCell>

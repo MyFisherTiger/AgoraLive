@@ -72,6 +72,7 @@ class RemindIconTextView: IconTextView {
     override func awakeFromNib() {
         super.awakeFromNib()
         needRemind = false
+        remindView.backgroundColor = .clear
         remindView.insideBackgroundColor = UIColor(hexString: "#FF097E")
         addSubview(remindView)
     }

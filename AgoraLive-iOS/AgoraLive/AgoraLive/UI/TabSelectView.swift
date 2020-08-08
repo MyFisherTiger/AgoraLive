@@ -96,6 +96,7 @@ extension TabSelectView {
         selectedIndex.subscribe(onNext: { [unowned self] (index) in
             self.updateSelectedButton(index)
             self.updateUnderlinePosition()
+            self.needRemind(false, index: index)
         }).disposed(by: bag)
     }
     
@@ -234,9 +235,24 @@ class RemindButton: UIButton {
         }
     }
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        initViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        initViews()
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
+        initViews()
+    }
+    
+    func initViews() {
         needRemind = false
+        remindView.backgroundColor = .clear
         remindView.insideBackgroundColor = UIColor(hexString: "#FF097E")
         addSubview(remindView)
     }

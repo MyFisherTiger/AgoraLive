@@ -93,12 +93,21 @@ class CVUserApplicationListCell: UITableViewCell {
                                           x: x,
                                           width: width)
         
-        self.acceptButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.delegate?.cell(self, didTapAcceptButton: self.acceptButton, on: self.index)
-        }).disposed(by: bag)
-        
+        self.rejectButton.setTitle(NSLocalizedString("Reject"), for: .normal)
+        self.rejectButton.setTitleColor(UIColor(hexString: "#333333"), for: .normal)
+        self.rejectButton.layer.borderWidth = 1
+        self.rejectButton.layer.borderColor = UIColor(hexString: "#CCCCCC").cgColor
+        self.rejectButton.cornerRadius(16)
         self.rejectButton.rx.tap.subscribe(onNext: { [unowned self] in
             self.delegate?.cell(self, didTapRejectButton: self.rejectButton, on: self.index)
+        }).disposed(by: bag)
+        
+        self.acceptButton.setTitle(NSLocalizedString("Accept"), for: .normal)
+        self.acceptButton.setTitleColor(UIColor.white, for: .normal)
+        self.acceptButton.backgroundColor = UIColor(hexString: "#0088EB")
+        self.acceptButton.cornerRadius(16)
+        self.acceptButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.delegate?.cell(self, didTapAcceptButton: self.acceptButton, on: self.index)
         }).disposed(by: bag)
     }
 }
@@ -123,7 +132,7 @@ class CVUserListViewController: UIViewController {
     
     let inviteUser = PublishRelay<LiveRole>()
     let rejectApplicationOfUser = PublishRelay<MultiHostsVM.Application>()
-    let accepteApplicationOfUser = PublishRelay<MultiHostsVM.Application>()
+    let acceptApplicationOfUser = PublishRelay<MultiHostsVM.Application>()
     
     // pk
     private var availableRoomsSubscribeOnPK: Disposable?
@@ -414,7 +423,7 @@ extension CVUserListViewController: CVUserApplicationListCellDelegate {
                 return
             }
             
-            accepteApplicationOfUser.accept(tApplication)
+            acceptApplicationOfUser.accept(tApplication)
         case .pk:
             let room = pkVM.applyingRoomList.value[index]
             guard let applicationList = pkVM.applicationQueue.list as? [Battle] else {

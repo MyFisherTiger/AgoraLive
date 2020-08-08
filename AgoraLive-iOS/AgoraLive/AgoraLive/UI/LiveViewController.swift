@@ -11,6 +11,17 @@ import RxSwift
 import RxRelay
 import MJRefresh
 
+enum HostCount {
+    case single(LiveRole), multi([LiveRole])
+    
+    var isSingle: Bool {
+        switch self {
+        case .single: return true
+        case .multi:  return false
+        }
+    }
+}
+
 protocol RxViewController where Self: UIViewController {
     var bag: DisposeBag {get set}
 }

@@ -52,6 +52,7 @@
 		A7615015244AF35B007AAA7F /* MediaDeviceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */; };
 		A76767EB249B0E45002C4FBD /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76767EA249B0E45002C4FBD /* AboutViewController.swift */; };
 		A768B6142452F3980073510D /* GIFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A768B6132452F3980073510D /* GIFView.swift */; };
+		A769D8A324DEA569000C4152 /* ProductDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A769D8A224DEA569000C4152 /* ProductDetailViewController.swift */; };
 		A76BD12123F1035500B2732B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76BD12023F1035500B2732B /* AppDelegate.swift */; };
 		A76BD12823F1035500B2732B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A76BD12623F1035500B2732B /* Main.storyboard */; };
 		A76BD12D23F1035600B2732B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A76BD12B23F1035600B2732B /* LaunchScreen.storyboard */; };
@@ -216,6 +217,7 @@
 		A7615014244AF35B007AAA7F /* MediaDeviceVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDeviceVM.swift; sourceTree = "<group>"; };
 		A76767EA249B0E45002C4FBD /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		A768B6132452F3980073510D /* GIFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFView.swift; sourceTree = "<group>"; };
+		A769D8A224DEA569000C4152 /* ProductDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailViewController.swift; sourceTree = "<group>"; };
 		A76BD11D23F1035500B2732B /* AgoraLive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AgoraLive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A76BD12023F1035500B2732B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A76BD12723F1035500B2732B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -832,6 +834,7 @@
 				A7EB816724C7F4E700F0A289 /* LiveShoppingViewController.swift */,
 				A747ED7C24D1187F002F2DB0 /* GoodsListViewController.swift */,
 				A747EDA024D2C78E002F2DB0 /* ShoppingSmallRenderView.swift */,
+				A769D8A224DEA569000C4152 /* ProductDetailViewController.swift */,
 			);
 			name = LiveShopping;
 			sourceTree = "<group>";
@@ -1095,6 +1098,7 @@
 				A76767EB249B0E45002C4FBD /* AboutViewController.swift in Sources */,
 				A7FDB59F23FD2B0C00487FB9 /* LiveListTabViewController.swift in Sources */,
 				A71AAF88243D740F00820096 /* UIImage+CSClipToCycle.m in Sources */,
+				A769D8A324DEA569000C4152 /* ProductDetailViewController.swift in Sources */,
 				A71AAF18243354C500820096 /* MusicViewController.swift in Sources */,
 				A7952AC324162C1000479811 /* aeskey.c in Sources */,
 				A754FAF4242C5A920062B2F5 /* ChatVM.swift in Sources */,

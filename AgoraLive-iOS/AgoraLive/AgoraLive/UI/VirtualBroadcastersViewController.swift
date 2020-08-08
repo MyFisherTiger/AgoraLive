@@ -22,7 +22,7 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
     
     var multiHostsVM: MultiHostsVM!
     var seatVM: LiveSeatVM!
-    var virtualVM: VirtualVM!
+    var hostCount: BehaviorRelay<HostCount>!
     
     // LiveViewController
     var tintColor = UIColor(red: 0,
@@ -80,7 +80,7 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
         
         chatInput()
         musicList()
-        broadcastingStatus()
+        multiHostCount()
         liveSeat()
         multiHosts()
         netMonitor()
@@ -158,7 +158,7 @@ extension VirtualBroadcastersViewController {
                 return
             }
             
-            switch (self.virtualVM.broadcasting.value, session.owner.value) {
+            switch (self.hostCount.value, session.owner.value) {
             case (.single, .localUser):
                 self.presentInvitationList()
             case (.multi, .localUser):
@@ -198,9 +198,9 @@ extension VirtualBroadcastersViewController {
             }
             
             if list.count == 1, let remote = list[0].user {
-                self.virtualVM.broadcasting.accept(.multi([session.owner.value.user, remote]))
+                self.hostCount.accept(.multi([session.owner.value.user, remote]))
             } else {
-                self.virtualVM.broadcasting.accept(.single(session.owner.value.user))
+                self.hostCount.accept(.single(session.owner.value.user))
             }
         }).disposed(by: bag)
     }
@@ -278,14 +278,14 @@ extension VirtualBroadcastersViewController {
         }).disposed(by: bag)
     }
     
-    func broadcastingStatus() {
-        virtualVM.broadcasting.subscribe(onNext: { [unowned self] (broadcasting) in
+    func multiHostCount() {
+        hostCount.subscribe(onNext: { [unowned self] (hostCount) in
             guard let session = ALCenter.shared().liveSession else {
                     assert(false)
                     return
             }
             
-            switch broadcasting {
+            switch hostCount {
             case .multi(let list):
                 if session.owner.value.isLocal {
                     self.inviteButton.isHidden = false
@@ -304,7 +304,7 @@ extension VirtualBroadcastersViewController {
             }
             
             // Video Layout
-            self.updateVideoLayout(onlyOwner: broadcasting.isSingle)
+            self.updateVideoLayout(onlyOwner: hostCount.isSingle)
         }).disposed(by: bag)
     }
     

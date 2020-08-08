@@ -151,7 +151,7 @@ End_PK_Message="（The countdown is not over yet）";
 
 // Virtual
 Confirm_Accept_Broadcasting="申请上麦，是否接受？";
-Confirm_Apply_For_Broadcasting="你确定要\“申请上麦\”吗？";
+Confirm_Apply_For_Broadcasting="Do you send a application?";
 
 Broadcasting_Invitation="Invite host";
 Confirm_Accept_Broadcasting_Invitation="Do you agree to become a host？";

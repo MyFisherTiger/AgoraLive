@@ -242,6 +242,7 @@ private extension PKVM {
             switch type {
             case 1:
                 let battle = Battle(id: id, initatorRoom: remoteRoom, receiverRoom: strongSelf.room)
+                strongSelf.applicationQueue.append(battle)
                 strongSelf.receivedInvitation.accept(battle)
             case 2:
                 let battle = Battle(id: id, initatorRoom: strongSelf.room, receiverRoom: remoteRoom)

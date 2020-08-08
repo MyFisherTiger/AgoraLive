@@ -106,21 +106,21 @@ class LiveListTabViewController: MaskViewController {
             vc?.multiHostsVM = MultiHostsVM(room: info.room)
             vc?.seatVM = seatVM
             
-            var broadcasting: VirtualVM.Broadcasting
+            var hostCount: HostCount
             
             if seatVM.list.value.count == 1,
                 let remote = seatVM.list.value[0].user {
-                broadcasting = .multi([session.owner.value.user, remote])
+                hostCount = .multi([session.owner.value.user, remote])
             } else {
-                broadcasting = .single(session.owner.value.user)
+                hostCount = .single(session.owner.value.user)
             }
-            
-            vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
+            vc?.hostCount = BehaviorRelay(value: hostCount)
         case "LiveShoppingViewController":
             guard let seatInfo = info.seatInfo,
                 let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
                 let pkInfo = info.pkInfo,
-                let pkVM = try? PKVM(room: info.room, type: .shopping, state: pkInfo) else {
+                let pkVM = try? PKVM(room: info.room, type: .shopping, state: pkInfo),
+                let session = ALCenter.shared().liveSession else {
                     assert(false)
                     return
             }
@@ -131,6 +131,16 @@ class LiveListTabViewController: MaskViewController {
             vc?.goodsVM = GoodsVM(room: info.room)
             vc?.seatVM = seatVM
             vc?.pkVM = pkVM
+            
+            var hostCount: HostCount
+            
+            if seatVM.list.value.count == 1,
+                let remote = seatVM.list.value[0].user {
+                hostCount = .multi([session.owner.value.user, remote])
+            } else {
+                hostCount = .single(session.owner.value.user)
+            }
+            vc?.hostCount = BehaviorRelay(value: hostCount)
         default:
             break
         }

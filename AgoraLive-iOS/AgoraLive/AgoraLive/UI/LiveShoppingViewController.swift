@@ -27,6 +27,7 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     private var broadcasteRender: ShoppingSmallRenderView?
     
     private var roomListVM = LiveListVM()
+    var hostCount: BehaviorRelay<HostCount>!
     var goodsVM: GoodsVM!
     var multiHostsVM: MultiHostsVM!
     var seatVM: LiveSeatVM!
@@ -83,21 +84,24 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
         liveSession(session)
         liveRoom(session)
         liveRole(session)
-        multiHosts()
-        seat()
         audience()
         chatList()
         gift()
-        
         userList()
         bottomTools(session: session)
-        extralBottomTools(session: session)
-        chatInput()
         musicList()
         netMonitor()
-        PK(session: session)
+        chatInput()
+        
+        extralBottomTools(session: session)
         
         goods(session: session)
+        
+        multiHosts()
+        multiHostCount()
+        seat()
+        
+        PK(session: session)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -199,7 +203,10 @@ extension LiveShoppingViewController {
             }
         }).disposed(by: bag)
     }
-    
+}
+
+// MARK: - Product
+private extension LiveShoppingViewController {
     func goods(session: LiveSession) {
         goodsVM.requestSuccess.subscribe(onNext: { [unowned self] (text) in
             self.showTextToast(text: text)
@@ -295,228 +302,6 @@ extension LiveShoppingViewController {
             }).disposed(by: bag)
         }
     }
-    
-    func intoRemoteRoom() {
-        guard let session = ALCenter.shared().liveSession,
-            let pkInfo = self.pkVM.state.value.pkInfo else {
-            assert(false)
-            return
-        }
-        
-        session.leave()
-        
-        let owner = pkInfo.remoteRoom.owner
-        let role = session.role.value
-        
-        let room = Room(name: "",
-                        roomId: pkInfo.remoteRoom.roomId,
-                        imageURL: "",
-                        personCount: 0,
-                        owner: owner)
-        
-        let newSession = LiveSession(room: room,
-                                     videoConfiguration: VideoConfiguration(),
-                                     type: .pk,
-                                     owner: .otherUser(owner),
-                                     role: role)
-        
-        newSession.join(success: { [unowned newSession, unowned self] (joinedInfo) in
-            guard let pkInfo = joinedInfo.pkInfo,
-                let vm = try? PKVM(room: joinedInfo.room, type: .shopping, state: pkInfo),
-                let navigation = self.navigationController else {
-                    assert(false)
-                    return
-            }
-            
-            ALCenter.shared().liveSession = newSession
-            let newPk = UIStoryboard.initViewController(of: "PKBroadcastersViewController",
-                                                        class: PKBroadcastersViewController.self)
-            newPk.pkVM = vm
-            
-            navigation.popViewController(animated: false)
-            navigation.pushViewController(newPk, animated: false)
-        }) { [weak self] in
-            self?.showTextToast(text: NSLocalizedString("Join_Other_Live_Room_Fail"))
-        }
-    }
-}
-
-private extension LiveShoppingViewController {
-    func show(result: PKResult) {
-        let completion = { [weak self] in
-            let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
-            view.text = NSLocalizedString("PK_End")
-            self?.showToastView(view, duration: 0.2)
-        }
-        
-        switch result {
-        case .win:
-            self.pkView?.showWinner(isLeft: true, completion: completion)
-        case .draw:
-            self.pkView?.showWinner(isLeft: false, completion: completion)
-        case .lose:
-            self.pkView?.showDraw(completion: completion)
-        }
-    }
-    
-    func presentUserList(type: CVUserListViewController.ShowType) {
-        guard (type == .multiHosts) || (type == .onlyUser) else {
-            return
-        }
-        
-        self.showMaskView(color: UIColor.clear)
-        
-        let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
-                                                 class: CVUserListViewController.self,
-                                                 on: "Popover")
-        
-        vc.userListVM = userListVM
-        vc.multiHostsVM = multiHostsVM
-        vc.showType = type
-        vc.view.cornerRadius(10)
-        
-        vc.inviteUser.subscribe(onNext: { [unowned self] (user) in
-            self.hiddenMaskView()
-            
-            var message: String
-            if DeviceAssistant.Language.isChinese {
-                message = "你是否要邀请\"\(user.info.name)\"上麦?"
-            } else {
-                message = "Do you send a invitation to \(user.info.name)?"
-            }
-            
-            self.showAlert(message: message,
-                           action1: NSLocalizedString("Cancel"),
-                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                            self.multiHostsVM.sendInvitation(to: user, on: 1) { [unowned self] (_) in
-                                self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
-                            }
-            }
-        }).disposed(by: bag)
-        
-        vc.rejectApplicationOfUser.subscribe(onNext: { (application) in
-            self.hiddenMaskView()
-            
-            var message: String
-            if DeviceAssistant.Language.isChinese {
-                message = "你是否要拒绝\"\(application.initiator.info.name)\"的上麦申请?"
-            } else {
-                message = "Do you reject \(application.initiator.info.name)'s application?"
-            }
-            
-            self.showAlert(message: message,
-                           action1: NSLocalizedString("Cancel"),
-                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                            self.multiHostsVM.reject(application: application) { [unowned self] (_) in
-                                self.showTextToast(text: "Reject application fail")
-                            }
-            }
-        }).disposed(by: bag)
-        
-        vc.accepteApplicationOfUser.subscribe(onNext: { (application) in
-            self.hiddenMaskView()
-            
-            var message: String
-            if DeviceAssistant.Language.isChinese {
-                message = "你是否要接受\"\(application.initiator.info.name)\"的上麦申请?"
-            } else {
-                message = "Do you accept \(application.initiator.info.name)'s application?"
-            }
-            
-            self.showAlert(message: message,
-                           action1: NSLocalizedString("Cancel"),
-                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                            self.multiHostsVM.reject(application: application) { [unowned self] (_) in
-                                self.showTextToast(text: "Accept application fail")
-                            }
-            }
-        }).disposed(by: bag)
-        
-        let presenetedHeight: CGFloat = 526.0
-        let y = UIScreen.main.bounds.height - presenetedHeight
-        let presentedFrame = CGRect(x: 0,
-                                    y: y,
-                                    width: UIScreen.main.bounds.width,
-                                    height: presenetedHeight)
-        
-        self.presentChild(vc,
-                          animated: true,
-                          presentedFrame: presentedFrame)
-    }
-    
-    func presentRoomList() {
-        self.showMaskView(color: UIColor.clear)
-        
-        let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
-                                                 class: CVUserListViewController.self,
-                                                 on: "Popover")
-        
-        vc.pkVM = pkVM
-        vc.showType = .pk
-        vc.view.cornerRadius(10)
-        
-        vc.inviteRoom.subscribe(onNext: { (room) in
-            self.hiddenMaskView()
-            
-            var message: String
-            if DeviceAssistant.Language.isChinese {
-                message = "你是否要邀请\"\(room.name)\"PK?"
-            } else {
-                message = "Do you send a invitation to \(room.name)?"
-            }
-            
-            self.showAlert(message: message,
-                           action1: NSLocalizedString("Cancel"),
-                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                            self.pkVM.sendInvitationTo(room: room)
-            }
-        }).disposed(by: bag)
-        
-        vc.rejectApplicationOfRoom.subscribe(onNext: { (application) in
-            self.hiddenMaskView()
-            
-            var message: String
-            if DeviceAssistant.Language.isChinese {
-                message = "你是否要拒绝\"\(application.initatorRoom.name)\"的PK邀请?"
-            } else {
-                message = "Do you reject \(application.initatorRoom.name)'s application?"
-            }
-            
-            self.showAlert(message: message,
-                           action1: NSLocalizedString("Cancel"),
-                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                            self.pkVM.reject(invitation: application)
-            }
-        }).disposed(by: bag)
-        
-        vc.accepteApplicationOfRoom.subscribe(onNext: { (application) in
-            self.hiddenMaskView()
-            
-            var message: String
-            if DeviceAssistant.Language.isChinese {
-                message = "你是否要接受\"\(application.initatorRoom.name)\"的PK邀请?"
-            } else {
-                message = "Do you accept \(application.initatorRoom.name)'s application?"
-            }
-            
-            self.showAlert(message: message,
-                           action1: NSLocalizedString("Cancel"),
-                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                            self.pkVM.reject(invitation: application)
-            }
-        }).disposed(by: bag)
-        
-        let presenetedHeight: CGFloat = 526.0
-        let y = UIScreen.main.bounds.height - presenetedHeight
-        let presentedFrame = CGRect(x: 0,
-                                    y: y,
-                                    width: UIScreen.main.bounds.width,
-                                    height: presenetedHeight)
-        
-        self.presentChild(vc,
-                          animated: true,
-                          presentedFrame: presentedFrame)
-    }
 }
 
 // MARK: - Multi Hosts
@@ -524,13 +309,7 @@ private extension LiveShoppingViewController {
     func multiHosts() {
         // owner
         multiHostsVM.receivedApplication.subscribe(onNext: { [unowned self] (application) in
-            self.showAlert(message: "\"\(application.initiator.info.name)\" " + NSLocalizedString("Apply_For_Broadcasting"),
-                           action1: NSLocalizedString("Reject"),
-                           action2: NSLocalizedString("Confirm"), handler1: { (_) in
-                            self.multiHostsVM.reject(application: application)
-            }) { [unowned self] (_) in
-                self.multiHostsVM.accept(application: application)
-            }
+            self.personCountView.needRemind = true
         }).disposed(by: bag)
         
         multiHostsVM.invitationByRejected.subscribe(onNext: { [unowned self] (invitation) in
@@ -643,13 +422,40 @@ private extension LiveShoppingViewController {
     
     func seat() {
         seatVM.list.subscribe(onNext: { [unowned self] (list) in
-            guard let seat = list.first else {
+            guard let session = ALCenter.shared().liveSession else {
+                assert(false)
                 return
             }
             
-            var pkIsAvailable: Bool
+            if list.count == 1, let remote = list[0].user {
+                self.hostCount.accept(.multi([session.owner.value.user, remote]))
+            } else {
+                self.hostCount.accept(.single(session.owner.value.user))
+            }
+        }).disposed(by: bag)
+    }
+    
+    func multiHostCount() {
+        hostCount.subscribe(onNext: { [unowned self] (hostCount) in
+            guard let session = ALCenter.shared().liveSession else {
+                return
+            }
             
-            if let user = seat.user {
+            self.bottomToolsVC?.pkButton.isEnabled = hostCount.isSingle
+            
+            switch hostCount {
+            case .single(let user):
+                if let view = self.broadcasteRender {
+                    view.removeFromSuperview()
+                }
+                
+                self.playerVM.startRenderVideoStreamOf(user: user,
+                                                       on: self.renderView)
+            case .multi(let list):
+                guard let user = list.last else {
+                    return
+                }
+                
                 let width: CGFloat = 140
                 let height: CGFloat = 180
                 let x: CGFloat = self.view.bounds.width - width
@@ -662,12 +468,8 @@ private extension LiveShoppingViewController {
                 
                 self.playerVM.startRenderVideoStreamOf(user: user,
                                                        on: view.renderView)
-                pkIsAvailable = false
                 
-                guard let role = ALCenter.shared().liveSession?.role.value else {
-                    return
-                }
-                switch role.type {
+                switch session.role.value.type {
                 case .owner:
                     view.closeButton.rx.tap.subscribe(onNext: { [unowned self] in
                         var message: String
@@ -680,10 +482,10 @@ private extension LiveShoppingViewController {
                         self.showAlert(message: message,
                                        action1: NSLocalizedString("Cancel"),
                                        action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
-                            self.multiHostsVM.forceEndBroadcasting(user: user,
-                                                                   on: 1) { (_) in
-                                                                    self.showTextToast(text: "force user end broadcasting fail")
-                            }
+                                        self.multiHostsVM.forceEndBroadcasting(user: user,
+                                                                               on: 1) { (_) in
+                                                                                self.showTextToast(text: "force user end broadcasting fail")
+                                        }
                         }
                     }).disposed(by: self.bag)
                 case .broadcaster:
@@ -703,19 +505,104 @@ private extension LiveShoppingViewController {
                 case .audience:
                     view.closeButton.isHidden = true
                 }
+            }
+        }).disposed(by: bag)
+    }
+    
+    func presentUserList(type: CVUserListViewController.ShowType) {
+        guard (type == .multiHosts) || (type == .onlyUser) else {
+            return
+        }
+        
+        self.showMaskView(color: UIColor.clear)
+        
+        let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
+                                                 class: CVUserListViewController.self,
+                                                 on: "Popover")
+        
+        vc.userListVM = userListVM
+        vc.multiHostsVM = multiHostsVM
+        vc.showType = type
+        vc.view.cornerRadius(10)
+        
+        vc.inviteUser.subscribe(onNext: { [unowned self] (user) in
+            self.hiddenMaskView()
+            
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要邀请\"\(user.info.name)\"上麦?"
             } else {
-                if let view = self.broadcasteRender {
-                    view.removeFromSuperview()
-                }
-                pkIsAvailable = true
+                message = "Do you send a invitation to \(user.info.name)?"
             }
             
-            guard let session = ALCenter.shared().liveSession,
-                session.owner.value.isLocal else {
-                    return
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.multiHostsVM.sendInvitation(to: user, on: 1) { [unowned self] (_) in
+                                self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
+                            }
             }
-            self.bottomToolsVC?.pkButton.isEnabled = pkIsAvailable
         }).disposed(by: bag)
+        
+        if type == .multiHosts {
+            vc.tabView.needRemind(personCountView.needRemind,
+                                  index: 1)
+            
+            vc.tabView.selectedIndex.subscribe(onNext: { [unowned self] (index) in
+                if index == 1 {
+                    self.personCountView.needRemind = false
+                }
+            }).disposed(by: bag)
+        }
+        
+        vc.rejectApplicationOfUser.subscribe(onNext: { (application) in
+            self.hiddenMaskView()
+            
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要拒绝\"\(application.initiator.info.name)\"的上麦申请?"
+            } else {
+                message = "Do you reject \(application.initiator.info.name)'s application?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.multiHostsVM.reject(application: application) { [unowned self] (_) in
+                                self.showTextToast(text: "Reject application fail")
+                            }
+            }
+        }).disposed(by: bag)
+        
+        vc.acceptApplicationOfUser.subscribe(onNext: { (application) in
+            self.hiddenMaskView()
+            
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要接受\"\(application.initiator.info.name)\"的上麦申请?"
+            } else {
+                message = "Do you accept \(application.initiator.info.name)'s application?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.multiHostsVM.accept(application: application) { [unowned self] (_) in
+                                self.showTextToast(text: "Accept application fail")
+                            }
+            }
+        }).disposed(by: bag)
+        
+        let presenetedHeight: CGFloat = 526.0
+        let y = UIScreen.main.bounds.height - presenetedHeight
+        let presentedFrame = CGRect(x: 0,
+                                    y: y,
+                                    width: UIScreen.main.bounds.width,
+                                    height: presenetedHeight)
+        
+        self.presentChild(vc,
+                          animated: true,
+                          presentedFrame: presentedFrame)
     }
 }
 
@@ -752,11 +639,12 @@ private extension LiveShoppingViewController {
             
             switch state {
             case .duration(let info):
-                guard let leftRender = self.pkView?.leftRenderView,
-                    let rightRender = self.pkView?.rightRenderView else {
-                    return
-                }
-                
+//                guard let leftRender = self.pkView?.leftRenderView,
+//                    let rightRender = self.pkView?.rightRenderView else {
+//                    return
+//                }
+                let leftRender = self.pkView!.leftRenderView!
+                let rightRender = self.pkView!.rightRenderView!
                 self.playerVM.startRenderVideoStreamOf(user: owner.user,
                                                        on: leftRender)
                 self.playerVM.startRenderVideoStreamOf(user: info.remoteRoom.owner,
@@ -780,7 +668,7 @@ private extension LiveShoppingViewController {
         }).disposed(by: bag)
         
         pkVM.receivedInvitation.subscribe(onNext: { (battle) in
-            self.personCountView.needRemind = true
+            self.bottomToolsVC?.pkButton.needRemind = true
         }).disposed(by: bag)
         
         pkVM.invitationIsByRejected.subscribe(onNext: { [unowned self] (battle) in
@@ -790,5 +678,149 @@ private extension LiveShoppingViewController {
         pkVM.requestError.subscribe(onNext: { (text) in
             self.showTextToast(text: text)
         }).disposed(by: bag)
+    }
+    
+    func presentRoomList() {
+        self.showMaskView(color: UIColor.clear)
+        
+        let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
+                                                 class: CVUserListViewController.self,
+                                                 on: "Popover")
+        
+        vc.pkVM = pkVM
+        vc.showType = .pk
+        vc.view.cornerRadius(10)
+        
+        vc.tabView.needRemind(bottomToolsVC!.pkButton.needRemind,
+                              index: 1)
+        
+        vc.tabView.selectedIndex.subscribe(onNext: { [unowned self] (index) in
+            if index == 1 {
+                self.bottomToolsVC?.pkButton.needRemind = false
+            }
+        }).disposed(by: bag)
+        
+        vc.inviteRoom.subscribe(onNext: { (room) in
+            self.hiddenMaskView()
+            
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要邀请\"\(room.name)\"PK?"
+            } else {
+                message = "Do you send a invitation to \(room.name)?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.pkVM.sendInvitationTo(room: room)
+            }
+        }).disposed(by: bag)
+        
+        vc.rejectApplicationOfRoom.subscribe(onNext: { (application) in
+            self.hiddenMaskView()
+            
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要拒绝\"\(application.initatorRoom.name)\"的PK邀请?"
+            } else {
+                message = "Do you reject \(application.initatorRoom.name)'s application?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.pkVM.reject(invitation: application)
+            }
+        }).disposed(by: bag)
+        
+        vc.accepteApplicationOfRoom.subscribe(onNext: { (application) in
+            self.hiddenMaskView()
+            
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要接受\"\(application.initatorRoom.name)\"的PK邀请?"
+            } else {
+                message = "Do you accept \(application.initatorRoom.name)'s application?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.pkVM.accept(invitation: application)
+            }
+        }).disposed(by: bag)
+        
+        let presenetedHeight: CGFloat = 526.0
+        let y = UIScreen.main.bounds.height - presenetedHeight
+        let presentedFrame = CGRect(x: 0,
+                                    y: y,
+                                    width: UIScreen.main.bounds.width,
+                                    height: presenetedHeight)
+        
+        self.presentChild(vc,
+                          animated: true,
+                          presentedFrame: presentedFrame)
+    }
+    
+    func intoRemoteRoom() {
+        guard let session = ALCenter.shared().liveSession,
+            let pkInfo = self.pkVM.state.value.pkInfo else {
+            assert(false)
+            return
+        }
+        
+        session.leave()
+        
+        let owner = pkInfo.remoteRoom.owner
+        let role = session.role.value
+        
+        let room = Room(name: "",
+                        roomId: pkInfo.remoteRoom.roomId,
+                        imageURL: "",
+                        personCount: 0,
+                        owner: owner)
+        
+        let newSession = LiveSession(room: room,
+                                     videoConfiguration: VideoConfiguration(),
+                                     type: .pk,
+                                     owner: .otherUser(owner),
+                                     role: role)
+        
+        newSession.join(success: { [unowned newSession, unowned self] (joinedInfo) in
+            guard let pkInfo = joinedInfo.pkInfo,
+                let vm = try? PKVM(room: joinedInfo.room, type: .shopping, state: pkInfo),
+                let navigation = self.navigationController else {
+                    assert(false)
+                    return
+            }
+            
+            ALCenter.shared().liveSession = newSession
+            let newPk = UIStoryboard.initViewController(of: "PKBroadcastersViewController",
+                                                        class: PKBroadcastersViewController.self)
+            newPk.pkVM = vm
+            
+            navigation.popViewController(animated: false)
+            navigation.pushViewController(newPk, animated: false)
+        }) { [weak self] in
+            self?.showTextToast(text: NSLocalizedString("Join_Other_Live_Room_Fail"))
+        }
+    }
+    
+    func show(result: PKResult) {
+        let completion = { [weak self] in
+            let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
+            view.text = NSLocalizedString("PK_End")
+            self?.showToastView(view, duration: 0.2)
+        }
+        
+        switch result {
+        case .win:
+            self.pkView?.showWinner(isLeft: true, completion: completion)
+        case .draw:
+            self.pkView?.showWinner(isLeft: false, completion: completion)
+        case .lose:
+            self.pkView?.showDraw(completion: completion)
+        }
     }
 }
