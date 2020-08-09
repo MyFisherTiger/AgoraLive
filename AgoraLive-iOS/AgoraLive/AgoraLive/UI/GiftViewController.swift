@@ -102,8 +102,7 @@ extension GiftViewController: UICollectionViewDataSource {
 
 extension GiftViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let reIndex = IndexPath(item: selectedIndex, section: 0)
         selectedIndex = indexPath.item
-        collectionView.reloadItems(at: [indexPath, reIndex])
+        collectionView.reloadData()
     }
 }

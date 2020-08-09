@@ -148,7 +148,7 @@ private extension GoodsListViewController {
                                                                 cell.goodsImageView.image = goods.image
                                                                 cell.descriptionLabel.text = goods.description
                                                                 cell.priceLabel.text = "\(goods.price)"
-                                                                
+                                                                cell.index = index
                                                                 cell.delegate = self
                                                                 
                                                                 if self.perspective == .owner {
@@ -164,14 +164,15 @@ private extension GoodsListViewController {
 
 extension GoodsListViewController: GoodsCellDelegate {
     func cell(_ cell: GoodsCell, didTapButton: UIButton, on index: Int, for event: GoodsCell.ButtonType) {
-        let item = vm.list.value[index]
-        
         switch event {
         case .onShelf:
+            let item = vm.offShelfList.value[index]
             itemOnShelf.accept(item)
         case .offShelf:
+            let item = vm.onShelfList.value[index]
             itemOffShelf.accept(item)
         case .detail:
+            let item = vm.onShelfList.value[index]
             itemDetail.accept(item)
         }
     }

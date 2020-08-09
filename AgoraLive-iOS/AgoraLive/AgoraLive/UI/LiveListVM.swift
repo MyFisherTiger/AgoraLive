@@ -189,7 +189,7 @@ extension LiveListVM {
     func refetch(success: Completion = nil, fail: Completion = nil) {
         let client = ALCenter.shared().centerProvideRequestHelper()
         let requestListType = presentingType
-        let currentCount = presentingList.value.count == 0 ? 10 : presentingList.value.count
+        let currentCount = presentingList.value.count < 10 ? 10 : presentingList.value.count
         let parameters: StringAnyDic = ["count": currentCount,
                                         "type": requestListType.rawValue]
         

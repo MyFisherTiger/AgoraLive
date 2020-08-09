@@ -159,7 +159,8 @@ private extension GoodsVM {
                 return
             }
             
-            guard try json.getEnum(of: "cmd", type: ALChannelMessage.AType.self) == .goodsOnShelf else {
+            guard let command = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self),
+                command == .goodsOnShelf else {
                 return
             }
             

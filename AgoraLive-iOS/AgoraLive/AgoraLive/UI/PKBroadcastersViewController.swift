@@ -11,122 +11,9 @@ import RxSwift
 import RxRelay
 import MJRefresh
 
-class PKViewController: UIViewController {
-    @IBOutlet weak var pkTimeView: IconTextView!
-    @IBOutlet weak var leftRenderView: UIView!
-    @IBOutlet weak var rightRenderView: UIView!
-    @IBOutlet weak var intoOtherButton: UIButton!
-    @IBOutlet weak var rightLabel: UILabel!
-    @IBOutlet weak var giftBar: PKBar!
-    
-    private lazy var resultImageView: UIImageView = {
-        let wh: CGFloat = 110
-        let y: CGFloat = UIScreen.main.bounds.height
-        let x: CGFloat = ((self.view.bounds.width - wh) * 0.5)
-        let view = UIImageView(frame: CGRect.zero)
-        view.contentMode = .scaleAspectFit
-        view.frame = CGRect(x: x, y: y, width: wh, height: wh)
-        return view
-    }()
-    
-    private var timer: Timer!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view.backgroundColor = .clear
-        pkTimeView.offsetLeftX = -10
-        pkTimeView.offsetRightX = 10
-        pkTimeView.imageView.image = UIImage(named: "icon-time")
-        pkTimeView.label.textColor = .white
-        pkTimeView.label.font = UIFont.systemFont(ofSize: 11)
-        pkTimeView.label.adjustsFontSizeToFitWidth = true
-        pkTimeView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-    }
-    
-    var countDown: Int = 0
-    
-    func startCountingDown() {
-        guard timer == nil else {
-            return
-        }
-        timer = Timer(timeInterval: 1.0,
-                      target: self,
-                      selector: #selector(countingDown),
-                      userInfo: nil,
-                      repeats: true)
-        RunLoop.main.add(timer, forMode: .common)
-        timer.fire()
-    }
-    
-    func stopCountingDown() {
-        guard timer != nil else {
-            return
-        }
-        timer.invalidate()
-        timer = nil
-    }
-    
-    @objc private func countingDown() {
-        DispatchQueue.main.async { [unowned self] in
-            if self.countDown >= 0 {
-                let miniter = self.countDown / (60 * 1000)
-                let second = (self.countDown / 1000) % 60
-                let secondString = String(format: "%0.2d", second)
-                self.pkTimeView.label.textAlignment = .left
-                self.pkTimeView.label.text = "   \(NSLocalizedString("PK_Remaining")): \(miniter):\(secondString)"
-                self.countDown -= 1000
-            } else {
-                self.stopCountingDown()
-            }
-        }
-    }
-    
-    func showWinner(isLeft: Bool, completion: Completion = nil) {
-        resultImageView.image = UIImage(named: "pic-Winner")
-        
-        let wh: CGFloat = 110
-        let y: CGFloat = 127
-        var x: CGFloat
-        
-        if isLeft {
-            x = (leftRenderView.bounds.width - wh) * 0.5
-        } else {
-            x = leftRenderView.frame.maxX + (rightRenderView.bounds.width - wh) * 0.5
-        }
-        
-        self.showResultImgeView(newFrame: CGRect(x: x, y: y, width: wh, height: wh),
-                                completion: completion)
-    }
-    
-    func showDraw(completion: Completion = nil) {
-        resultImageView.image = UIImage(named: "pic-平局")
-        
-        let wh: CGFloat = 110
-        let y: CGFloat = 127
-        let x: CGFloat = ((self.view.bounds.width - wh) * 0.5)
-        self.showResultImgeView(newFrame: CGRect(x: x, y: y, width: wh, height: wh),
-                                completion: completion)
-    }
-    
-    private func showResultImgeView(newFrame: CGRect, completion: Completion = nil) {
-        self.view.insertSubview(resultImageView, at: self.view.subviews.count)
-        resultImageView.isHidden = false
-        
-        UIView.animate(withDuration: TimeInterval.animation, animations: { [unowned self] in
-            self.resultImageView.frame = newFrame
-        }) { [unowned self] (finish) in
-            guard finish else {
-                return
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [unowned self] in
-                self.resultImageView.isHidden = true
-                if let completion = completion {
-                    completion()
-                }
-            }
-        }
-    }
+protocol PKLiveProtocol {
+    var pkContainerView: UIView {get set}
+    var renderView: UIView {get set}
 }
 
 class PKBroadcastersViewController: MaskViewController, LiveViewController {
@@ -273,32 +160,34 @@ extension PKBroadcastersViewController {
                 }
             }
         }).disposed(by: bag)
-    }
-    
-    func PK(session: LiveSession) {
-        // View
+        
         pkButton.rx.tap.subscribe(onNext: { [unowned self] in
             self.presentInvitationRoomList()
         }).disposed(by: bag)
-        
+    }
+}
+
+private extension PKBroadcastersViewController {
+    func PK(session: LiveSession) {
         pkView?.intoOtherButton.rx.tap.subscribe(onNext: { [unowned self] in
             self.intoRemoteRoom()
         }).disposed(by: bag)
         
         // VM
-        pkVM.event.subscribe(onNext: { [weak self] (event) in
-            guard let strongSelf = self else {
-                return
-            }
-            
+        pkVM.event.subscribe(onNext: { [unowned self] (event) in
             switch event {
             case .start:
                 break
             case .end(let result):
-                strongSelf.show(result: result)
+                self.show(result: result) { [unowned self] in
+                    self.renderView.isHidden = false
+                    self.pkContainerView.isHidden = true
+                }
+                self.show(result: result)
+                
             case .rankChanged(let local, let remote):
-                strongSelf.pkView?.giftBar.leftValue = local
-                strongSelf.pkView?.giftBar.rightValue = remote
+                self.pkView?.giftBar.leftValue = local
+                self.pkView?.giftBar.rightValue = remote
             }
         }).disposed(by: bag)
         
@@ -307,11 +196,7 @@ extension PKBroadcastersViewController {
                 return
             }
             
-            self.renderView.isHidden = state.isDuration
-            self.pkContainerView.isHidden = !state.isDuration
-            
             let owner = session.owner.value
-            self.pkButton.isHidden = !owner.isLocal
             
             switch state {
             case .duration(let info):
@@ -319,6 +204,9 @@ extension PKBroadcastersViewController {
                     let rightRender = self.pkView?.rightRenderView else {
                     return
                 }
+                self.renderView.isHidden = true
+                self.pkContainerView.isHidden = false
+                self.pkButton.isHidden = true
                 
                 self.playerVM.startRenderVideoStreamOf(user: owner.user,
                                                        on: leftRender)
@@ -333,6 +221,8 @@ extension PKBroadcastersViewController {
                 let height = UIScreen.main.bounds.height - self.pkContainerView.frame.maxY - UIScreen.main.heightOfSafeAreaBottom - 20 - self.bottomToolsVC!.view.bounds.height
                 self.chatViewHeight.constant = height
             case .none:
+                self.pkButton.isHidden = !owner.isLocal
+                
                 self.playerVM.startRenderVideoStreamOf(user: owner.user,
                                                        on: self.renderView)
                 self.pkView?.stopCountingDown()
@@ -355,6 +245,10 @@ extension PKBroadcastersViewController {
         
         pkVM.invitationIsByRejected.subscribe(onNext: { (battle) in
             self.showTextToast(text: NSLocalizedString("PK_Invite_Reject"))
+        }).disposed(by: bag)
+        
+        pkVM.requestError.subscribe(onNext: { (text) in
+            self.showTextToast(text: text)
         }).disposed(by: bag)
     }
     
@@ -391,32 +285,17 @@ extension PKBroadcastersViewController {
             
             ALCenter.shared().liveSession = newSession
             let newPk = UIStoryboard.initViewController(of: "PKBroadcastersViewController",
-                                                        class: PKBroadcastersViewController.self)
+                                                        class: PKBroadcastersViewController.self,
+                                                        on: "Live")
+            
+            newPk.userListVM = LiveUserListVM(room: joinedInfo.room)
+            newPk.userListVM.updateGiftListWithJson(list: joinedInfo.giftAudience)
             newPk.pkVM = vm
             
             navigation.popViewController(animated: false)
             navigation.pushViewController(newPk, animated: false)
         }) { [weak self] in
             self?.showTextToast(text: NSLocalizedString("Join_Other_Live_Room_Fail"))
-        }
-    }
-}
-
-private extension PKBroadcastersViewController {
-    func show(result: PKResult) {
-        let completion = { [weak self] in
-            let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
-            view.text = NSLocalizedString("PK_End")
-            self?.showToastView(view, duration: 0.2)
-        }
-        
-        switch result {
-        case .win:
-            self.pkView?.showWinner(isLeft: true, completion: completion)
-        case .draw:
-            self.pkView?.showWinner(isLeft: false, completion: completion)
-        case .lose:
-            self.pkView?.showDraw(completion: completion)
         }
     }
     
@@ -489,5 +368,26 @@ private extension PKBroadcastersViewController {
         self.presentChild(vc,
                           animated: true,
                           presentedFrame: presentedFrame)
+    }
+    
+    func show(result: PKResult, completion: Completion = nil) {
+        let tCompletion = { [weak self] in
+            if let completion = completion {
+                completion()
+            }
+            
+            let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
+            view.text = NSLocalizedString("PK_End")
+            self?.showToastView(view, duration: 0.2)
+        }
+        
+        switch result {
+        case .win:
+            self.pkView?.showWinner(isLeft: true, completion: tCompletion)
+        case .draw:
+            self.pkView?.showWinner(isLeft: false, completion: tCompletion)
+        case .lose:
+            self.pkView?.showDraw(completion: completion)
+        }
     }
 }

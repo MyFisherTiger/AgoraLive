@@ -45,7 +45,6 @@
 		A754FAF4242C5A920062B2F5 /* ChatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF3242C5A920062B2F5 /* ChatVM.swift */; };
 		A754FAF6242C9B700062B2F5 /* LiveSeatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */; };
 		A7584B09248114EA0088FACB /* VirtualBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7584B08248114EA0088FACB /* VirtualBroadcastersViewController.swift */; };
-		A7584B4B2484DB290088FACB /* VirtualVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7584B4A2484DB290088FACB /* VirtualVM.swift */; };
 		A7588528242E01C10011FCCF /* BottomToolsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7588527242E01C10011FCCF /* BottomToolsViewController.swift */; };
 		A75A56D124A054C100D0089E /* FUClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A75A56D024A054C100D0089E /* FUClient.m */; };
 		A75D5B2A244FE77D00CE7528 /* CSNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D5B29244FE77D00CE7528 /* CSNavigationController.swift */; };
@@ -53,6 +52,7 @@
 		A76767EB249B0E45002C4FBD /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76767EA249B0E45002C4FBD /* AboutViewController.swift */; };
 		A768B6142452F3980073510D /* GIFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A768B6132452F3980073510D /* GIFView.swift */; };
 		A769D8A324DEA569000C4152 /* ProductDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A769D8A224DEA569000C4152 /* ProductDetailViewController.swift */; };
+		A769D8A524E00204000C4152 /* PKViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A769D8A424E00204000C4152 /* PKViewController.swift */; };
 		A76BD12123F1035500B2732B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76BD12023F1035500B2732B /* AppDelegate.swift */; };
 		A76BD12823F1035500B2732B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A76BD12623F1035500B2732B /* Main.storyboard */; };
 		A76BD12D23F1035600B2732B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A76BD12B23F1035600B2732B /* LaunchScreen.storyboard */; };
@@ -209,7 +209,6 @@
 		A754FAF3242C5A920062B2F5 /* ChatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatVM.swift; sourceTree = "<group>"; };
 		A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSeatVM.swift; sourceTree = "<group>"; };
 		A7584B08248114EA0088FACB /* VirtualBroadcastersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualBroadcastersViewController.swift; sourceTree = "<group>"; };
-		A7584B4A2484DB290088FACB /* VirtualVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualVM.swift; sourceTree = "<group>"; };
 		A7588527242E01C10011FCCF /* BottomToolsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomToolsViewController.swift; sourceTree = "<group>"; };
 		A75A56CF24A054C100D0089E /* FUClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FUClient.h; sourceTree = "<group>"; };
 		A75A56D024A054C100D0089E /* FUClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FUClient.m; sourceTree = "<group>"; };
@@ -218,6 +217,7 @@
 		A76767EA249B0E45002C4FBD /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		A768B6132452F3980073510D /* GIFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFView.swift; sourceTree = "<group>"; };
 		A769D8A224DEA569000C4152 /* ProductDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailViewController.swift; sourceTree = "<group>"; };
+		A769D8A424E00204000C4152 /* PKViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKViewController.swift; sourceTree = "<group>"; };
 		A76BD11D23F1035500B2732B /* AgoraLive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AgoraLive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A76BD12023F1035500B2732B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A76BD12723F1035500B2732B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -431,6 +431,7 @@
 			isa = PBXGroup;
 			children = (
 				A72B7BE7244459F000E965FB /* PKBroadcastersViewController.swift */,
+				A769D8A424E00204000C4152 /* PKViewController.swift */,
 			);
 			name = PKBroadcasting;
 			sourceTree = "<group>";
@@ -861,7 +862,6 @@
 				A7EB816924C84BCB00F0A289 /* MultiHostsVM.swift */,
 				A754FAF5242C9B700062B2F5 /* LiveSeatVM.swift */,
 				A72B7BE924445D5B00E965FB /* PKVM.swift */,
-				A7584B4A2484DB290088FACB /* VirtualVM.swift */,
 				A7D2D36B2417AA6100D327B5 /* MineVM.swift */,
 				A747ED7424CFF20C002F2DB0 /* GoodsVM.swift */,
 			);
@@ -1090,9 +1090,9 @@
 				A719060D24666D580031E91C /* Popover.swift in Sources */,
 				A7952A5224162BE600479811 /* ALKeys.swift in Sources */,
 				A7952C5C2417636D00479811 /* ALJson.swift in Sources */,
-				A7584B4B2484DB290088FACB /* VirtualVM.swift in Sources */,
 				A7952AB724162C1000479811 /* DataExtension.swift in Sources */,
 				A72B7BEE24445EBB00E965FB /* PKBar.swift in Sources */,
+				A769D8A524E00204000C4152 /* PKViewController.swift in Sources */,
 				A7952AB824162C1000479811 /* AGELock.swift in Sources */,
 				A7952A5424162BE600479811 /* ALCenter.swift in Sources */,
 				A76767EB249B0E45002C4FBD /* AboutViewController.swift in Sources */,
@@ -1460,12 +1460,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Yuhua Gong (YBKA3W5TF4)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 323;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = GM72UGLGZW;
+				DEVELOPMENT_TEAM = JDPG69R49Z;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
@@ -1551,7 +1551,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D FU_67";
 				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
 				PRODUCT_NAME = AgoraLive;
-				PROVISIONING_PROFILE_SPECIFIER = App;
+				PROVISIONING_PROFILE_SPECIFIER = AgoraLab2020;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FU_67=0";
 				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";

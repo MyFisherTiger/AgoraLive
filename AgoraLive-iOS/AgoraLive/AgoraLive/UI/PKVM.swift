@@ -51,7 +51,7 @@ struct PKInfo {
 }
 
 enum PKResult: Int {
-    case win, draw, lose
+    case lose = 0, win, draw
 }
 
 enum PKEvent {
@@ -175,6 +175,7 @@ class PKVM: NSObject {
     
     deinit {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
+        rtm.removeReceivedPeerMessage(observer: self)
         rtm.removeReceivedChannelMessage(observer: self)
     }
 }
@@ -300,7 +301,7 @@ private extension PKVM {
                 let result = try dic.getEnum(of: "result", type: PKResult.self)
                 event = .end(result)
                 guard owner.value.isLocal else {
-                    return
+                    break
                 }
                 stopRelayingMediaStream()
             case 1:
@@ -309,20 +310,23 @@ private extension PKVM {
                 event = .start(configuration)
                 self.mediaRelayConfiguration = configuration
                 guard owner.value.isLocal else {
-                    return
+                    break
                 }
                 startRelayingMediaStream(configuration)
             case 2:
-                let local = try dic.getIntValue(of: "remoteRank")
-                let remote = try dic.getIntValue(of: "localRank")
+                let local = try dic.getIntValue(of: "localRank")
+                let remote = try dic.getIntValue(of: "remoteRank")
                 event = .rankChanged(local: local, remote: remote)
+                self.event.accept(event)
+                return
             default:
                 assert(false)
                 return
             }
             
             self.event.accept(event)
-        } else if let relayConfig = try? dic.getDictionaryValue(of: "relayConfig")  {
+        } else if let relayConfig = try? dic.getDictionaryValue(of: "relayConfig"),
+            room.owner.info == ALCenter.shared().centerProvideLocalUser().info.value  {
             let info = try MediaRelayConfiguration(dic: relayConfig)
             startRelayingMediaStream(info)
         }
@@ -335,12 +339,19 @@ private extension PKVM {
         case 0:
             state = .none
         case 1:
+            let relayConfig = try dic.getDictionaryValue(of: "relayConfig")
+            let configuration = try MediaRelayConfiguration(dic: relayConfig)
+            
             let roomJson = try dic.getDictionaryValue(of: "remoteRoom")
-            let room = try PKInfo.RemoteRoom(dic: roomJson)
+            var room = try PKInfo.RemoteRoom(dic: roomJson)
+            var remoteOwner = room.owner
+            remoteOwner.agUId = configuration.remoteIdOnCurrentChannel
+            room.owner = remoteOwner
+            
             let startTime = try dic.getIntValue(of: "startTime")
             let countDown = try dic.getIntValue(of: "countDown")
             let localRank = try dic.getIntValue(of: "localRank")
-            let remoteRank = try dic.getIntValue(of: "localRank")
+            let remoteRank = try dic.getIntValue(of: "remoteRank")
             let info = PKInfo(remoteRoom: room,
                               startTime: startTime,
                               countDown: countDown,

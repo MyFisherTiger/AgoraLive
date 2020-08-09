@@ -99,7 +99,8 @@ class LiveListTabViewController: MaskViewController {
             guard let seatInfo = info.seatInfo,
                 let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
                 let session = ALCenter.shared().liveSession else {
-                    fatalError()
+                    assert(false)
+                    return
             }
             
             let vc = segue.destination as? VirtualBroadcastersViewController

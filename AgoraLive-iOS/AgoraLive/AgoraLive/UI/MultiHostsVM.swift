@@ -77,6 +77,7 @@ class MultiHostsVM: RxObject {
     
     deinit {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
+        rtm.removeReceivedPeerMessage(observer: self)
         rtm.removeReceivedChannelMessage(observer: self)
     }
 }
@@ -274,6 +275,27 @@ private extension MultiHostsVM {
             default:
                 assert(false)
                 break
+            }
+        }
+        
+        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+            guard let command = try? json.getIntValue(of: "cmd"),
+                command == 11,
+                let strongSelf = self else {
+                    return
+            }
+            
+            let data = try json.getDataObject()
+            let userJson = try data.getDictionaryValue(of: "fromUser")
+            var user = try LiveRoleItem(dic: userJson)
+            let old = try data.getEnum(of: "originRole", type: LiveRoleType.self)
+            let new = try data.getEnum(of: "currentRole", type: LiveRoleType.self)
+            user.type = new
+            
+            if old == .audience, new == .broadcaster {
+                strongSelf.audienceBecameBroadcaster.accept(user)
+            } else if old == .broadcaster, new == .audience {
+                strongSelf.broadcasterBecameAudience.accept(user)
             }
         }
         

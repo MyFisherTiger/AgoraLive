@@ -162,7 +162,7 @@ extension LiveShoppingViewController {
                 return
             }
             
-            if owner.isLocal {
+            if owner.isLocal, !self.pkVM.state.value.isDuration {
                 self.presentUserList(type: .multiHosts)
             } else {
                 self.presentUserList(type: .onlyUser)
@@ -208,6 +208,8 @@ extension LiveShoppingViewController {
 // MARK: - Product
 private extension LiveShoppingViewController {
     func goods(session: LiveSession) {
+        goodsVM.refetchList()
+        
         goodsVM.requestSuccess.subscribe(onNext: { [unowned self] (text) in
             self.showTextToast(text: text)
         }).disposed(by: bag)
@@ -222,19 +224,28 @@ private extension LiveShoppingViewController {
         
         // audience
         goodsVM.itemOnShelf.subscribe(onNext: { [unowned self] (item) in
+            if let _ = self.presentingChild as? GoodsListViewController {
+                return
+            }
+            
             guard let shoppingButton = self.bottomToolsVC?.shoppingButton else {
                 return
             }
             
             let notification = item.name + " " + NSLocalizedString("Product_On_Shelf_Notification")
-            let popoverContentHeight: CGFloat = 22
-            let size = notification.size(font: UIFont.systemFont(ofSize: 14),
+            let popoverContentHeight: CGFloat = 30
+            let font = UIFont.systemFont(ofSize: 14)
+            let size = notification.size(font: font,
                                          drawRange: CGSize(width: CGFloat(MAXFLOAT), height: popoverContentHeight))
-            
+            self.popoverContent.textAlignment = .center
+            self.popoverContent.font = font
+            self.popoverContent.text = notification
             self.popoverContent.frame = CGRect(x: 0,
                                                y: 0,
-                                               width: size.width,
+                                               width: size.width + 10,
                                                height: popoverContentHeight)
+            
+            
             self.popover.show(self.popoverContent, fromView: shoppingButton)
         }).disposed(by: bag)
     }
@@ -298,7 +309,13 @@ private extension LiveShoppingViewController {
             }).disposed(by: bag)
         } else {
             vc.itemDetail.subscribe(onNext: { [unowned self] (item) in
-                self.goodsVM.purchase(item: item)
+                let vc = UIStoryboard.initViewController(of: "ProductDetailViewController", class: ProductDetailViewController.self, on: "Live")
+                vc.product = item
+                vc.purchase.subscribe(onNext: { [unowned self] (item) in
+                    self.goodsVM.purchase(item: item)
+                }).disposed(by: self.bag)
+                
+                self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: bag)
         }
     }
@@ -620,31 +637,38 @@ private extension LiveShoppingViewController {
             case .start:
                 break
             case .end(let result):
+                self.show(result: result) { [unowned self] in
+                    self.renderView.isHidden = false
+                    self.pkContainerView.isHidden = true
+                }
                 self.show(result: result)
+                
             case .rankChanged(let local, let remote):
                 self.pkView?.giftBar.leftValue = local
                 self.pkView?.giftBar.rightValue = remote
             }
         }).disposed(by: bag)
         
+        pkVM.state.map { (state) -> Bool in
+            return !state.isDuration
+        }.bind(to: bottomToolsVC!.pkButton.rx.isEnabled).disposed(by: bag)
+        
         pkVM.state.subscribe(onNext: { [unowned self] (state) in
             guard let session = ALCenter.shared().liveSession else {
                 return
             }
             
-            self.renderView.isHidden = state.isDuration
-            self.pkContainerView.isHidden = !state.isDuration
-            
             let owner = session.owner.value
             
             switch state {
             case .duration(let info):
-//                guard let leftRender = self.pkView?.leftRenderView,
-//                    let rightRender = self.pkView?.rightRenderView else {
-//                    return
-//                }
-                let leftRender = self.pkView!.leftRenderView!
-                let rightRender = self.pkView!.rightRenderView!
+                guard let leftRender = self.pkView?.leftRenderView,
+                    let rightRender = self.pkView?.rightRenderView else {
+                    return
+                }
+                self.renderView.isHidden = true
+                self.pkContainerView.isHidden = false
+                
                 self.playerVM.startRenderVideoStreamOf(user: owner.user,
                                                        on: leftRender)
                 self.playerVM.startRenderVideoStreamOf(user: info.remoteRoom.owner,
@@ -679,7 +703,7 @@ private extension LiveShoppingViewController {
             self.showTextToast(text: text)
         }).disposed(by: bag)
     }
-    
+        
     func presentRoomList() {
         self.showMaskView(color: UIColor.clear)
         
@@ -774,7 +798,6 @@ private extension LiveShoppingViewController {
         
         let owner = pkInfo.remoteRoom.owner
         let role = session.role.value
-        
         let room = Room(name: "",
                         roomId: pkInfo.remoteRoom.roomId,
                         imageURL: "",
@@ -797,7 +820,10 @@ private extension LiveShoppingViewController {
             
             ALCenter.shared().liveSession = newSession
             let newPk = UIStoryboard.initViewController(of: "PKBroadcastersViewController",
-                                                        class: PKBroadcastersViewController.self)
+                                                        class: PKBroadcastersViewController.self,
+                                                        on: "Live")
+            newPk.userListVM = LiveUserListVM(room: joinedInfo.room)
+            newPk.userListVM.updateGiftListWithJson(list: joinedInfo.giftAudience)
             newPk.pkVM = vm
             
             navigation.popViewController(animated: false)
@@ -807,8 +833,12 @@ private extension LiveShoppingViewController {
         }
     }
     
-    func show(result: PKResult) {
-        let completion = { [weak self] in
+    func show(result: PKResult, completion: Completion = nil) {
+        let tCompletion = { [weak self] in
+            if let completion = completion {
+                completion()
+            }
+            
             let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
             view.text = NSLocalizedString("PK_End")
             self?.showToastView(view, duration: 0.2)
@@ -816,9 +846,9 @@ private extension LiveShoppingViewController {
         
         switch result {
         case .win:
-            self.pkView?.showWinner(isLeft: true, completion: completion)
+            self.pkView?.showWinner(isLeft: true, completion: tCompletion)
         case .draw:
-            self.pkView?.showWinner(isLeft: false, completion: completion)
+            self.pkView?.showWinner(isLeft: false, completion: tCompletion)
         case .lose:
             self.pkView?.showDraw(completion: completion)
         }
