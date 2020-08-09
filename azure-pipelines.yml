@@ -13,14 +13,7 @@ jobs:
   parameters:
     project: 'AgoraLive-Android'
     name: 'AgoraLive_Android'
-    
-- template: AgoraLive-iOS/Build/azure/build.yml
-  parameters:
-    displayName: 'AgoraLive_iOS_Debug'
-    mode: 'Debug'
-    upload: 0
-    bugly: 0
-    
+        
 - template: AgoraLive-iOS/Build/azure/build.yml
   parameters:
     displayName: 'AgoraLive_iOS_QA_Dev'

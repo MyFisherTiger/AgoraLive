@@ -218,17 +218,17 @@ private extension LiveShoppingViewController {
             self.showTextToast(text: text)
         }).disposed(by: bag)
         
-        guard !session.owner.value.isLocal else {
-            return
-        }
+        let localIsOwner = session.owner.value.isLocal
         
         // audience
         goodsVM.itemOnShelf.subscribe(onNext: { [unowned self] (item) in
-            if let _ = self.presentingChild as? GoodsListViewController {
+            if self.presentingChild is GoodsListViewController {
                 return
             }
             
-            guard let shoppingButton = self.bottomToolsVC?.shoppingButton else {
+            guard !localIsOwner,
+                item.isSale,
+                let shoppingButton = self.bottomToolsVC?.shoppingButton else {
                 return
             }
             
@@ -245,7 +245,7 @@ private extension LiveShoppingViewController {
                                                width: size.width + 10,
                                                height: popoverContentHeight)
             
-            
+            self.popover.dismiss()
             self.popover.show(self.popoverContent, fromView: shoppingButton)
         }).disposed(by: bag)
     }

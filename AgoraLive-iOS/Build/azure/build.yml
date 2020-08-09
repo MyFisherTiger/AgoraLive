@@ -19,15 +19,6 @@ jobs:
     steps:
       - task: InstallAppleCertificate@2
         inputs:
-          certSecureFile: 'certificate.p12'
-          certPwd: $(agora.password)
-
-      - task: InstallAppleProvisioningProfile@1
-        inputs:
-          provProfileSecureFile: 'AgoraAppsDevProfile.mobileprovision'
-          
-      - task: InstallAppleCertificate@2
-        inputs:
           certSecureFile: 'AgoraLab.p12'
           certPwd: $(agora.password)
 
