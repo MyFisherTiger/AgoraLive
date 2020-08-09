@@ -85,18 +85,21 @@ enum Gift: Int {
 }
 
 class GiftVM: NSObject {
+    private var room: Room
     var received = PublishRelay<(userName:String, gift:Gift)>()
     
-    override init() {
+    init(room: Room) {
+        self.room = room
         super.init()
         observe()
     }
     
-    func present(gift: Gift, to owner: BasicUserInfo, from local: BasicUserInfo, of room: String, fail: Completion) {
+    func present(gift: Gift, fail: Completion) {
         let client = ALCenter.shared().centerProvideRequestHelper()
+        let local = ALCenter.shared().centerProvideLocalUser()
         
         let event = RequestEvent(name: "present-gift")
-        let url = URLGroup.receivedGift(roomId: room)
+        let url = URLGroup.receivedGift(roomId: room.roomId)
         let task = RequestTask(event: event,
                                type: .http(.post, url: url),
                                timeout: .medium,
@@ -104,7 +107,7 @@ class GiftVM: NSObject {
                                parameters: ["giftId": gift.rawValue, "count": 1])
         
         client.request(task: task, success: ACResponse.blank({ [weak self] in
-            self?.received.accept((local.name, gift))
+            self?.received.accept((local.info.value.name, gift))
         }))
     }
     

@@ -128,6 +128,8 @@ class CreateLiveViewController: MaskViewController {
         vc.userListVM = LiveUserListVM(room: info.room)
         vc.userListVM.updateGiftListWithJson(list: info.giftAudience)
         
+        vc.giftVM = GiftVM(room: info.room)
+        
         switch segueId {
         case "MultiBroadcastersViewController":
             guard let seatInfo = info.seatInfo,

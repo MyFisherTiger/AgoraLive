@@ -55,9 +55,9 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
     
     // ViewModel
     var userListVM: LiveUserListVM!
+    var giftVM: GiftVM!
     var musicVM = MusicVM()
     var chatVM = ChatVM()
-    var giftVM = GiftVM()
     var deviceVM = MediaDeviceVM()
     var playerVM = PlayerVM()
     var enhancementVM = VideoEnhancementVM()

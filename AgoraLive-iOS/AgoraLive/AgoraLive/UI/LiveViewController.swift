@@ -40,9 +40,9 @@ protocol LiveViewController: RxViewController where Self: MaskViewController {
     
     // View Model
     var userListVM: LiveUserListVM! {get set}
+    var giftVM: GiftVM! {get set}
     var musicVM: MusicVM {get set}
     var chatVM: ChatVM {get set}
-    var giftVM: GiftVM {get set}
     var deviceVM: MediaDeviceVM {get set}
     var playerVM: PlayerVM {get set}
     var enhancementVM: VideoEnhancementVM {get set}
@@ -588,25 +588,8 @@ extension LiveViewController {
         
         giftVC.selectGift.subscribe(onNext: { [unowned self] (gift) in
             self.hiddenMaskView()
-            
-            guard let session = ALCenter.shared().liveSession else {
-                assert(false)
-                return
-            }
-            
-            let owner = session.owner.value
-            
-            switch owner {
-            case .otherUser(let remote):
-                self.giftVM.present(gift: gift,
-                                    to: remote.info,
-                                    from: session.role.value.info,
-                                    of: session.room.roomId) {
-                                        self.showAlert(message: NSLocalizedString("Present_Gift_Fail"))
-                }
-            case .localUser:
-                assert(false)
-                break
+            self.giftVM.present(gift: gift) {
+                self.showAlert(message: NSLocalizedString("Present_Gift_Fail"))
             }
         }).disposed(by: bag)
     }
