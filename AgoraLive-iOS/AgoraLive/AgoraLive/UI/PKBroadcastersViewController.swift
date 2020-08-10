@@ -11,11 +11,6 @@ import RxSwift
 import RxRelay
 import MJRefresh
 
-protocol PKLiveProtocol {
-    var pkContainerView: UIView {get set}
-    var renderView: UIView {get set}
-}
-
 class PKBroadcastersViewController: MaskViewController, LiveViewController {
     @IBOutlet weak var ownerView: IconTextView!
     @IBOutlet weak var pkContainerView: UIView!

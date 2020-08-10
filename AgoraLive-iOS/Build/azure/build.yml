@@ -32,6 +32,10 @@ jobs:
         inputs:
             secureFile: 'authpack.h'
    
+      - script: cd 'AgoraLive-iOS/Build/shell' && python bugly.py
+        env:
+          Bugly_Id: $(bugly_appId_ios)
+          
       - script: cd 'AgoraLive-iOS/Build/shell' && chmod +x download_zip.sh && ./download_zip.sh $(fubundle) ../../Resource
       
       - script: cp $(downloadAuthpack.secureFilePath) AgoraLive-iOS/Resource/Faceunity/
