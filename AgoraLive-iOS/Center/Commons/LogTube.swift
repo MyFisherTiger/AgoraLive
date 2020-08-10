@@ -11,6 +11,11 @@ import Foundation
 class LogTube: NSObject {
     private lazy var lock: NSObject = NSObject()
     
+    override init() {
+        super.init()
+        LCLLogFile.setEscapesLineFeeds(false)
+    }
+    
     func logFromClass(formatter: AGELogFormatter) {
         log(formatter: formatter)
     }
