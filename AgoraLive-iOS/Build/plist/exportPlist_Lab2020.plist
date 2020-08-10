@@ -8,7 +8,7 @@
 	<false/>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>io.agora.AgoraLiveBroadcast</key>
+		<key>io.agora.AgoraLiveBroadcastLab2020</key>
 		<string>AgoraLab2020</string>
 	</dict>
 </dict>

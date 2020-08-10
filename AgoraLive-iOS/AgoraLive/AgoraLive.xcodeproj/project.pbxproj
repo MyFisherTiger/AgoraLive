@@ -160,11 +160,14 @@
 		18414857EA87443471255598 /* Pods-AgoraLive.qa-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.qa-dev.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.qa-dev.xcconfig"; sourceTree = "<group>"; };
 		1F308420F77498A6670DDED4 /* Pods-AgoraLive-Release.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-Release.debug.xcconfig"; path = "Target Support Files/Pods-AgoraLive-Release/Pods-AgoraLive-Release.debug.xcconfig"; sourceTree = "<group>"; };
 		303FD145CF503D71440928AB /* Pods-AgoraLive-QA.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-QA.release.xcconfig"; path = "Target Support Files/Pods-AgoraLive-QA/Pods-AgoraLive-QA.release.xcconfig"; sourceTree = "<group>"; };
+		3081F7E59DB9D6938ECEB5E0 /* Pods-AgoraLive.lab2020-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.lab2020-pre.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.lab2020-pre.xcconfig"; sourceTree = "<group>"; };
+		375A514FF6F13F60A1383456 /* Pods-AgoraLive.test2019-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.test2019-dev.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.test2019-dev.xcconfig"; sourceTree = "<group>"; };
 		40672A3369A254AD92E7ED7F /* Pods-AgoraLive.lab-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.lab-pre.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.lab-pre.xcconfig"; sourceTree = "<group>"; };
 		4870B43BF0CE702438D4A34B /* Pods-AgoraLive-Release.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-Release.release.xcconfig"; path = "Target Support Files/Pods-AgoraLive-Release/Pods-AgoraLive-Release.release.xcconfig"; sourceTree = "<group>"; };
 		5D497D90BD3A0419E963ADD5 /* Pods-AgoraLive-Dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive-Dev.debug.xcconfig"; path = "Target Support Files/Pods-AgoraLive-Dev/Pods-AgoraLive-Dev.debug.xcconfig"; sourceTree = "<group>"; };
 		81367C233BF3DD3090FA3F59 /* Pods_AgoraLive_Release.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AgoraLive_Release.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		823EA9C8A5237646AB8599E9 /* Pods_AgoraLive_QA.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AgoraLive_QA.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		89CA4AE9BA7392A73BC8D5A5 /* Pods-AgoraLive.test2020-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.test2020-pre.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.test2020-pre.xcconfig"; sourceTree = "<group>"; };
 		8D7DEA977B663CF4D6680DC4 /* Pods-AgoraLive.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.debug.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.debug.xcconfig"; sourceTree = "<group>"; };
 		A379550C00848DAE8B2643E2 /* Pods-AgoraLive.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.release.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.release.xcconfig"; sourceTree = "<group>"; };
 		A7053A40241A2C290061E5E2 /* BeautySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeautySettingsViewController.swift; sourceTree = "<group>"; };
@@ -353,6 +356,7 @@
 		A7FDB5A623FFB49300487FB9 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		A7FDB5A923FFBB9300487FB9 /* LiveListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveListVM.swift; sourceTree = "<group>"; };
 		B455272B1AE17AD3814D3C67 /* Pods_AgoraLive.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AgoraLive.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2D44922AAD142739147F232 /* Pods-AgoraLive.lab2020-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.lab2020-dev.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.lab2020-dev.xcconfig"; sourceTree = "<group>"; };
 		EB5512637E9134229608F7E1 /* Pods-AgoraLive.release-test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.release-test.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.release-test.xcconfig"; sourceTree = "<group>"; };
 		FE7AEBFEC18103833CA7C8E4 /* Pods-AgoraLive.qa-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.qa-pre.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.qa-pre.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -388,6 +392,10 @@
 				FE7AEBFEC18103833CA7C8E4 /* Pods-AgoraLive.qa-pre.xcconfig */,
 				EB5512637E9134229608F7E1 /* Pods-AgoraLive.release-test.xcconfig */,
 				40672A3369A254AD92E7ED7F /* Pods-AgoraLive.lab-pre.xcconfig */,
+				C2D44922AAD142739147F232 /* Pods-AgoraLive.lab2020-dev.xcconfig */,
+				375A514FF6F13F60A1383456 /* Pods-AgoraLive.test2019-dev.xcconfig */,
+				3081F7E59DB9D6938ECEB5E0 /* Pods-AgoraLive.lab2020-pre.xcconfig */,
+				89CA4AE9BA7392A73BC8D5A5 /* Pods-AgoraLive.test2020-pre.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1234,7 +1242,7 @@
 		};
 		A71E8D5A24E11BBE00B90190 /* Test2019-Dev */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 18414857EA87443471255598 /* Pods-AgoraLive.qa-dev.xcconfig */;
+			baseConfigurationReference = 375A514FF6F13F60A1383456 /* Pods-AgoraLive.test2019-dev.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1394,7 +1402,7 @@
 		};
 		A7551F7624D908ED0068280A /* Test2020-Pre */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 40672A3369A254AD92E7ED7F /* Pods-AgoraLive.lab-pre.xcconfig */;
+			baseConfigurationReference = 89CA4AE9BA7392A73BC8D5A5 /* Pods-AgoraLive.test2020-pre.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1881,7 +1889,7 @@
 		};
 		A795B9FF248F39C900F38569 /* Lab2020-Dev */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 18414857EA87443471255598 /* Pods-AgoraLive.qa-dev.xcconfig */;
+			baseConfigurationReference = C2D44922AAD142739147F232 /* Pods-AgoraLive.lab2020-dev.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -2041,7 +2049,7 @@
 		};
 		A795BA01248F3D6A00F38569 /* Lab2020-Pre */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FE7AEBFEC18103833CA7C8E4 /* Pods-AgoraLive.qa-pre.xcconfig */;
+			baseConfigurationReference = 3081F7E59DB9D6938ECEB5E0 /* Pods-AgoraLive.lab2020-pre.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

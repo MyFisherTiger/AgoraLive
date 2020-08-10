@@ -7,9 +7,10 @@ fi
 
 Project_Path=$2
 Product_Path=$3
+BundleId=$4
 
-APP_KEY=$4
-APP_ID=$5
+APP_KEY=$5
+APP_ID=$6
 
 Current_Path=`pwd`
 
@@ -20,7 +21,6 @@ Project_Name=`find . -name *.xcodeproj | awk -F "[/.]" '{print $(NF-1)}'`
 echo "Project_Name" ${Project_Name}
 
 App_Version=`sed -n '/MARKETING_VERSION/{s/MARKETING_VERSION = //;s/;//;s/^[[:space:]]*//;p;q;}' ./${Project_Name}.xcodeproj/project.pbxproj`
-BundleId=`sed -n '/PRODUCT_BUNDLE_IDENTIFIER/{s/PRODUCT_BUNDLE_IDENTIFIER = //;s/;//;s/^[[:space:]]*//;p;q;}' ./${Project_Name}.xcodeproj/project.pbxproj`
 
 echo "App_Version" ${App_Version}
 echo "BundleId" ${BundleId}

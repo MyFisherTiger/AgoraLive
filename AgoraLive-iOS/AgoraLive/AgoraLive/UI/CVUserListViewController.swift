@@ -159,6 +159,9 @@ class CVUserListViewController: UIViewController {
         tabView.titleSpace = 80
         tabView.underlineHeight = 3
         
+        tableView.delegate = nil
+        tableView.dataSource = nil
+        
         switch showType {
         case .onlyInvitationOfMultiHosts:
             titleLabel.text = NSLocalizedString("Online_User")

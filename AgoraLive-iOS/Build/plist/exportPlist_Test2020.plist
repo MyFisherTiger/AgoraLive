@@ -8,8 +8,8 @@
 	<false/>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>io.agora.AgoraLiveBroadcast</key>
-		<string>AgoraIOTest2019</string>
+		<key>io.agora.AgoraLiveBroadcastTest2020</key>
+		<string>AgoraIOTest2020</string>
 	</dict>
 </dict>
 </plist>
