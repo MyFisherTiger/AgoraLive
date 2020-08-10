@@ -430,9 +430,11 @@ private extension MultiBroadcastersViewController {
             if DeviceAssistant.Language.isChinese {
                 let chat = Chat(name: user.info.name, text: " 上麦")
                 self.chatVM.newMessages([chat])
+                self.showTextToast(text: chat.content.string)
             } else {
                 let chat = Chat(name: user.info.name, text: " became a broadcaster")
                 self.chatVM.newMessages([chat])
+                self.showTextToast(text: chat.content.string)
             }
         }).disposed(by: bag)
         
@@ -440,9 +442,11 @@ private extension MultiBroadcastersViewController {
             if DeviceAssistant.Language.isChinese {
                 let chat = Chat(name: user.info.name, text: " 下麦")
                 self.chatVM.newMessages([chat])
+                self.showTextToast(text: chat.content.string)
             } else {
                 let chat = Chat(name: user.info.name, text: " became a audience")
                 self.chatVM.newMessages([chat])
+                self.showTextToast(text: chat.content.string)
             }
         }).disposed(by: bag)
     }

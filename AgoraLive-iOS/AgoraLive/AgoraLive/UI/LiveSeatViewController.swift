@@ -107,6 +107,11 @@ class LiveSeatView: UIView {
         }
     }
     
+    fileprivate var popover = Popover(options: [.type(.down),
+                                                .blackOverlayColor(UIColor.clear),
+                                                .cornerRadius(5.0),
+                                                .arrowSize(CGSize(width: 8, height: 4))])
+    
     fileprivate var commands = BehaviorRelay(value: [Command]())
     
     fileprivate var renderView = LabelShadowRender()
@@ -123,11 +128,6 @@ class LiveSeatView: UIView {
     }
     
     private(set) var commandFire = PublishRelay<Command>()
-    
-    private var popover = Popover(options: [.type(.down),
-                                            .blackOverlayColor(UIColor.clear),
-                                            .cornerRadius(5.0),
-                                            .arrowSize(CGSize(width: 8, height: 4))])
     
     private var commandsCollectionView = UICollectionView(frame: CGRect.zero,
                                                           collectionViewLayout: UICollectionViewFlowLayout())
@@ -357,6 +357,8 @@ private extension LiveSeatViewController {
         
         for (index, item) in seats.enumerated() {
             let view = seatViews[index]
+            view.popover.dismissWithoutAnimation()
+            
             view.perspective = self.perspective
             
             switch item.state {
