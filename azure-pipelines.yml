@@ -16,7 +16,7 @@ jobs:
         
 - template: AgoraLive-iOS/Build/azure/build.yml
   parameters:
-    displayName: 'AgoraLive_iOS_QA_Dev'
-    mode: 'QA-Dev'
+    displayName: 'AgoraLive_iOS_Lab2020_Dev'
+    mode: 'Lab2020-Dev'
     upload: 1
     bugly: 1
