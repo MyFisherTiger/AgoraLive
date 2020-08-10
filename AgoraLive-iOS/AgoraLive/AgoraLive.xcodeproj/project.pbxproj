@@ -1326,7 +1326,7 @@
 					"\"UIKit\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D FU_67";
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcastTest2019;
 				PRODUCT_NAME = AgoraLive;
 				PROVISIONING_PROFILE_SPECIFIER = AgoraIOTest2019;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FU_67=0";
@@ -1487,7 +1487,7 @@
 					"\"UIKit\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D PREPRODUCT -D FU_67";
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcastTest2020;
 				PRODUCT_NAME = AgoraLive;
 				PROVISIONING_PROFILE_SPECIFIER = AgoraTest2020;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PREPRODUCT=1";
@@ -1973,7 +1973,7 @@
 					"\"UIKit\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D FU_67";
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcastLab2020;
 				PRODUCT_NAME = AgoraLive;
 				PROVISIONING_PROFILE_SPECIFIER = AgoraLab2020;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "FU_67=0";
@@ -2134,7 +2134,7 @@
 					"\"UIKit\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D PREPRODUCT -D FU_67";
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcastLab2020;
 				PRODUCT_NAME = AgoraLive;
 				PROVISIONING_PROFILE_SPECIFIER = AgoraLab2020;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PREPRODUCT=1";
