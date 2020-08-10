@@ -74,10 +74,11 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         
         liveSession(session)
         liveRole(session)
-        liveRoom(session: session)
+        extralLiveRole(session)
+        liveRoom(session)
         multiHosts()
         audience()
-        liveSeat(roomId: session.room.roomId)
+        liveSeat()
         chatList()
         gift()
         
@@ -144,12 +145,18 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
             }
         }).disposed(by: bag)
     }
+    
+    func extralLiveRole(_ session: LiveSession) {
+        session.role.subscribe(onNext: { [unowned self] (local) in
+            self.seatVC?.perspective = local.type
+        }).disposed(by: bag)
+    }
 }
 
 //MARK: - Specail MultiBroadcasters
 extension MultiBroadcastersViewController {
     //MARK: - Live Seat
-    func liveSeat(roomId: String) {
+    func liveSeat() {
         guard let seatVC = self.seatVC else {
             assert(false)
             return
@@ -325,7 +332,7 @@ extension MultiBroadcastersViewController {
 
 private extension MultiBroadcastersViewController {
     // MARK: - Live Room
-    func liveRoom(session: LiveSession) {
+    func liveRoom(_ session: LiveSession) {
         let owner = session.owner
         ownerRenderView.cornerRadius(5)
         ownerRenderView.layer.masksToBounds = true
