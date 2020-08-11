@@ -25,6 +25,7 @@
 		A71AAF282435D7A900820096 /* RTCStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF272435D7A900820096 /* RTCStatistics.swift */; };
 		A71AAF2A2435D8BE00820096 /* RealDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF292435D8BE00820096 /* RealDataViewController.swift */; };
 		A71AAF88243D740F00820096 /* UIImage+CSClipToCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = A71AAF87243D740F00820096 /* UIImage+CSClipToCycle.m */; };
+		A71E8D5C24E2914A00B90190 /* RTMObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71E8D5B24E2914A00B90190 /* RTMObserver.swift */; };
 		A72B7BE42444161400E965FB /* SingleBroadcasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE32444161400E965FB /* SingleBroadcasterViewController.swift */; };
 		A72B7BE8244459F000E965FB /* PKBroadcastersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE7244459F000E965FB /* PKBroadcastersViewController.swift */; };
 		A72B7BEA24445D5B00E965FB /* PKVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72B7BE924445D5B00E965FB /* PKVM.swift */; };
@@ -188,6 +189,7 @@
 		A71AAF292435D8BE00820096 /* RealDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealDataViewController.swift; sourceTree = "<group>"; };
 		A71AAF86243D740F00820096 /* UIImage+CSClipToCycle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+CSClipToCycle.h"; sourceTree = "<group>"; };
 		A71AAF87243D740F00820096 /* UIImage+CSClipToCycle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CSClipToCycle.m"; sourceTree = "<group>"; };
+		A71E8D5B24E2914A00B90190 /* RTMObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMObserver.swift; sourceTree = "<group>"; };
 		A722F07C2476924400132129 /* srmetal.metallib */ = {isa = PBXFileReference; lastKnownFileType = "archive.metal-library"; name = srmetal.metallib; path = ../../SDK/AgoraRtcKit.framework/AgoraResources/srmetal.metallib; sourceTree = "<group>"; };
 		A722F07D2476924400132129 /* model.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = model.bundle; path = ../../SDK/AgoraRtcKit.framework/AgoraResources/model.bundle; sourceTree = "<group>"; };
 		A72B7BE32444161400E965FB /* SingleBroadcasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleBroadcasterViewController.swift; sourceTree = "<group>"; };
@@ -753,6 +755,7 @@
 			isa = PBXGroup;
 			children = (
 				A7952A6424162C1000479811 /* RTMProtocols.swift */,
+				A71E8D5B24E2914A00B90190 /* RTMObserver.swift */,
 				A7952A6024162C1000479811 /* RTMClient.swift */,
 				A7952AA524162C1000479811 /* RTMExtension.swift */,
 				A7952A6D24162C1000479811 /* RTMHelper.swift */,
@@ -1043,6 +1046,7 @@
 				A7952ABE24162C1000479811 /* zip.c in Sources */,
 				A747EDA624D2C87D002F2DB0 /* SubThreadTimer.m in Sources */,
 				A719061624667DCE0031E91C /* UserData+CoreDataProperties.swift in Sources */,
+				A71E8D5C24E2914A00B90190 /* RTMObserver.swift in Sources */,
 				A7952A5A24162BF600479811 /* AppAssistant.swift in Sources */,
 				A795CEC22451683700220EF4 /* LabelShadowView.swift in Sources */,
 				A7952ACB24162C1000479811 /* aestab.c in Sources */,
@@ -1632,7 +1636,7 @@
 				CURRENT_PROJECT_VERSION = 324;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = JDPG69R49Z;
+				DEVELOPMENT_TEAM = GM72UGLGZW;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Differentiator\"",
@@ -1718,7 +1722,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D FU_67";
 				PRODUCT_BUNDLE_IDENTIFIER = io.agora.AgoraLiveBroadcast;
 				PRODUCT_NAME = AgoraLive;
-				PROVISIONING_PROFILE_SPECIFIER = AgoraLab2020;
+				PROVISIONING_PROFILE_SPECIFIER = App;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FU_67=0";
 				SWIFT_OBJC_BRIDGING_HEADER = "AgoraLive/AgoraLive-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";

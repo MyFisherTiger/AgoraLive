@@ -39,7 +39,7 @@ struct LiveSeat {
     }
 }
 
-class LiveSeatVM: NSObject {
+class LiveSeatVM: RTMObserver {
     private var room: Room
     private(set) var list: BehaviorRelay<[LiveSeat]>
     
@@ -57,11 +57,6 @@ class LiveSeatVM: NSObject {
         
         super.init()
         observe()
-    }
-    
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedChannelMessage(observer: self)
     }
     
     func update(state: SeatState, index: Int, fail: ErrorCompletion) {
@@ -83,7 +78,8 @@ class LiveSeatVM: NSObject {
 private extension LiveSeatVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+        
+        rtm.addReceivedChannelMessage(observer: self.address) { [weak self] (json) in
             guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self),
                 cmd == .seatList,
                 let strongSelf = self else {

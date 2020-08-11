@@ -43,7 +43,7 @@ struct Chat {
     }
 }
 
-class ChatVM: NSObject {
+class ChatVM: RTMObserver {
     var list = BehaviorRelay(value: [Chat]())
     
     override init() {
@@ -73,17 +73,12 @@ class ChatVM: NSObject {
             strongSelf.newMessages([new])
         }, fail: fail)
     }
-        
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedChannelMessage(observer: self)
-    }
 }
 
 private extension ChatVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+        rtm.addReceivedChannelMessage(observer: self.address) { [weak self] (json) in
             guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self) else {
                 return
             }

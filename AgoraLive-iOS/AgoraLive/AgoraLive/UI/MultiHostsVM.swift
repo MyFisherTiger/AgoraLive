@@ -11,7 +11,7 @@ import RxSwift
 import RxRelay
 import AlamoClient
 
-class MultiHostsVM: RxObject {
+class MultiHostsVM: RTMObserver {
     struct Invitation: TimestampModel {
         var id: Int
         var seatIndex: Int
@@ -73,12 +73,6 @@ class MultiHostsVM: RxObject {
         self.room = room
         super.init()
         observe()
-    }
-    
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedPeerMessage(observer: self)
-        rtm.removeReceivedChannelMessage(observer: self)
     }
 }
 
@@ -215,7 +209,7 @@ private extension MultiHostsVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         
-        rtm.addReceivedPeerMessage(observer: self) { [weak self] (json) in
+        rtm.addReceivedPeerMessage(observer: self.address) { [weak self] (json) in
             guard let cmd = try? json.getEnum(of: "cmd", type: ALPeerMessage.AType.self),
                 cmd == .multiHosts,
                 let strongSelf = self else {
@@ -278,7 +272,7 @@ private extension MultiHostsVM {
             }
         }
         
-        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+        rtm.addReceivedChannelMessage(observer: self.address) { [weak self] (json) in
             guard let command = try? json.getIntValue(of: "cmd"),
                 command == 11,
                 let strongSelf = self else {

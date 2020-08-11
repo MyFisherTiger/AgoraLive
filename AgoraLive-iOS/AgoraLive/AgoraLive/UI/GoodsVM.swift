@@ -29,7 +29,7 @@ struct GoodsItem {
     }
 }
 
-class GoodsVM: RxObject {
+class GoodsVM: RTMObserver {
     private var room: Room
     
     let list = BehaviorRelay(value: [GoodsItem]())
@@ -85,12 +85,6 @@ class GoodsVM: RxObject {
             return .resign
         }
     }
-    
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedChannelMessage(observer: self)
-    }
-    
 }
 private extension GoodsVM {
     func goods(_ item: GoodsItem, onShelf: Bool, of roomId: String) {
@@ -154,7 +148,7 @@ private extension GoodsVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         
-        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+        rtm.addReceivedChannelMessage(observer: self.address) { [weak self] (json) in
             guard let strongSelf = self else {
                 return
             }

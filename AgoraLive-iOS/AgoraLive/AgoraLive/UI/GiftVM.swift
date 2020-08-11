@@ -84,7 +84,7 @@ enum Gift: Int {
                                .rocket]
 }
 
-class GiftVM: NSObject {
+class GiftVM: RTMObserver {
     private var room: Room
     var received = PublishRelay<(userName:String, gift:Gift)>()
     
@@ -110,17 +110,12 @@ class GiftVM: NSObject {
             self?.received.accept((local.info.value.name, gift))
         }))
     }
-    
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedChannelMessage(observer: self)
-    }
 }
 
 private extension GiftVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+        rtm.addReceivedChannelMessage(observer: self.address) { [weak self] (json) in
             guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self) else {
                 return
             }

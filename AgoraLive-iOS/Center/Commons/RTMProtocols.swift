@@ -15,11 +15,11 @@ protocol SocketProtocol {
     func write(message: String, of event: ACRequestEvent, to: String, success: Completion, fail: ErrorCompletion) throws
     func renew(token: String, fail: ErrorCompletion)
 
-    func addReceivedPeerMessage(observer: NSObject, subscribe: DicEXCompletion)
-    func removeReceivedPeerMessage(observer: NSObject)
+    func addReceivedPeerMessage(observer: String, subscribe: DicEXCompletion)
+    func removeReceivedPeerMessage(observer: String)
 
-    func addReceivedChannelMessage(observer: NSObject, subscribe: DicEXCompletion)
-    func removeReceivedChannelMessage(observer: NSObject)
+    func addReceivedChannelMessage(observer: String, subscribe: DicEXCompletion)
+    func removeReceivedChannelMessage(observer: String)
 }
 
 struct ChannelUser {
@@ -36,3 +36,4 @@ protocol RTMChannelProtocol {
     func leaveChannel()
     func writeChannel(message: String, of event: ACRequestEvent, success: Completion, fail: ErrorCompletion) throws
 }
+

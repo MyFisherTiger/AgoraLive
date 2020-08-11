@@ -38,7 +38,7 @@ fileprivate extension Array where Element == LiveRoleItem {
     }
 }
 
-class LiveUserListVM: NSObject {
+class LiveUserListVM: RTMObserver {
     private var room: Room
     
     var giftList = BehaviorRelay(value: [LiveRoleItem]())
@@ -164,17 +164,12 @@ class LiveUserListVM: NSObject {
         
         client.request(task: task, success: response, failRetry: retry)
     }
-    
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedChannelMessage(observer: self)
-    }
 }
 
 private extension LiveUserListVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+        rtm.addReceivedChannelMessage(observer: self.address) { [weak self] (json) in
             guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self) else {
                 return
             }

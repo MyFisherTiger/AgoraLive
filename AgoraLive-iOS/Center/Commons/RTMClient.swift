@@ -29,8 +29,8 @@ class RTMClient: NSObject, AGELogBase {
     private lazy var loginWorkerId = Date.millisecondTimestamp
     private lazy var joinChannelId = Date.millisecondTimestamp
     
-    private lazy var peerMessageObservers = [NSObject: DicEXCompletion]()
-    private lazy var channelMessageObservers = [NSObject: DicEXCompletion]()
+    private lazy var peerMessageObservers = [String: DicEXCompletion]()    // Object address
+    private lazy var channelMessageObservers = [String: DicEXCompletion]() // Object address
     
     private(set) var joinedChannel: String?
     
@@ -91,20 +91,24 @@ extension RTMClient: SocketProtocol {
         kit.send(message: message, of: event, to: to, success: success, fail: fail)
     }
     
-    func addReceivedPeerMessage(observer: NSObject, subscribe: DicEXCompletion) {
-        peerMessageObservers[observer] = subscribe
+    func addReceivedPeerMessage(observer: String, subscribe: DicEXCompletion) {
+        let text = String(format: "%p", observer)
+        peerMessageObservers[text] = subscribe
     }
     
-    func removeReceivedPeerMessage(observer: NSObject) {
-        peerMessageObservers.removeValue(forKey: observer)
+    func removeReceivedPeerMessage(observer: String) {
+        let text = String(format: "%p", observer)
+        peerMessageObservers.removeValue(forKey: text)
     }
     
-    func addReceivedChannelMessage(observer: NSObject, subscribe: DicEXCompletion) {
-        channelMessageObservers[observer] = subscribe
+    func addReceivedChannelMessage(observer: String, subscribe: DicEXCompletion) {
+        let text = String(format: "%p", observer)
+        channelMessageObservers[text] = subscribe
     }
     
-    func removeReceivedChannelMessage(observer: NSObject) {
-        channelMessageObservers.removeValue(forKey: observer)
+    func removeReceivedChannelMessage(observer: String) {
+        let text = String(format: "%p", observer)
+        channelMessageObservers.removeValue(forKey: text)
     }
 }
 
@@ -260,7 +264,7 @@ private extension RTMClient {
         
         do {
             var json = try jsonString.json()
-            var observers: [NSObject: DicEXCompletion]
+            var observers: [String: DicEXCompletion]
             switch type {
             case .peer(let agoraUid):
                 var data = try json.getDataObject()

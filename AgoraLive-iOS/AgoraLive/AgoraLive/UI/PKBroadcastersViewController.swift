@@ -58,6 +58,10 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
     var enhancementVM = VideoEnhancementVM()
     var monitor = NetworkMonitor(host: "www.apple.com")
     
+    deinit {
+        print("deinit PKBroadcastersViewController")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let image = UIImage(named: "live-bg")
@@ -130,8 +134,6 @@ extension PKBroadcastersViewController {
             let user = owner.user
             self.ownerView.label.text = user.info.name
             self.ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
-            self.deviceVM.camera = owner.isLocal ? .on : .off
-            self.deviceVM.mic = owner.isLocal ? .on : .off
             self.pkView?.intoOtherButton.isHidden = owner.isLocal
             self.pkButton.isHidden = !owner.isLocal
         }).disposed(by: bag)
@@ -227,7 +229,7 @@ private extension PKBroadcastersViewController {
             }
         }).disposed(by: bag)
         
-        pkVM.receivedInvitation.subscribe(onNext: { (battle) in
+        pkVM.receivedInvitation.subscribe(onNext: { [unowned self] (battle) in
             self.showAlert(message: NSLocalizedString("PK_Recieved_Invite"),
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Confirm"),
@@ -238,11 +240,11 @@ private extension PKBroadcastersViewController {
             }
         }).disposed(by: bag)
         
-        pkVM.invitationIsByRejected.subscribe(onNext: { (battle) in
+        pkVM.invitationIsByRejected.subscribe(onNext: { [unowned self] (battle) in
             self.showTextToast(text: NSLocalizedString("PK_Invite_Reject"))
         }).disposed(by: bag)
         
-        pkVM.requestError.subscribe(onNext: { (text) in
+        pkVM.requestError.subscribe(onNext: { [unowned self] (text) in
             self.showTextToast(text: text)
         }).disposed(by: bag)
     }

@@ -43,7 +43,7 @@ enum LiveType: Int {
                                    .shopping]
 }
 
-class LiveSession: NSObject {
+class LiveSession: RTMObserver {
     enum Owner {
         case localUser(LiveRole), otherUser(LiveRole)
         
@@ -61,8 +61,6 @@ class LiveSession: NSObject {
             }
         }
     }
-    
-    private let bag = DisposeBag()
     
     private(set) var owner: BehaviorRelay<Owner>
     private(set) var rtcChannelReport: BehaviorRelay<ChannelReport>?
@@ -244,11 +242,6 @@ class LiveSession: NSObject {
         let task = RequestTask(event: event, type: .http(.post, url: url))
         client.request(task: task)
     }
-    
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedChannelMessage(observer: self)
-    }
 }
 
 extension LiveSession {
@@ -371,7 +364,7 @@ private extension LiveSession {
 private extension LiveSession {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+        rtm.addReceivedChannelMessage(observer: self.address) { [weak self] (json) in
             guard let cmd = try? json.getEnum(of: "cmd", type: ALChannelMessage.AType.self) else {
                 return
             }

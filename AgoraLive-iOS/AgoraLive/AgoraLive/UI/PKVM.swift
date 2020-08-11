@@ -107,9 +107,7 @@ fileprivate enum RelayState {
     case none, duration
 }
 
-class PKVM: NSObject {
-    private let bag = DisposeBag()
-    
+class PKVM: RTMObserver {
     fileprivate var relayState = RelayState.none
     private(set) var mediaRelayConfiguration: MediaRelayConfiguration?
     private var room: Room
@@ -172,12 +170,6 @@ class PKVM: NSObject {
             self.requestError.accept("pk reject fail")
         }
     }
-    
-    deinit {
-        let rtm = ALCenter.shared().centerProvideRTMHelper()
-        rtm.removeReceivedPeerMessage(observer: self)
-        rtm.removeReceivedChannelMessage(observer: self)
-    }
 }
 
 private extension PKVM {
@@ -203,7 +195,7 @@ private extension PKVM {
     func observe() {
         let rtm = ALCenter.shared().centerProvideRTMHelper()
         
-        rtm.addReceivedChannelMessage(observer: self) { [weak self] (json) in
+        rtm.addReceivedChannelMessage(observer: self.address) { [weak self] (json) in
             guard let strongSelf = self else {
                 return
             }
@@ -220,7 +212,7 @@ private extension PKVM {
             try strongSelf.parseJson(dic: data)
         }
         
-        rtm.addReceivedPeerMessage(observer: self) { [weak self] (json) in
+        rtm.addReceivedPeerMessage(observer: self.address) { [weak self] (json) in
             guard let strongSelf = self else {
                 return
             }
@@ -250,6 +242,7 @@ private extension PKVM {
                 strongSelf.invitationIsByAccepted.accept(battle)
             case 3:
                 let battle = Battle(id: id, initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
+                strongSelf.invitationQueue.remove(battle)
                 strongSelf.invitationIsByRejected.accept(battle)
             case 4:
                 let battle = Battle(id: id, initatorRoom: strongSelf.room, receiverRoom: remoteRoom)
