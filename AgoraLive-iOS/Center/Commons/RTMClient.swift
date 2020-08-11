@@ -49,7 +49,6 @@ class RTMClient: NSObject, AGELogBase {
     }
     
     private(set) var connectStatus = BehaviorRelay(value: AGESocketState.disconnected)
-    private(set) var channelMessage = BehaviorRelay(value: "")
     
     var logTube: LogTube
     
