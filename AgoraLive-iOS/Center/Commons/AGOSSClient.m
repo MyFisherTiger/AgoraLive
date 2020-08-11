@@ -39,7 +39,6 @@
 
         if (!task.error) {
             OSSPutObjectResult *uploadResult = task.result;
-            NSLog(@"serverReturnJsonString: %@", uploadResult.serverReturnJsonString);
             
             NSData *jsonData = [uploadResult.serverReturnJsonString dataUsingEncoding:NSUTF8StringEncoding];
             NSError *error = nil;

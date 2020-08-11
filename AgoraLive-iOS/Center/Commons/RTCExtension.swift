@@ -41,16 +41,12 @@ extension AgoraVideoFrameRate {
 extension CGSize {
     static let AgoraVideoDimension360x640 = CGSize(width: 360, height: 640)
     static let AgoraVideoDimension480x848 = CGSize(width: 480, height: 848)
-    static let AgoraVideoDimension544x960 = CGSize(width: 544, height: 960)
     static let AgoraVideoDimension720x1280 = CGSize(width: 720, height: 1280)
     
     static let resolutionList: [CGSize] = [AgoraVideoDimension240x240,
-                                           AgoraVideoDimension320x240,
                                            AgoraVideoDimension360x640,
                                            AgoraVideoDimension480x848,
-                                           AgoraVideoDimension544x960,
-                                           AgoraVideoDimension720x1280,
-                                           AgoraVideoDimension1280x720]
+                                           AgoraVideoDimension720x1280]
 }
 
 extension AgoraAudioOutputRouting {
