@@ -1,8 +1,7 @@
 package io.agora.vlive.ui.main.fragments;
 
-import io.agora.vlive.proxy.ClientProxy;
+import io.agora.vlive.protocol.ClientProxy;
 import io.agora.vlive.ui.live.VirtualHostLiveActivity;
-import io.agora.vlive.ui.live.VirtualImageSelectActivity;
 
 public class VirtualHostFragment extends AbsPageFragment {
     @Override

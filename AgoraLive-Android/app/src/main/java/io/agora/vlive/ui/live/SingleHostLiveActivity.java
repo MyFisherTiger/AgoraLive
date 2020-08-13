@@ -8,12 +8,12 @@ import android.widget.RelativeLayout;
 
 import io.agora.rtc.Constants;
 import io.agora.vlive.R;
-import io.agora.vlive.proxy.struts.model.SeatInfo;
-import io.agora.vlive.proxy.struts.response.EnterRoomResponse;
-import io.agora.vlive.proxy.struts.response.Response;
-import io.agora.vlive.ui.actionsheets.LiveRoomToolActionSheet;
+import io.agora.vlive.protocol.model.model.SeatInfo;
+import io.agora.vlive.protocol.model.response.EnterRoomResponse;
+import io.agora.vlive.protocol.model.response.Response;
+import io.agora.vlive.ui.actionsheets.toolactionsheet.LiveRoomToolActionSheet;
 import io.agora.vlive.ui.components.CameraTextureView;
-import io.agora.vlive.ui.components.LiveBottomButtonLayout;
+import io.agora.vlive.ui.components.bottomLayout.LiveBottomButtonLayout;
 import io.agora.vlive.ui.components.LiveHostNameLayout;
 import io.agora.vlive.ui.components.LiveMessageEditLayout;
 import io.agora.vlive.utils.UserUtil;

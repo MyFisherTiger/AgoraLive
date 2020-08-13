@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.agora.vlive.R;
-import io.agora.vlive.agora.rtm.model.GiftRankMessage;
-import io.agora.vlive.proxy.struts.response.EnterRoomResponse;
+import io.agora.vlive.protocol.model.response.EnterRoomResponse;
 import io.agora.vlive.utils.UserUtil;
 
 public class LiveRoomUserLayout extends RelativeLayout {

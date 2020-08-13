@@ -12,9 +12,9 @@ import java.util.List;
 import io.agora.capture.video.camera.Constant;
 import io.agora.framework.PreprocessorFaceUnity;
 import io.agora.rtc.video.VideoEncoderConfiguration;
-import io.agora.vlive.proxy.struts.model.AppVersionInfo;
-import io.agora.vlive.proxy.struts.model.GiftInfo;
-import io.agora.vlive.proxy.struts.model.MusicInfo;
+import io.agora.vlive.protocol.model.model.AppVersionInfo;
+import io.agora.vlive.protocol.model.model.GiftInfo;
+import io.agora.vlive.protocol.model.model.MusicInfo;
 import io.agora.vlive.utils.GiftUtil;
 import io.agora.vlive.utils.Global;
 

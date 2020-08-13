@@ -7,7 +7,8 @@ import io.agora.rtm.RtmChannelAttribute;
 import io.agora.rtm.RtmChannelMember;
 import io.agora.vlive.agora.rtm.model.GiftRankMessage;
 import io.agora.vlive.agora.rtm.model.NotificationMessage;
-import io.agora.vlive.agora.rtm.model.PKMessage;
+import io.agora.vlive.agora.rtm.model.PKInvitationMessage;
+import io.agora.vlive.agora.rtm.model.PKStateMessage;
 import io.agora.vlive.agora.rtm.model.SeatStateMessage;
 
 public interface RtmMessageListener {
@@ -25,23 +26,27 @@ public interface RtmMessageListener {
 
     void onRtmMemberLeft(RtmChannelMember rtmChannelMember);
 
-    void onRtmInvitedByOwner(String peerId, String nickname, int index);
+    void onRtmSeatInvited(String userId, String userName, int index);
 
-    void onRtmAppliedForSeat(String peerId, String nickname, String userId, int index);
+    void onRtmSeatApplied(String userId, String userName, int index);
 
-    void onRtmInvitationAccepted(String peerId, String nickname, int index);
+    void onRtmInvitationAccepted(String userId, String userName, int index);
 
-    void onRtmApplicationAccepted(String peerId, String nickname, int index);
+    void onRtmApplicationAccepted(String userId, String userName, int index);
 
-    void onRtmInvitationRejected(String peerId, String nickname);
+    void onRtmInvitationRejected(String userId, String userName, int index);
 
-    void onRtmApplicationRejected(String peerId, String nickname);
+    void onRtmApplicationRejected(String userId, String userName, int index);
 
-    void onRtmPkReceivedFromAnotherHost(String peerId, String nickname, String roomId);
+    void onRtmOwnerForceLeaveSeat(String userId, String userName, int index);
 
-    void onRtmPkAcceptedByTargetHost(String peerId, String nickname);
+    void onRtmHostLeaveSeat(String userId, String userName, int index);
 
-    void onRtmPkRejectedByTargetHost(String peerId, String nickname);
+    void onRtmPkReceivedFromAnotherHost(String userId, String userName, String roomId);
+
+    void onRtmPkAcceptedByTargetHost(String userId, String userName, String roomId);
+
+    void onRtmPkRejectedByTargetHost(String userId, String userName, String roomId);
 
     void onRtmChannelMessageReceived(String peerId, String nickname, String content);
 
@@ -53,9 +58,13 @@ public interface RtmMessageListener {
 
     void onRtmSeatStateChanged(List<SeatStateMessage.SeatStateMessageDataItem> data);
 
-    void onRtmPkStateChanged(PKMessage.PKMessageData messageData);
+    void onRtmReceivePKEvent(PKStateMessage.PKStateMessageBody messageData);
 
     void onRtmGiftMessage(String fromUserId, String fromUserName, String toUserId, String toUserName, int giftId);
+
+    void onRtmProductPurchased(String productId, int count);
+
+    void onRtmProductStateChanged(String productId, int state);
 
     void onRtmLeaveMessage();
 }

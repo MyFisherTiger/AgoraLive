@@ -42,7 +42,8 @@ import io.agora.vlive.agora.rtm.RtmMessageManager;
 import io.agora.vlive.agora.rtm.RtmMessageListener;
 import io.agora.vlive.agora.rtm.model.GiftRankMessage;
 import io.agora.vlive.agora.rtm.model.NotificationMessage;
-import io.agora.vlive.agora.rtm.model.PKMessage;
+import io.agora.vlive.agora.rtm.model.PKInvitationMessage;
+import io.agora.vlive.agora.rtm.model.PKStateMessage;
 import io.agora.vlive.agora.rtm.model.SeatStateMessage;
 import io.agora.vlive.ui.BaseActivity;
 import io.agora.vlive.utils.Global;
@@ -189,7 +190,7 @@ public abstract class LiveBaseActivity extends BaseActivity
         return surfaceView;
     }
 
-    protected void remoteRemoteVideo(int uid) {
+    protected void removeRemoteVideo(int uid) {
         rtcEngine().setupRemoteVideo(new VideoCanvas(null, VideoCanvas.RENDER_MODE_HIDDEN, uid));
     }
 
@@ -368,47 +369,57 @@ public abstract class LiveBaseActivity extends BaseActivity
     }
 
     @Override
-    public void onRtmInvitedByOwner(String ownerId, String nickname, int index) {
+    public void onRtmSeatInvited(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmAppliedForSeat(String peerId, String nickname, String userId, int index) {
+    public void onRtmSeatApplied(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmInvitationAccepted(String peerId, String nickname, int index) {
+    public void onRtmInvitationAccepted(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmApplicationAccepted(String peerId, String nickname, int index) {
+    public void onRtmApplicationAccepted(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmInvitationRejected(String peerId, String nickname) {
+    public void onRtmInvitationRejected(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmApplicationRejected(String peerId, String nickname) {
+    public void onRtmApplicationRejected(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmPkReceivedFromAnotherHost(String peerId, String nickname, String pkRoomId) {
+    public void onRtmOwnerForceLeaveSeat(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmPkAcceptedByTargetHost(String peerId, String nickname) {
+    public void onRtmHostLeaveSeat(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmPkRejectedByTargetHost(String peerId, String nickname) {
+    public void onRtmPkReceivedFromAnotherHost(String userId, String userName, String pkRoomId) {
+
+    }
+
+    @Override
+    public void onRtmPkAcceptedByTargetHost(String userId, String userName, String pkRoomId) {
+
+    }
+
+    @Override
+    public void onRtmPkRejectedByTargetHost(String userId, String userName, String pkRoomId) {
 
     }
 
@@ -433,7 +444,7 @@ public abstract class LiveBaseActivity extends BaseActivity
     }
 
     @Override
-    public void onRtmPkStateChanged(PKMessage.PKMessageData messageData) {
+    public void onRtmReceivePKEvent(PKStateMessage.PKStateMessageBody messageData) {
 
     }
 
@@ -444,6 +455,16 @@ public abstract class LiveBaseActivity extends BaseActivity
 
     @Override
     public void onRtmChannelNotification(int total, List<NotificationMessage.NotificationItem> list) {
+
+    }
+
+    @Override
+    public void onRtmProductPurchased(String productId, int count) {
+
+    }
+
+    @Override
+    public void onRtmProductStateChanged(String productId, int state) {
 
     }
 
@@ -484,6 +505,12 @@ public abstract class LiveBaseActivity extends BaseActivity
 
     @Override
     public void onRtcAudioRouteChanged(int routing) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
     }
 

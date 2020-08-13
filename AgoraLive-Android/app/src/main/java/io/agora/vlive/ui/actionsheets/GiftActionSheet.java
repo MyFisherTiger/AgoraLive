@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import io.agora.vlive.R;
-import io.agora.vlive.proxy.struts.model.GiftInfo;
+import io.agora.vlive.protocol.model.model.GiftInfo;
 import io.agora.vlive.utils.GiftUtil;
 
 public class GiftActionSheet extends AbstractActionSheet implements View.OnClickListener {

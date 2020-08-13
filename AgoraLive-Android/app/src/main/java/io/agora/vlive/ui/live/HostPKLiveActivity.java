@@ -18,19 +18,20 @@ import io.agora.rtm.ErrorInfo;
 import io.agora.rtm.ResultCallback;
 import io.agora.vlive.Config;
 import io.agora.vlive.R;
-import io.agora.vlive.agora.rtm.model.PKMessage;
-import io.agora.vlive.proxy.struts.model.SeatInfo;
-import io.agora.vlive.proxy.struts.request.PKRequest;
-import io.agora.vlive.proxy.struts.request.Request;
-import io.agora.vlive.proxy.struts.request.RoomRequest;
-import io.agora.vlive.proxy.struts.response.EnterRoomResponse;
-import io.agora.vlive.proxy.struts.response.Response;
-import io.agora.vlive.proxy.struts.response.RoomListResponse;
-import io.agora.vlive.proxy.struts.response.StartStopPkResponse;
-import io.agora.vlive.ui.actionsheets.LiveRoomToolActionSheet;
+import io.agora.vlive.agora.rtm.model.PKStateMessage;
+import io.agora.vlive.protocol.ClientProxy;
+import io.agora.vlive.protocol.manager.PKServiceManager;
+import io.agora.vlive.protocol.model.model.SeatInfo;
+import io.agora.vlive.protocol.model.request.Request;
+import io.agora.vlive.protocol.model.request.RoomRequest;
+import io.agora.vlive.protocol.model.response.EnterRoomResponse;
+import io.agora.vlive.protocol.model.response.Response;
+import io.agora.vlive.protocol.model.response.RoomListResponse;
+import io.agora.vlive.protocol.model.types.PKConstant;
+import io.agora.vlive.ui.actionsheets.toolactionsheet.LiveRoomToolActionSheet;
 import io.agora.vlive.ui.actionsheets.PkRoomListActionSheet;
 import io.agora.vlive.ui.components.CameraTextureView;
-import io.agora.vlive.ui.components.LiveBottomButtonLayout;
+import io.agora.vlive.ui.components.bottomLayout.LiveBottomButtonLayout;
 import io.agora.vlive.ui.components.LiveHostNameLayout;
 import io.agora.vlive.ui.components.LiveMessageEditLayout;
 import io.agora.vlive.ui.components.PkLayout;
@@ -42,11 +43,6 @@ public class HostPKLiveActivity extends LiveRoomActivity
 
     private static final int PK_RESULT_DISPLAY_LAST = 2000;
 
-    private static final int PK_STATE_NOT_PK = 0;
-    private static final int PK_STATE_START = 1;
-    private static final int PK_STATE_IN_PK = 2;
-    private static final int PK_STATE_STOP = 3;
-
     private RelativeLayout mLayout;
     private FrameLayout mVideoNormalLayout;
     private LiveHostNameLayout mNamePad;
@@ -55,9 +51,12 @@ public class HostPKLiveActivity extends LiveRoomActivity
     private PkLayout mPkLayout;
     private boolean mTopLayoutCalculated;
 
-    private String pkRoomId;
+    private String mPKRoomId;
+    private String mPKRoomUserName;
     private boolean mPkStarted;
     private boolean mBroadcastStarted;
+
+    private PKServiceManager mPKManager;
 
     // When the owner returns to his room and the room
     // is in pk mode before he left, the owner needs to
@@ -65,21 +64,9 @@ public class HostPKLiveActivity extends LiveRoomActivity
     // first. This pending request records the case.
     private boolean mPendingStartPkRequest;
 
-    private PKMessage.RelayConfig mPendingPkConfig;
+    private EnterRoomResponse.RelayConfig mPendingPkConfig;
 
     private int mMessageListHeightInNormalMode;
-
-    private ResultCallback<Void> mMessageResultCallback = new ResultCallback<Void>() {
-        @Override
-        public void onSuccess(Void aVoid) {
-
-        }
-
-        @Override
-        public void onFailure(ErrorInfo errorInfo) {
-            showLongToast("Message error:" + errorInfo.getErrorDescription());
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +76,7 @@ public class HostPKLiveActivity extends LiveRoomActivity
 
     @Override
     protected void onPermissionGranted() {
+        mPKManager = new PKServiceManager(application());
         initUI();
         super.onPermissionGranted();
     }
@@ -163,7 +151,6 @@ public class HostPKLiveActivity extends LiveRoomActivity
         if (response.code == Response.SUCCESS) {
             Config.UserProfile profile = config().getUserProfile();
             profile.setRtcToken(response.data.user.rtcToken);
-            profile.setRtmToken(response.data.user.rtmToken);
             profile.setAgoraUid(response.data.user.uid);
 
             rtcChannelName = response.data.room.channelName;
@@ -181,8 +168,8 @@ public class HostPKLiveActivity extends LiveRoomActivity
             }
 
             // Result from server if the channel is in PK mode
-            mPkStarted = response.data.room.pk.state == PK_STATE_IN_PK;
-            if (mPkStarted) pkRoomId = response.data.room.pk.pkRoomId;
+            mPkStarted = response.data.room.pk.state == PKConstant.PK_STATE_PK;
+            if (mPkStarted) mPKRoomId = response.data.room.pk.remoteRoom.roomId;
 
             runOnUiThread(() -> {
                 mNamePad.setName(response.data.room.owner.userName);
@@ -217,11 +204,10 @@ public class HostPKLiveActivity extends LiveRoomActivity
                     mPendingPkConfig = response.data.room.pk.relayConfig;
                     setupUIMode(true, isOwner);
                     setupPkBehavior(isOwner, response.data.room.pk.countDown,
-                            response.data.room.pk.pkRoomOwner.userName,
-                            response.data.room.pk.relayConfig,
-                            response.data.room.pk.pkRoomOwner.uid);
-                    updatePkGiftRank(response.data.room.pk.hostRoomRank,
-                            response.data.room.pk.pkRoomRank);
+                            response.data.room.pk.remoteRoom.owner.userName,
+                            response.data.room.pk.relayConfig);
+                    updatePkGiftRank(response.data.room.pk.localRank,
+                            response.data.room.pk.remoteRank);
                 }
 
                 joinRtcChannel();
@@ -235,6 +221,7 @@ public class HostPKLiveActivity extends LiveRoomActivity
             mLayout.setBackgroundResource(R.drawable.dark_background);
             mStartPkButton.setVisibility(View.GONE);
             mVideoNormalLayout.setVisibility(View.GONE);
+            mPkLayout.removeResult();
             mPkLayout.setVisibility(View.VISIBLE);
             mPkLayout.setHost(isOwner);
         } else {
@@ -257,15 +244,15 @@ public class HostPKLiveActivity extends LiveRoomActivity
      * Must be called after the desirable UI mode is already set up
      */
     private void setupPkBehavior(boolean isOwner, long remaining,
-                                 String remoteName, PKMessage.RelayConfig config, int remoteUidForAudience) {
+                                 String remoteName, EnterRoomResponse.RelayConfig config) {
         myRtcRole = isOwner ? Constants.CLIENT_ROLE_BROADCASTER : Constants.CLIENT_ROLE_AUDIENCE;
         rtcEngine().setClientRole(myRtcRole);
 
         mPkLayout.setHost(isOwner);
-        mPkLayout.setOtherHostName(remoteName);
+        mPkLayout.setPKHostName(remoteName);
         mPkLayout.startCountDownTimer(remaining);
         if (!isOwner) {
-            mPkLayout.setOnClickGotoPeerChannelListener(view -> enterAnotherPkRoom(pkRoomId));
+            mPkLayout.setOnClickGotoPeerChannelListener(view -> enterAnotherPkRoom(mPKRoomId));
         }
 
         if (isOwner) {
@@ -285,7 +272,7 @@ public class HostPKLiveActivity extends LiveRoomActivity
             mPkLayout.getLeftVideoLayout().removeAllViews();
             mPkLayout.getLeftVideoLayout().addView(surfaceView);
             surfaceView.setZOrderMediaOverlay(true);
-            SurfaceView remoteSurfaceView = setupRemoteVideo(remoteUidForAudience);
+            SurfaceView remoteSurfaceView = setupRemoteVideo(config.remote.uid);
             mPkLayout.getRightVideoLayout().removeAllViews();
             mPkLayout.getRightVideoLayout().addView(remoteSurfaceView);
             remoteSurfaceView.setZOrderMediaOverlay(true);
@@ -317,14 +304,14 @@ public class HostPKLiveActivity extends LiveRoomActivity
         bottomButtons.setRole(isOwner ? LiveBottomButtonLayout.ROLE_OWNER : LiveBottomButtonLayout.ROLE_AUDIENCE);
     }
 
-    private void startMediaRelay(PKMessage.RelayConfig config) {
+    private void startMediaRelay(EnterRoomResponse.RelayConfig config) {
         ChannelMediaRelayConfiguration relayConfig = new ChannelMediaRelayConfiguration();
         relayConfig.setSrcChannelInfo(toChannelMediaInfo(config.local));
         relayConfig.setDestChannelInfo(config.proxy.channelName, toChannelMediaInfo(config.proxy));
         rtcEngine().startChannelMediaRelay(relayConfig);
     }
 
-    private ChannelMediaInfo toChannelMediaInfo(PKMessage.ChannelRelayInfo proxy) {
+    private ChannelMediaInfo toChannelMediaInfo(EnterRoomResponse.RelayInfo proxy) {
         return new ChannelMediaInfo(proxy.channelName, proxy.token, proxy.uid);
     }
 
@@ -439,7 +426,8 @@ public class HostPKLiveActivity extends LiveRoomActivity
                 if (isOwner) {
                     mPkRoomListActionSheet = (PkRoomListActionSheet)
                             showActionSheetDialog(ACTION_SHEET_PK_ROOM_LIST, tabIdToLiveType(tabId), true, true, this);
-                    mPkRoomListActionSheet.setup(proxy(), config().getUserProfile().getToken());
+                    mPkRoomListActionSheet.setup(proxy(), config().getUserProfile().getToken(),
+                            ClientProxy.ROOM_TYPE_PK);
                     mPkRoomListActionSheet.requestMorePkRoom();
                 }
                 break;
@@ -448,11 +436,21 @@ public class HostPKLiveActivity extends LiveRoomActivity
 
     @Override
     public void onBackPressed() {
-        //if (isOwner && mPkStarted) {
-
-        //} else {
+        if (mPkStarted) {
+            String title = getString(R.string.dialog_pk_force_quit_title);
+            String message = getString(R.string.dialog_pk_force_quit_message);
+            message = String.format(message, mPKRoomUserName != null ? mPKRoomUserName : "");
+            curDialog = showDialog(title, message,
+                    R.string.dialog_positive_button,
+                    R.string.dialog_negative_button,
+                    v -> {
+                        closeDialog();
+                        leaveRoom();
+                    },
+                    v -> closeDialog());
+        } else {
             super.onBackPressed();
-        //}
+        }
     }
 
     @Override
@@ -463,77 +461,62 @@ public class HostPKLiveActivity extends LiveRoomActivity
 
     @Override
     public void onPkRoomListActionSheetRoomSelected(int position, String roomId, int uid) {
-        // The owner has selected another host, and send a
-        // peer message to get the other host's permission.
-        pkRoomId = roomId;
-        Config.UserProfile profile = config().getUserProfile();
-        // uid is used both in rtc and rtm engine.
-        getMessageManager().applyPk(String.valueOf((long) uid), UserUtil.getUserText(
-                profile.getUserId(), profile.getUserName()), this.roomId, mMessageResultCallback);
+        // The owner sends a request to invite another host for a PK session
+        mPKRoomId = roomId;
+        mPKManager.invitePK(this.roomId, mPKRoomId);
         dismissActionSheetDialog();
     }
 
     @Override
-    public void onRtmPkReceivedFromAnotherHost(String peerId, String nickname, String pkRoomId) {
+    public void onRtmPkReceivedFromAnotherHost(String userId, String userName, String pkRoomId) {
         // Received a pk request from another host,
         // here show a dialog to make a decision.
         String title = getResources().getString(R.string.live_room_pk_room_receive_pk_request_title);
         String messageFormat = getResources().getString(R.string.live_room_pk_room_receive_pk_request_message);
-        String message = String.format(messageFormat, nickname);
-        final Config.UserProfile profile = config().getUserProfile();
+        String message = String.format(messageFormat, userName);
 
         runOnUiThread(() -> curDialog = showDialog(title, message,
                 R.string.dialog_positive_button_accept, R.string.dialog_negative_button_refuse,
                 view -> {
-                    getMessageManager().acceptPk(peerId, UserUtil.getUserText(
-                            profile.getUserId(), profile.getUserName()),
-                            profile.getUserId(), mMessageResultCallback);
-
-                    PKRequest request = new PKRequest(profile.getToken(), this.roomId, pkRoomId);
-                    proxy().sendRequest(Request.PK_START_STOP, request);
+                    mPKManager.acceptPKInvitation(roomId, pkRoomId);
                     closeDialog();
                 },
                 view -> {
-                    getMessageManager().rejectPk(peerId, UserUtil.getUserText(
-                            profile.getUserId(), profile.getUserName()),
-                            profile.getUserId(), mMessageResultCallback);
+                    mPKManager.rejectPKInvitation(roomId, pkRoomId);
                     closeDialog();
                 }));
     }
 
     @Override
-    public void onStartStopPkResponse(StartStopPkResponse response) {
-
-    }
-
-    @Override
-    public void onRtmPkAcceptedByTargetHost(String peerId, String nickname) {
+    public void onRtmPkAcceptedByTargetHost(String userId, String userName, String pkRoomId) {
         runOnUiThread(() -> showShortToast(getResources().getString(R.string.live_room_pk_room_pk_invitation_accepted)));
     }
 
     @Override
-    public void onRtmPkRejectedByTargetHost(String peerId, String nickname) {
+    public void onRtmPkRejectedByTargetHost(String userId, String userName, String pkRoomId) {
         runOnUiThread(() -> showShortToast(getResources().getString(R.string.live_room_pk_room_pk_invitation_rejected)));
     }
 
     @Override
-    public void onRtmPkStateChanged(PKMessage.PKMessageData messageData) {
+    public void onRtmReceivePKEvent(PKStateMessage.PKStateMessageBody messageData) {
         runOnUiThread(() -> {
-            if (messageData.state == PK_STATE_START) {
+            if (messageData.event == PKConstant.PK_EVENT_START) {
                 mPkStarted = true;
-                pkRoomId = messageData.pkRoomId;
+                mPKRoomId = messageData.remoteRoom.roomId;
+                mPKRoomUserName = messageData.remoteRoom.owner.userName;
                 setupUIMode(true, isOwner);
-                setupPkBehavior(isOwner, messageData.countDown, messageData.pkRoomOwner.userName,
-                        messageData.relayConfig, messageData.relayConfig.remote.uid);
+                setupPkBehavior(isOwner, messageData.countDown,
+                        mPKRoomUserName,
+                        messageData.relayConfig);
                 startMediaRelay(messageData.relayConfig);
-                updatePkGiftRank(messageData.hostRoomRank, messageData.pkRoomRank);
-            } else if (messageData.state == PK_STATE_STOP) {
+                updatePkGiftRank(messageData.localRank, messageData.remoteRank);
+            } else if (messageData.event == PKConstant.PK_EVENT_RANK_CHANGED) {
+                updatePkGiftRank(messageData.localRank, messageData.remoteRank);
+            } else if (messageData.event == PKConstant.PK_EVENT_END) {
                 mPkLayout.setResult(messageData.result);
                 new Handler(getMainLooper()).postDelayed(() -> stopPkMode(isOwner), PK_RESULT_DISPLAY_LAST);
                 mPkStarted = false;
                 showShortToast(getResources().getString(R.string.pk_ends));
-            } else if (mPkStarted && messageData.state == PK_STATE_IN_PK) {
-                updatePkGiftRank(messageData.hostRoomRank, messageData.pkRoomRank);
             }
         });
     }

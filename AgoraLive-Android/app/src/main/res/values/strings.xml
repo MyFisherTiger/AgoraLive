@@ -18,7 +18,7 @@
     <string name="home_category_desp_single">Live streaming by single host</string>
     <string name="home_category_desp_pk">Merge streams from 2 channels for broadcasting</string>
     <string name="home_category_desp_virtual_host">Avatar-based simulation for call or broadcasting</string>
-    <string name="home_category_desp_ecommerce"></string>
+    <string name="home_category_desp_ecommerce">Engage audience and other hosts in online shopping</string>
 
     <string name="room_list_no_data_hint">Please Create a Room</string>
     <string name="room_list_fail_to_obtain_data_hint">Loading Data failed, please try later</string>
@@ -82,6 +82,15 @@
 
     <string name="live_pk_host_remaining_time_hint">PK left:</string>
 
+    <!-- E Commerce -->
+    <string name="product_detail_buy_now">Buy Now</string>
+    <string name="product_promote_title">抢 9 期免息券</string>
+    <string name="product_promote_date">6.11 - 6.18</string>
+    <string name="product_promote_actual_price_title">到手价</string>
+    <string name="product_promote_actual_price">6599</string>
+
+    <string name="product_default_description">Apple iPad Pro 11英寸平板电脑 2020年新款(256G WLAN版/全面屏/A12Z/FaceID/MXDC2CH/A) 深空灰色</string>
+
     <!-- Messages -->
     <string name="live_message_gift_send">has sent out</string>
 
@@ -132,6 +141,16 @@
         <item>Camera</item>
     </string-array>
 
+    <string name="live_room_tool_action_sheet_title_setting">setting</string>
+    <string name="live_room_tool_action_sheet_title_data">Data</string>
+    <string name="live_room_tool_action_sheet_title_beauty">Beauty</string>
+    <string name="live_room_tool_action_sheet_title_music">Music</string>
+    <string name="live_room_tool_action_sheet_title_rotate">Rotate</string>
+    <string name="live_room_tool_action_sheet_title_camera">Camera</string>
+    <string name="live_room_tool_action_sheet_title_speaker">Speaker</string>
+    <string name="live_room_tool_action_sheet_title_inear">EarMonitor</string>
+    <string name="live_room_tool_action_sheet_title_apply">Apply</string>
+
     <string name="live_room_voice_action_sheet_title">Voice</string>
     <string name="live_room_voice_action_sheet_headphone">Headphone</string>
     <string name="live_room_voice_action_sheet_loudspeaker">Loudspeaker</string>
@@ -141,12 +160,14 @@
     <string name="live_room_all_online_user_action_sheet_title">Member Listing</string>
     <string name="live_room_host_in_audience_apply_title">Apply</string>
     <string name="live_room_host_in_audience_apply_message">Do you want to apply to be a host?</string>
-    <string name="live_room_host_in_audience_apply_owner_message">"%s" want to apply seat%d \n do you accept？</string>
-    <string name="live_room_host_in_invited_by_owner">"%s" invites you to seat %d， do you accept？</string>
+    <string name="live_room_host_in_audience_apply_owner_message">"%s" want to apply seat %d, do you accept？</string>
+    <string name="live_room_host_in_audience_apply_owner_message_simple">"%s" want to be a host, do you accept？</string>
+    <string name="live_room_host_in_invited_by_owner">"%s" invites you to seat %d，do you accept？</string>
+    <string name="live_room_host_in_invited_by_owner_simple">"%s" invites you to be a host， do you accept？</string>
     <string name="live_room_host_in_invite_rejected">Invitation Rejected</string>
-    <string name="live_room_host_in_invite_rejected_message">Your invitation has been \n rejected by "%s"</string>
+    <string name="live_room_host_in_invite_rejected_message">Your invitation has been\nrejected by "%s"</string>
     <string name="live_room_host_in_apply_rejected">Rejected</string>
-    <string name="live_room_host_in_apply_rejected_message">Your application has been \n rejected by "%s"</string>
+    <string name="live_room_host_in_apply_rejected_message">Your application has been\nrejected by "%s"</string>
 
     <string name="live_room_pk_room_list_button_text">Invite PK</string>
 
@@ -154,6 +175,14 @@
     <string name="live_room_pk_room_receive_pk_request_message">%s invited you to his PK room,\n do you accept?</string>
 
     <string name="live_room_virtual_image_invited_message">"%s" invites to chat，do you accept？</string>
+
+    <string name="live_room_product_list_title">Product List</string>
+    <string name="live_room_action_sheet_type_unlisted_title">Retired</string>
+    <string name="live_room_action_sheet_type_listed_title">Launched</string>
+    <string name="live_room_action_sheet_product_price_format">￥ %d</string>
+    <string name="live_room_action_sheet_product_action_detail">Detail</string>
+    <string name="live_room_action_sheet_product_action_list">Launch</string>
+    <string name="live_room_action_sheet_product_action_unlisted">Retire</string>
 
     <!-- dialog -->
     <string name="dialog_negative_button">Cancel</string>
@@ -171,7 +200,7 @@
     <string name="dialog_multi_host_open_seat_message">Do you want to reopen this seat?</string>
 
     <string name="dialog_multi_host_block_seat_title">Block</string>
-    <string name="dialog_multi_host_block_seat_message">Block the seat. If it is taken, \n the user will be forced to leave.</string>
+    <string name="dialog_multi_host_block_seat_message">Block the seat. If it is taken,\n the user will be forced to leave.</string>
 
     <string name="dialog_multi_host_mute_title">Mute</string>
     <string name="dialog_multi_host_mute_message">Forbid "%s" of speaking？</string>
@@ -182,6 +211,13 @@
     <string name="dialog_multi_host_leave_title">Leave</string>
     <string name="dialog_multi_host_leave_message_owner">Do you want "%s" to leave？</string>
     <string name="dialog_multi_host_leave_message_host">Do you want to leave？</string>
+
+    <string name="dialog_ecommerce_end_call_title">End Call</string>
+    <string name="dialog_ecommerce_end_call_message">End the call with "%s"?</string>
+    <string name="dialog_ecommerce_end_call_message_and_quit">End the call with "%s",\n and leave this room?</string>
+
+    <string name="dialog_pk_force_quit_title">End PK</string>
+    <string name="dialog_pk_force_quit_message">End PK with "%s",\n and leave this room?</string>
 
     <!-- Toasts -->
     <string name="apply_seat_success">Apply Successfully</string>
@@ -199,6 +235,16 @@
     <string name="pk_ends">PK Ends</string>
 
     <string name="agora_app_id_failed">Agora app id not found, please check your network</string>
+
+    <string name="product_list_success">Product has been launched</string>
+    <string name="product_unlist_success">Product is no longer available</string>
+
+    <string name="product_purchase_success">Purchase product success</string>
+    <string name="product_purchase_fail">Purchase product fail</string>
+
+    <string name="cannot_pk_while_calling">You cannot start PK while calling</string>
+    <string name="cannot_pk_while_already_pk_with_someone">You are already in PK with another host</string>
+    <string name="cannot_call_while_pk_with_someone">You cannot start a call with audience because you are already in PK with another host</string>
 
     <string-array name="random_channel_names">
         <item>Cheer</item>

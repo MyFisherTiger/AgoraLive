@@ -51,6 +51,8 @@ public class LiveRoomMessageList extends RecyclerView {
     private String mJoinNotificationText;
     private String mLeaveNotificationText;
 
+    private boolean mNarrow = false;
+
     public LiveRoomMessageList(@NonNull Context context) {
         super(context);
     }
@@ -100,6 +102,11 @@ public class LiveRoomMessageList extends RecyclerView {
         mAdapter.notifyDataSetChanged();
     }
 
+    public void setNarrow(boolean narrow) {
+        mNarrow = narrow;
+        mAdapter.notifyDataSetChanged();
+    }
+
     private class LiveRoomMessageAdapter extends Adapter<MessageListViewHolder> {
         private ArrayList<LiveMessageItem> mMessageList = new ArrayList<>();
 
@@ -108,10 +115,10 @@ public class LiveRoomMessageList extends RecyclerView {
         public MessageListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             if (viewType == MSG_TYPE_GIFT) {
                 return new MessageListViewHolder(mInflater
-                        .inflate(R.layout.message_item_gift_layout, parent, false));
+                        .inflate(R.layout.message_item_gift_layout, parent, false), viewType);
             } else {
                 return new MessageListViewHolder(mInflater
-                        .inflate(R.layout.message_item_layout, parent, false));
+                        .inflate(R.layout.message_item_layout, parent, false), viewType);
             }
         }
 
@@ -147,12 +154,14 @@ public class LiveRoomMessageList extends RecyclerView {
         private AppCompatTextView messageText;
         private AppCompatImageView giftIcon;
         private RelativeLayout layout;
+        private int type;
 
-        MessageListViewHolder(@NonNull View itemView) {
+        MessageListViewHolder(@NonNull View itemView, int type) {
             super(itemView);
             messageText = itemView.findViewById(R.id.live_message_item_text);
             giftIcon = itemView.findViewById(R.id.live_message_gift_icon);
             layout = itemView.findViewById(R.id.live_message_item_layout);
+            this.type = type;
         }
 
         void setMessage(String user, String message) {
@@ -168,15 +177,18 @@ public class LiveRoomMessageList extends RecyclerView {
 
             layout.setBackgroundResource(background);
 
-            SpannableString messageSpan = new SpannableString(user + ":  " + message);
+            String text = mNarrow ? user + ": " : user + ":  " + message;
+            SpannableString messageSpan = new SpannableString(text);
             messageSpan.setSpan(new StyleSpan(Typeface.BOLD),
                     0, user.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             messageSpan.setSpan(new ForegroundColorSpan(nameColor),
                     0, user.length() + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-            messageSpan.setSpan(new ForegroundColorSpan(messageColor),
-                    user.length() + 2, messageSpan.length(),
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            if (!mNarrow || this.type != MSG_TYPE_GIFT) {
+                messageSpan.setSpan(new ForegroundColorSpan(messageColor),
+                        user.length() + 2, messageSpan.length(),
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            }
 
             messageText.setText(messageSpan);
         }

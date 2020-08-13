@@ -25,17 +25,18 @@ import io.agora.rtm.ResultCallback;
 import io.agora.vlive.Config;
 import io.agora.vlive.R;
 import io.agora.vlive.agora.rtm.model.SeatStateMessage;
-import io.agora.vlive.proxy.struts.model.SeatInfo;
-import io.agora.vlive.proxy.struts.request.AudienceListRequest;
-import io.agora.vlive.proxy.struts.request.ModifySeatStateRequest;
-import io.agora.vlive.proxy.struts.request.Request;
-import io.agora.vlive.proxy.struts.response.AudienceListResponse;
-import io.agora.vlive.proxy.struts.response.EnterRoomResponse;
-import io.agora.vlive.proxy.struts.response.Response;
+import io.agora.vlive.protocol.manager.SeatServiceManager;
+import io.agora.vlive.protocol.model.model.SeatInfo;
+import io.agora.vlive.protocol.model.request.AudienceListRequest;
+import io.agora.vlive.protocol.model.request.ModifySeatStateRequest;
+import io.agora.vlive.protocol.model.request.Request;
+import io.agora.vlive.protocol.model.response.AudienceListResponse;
+import io.agora.vlive.protocol.model.response.EnterRoomResponse;
+import io.agora.vlive.protocol.model.response.Response;
 import io.agora.vlive.ui.actionsheets.InviteUserActionSheet;
-import io.agora.vlive.ui.actionsheets.LiveRoomToolActionSheet;
+import io.agora.vlive.ui.actionsheets.toolactionsheet.LiveRoomToolActionSheet;
 import io.agora.vlive.ui.components.LinearLayout9to8;
-import io.agora.vlive.ui.components.LiveBottomButtonLayout;
+import io.agora.vlive.ui.components.bottomLayout.LiveBottomButtonLayout;
 import io.agora.vlive.ui.components.LiveHostNameLayout;
 import io.agora.vlive.ui.components.LiveMessageEditLayout;
 import io.agora.vlive.utils.Global;
@@ -68,6 +69,8 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
     private InviteUserActionSheet mInviteUserListActionSheet;
     private boolean mInitAsOwner;
     private boolean mVirtualImageRemoved;
+
+    private SeatServiceManager mSeatManager;
 
     // To avoid inconsistent video frames, we must
     // insure that the effect bundle loaded and
@@ -151,6 +154,7 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
     protected void onPermissionGranted() {
         initUI();
         isHost = false;
+        mSeatManager = new SeatServiceManager(application());
         super.onPermissionGranted();
     }
 
@@ -465,34 +469,23 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
     }
 
     @Override
-    public void onActionSheetAudienceInvited(int seatId, String peerId, String userName) {
+    public void onActionSheetAudienceInvited(int seatId, String userId, String userName) {
         // seat id is no-use here because there is only one seat available.
         if (mInviteUserListActionSheet != null && mInviteUserListActionSheet.isShown()) {
             dismissActionSheetDialog();
         }
 
-        getMessageManager().invite(peerId, userName,
-                config().getUserProfile().getUserId(), seatId, new ResultCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-
-                    }
-
-                    @Override
-                    public void onFailure(ErrorInfo errorInfo) {
-
-                    }
-                });
+        mSeatManager.invite(roomId, userId, seatId);
     }
 
     @Override
-    public void onRtmInvitedByOwner(String peerId, String nickname, int index) {
+    public void onRtmSeatInvited(String userId, String userName, int index) {
         if (isOwner) return;
         closeDialog();
 
         String title = getResources().getString(R.string.live_room_host_in_invite_user_list_action_sheet_title);
         String message = getResources().getString(R.string.live_room_virtual_image_invited_message);
-        message = String.format(message, nickname);
+        message = String.format(message, userName);
         final Config.UserProfile profile = config().getUserProfile();
         curDialog = showDialog(title, message,
                 R.string.dialog_positive_button_accept, R.string.dialog_negative_button_refuse,
@@ -501,15 +494,14 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
                     // he should first choose a virtual image.
                     Intent intent = new Intent(this,
                             VirtualImageSelectActivity.class);
-                    intent.putExtra(Global.Constants.KEY_PEER_ID, peerId);
-                    intent.putExtra(Global.Constants.KEY_NICKNAME, nickname);
+                    intent.putExtra(Global.Constants.KEY_PEER_ID, userId);
+                    intent.putExtra(Global.Constants.KEY_NICKNAME, userName);
                     intent.putExtra(Global.Constants.KEY_AUDIENCE_VIRTUAL_IMAGE, true);
                     startActivityForResult(intent, AUDIENCE_SELECT_IMAGE_REQ_CODE);
                     curDialog.dismiss();
                 },
                 view -> {
-                    getMessageManager().rejectInvitation(peerId, nickname,
-                            profile.getUserId(), mMessageResultCallback);
+                    mSeatManager.audienceReject(roomId, userId, index);
                     curDialog.dismiss();
                 });
     }
@@ -522,8 +514,10 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
         Config.UserProfile profile = config().getUserProfile();
         String peerId = data.getStringExtra(Global.Constants.KEY_PEER_ID);
         String nickname = data.getStringExtra(Global.Constants.KEY_NICKNAME);
-        getMessageManager().acceptInvitation(peerId, nickname,
-                profile.getUserId(), 1, mMessageResultCallback);
+//        getMessageManager().acceptInvitation(peerId, nickname,
+//                profile.getUserId(), 1, mMessageResultCallback);
+//        mSeatManager.audienceAccept(roomId, userId, 1);
+
         mVirtualImageSelected = data.getIntExtra(
                 Global.Constants.KEY_VIRTUAL_IMAGE, -1);
         ModifySeatStateRequest request = new ModifySeatStateRequest(
@@ -538,16 +532,16 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
     }
 
     @Override
-    public void onRtmInvitationAccepted(String peerId, String nickname, int index) {
+    public void onRtmInvitationAccepted(String userId, String userName, int index) {
         showShortToast(getResources().getString(R.string.invite_success));
     }
 
     @Override
-    public void onRtmInvitationRejected(String peerId, String nickname) {
+    public void onRtmInvitationRejected(String userId, String userName, int index) {
         closeDialog();
         String title = getResources().getString(R.string.live_room_host_in_invite_rejected);
         String message = getResources().getString(R.string.live_room_host_in_invite_rejected_message);
-        message = String.format(message, nickname);
+        message = String.format(message, userName);
         curDialog = showSingleButtonConfirmDialog(title, message, view -> curDialog.dismiss());
     }
 

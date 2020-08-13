@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -29,31 +28,31 @@ import io.agora.rtm.RtmClient;
 import io.agora.vlive.AgoraLiveApplication;
 import io.agora.vlive.Config;
 import io.agora.vlive.agora.rtc.RtcEventHandler;
-import io.agora.vlive.proxy.ClientProxy;
-import io.agora.vlive.proxy.ClientProxyListener;
-import io.agora.vlive.proxy.struts.response.AppVersionResponse;
-import io.agora.vlive.proxy.struts.response.AudienceListResponse;
-import io.agora.vlive.proxy.struts.response.CreateRoomResponse;
-import io.agora.vlive.proxy.struts.response.CreateUserResponse;
-import io.agora.vlive.proxy.struts.response.EditUserResponse;
-import io.agora.vlive.proxy.struts.response.EnterRoomResponse;
-import io.agora.vlive.proxy.struts.response.GiftListResponse;
-import io.agora.vlive.proxy.struts.response.GiftRankResponse;
-import io.agora.vlive.proxy.struts.response.LeaveRoomResponse;
-import io.agora.vlive.proxy.struts.response.LoginResponse;
-import io.agora.vlive.proxy.struts.response.ModifySeatStateResponse;
-import io.agora.vlive.proxy.struts.response.ModifyUserStateResponse;
-import io.agora.vlive.proxy.struts.response.MusicListResponse;
-import io.agora.vlive.proxy.struts.response.OssPolicyResponse;
-import io.agora.vlive.proxy.struts.response.RefreshTokenResponse;
-import io.agora.vlive.proxy.struts.response.RoomListResponse;
-import io.agora.vlive.proxy.struts.response.SeatStateResponse;
-import io.agora.vlive.proxy.struts.response.SendGiftResponse;
-import io.agora.vlive.proxy.struts.response.StartStopPkResponse;
+import io.agora.vlive.protocol.ClientProxy;
+import io.agora.vlive.protocol.ClientProxyListener;
+import io.agora.vlive.protocol.model.response.AppVersionResponse;
+import io.agora.vlive.protocol.model.response.AudienceListResponse;
+import io.agora.vlive.protocol.model.response.CreateRoomResponse;
+import io.agora.vlive.protocol.model.response.CreateUserResponse;
+import io.agora.vlive.protocol.model.response.EditUserResponse;
+import io.agora.vlive.protocol.model.response.EnterRoomResponse;
+import io.agora.vlive.protocol.model.response.GiftListResponse;
+import io.agora.vlive.protocol.model.response.GiftRankResponse;
+import io.agora.vlive.protocol.model.response.LeaveRoomResponse;
+import io.agora.vlive.protocol.model.response.LoginResponse;
+import io.agora.vlive.protocol.model.response.ModifyUserStateResponse;
+import io.agora.vlive.protocol.model.response.MusicListResponse;
+import io.agora.vlive.protocol.model.response.OssPolicyResponse;
+import io.agora.vlive.protocol.model.response.ProductListResponse;
+import io.agora.vlive.protocol.model.response.RefreshTokenResponse;
+import io.agora.vlive.protocol.model.response.RoomListResponse;
+import io.agora.vlive.protocol.model.response.SeatStateResponse;
+import io.agora.vlive.protocol.model.response.SendGiftResponse;
 import io.agora.vlive.ui.actionsheets.AbstractActionSheet;
 import io.agora.vlive.ui.actionsheets.GiftActionSheet;
 import io.agora.vlive.ui.actionsheets.LiveRoomUserListActionSheet;
-import io.agora.vlive.ui.actionsheets.LiveRoomToolActionSheet;
+import io.agora.vlive.ui.actionsheets.ProductActionSheet;
+import io.agora.vlive.ui.actionsheets.toolactionsheet.LiveRoomToolActionSheet;
 import io.agora.vlive.ui.actionsheets.InviteUserActionSheet;
 import io.agora.vlive.ui.actionsheets.PkRoomListActionSheet;
 import io.agora.vlive.ui.actionsheets.VoiceActionSheet;
@@ -78,6 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
     protected static final int ACTION_SHEET_INVITE_AUDIENCE = 6;
     protected static final int ACTION_SHEET_ROOM_USER = 7;
     protected static final int ACTION_SHEET_PK_ROOM_LIST = 8;
+    protected static final int ACTION_SHEET_PRODUCT_LIST = 9;
 
     private static final int ACTION_SHEET_DIALOG_STYLE_RES = R.style.live_room_dialog;
     private static final int TOAST_SHORT_INTERVAL = 2000;
@@ -226,6 +226,9 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
             case ACTION_SHEET_PK_ROOM_LIST:
                 actionSheet = new PkRoomListActionSheet(this);
                 break;
+            case ACTION_SHEET_PRODUCT_LIST:
+                actionSheet = new ProductActionSheet(this);
+                break;
             default:
                 actionSheet = new LiveRoomSettingActionSheet(this);
                 ((LiveRoomSettingActionSheet) actionSheet).setFallback(!newStack);
@@ -239,10 +242,20 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
         return actionSheet;
     }
 
+    protected void showCustomActionSheetDialog(boolean newStack, AbstractActionSheet sheet) {
+        if (newStack) mActionSheetStack.clear();
+        mActionSheetStack.push(sheet);
+        showActionSheetDialog(sheet);
+    }
+
     protected void dismissActionSheetDialog() {
         if (mSheetDialog != null && mSheetDialog.isShowing()) {
             mSheetDialog.dismiss();
         }
+    }
+
+    protected boolean actionSheetShowing() {
+        return mSheetDialog != null && mSheetDialog.isShowing();
     }
 
     protected Dialog showDialog(int title, int message,
@@ -470,11 +483,6 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
     }
 
     @Override
-    public void onModifySeatStateResponse(ModifySeatStateResponse response) {
-
-    }
-
-    @Override
     public void onSendGiftResponse(SendGiftResponse response) {
 
     }
@@ -485,7 +493,17 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
     }
 
     @Override
-    public void onStartStopPkResponse(StartStopPkResponse response) {
+    public void onGetProductListResponse(ProductListResponse response) {
+
+    }
+
+    @Override
+    public void onProductStateChangedResponse(String productId, int state, boolean success) {
+
+    }
+
+    @Override
+    public void onProductPurchasedResponse(boolean success) {
 
     }
 

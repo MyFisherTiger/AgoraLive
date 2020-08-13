@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import io.agora.vlive.R;
-import io.agora.vlive.proxy.struts.model.SeatInfo;
+import io.agora.vlive.protocol.model.model.SeatInfo;
 
 public class SeatItemDialog extends Dialog implements View.OnClickListener {
     // Owner has full privilege to operate on any host on the seat

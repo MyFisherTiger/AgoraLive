@@ -31,7 +31,7 @@
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 
-    <io.agora.vlive.ui.components.LiveBottomButtonLayout
+    <io.agora.vlive.ui.components.bottomLayout.LiveBottomButtonLayout
         android:id="@+id/single_live_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/live_bottom_layout_height"

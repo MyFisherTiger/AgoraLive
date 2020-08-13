@@ -15,13 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.agora.vlive.R;
-import io.agora.vlive.proxy.struts.response.AudienceListResponse.AudienceInfo;
+import io.agora.vlive.protocol.model.response.AudienceListResponse.AudienceInfo;
 import io.agora.vlive.utils.UserUtil;
-
 
 public class InviteUserActionSheet extends AbstractActionSheet {
     public interface InviteUserActionSheetListener extends AbsActionSheetListener {
-        void onActionSheetAudienceInvited(int seatId, String peerId, String userName);
+        void onActionSheetAudienceInvited(int seatId, String userId, String userName);
     }
 
     private InviteUserActionSheetListener mListener;
@@ -60,7 +59,7 @@ public class InviteUserActionSheet extends AbstractActionSheet {
         mAdapter.append(userList);
     }
 
-    private class RoomUserAdapter extends RecyclerView.Adapter {
+    private class RoomUserAdapter extends RecyclerView.Adapter<RoomUserViewHolder> {
         private List<AudienceInfo> mUserList = new ArrayList<>();
 
         void append(List<AudienceInfo> userList) {
@@ -70,19 +69,18 @@ public class InviteUserActionSheet extends AbstractActionSheet {
 
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public RoomUserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new RoomUserViewHolder(LayoutInflater.
                     from(getContext()).inflate(R.layout.action_invite_audience_list_item, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull RoomUserViewHolder holder, final int position) {
             AudienceInfo info = mUserList.get(position);
-            RoomUserViewHolder viewHolder = (RoomUserViewHolder) holder;
-            viewHolder.name.setText(UserUtil.getUserText(info.userId, info.userName));
-            viewHolder.icon.setImageDrawable(UserUtil.getUserRoundIcon(getResources(), info.userId));
-            viewHolder.button.setOnClickListener(view -> {
-                if (mListener != null) mListener.onActionSheetAudienceInvited(mSeatNo, info.uid, info.userName);
+            holder.name.setText(UserUtil.getUserText(info.userId, info.userName));
+            holder.icon.setImageDrawable(UserUtil.getUserRoundIcon(getResources(), info.userId));
+            holder.button.setOnClickListener(view -> {
+                if (mListener != null) mListener.onActionSheetAudienceInvited(mSeatNo, info.userId, info.userName);
             });
         }
 

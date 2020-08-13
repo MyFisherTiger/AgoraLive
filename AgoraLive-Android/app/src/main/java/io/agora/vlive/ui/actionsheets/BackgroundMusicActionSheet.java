@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import io.agora.vlive.proxy.struts.model.MusicInfo;
+import io.agora.vlive.protocol.model.model.MusicInfo;
 import io.agora.vlive.utils.Global;
 import io.agora.vlive.R;
 

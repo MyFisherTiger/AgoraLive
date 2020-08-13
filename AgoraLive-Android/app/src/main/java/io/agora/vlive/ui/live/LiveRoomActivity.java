@@ -31,25 +31,25 @@ import io.agora.vlive.Config;
 import io.agora.vlive.R;
 import io.agora.vlive.agora.rtm.model.GiftRankMessage;
 import io.agora.vlive.agora.rtm.model.NotificationMessage;
-import io.agora.vlive.proxy.ClientProxy;
-import io.agora.vlive.proxy.struts.model.UserProfile;
-import io.agora.vlive.proxy.struts.request.CreateRoomRequest;
-import io.agora.vlive.proxy.struts.request.Request;
-import io.agora.vlive.proxy.struts.request.RoomRequest;
-import io.agora.vlive.proxy.struts.request.SendGiftRequest;
-import io.agora.vlive.proxy.struts.response.AudienceListResponse;
-import io.agora.vlive.proxy.struts.response.CreateRoomResponse;
-import io.agora.vlive.proxy.struts.response.EnterRoomResponse;
-import io.agora.vlive.proxy.struts.response.Response;
+import io.agora.vlive.protocol.ClientProxy;
+import io.agora.vlive.protocol.model.model.UserProfile;
+import io.agora.vlive.protocol.model.request.CreateRoomRequest;
+import io.agora.vlive.protocol.model.request.Request;
+import io.agora.vlive.protocol.model.request.RoomRequest;
+import io.agora.vlive.protocol.model.request.SendGiftRequest;
+import io.agora.vlive.protocol.model.response.AudienceListResponse;
+import io.agora.vlive.protocol.model.response.CreateRoomResponse;
+import io.agora.vlive.protocol.model.response.EnterRoomResponse;
+import io.agora.vlive.protocol.model.response.Response;
 import io.agora.vlive.ui.actionsheets.BackgroundMusicActionSheet;
 import io.agora.vlive.ui.actionsheets.BeautySettingActionSheet;
 import io.agora.vlive.ui.actionsheets.GiftActionSheet;
 import io.agora.vlive.ui.actionsheets.LiveRoomUserListActionSheet;
 import io.agora.vlive.ui.actionsheets.LiveRoomSettingActionSheet;
-import io.agora.vlive.ui.actionsheets.LiveRoomToolActionSheet;
+import io.agora.vlive.ui.actionsheets.toolactionsheet.LiveRoomToolActionSheet;
 import io.agora.vlive.ui.actionsheets.VoiceActionSheet;
 import io.agora.vlive.ui.components.GiftAnimWindow;
-import io.agora.vlive.ui.components.LiveBottomButtonLayout;
+import io.agora.vlive.ui.components.bottomLayout.LiveBottomButtonLayout;
 import io.agora.vlive.ui.components.LiveMessageEditLayout;
 import io.agora.vlive.ui.components.LiveRoomMessageList;
 import io.agora.vlive.ui.components.LiveRoomUserLayout;
@@ -85,7 +85,7 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
     protected RtcStatsView rtcStatsView;
     protected Dialog curDialog;
 
-    protected InputMethodManager mInputMethodManager;
+    protected InputMethodManager inputMethodManager;
 
     private LiveRoomUserListActionSheet mRoomUserActionSheet;
 
@@ -118,7 +118,7 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
         getWindow().getDecorView().getViewTreeObserver()
                 .addOnGlobalLayoutListener(this::detectKeyboardLayout);
 
-        mInputMethodManager = (InputMethodManager)
+        inputMethodManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
 
         IntentFilter headPhoneFilter = new IntentFilter();
@@ -216,6 +216,8 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
                 return ClientProxy.ROOM_TYPE_SINGLE;
             case Config.LIVE_TYPE_VIRTUAL_HOST:
                 return ClientProxy.ROOM_TYPE_VIRTUAL_HOST;
+            case Config.LIVE_TYPE_ECOMMERCE:
+                return ClientProxy.ROOM_TYPE_ECOMMERCE;
         }
         return -1;
     }
@@ -236,7 +238,6 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
         if (response.code == Response.SUCCESS) {
             Config.UserProfile profile = config().getUserProfile();
             profile.setRtcToken(response.data.user.rtcToken);
-            profile.setRtmToken(response.data.user.rtmToken);
             profile.setAgoraUid(response.data.user.uid);
 
             rtcChannelName = response.data.room.channelName;
@@ -257,7 +258,7 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
 
     @Override
     public void onActionSheetBeautyEnabled(boolean enabled) {
-        bottomButtons.setBeautyEnabled(enabled);
+        if (bottomButtons != null) bottomButtons.setBeautyEnabled(enabled);
         enablePreProcess(enabled);
     }
 
@@ -309,7 +310,7 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
         long now = System.currentTimeMillis();
         if (now - mLastMusicPlayedTimeStamp > MIN_ONLINE_MUSIC_INTERVAL) {
             rtcEngine().startAudioMixing(url, false, false, -1);
-            bottomButtons.setMusicPlaying(true);
+            if (bottomButtons != null) bottomButtons.setMusicPlaying(true);
             mLastMusicPlayedTimeStamp = now;
         }
     }
@@ -317,7 +318,7 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
     @Override
     public void onActionSheetMusicStopped() {
         rtcEngine().stopAudioMixing();
-        bottomButtons.setMusicPlaying(false);
+        if (bottomButtons != null) bottomButtons.setMusicPlaying(false);
     }
 
     @Override
@@ -421,7 +422,7 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
         if (messageEditLayout != null) {
             messageEditLayout.setVisibility(View.VISIBLE);
             messageEditText.requestFocus();
-            mInputMethodManager.showSoftInput(messageEditText, 0);
+            inputMethodManager.showSoftInput(messageEditText, 0);
         }
     }
 
@@ -436,7 +437,7 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
                 messageEditText.setText("");
             }
 
-            mInputMethodManager.hideSoftInputFromWindow(messageEditText.getWindowToken(), 0);
+            inputMethodManager.hideSoftInputFromWindow(messageEditText.getWindowToken(), 0);
             return true;
         }
         return false;
@@ -611,7 +612,7 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
         curDialog = showDialog(titleRes, messageRes, view -> leaveRoom());
     }
 
-    private void leaveRoom() {
+    protected void leaveRoom() {
         leaveRoom(roomId);
         finish();
         closeDialog();

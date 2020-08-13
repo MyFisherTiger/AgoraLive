@@ -7,6 +7,10 @@ import io.agora.vlive.R;
 
 public class Global {
     public static class Constants {
+        public static final int ROLE_AUDIENCE = 0;
+        public static final int ROLE_HOST = 1;
+        public static final int ROLE_OWNER = 2;
+
         // Shared reference keys
         public static final String SF_NAME = "sf-agora-live";
         public static final String KEY_BEAUTY_ENABLED = "key-beauty-enabled";

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 
@@ -12,8 +11,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import java.io.File;
-
-import io.agora.vlive.proxy.struts.model.UserProfile;
 
 public class UserUtil {
     private static final String LOG_FOLDER_NAME = "logs";

@@ -13,9 +13,9 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import io.agora.vlive.R;
-import io.agora.vlive.proxy.struts.request.Request;
-import io.agora.vlive.proxy.struts.request.UserRequest;
-import io.agora.vlive.proxy.struts.response.EditUserResponse;
+import io.agora.vlive.protocol.model.request.Request;
+import io.agora.vlive.protocol.model.request.UserRequest;
+import io.agora.vlive.protocol.model.response.EditUserResponse;
 import io.agora.vlive.ui.BaseActivity;
 import io.agora.vlive.utils.Global;
 

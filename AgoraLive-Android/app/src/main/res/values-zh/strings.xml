@@ -19,7 +19,7 @@
     <string name="home_category_desp_single">标准单主播直播</string>
     <string name="home_category_desp_pk">跨直播间主播连\n麦PK互动</string>
     <string name="home_category_desp_virtual_host">用卡通形象模拟真人进行对话或直播</string>
-    <string name="home_category_desp_ecommerce"></string>
+    <string name="home_category_desp_ecommerce">通过观众连麦和主播PK的方式带货</string>
 
     <string name="room_list_no_data_hint">请创建一个房间</string>
     <string name="room_list_fail_to_obtain_data_hint">暂无数据，请稍候再试</string>
@@ -86,6 +86,15 @@
 
     <string name="live_pk_host_remaining_time_hint">PK剩余:</string>
 
+    <!-- E Commerce -->
+    <string name="product_detail_buy_now">立即购买</string>
+    <string name="product_promote_title">抢 9 期免息券</string>
+    <string name="product_promote_date">6.11 - 6.18</string>
+    <string name="product_promote_actual_price_title">到手价</string>
+    <string name="product_promote_actual_price">6599</string>
+
+    <string name="product_default_description">Apple iPad Pro 11英寸平板电脑 2020年新款(256G WLAN版/全面屏/A12Z/FaceID/MXDC2CH/A) 深空灰色</string>
+
     <!-- Messages -->
     <string name="live_message_gift_send">向主播赠送了一个</string>
 
@@ -135,6 +144,16 @@
         <item>摄像头</item>
     </string-array>
 
+    <string name="live_room_tool_action_sheet_title_setting">设置</string>
+    <string name="live_room_tool_action_sheet_title_data">数据</string>
+    <string name="live_room_tool_action_sheet_title_beauty">美颜</string>
+    <string name="live_room_tool_action_sheet_title_music">音乐</string>
+    <string name="live_room_tool_action_sheet_title_rotate">翻转</string>
+    <string name="live_room_tool_action_sheet_title_camera">摄像头</string>
+    <string name="live_room_tool_action_sheet_title_speaker">麦克风</string>
+    <string name="live_room_tool_action_sheet_title_inear">耳返</string>
+    <string name="live_room_tool_action_sheet_title_apply">申请上麦</string>
+
     <string name="live_room_voice_action_sheet_title">声音</string>
     <string name="live_room_voice_action_sheet_headphone">耳机</string>
     <string name="live_room_voice_action_sheet_loudspeaker">音箱</string>
@@ -145,7 +164,9 @@
     <string name="live_room_host_in_audience_apply_title">申请上麦</string>
     <string name="live_room_host_in_audience_apply_message">您是否申请上麦?</string>
     <string name="live_room_host_in_audience_apply_owner_message">"%s" 申请上麦位%d，是否接受？</string>
+    <string name="live_room_host_in_audience_apply_owner_message_simple">"%s" 申请上麦，是否接受？</string>
     <string name="live_room_host_in_invited_by_owner">"%s" 邀请你上麦位%d， 是否接受？</string>
+    <string name="live_room_host_in_invited_by_owner_simple">"%s" 邀请你上麦，是否接受？</string>
     <string name="live_room_host_in_invite_rejected">邀请被拒绝</string>
     <string name="live_room_host_in_invite_rejected_message">您的邀请已被 "%s" 拒绝</string>
     <string name="live_room_host_in_apply_rejected">申请被拒绝</string>
@@ -185,6 +206,20 @@
     <string name="live_room_pk_room_receive_pk_request_title">PK邀请</string>
     <string name="live_room_pk_room_receive_pk_request_message">%s 邀请你去他的PK房间,\n 是否同意?</string>
 
+    <string name="live_room_product_list_title">商品列表</string>
+    <string name="live_room_action_sheet_type_unlisted_title">未上架</string>
+    <string name="live_room_action_sheet_type_listed_title">已上架</string>
+    <string name="live_room_action_sheet_product_action_detail">去看看</string>
+    <string name="live_room_action_sheet_product_action_list">上架</string>
+    <string name="live_room_action_sheet_product_action_unlisted">下架</string>
+
+    <string name="dialog_ecommerce_end_call_title">终止连麦</string>
+    <string name="dialog_ecommerce_end_call_message">终止与 “%s” 的连麦？</string>
+    <string name="dialog_ecommerce_end_call_message_and_quit">终止与 “%s” 的连麦,\n并退出直播间？</string>
+
+    <string name="dialog_pk_force_quit_title">终止PK</string>
+    <string name="dialog_pk_force_quit_message">终止与 “%s” 的PK,\n并退出直播间？</string>
+
     <!-- Toasts -->
     <string name="apply_seat_success">上麦成功</string>
     <string name="invite_success">邀请成功</string>
@@ -201,6 +236,15 @@
     <string name="pk_ends">PK 结束</string>
 
     <string name="agora_app_id_failed">未获取正确的 Agora app id, 请检查你的网络状况</string>
+
+    <string name="product_list_success">产品已上架</string>
+    <string name="product_unlist_success">产品已下架</string>
+    <string name="product_purchase_success">产品购买成功</string>
+    <string name="product_purchase_fail">产品购买失败</string>
+
+    <string name="cannot_pk_while_calling">您不能在连麦时发起PK</string>
+    <string name="cannot_pk_while_already_pk_with_someone">您已经处于 PK 模式中</string>
+    <string name="cannot_call_while_pk_with_someone">您正处于 PK 模式中，不能邀请观众连麦</string>
 
     <string-array name="random_channel_names">
         <item>陌上花开等你来</item>

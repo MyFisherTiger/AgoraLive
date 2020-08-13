@@ -4,26 +4,25 @@ import androidx.fragment.app.Fragment;
 
 import io.agora.vlive.AgoraLiveApplication;
 import io.agora.vlive.Config;
-import io.agora.vlive.proxy.ClientProxyListener;
-import io.agora.vlive.proxy.struts.response.AppVersionResponse;
-import io.agora.vlive.proxy.struts.response.AudienceListResponse;
-import io.agora.vlive.proxy.struts.response.CreateRoomResponse;
-import io.agora.vlive.proxy.struts.response.CreateUserResponse;
-import io.agora.vlive.proxy.struts.response.EditUserResponse;
-import io.agora.vlive.proxy.struts.response.EnterRoomResponse;
-import io.agora.vlive.proxy.struts.response.GiftListResponse;
-import io.agora.vlive.proxy.struts.response.GiftRankResponse;
-import io.agora.vlive.proxy.struts.response.LeaveRoomResponse;
-import io.agora.vlive.proxy.struts.response.LoginResponse;
-import io.agora.vlive.proxy.struts.response.ModifySeatStateResponse;
-import io.agora.vlive.proxy.struts.response.ModifyUserStateResponse;
-import io.agora.vlive.proxy.struts.response.MusicListResponse;
-import io.agora.vlive.proxy.struts.response.OssPolicyResponse;
-import io.agora.vlive.proxy.struts.response.RefreshTokenResponse;
-import io.agora.vlive.proxy.struts.response.RoomListResponse;
-import io.agora.vlive.proxy.struts.response.SeatStateResponse;
-import io.agora.vlive.proxy.struts.response.SendGiftResponse;
-import io.agora.vlive.proxy.struts.response.StartStopPkResponse;
+import io.agora.vlive.protocol.ClientProxyListener;
+import io.agora.vlive.protocol.model.response.AppVersionResponse;
+import io.agora.vlive.protocol.model.response.AudienceListResponse;
+import io.agora.vlive.protocol.model.response.CreateRoomResponse;
+import io.agora.vlive.protocol.model.response.CreateUserResponse;
+import io.agora.vlive.protocol.model.response.EditUserResponse;
+import io.agora.vlive.protocol.model.response.EnterRoomResponse;
+import io.agora.vlive.protocol.model.response.GiftListResponse;
+import io.agora.vlive.protocol.model.response.GiftRankResponse;
+import io.agora.vlive.protocol.model.response.LeaveRoomResponse;
+import io.agora.vlive.protocol.model.response.LoginResponse;
+import io.agora.vlive.protocol.model.response.ModifyUserStateResponse;
+import io.agora.vlive.protocol.model.response.MusicListResponse;
+import io.agora.vlive.protocol.model.response.OssPolicyResponse;
+import io.agora.vlive.protocol.model.response.ProductListResponse;
+import io.agora.vlive.protocol.model.response.RefreshTokenResponse;
+import io.agora.vlive.protocol.model.response.RoomListResponse;
+import io.agora.vlive.protocol.model.response.SeatStateResponse;
+import io.agora.vlive.protocol.model.response.SendGiftResponse;
 import io.agora.vlive.ui.main.MainActivity;
 
 public abstract class AbstractFragment extends Fragment implements ClientProxyListener {
@@ -115,11 +114,6 @@ public abstract class AbstractFragment extends Fragment implements ClientProxyLi
     }
 
     @Override
-    public void onModifySeatStateResponse(ModifySeatStateResponse response) {
-
-    }
-
-    @Override
     public void onSendGiftResponse(SendGiftResponse response) {
 
     }
@@ -130,7 +124,17 @@ public abstract class AbstractFragment extends Fragment implements ClientProxyLi
     }
 
     @Override
-    public void onStartStopPkResponse(StartStopPkResponse response) {
+    public void onGetProductListResponse(ProductListResponse response) {
+
+    }
+
+    @Override
+    public void onProductStateChangedResponse(String productId, int state, boolean success) {
+
+    }
+
+    @Override
+    public void onProductPurchasedResponse(boolean success) {
 
     }
 
