@@ -94,6 +94,10 @@ class GiftVM: RTMObserver {
         observe()
     }
     
+    deinit {
+        print("deinit GiftVM")
+    }
+    
     func present(gift: Gift, fail: Completion) {
         let client = ALCenter.shared().centerProvideRequestHelper()
         let local = ALCenter.shared().centerProvideLocalUser()

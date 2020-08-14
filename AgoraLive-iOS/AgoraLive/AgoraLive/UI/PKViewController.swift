@@ -28,6 +28,10 @@ class PKViewController: UIViewController {
     
     private var timer: Timer!
     
+    deinit {
+        print("deinit PKViewController")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .clear

@@ -51,6 +51,10 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
     var enhancementVM = VideoEnhancementVM()
     var monitor = NetworkMonitor(host: "www.apple.com")
     
+    deinit {
+        print("deinit SingleBroadcasterViewController")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let image = UIImage(named: "live-bg")

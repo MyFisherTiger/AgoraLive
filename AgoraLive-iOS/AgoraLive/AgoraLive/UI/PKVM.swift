@@ -51,7 +51,7 @@ struct PKInfo {
 }
 
 enum PKResult: Int {
-    case lose = 0, win, draw
+    case lose = 0, win = 1, draw = 2
 }
 
 enum PKEvent {
@@ -137,6 +137,10 @@ class PKVM: RTMObserver {
         super.init()
         try self.parseJson(dic: state)
         self.observe()
+    }
+    
+    deinit {
+        print("deinit PKVM")
     }
     
     func sendInvitationTo(room: Room) {

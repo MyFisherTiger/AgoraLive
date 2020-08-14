@@ -41,6 +41,11 @@ class ALCenter: NSObject {
     private lazy var userDataHelper = UserDataHelper()
     
     private let log = LogTube()
+    
+    override init() {
+        super.init()
+        appInfo()
+    }
 }
 
 extension ALCenter {
@@ -68,6 +73,19 @@ extension ALCenter {
 }
 
 private extension ALCenter {
+    func appInfo() {
+        let dic: [String: Any] = ["name": AppAssistant.name,
+                                  "buildNumber": AppAssistant.buildNumber,
+                                  "version": AppAssistant.version,
+                                  "bundleId": AppAssistant.bundleId]
+        
+        let formatter = AGELogFormatter(type: .info(dic.description),
+                                        className: NSStringFromClass(ALCenter.self),
+                                        funcName: #function,
+                                        extra: "app-build-info")
+        log.logFromClass(formatter: formatter)
+    }
+    
     func register(success: ((BasicUserInfo) -> Void)?) {
         let url = URLGroup.userRegister
         let event = RequestEvent(name: "user-register")

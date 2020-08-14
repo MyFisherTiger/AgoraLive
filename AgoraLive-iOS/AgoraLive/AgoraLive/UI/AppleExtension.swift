@@ -189,8 +189,6 @@ extension PresentChildProtocol {
 }
 
 protocol ShowAlertProtocol where Self: UIViewController {
-    var presentingAlert: UIAlertController? {get set}
-    
     func showAlert(_ title: String?, message: String?, handler: ((UIAlertAction) -> Void)?)
     func showAlert(_ title: String?, message: String?, preferredStyle: UIAlertController.Style, action1: String, action2: String, handler1: ((UIAlertAction) -> Void)?, handler2: ((UIAlertAction) -> Void)?)
     func showAlert(_ title: String?, message: String?, preferredStyle: UIAlertController.Style, actions: [UIAlertAction]?, completion: Completion)
@@ -211,12 +209,12 @@ extension ShowAlertProtocol {
     func showAlert(_ title: String? = nil, message: String? = nil, preferredStyle: UIAlertController.Style = .alert, actions: [UIAlertAction]? = nil, completion: Completion) {
         view.endEditing(true)
         
-        if let alert = presentingAlert {
+        if let vc = self.presentedViewController,
+            let alert = vc as? UIAlertController {
             alert.dismiss(animated: false, completion: nil)
         }
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
-        self.presentingAlert = alert
         
         var tActions: [UIAlertAction]
         
@@ -308,8 +306,7 @@ class MaskViewController: UIViewController, ShowAlertProtocol, PresentChildProto
     var presentedChild = PublishRelay<UIViewController>()
     var dimissChild = PublishRelay<UIViewController>()
     
-    var presentingChild: UIViewController? = nil
-    var presentingAlert: UIAlertController? = nil
+    weak var presentingChild: UIViewController? = nil
     
     var hud: MBProgressHUD?
     

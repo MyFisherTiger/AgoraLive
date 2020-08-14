@@ -71,6 +71,10 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     var enhancementVM = VideoEnhancementVM()
     var monitor = NetworkMonitor(host: "www.apple.com")
     
+    deinit {
+        print("deinit LiveShoppingViewController")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let image = UIImage(named: "live-bg")

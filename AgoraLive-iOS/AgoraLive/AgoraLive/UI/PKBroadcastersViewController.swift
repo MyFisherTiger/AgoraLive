@@ -78,7 +78,7 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
         audience()
         chatList()
         gift()
-        
+
         bottomTools(session: session)
         chatInput()
         musicList()
@@ -214,7 +214,8 @@ private extension PKBroadcastersViewController {
                 self.pkView?.giftBar.leftValue = info.localRank
                 self.pkView?.giftBar.rightValue = info.remoteRank
                 self.pkView?.rightLabel.text = info.remoteRoom.owner.info.name
-                self.pkView?.countDown = info.countDown
+                
+                self.pkView?.countDown = info.countDown - (Int(NSDate().timeIntervalSince1970) - Int(info.startTime / 1000))
                 let height = UIScreen.main.bounds.height - self.pkContainerView.frame.maxY - UIScreen.main.heightOfSafeAreaBottom - 20 - self.bottomToolsVC!.view.bounds.height
                 self.chatViewHeight.constant = height
             case .none:
@@ -382,9 +383,9 @@ private extension PKBroadcastersViewController {
         case .win:
             self.pkView?.showWinner(isLeft: true, completion: tCompletion)
         case .draw:
-            self.pkView?.showWinner(isLeft: false, completion: tCompletion)
+            self.pkView?.showDraw(completion: tCompletion)
         case .lose:
-            self.pkView?.showDraw(completion: completion)
+            self.pkView?.showWinner(isLeft: false, completion: tCompletion)
         }
     }
 }

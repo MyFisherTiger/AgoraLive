@@ -48,7 +48,7 @@ class AppAssistant: NSObject {
 
 extension AppAssistant {
     static var name: String {
-        return "Metroon"
+        return "AgoraLive"
     }
 
     static var version: String {
@@ -67,5 +67,12 @@ extension AppAssistant {
             return "0"
         }
         return number
+    }
+    
+    static var bundleId: String {
+        guard let id = Bundle.main.bundleIdentifier else {
+            return ""
+        }
+        return id
     }
 }

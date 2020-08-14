@@ -220,11 +220,11 @@ extension LiveViewController {
             if self is PKBroadcastersViewController {
                 return
             }
-            
+
             if self is LiveShoppingViewController {
                 return
             }
-            
+
             self.showAlert(NSLocalizedString("Live_End"),
                            message: NSLocalizedString("Confirm_End_Live"),
                            action1: NSLocalizedString("Cancel"),

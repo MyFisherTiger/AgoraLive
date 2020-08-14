@@ -51,6 +51,10 @@ class ChatVM: RTMObserver {
         observe()
     }
     
+    deinit {
+        print("deinit ChatVM")
+    }
+    
     func newMessages(_ chats: [Chat]) {
         var new = self.list.value
         new.insert(contentsOf: chats, at: 0)

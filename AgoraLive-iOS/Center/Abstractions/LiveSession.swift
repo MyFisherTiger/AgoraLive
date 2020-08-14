@@ -82,6 +82,10 @@ class LiveSession: RTMObserver {
         self.observe()
     }
     
+    deinit {
+        print("deinit LiveSession")
+    }
+    
     typealias JoinedInfo = (room: Room, seatInfo: [StringAnyDic]?, giftAudience: [StringAnyDic]?, pkInfo: StringAnyDic?)
     
     static func create(roomName: String, videoConfiguration: VideoConfiguration, type: LiveType, ownerInfo: BasicUserInfo, success: ((LiveSession) -> Void)? = nil, fail: Completion = nil) {
@@ -239,7 +243,7 @@ class LiveSession: RTMObserver {
         
         let event = RequestEvent(name: "live-session-leave")
         let url = URLGroup.leaveLive(roomId: room.roomId)
-        let task = RequestTask(event: event, type: .http(.post, url: url))
+        let task = RequestTask(event: event, type: .http(.post, url: url), header: ["token": ALKeys.ALUserToken])
         client.request(task: task)
     }
 }

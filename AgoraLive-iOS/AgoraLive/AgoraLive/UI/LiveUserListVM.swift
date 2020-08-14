@@ -56,6 +56,10 @@ class LiveUserListVM: RTMObserver {
         observe()
     }
     
+    deinit {
+        print("deinit LiveUserListVM")
+    }
+    
     func updateGiftListWithJson(list: [StringAnyDic]?) {
         guard let list = list, list.count > 0 else {
             return

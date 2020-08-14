@@ -58,6 +58,10 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
     var enhancementVM = VideoEnhancementVM()
     var monitor = NetworkMonitor(host: "www.apple.com")
     
+    deinit {
+        print("deinit MultiBroadcastersViewController")
+    }
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }

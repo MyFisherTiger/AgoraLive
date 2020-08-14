@@ -61,6 +61,10 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
     var enhancementVM = VideoEnhancementVM()
     var monitor = NetworkMonitor(host: "www.apple.com")
     
+    deinit {
+        print("deinit VirtualBroadcastersViewController")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let session = ALCenter.shared().liveSession else {

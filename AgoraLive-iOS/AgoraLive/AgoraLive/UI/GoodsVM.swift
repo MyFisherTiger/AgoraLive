@@ -80,7 +80,10 @@ class GoodsVM: RTMObserver {
                                timeout: .medium,
                                header: ["token": ALKeys.ALUserToken],
                                parameters: ["productId": item.id, "count": count])
-        client.request(task: task) { [unowned self] (error) -> RetryOptions in
+        
+        client.request(task: task, success: ACResponse.blank({ [unowned self] in
+            self.requestSuccess.accept(NSLocalizedString("Product_Purchased_Successfully"))
+        })) { [unowned self] (_) -> RetryOptions in
             self.requestError.accept("purchase product fail")
             return .resign
         }
