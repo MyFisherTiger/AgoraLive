@@ -237,10 +237,10 @@
 
     <string name="agora_app_id_failed">未获取正确的 Agora app id, 请检查你的网络状况</string>
 
-    <string name="product_list_success">产品已上架</string>
-    <string name="product_unlist_success">产品已下架</string>
-    <string name="product_purchase_success">产品购买成功</string>
-    <string name="product_purchase_fail">产品购买失败</string>
+    <string name="product_list_success">商品已上架</string>
+    <string name="product_unlist_success">商品已下架</string>
+    <string name="product_purchase_success">商品购买成功</string>
+    <string name="product_purchase_fail">商品购买失败</string>
 
     <string name="cannot_pk_while_calling">您不能在连麦时发起PK</string>
     <string name="cannot_pk_while_already_pk_with_someone">您已经处于 PK 模式中</string>

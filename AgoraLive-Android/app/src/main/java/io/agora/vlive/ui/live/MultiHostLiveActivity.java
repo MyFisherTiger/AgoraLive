@@ -34,10 +34,12 @@ import io.agora.vlive.protocol.model.request.AudienceListRequest;
 import io.agora.vlive.protocol.model.request.ModifySeatStateRequest;
 import io.agora.vlive.protocol.model.request.ModifyUserStateRequest;
 import io.agora.vlive.protocol.model.request.Request;
+import io.agora.vlive.protocol.model.request.SeatInteractionRequest;
 import io.agora.vlive.protocol.model.response.AudienceListResponse;
 import io.agora.vlive.protocol.model.response.EnterRoomResponse;
 import io.agora.vlive.protocol.model.response.Response;
 import io.agora.vlive.protocol.model.response.SeatStateResponse;
+import io.agora.vlive.protocol.model.types.SeatInteraction;
 import io.agora.vlive.ui.actionsheets.InviteUserActionSheet;
 import io.agora.vlive.ui.actionsheets.toolactionsheet.LiveRoomToolActionSheet;
 import io.agora.vlive.ui.components.CameraSurfaceView;
@@ -724,16 +726,19 @@ public class MultiHostLiveActivity extends LiveRoomActivity implements View.OnCl
             case leave:
                 title = getResources().getString(R.string.dialog_multi_host_leave_title);
                 String myUserId = config().getUserProfile().getUserId();
+                int interaction;
                 if (myUserId.equals(item.userId)) {
                     message = getResources().getString(R.string.dialog_multi_host_leave_message_host);
+                    interaction = SeatInteraction.HOST_LEAVE;
                 } else {
                     message = getResources().getString(R.string.dialog_multi_host_leave_message_owner);
                     message = String.format(message, TextUtils.isEmpty(item.userName) ? item.userId : item.userName);
+                    interaction = SeatInteraction.OWNER_FORCE_LEAVE;
                 }
-                type = Request.MODIFY_SEAT_STATE;
-                request = new ModifySeatStateRequest(
-                        config().getUserProfile().getToken(), roomId,
-                        item.userId, position + 1, SeatInfo.OPEN);
+                type = Request.SEAT_INTERACTION;
+                request = new SeatInteractionRequest(
+                        config().getUserProfile().getToken(),
+                        roomId, item.userId, position + 1, interaction);
                 break;
             case open:
                 title = getResources().getString(R.string.dialog_multi_host_open_seat_title);

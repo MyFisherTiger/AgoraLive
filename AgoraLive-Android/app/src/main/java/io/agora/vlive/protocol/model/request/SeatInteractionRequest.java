@@ -1,6 +1,6 @@
 package io.agora.vlive.protocol.model.request;
 
-public class SeatInteractionRequest {
+public class SeatInteractionRequest extends Request {
     public String token;
     public String roomId;
     public String userId;
