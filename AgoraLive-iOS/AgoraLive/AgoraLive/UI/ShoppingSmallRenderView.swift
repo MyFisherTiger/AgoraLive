@@ -57,9 +57,6 @@ class ShoppingSmallRenderView: UIView {
     }
     
     func initViews() {
-        backgroundColor = .red
-        renderView.backgroundColor = .blue
-        
         addSubview(renderView)
         
         shadow.image = UIImage(named: "shadow")

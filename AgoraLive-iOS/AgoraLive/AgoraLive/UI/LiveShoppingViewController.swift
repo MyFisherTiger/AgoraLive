@@ -86,26 +86,24 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
         }
         
         liveSession(session)
-        liveRoom(session)
         liveRole(session)
+        liveRoom(session)
+        bottomTools(session: session)
+        extralBottomTools(session: session)
+        
         audience()
         chatList()
         gift()
-        userList()
-        bottomTools(session: session)
+        chatInput()
         musicList()
         netMonitor()
-        chatInput()
-        
-        extralBottomTools(session: session)
         
         goods(session: session)
-        
+        PK(session: session)
         multiHosts()
         multiHostCount()
         seat()
-        
-        PK(session: session)
+        userList()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -313,7 +311,9 @@ private extension LiveShoppingViewController {
             }).disposed(by: bag)
         } else {
             vc.itemDetail.subscribe(onNext: { [unowned self] (item) in
-                let vc = UIStoryboard.initViewController(of: "ProductDetailViewController", class: ProductDetailViewController.self, on: "Live")
+                let vc = UIStoryboard.initViewController(of: "ProductDetailViewController",
+                                                         class: ProductDetailViewController.self,
+                                                         on: "Live")
                 vc.product = item
                 vc.purchase.subscribe(onNext: { [unowned self] (item) in
                     self.goodsVM.purchase(item: item)
@@ -433,7 +433,7 @@ private extension LiveShoppingViewController {
             })
         }).disposed(by: bag)
         
-        dimissChild.subscribe(onNext: { (vc) in
+        dimissChild.subscribe(onNext: { [unowned self] (vc) in
             guard vc is ExtensionViewController else {
                 return
             }
@@ -504,7 +504,7 @@ private extension LiveShoppingViewController {
                                        action1: NSLocalizedString("Cancel"),
                                        action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
                                         self.multiHostsVM.forceEndBroadcasting(user: user,
-                                                                               on: 1) { (_) in
+                                                                               on: 1) { [unowned self] (_) in
                                                                                 self.showTextToast(text: "force user end broadcasting fail")
                                         }
                         }
@@ -576,7 +576,7 @@ private extension LiveShoppingViewController {
             }).disposed(by: bag)
         }
         
-        vc.rejectApplicationOfUser.subscribe(onNext: { (application) in
+        vc.rejectApplicationOfUser.subscribe(onNext: { [unowned self] (application) in
             self.hiddenMaskView()
             
             var message: String
@@ -595,7 +595,7 @@ private extension LiveShoppingViewController {
             }
         }).disposed(by: bag)
         
-        vc.acceptApplicationOfUser.subscribe(onNext: { (application) in
+        vc.acceptApplicationOfUser.subscribe(onNext: { [unowned self] (application) in
             self.hiddenMaskView()
             
             var message: String
@@ -695,7 +695,7 @@ private extension LiveShoppingViewController {
             }
         }).disposed(by: bag)
         
-        pkVM.receivedInvitation.subscribe(onNext: { (battle) in
+        pkVM.receivedInvitation.subscribe(onNext: { [unowned self] (battle) in
             self.bottomToolsVC?.pkButton.needRemind = true
         }).disposed(by: bag)
         
@@ -703,7 +703,7 @@ private extension LiveShoppingViewController {
             self.showTextToast(text: NSLocalizedString("PK_Invite_Reject"))
         }).disposed(by: bag)
         
-        pkVM.requestError.subscribe(onNext: { (text) in
+        pkVM.requestError.subscribe(onNext: { [unowned self] (text) in
             self.showTextToast(text: text)
         }).disposed(by: bag)
     }
@@ -728,7 +728,7 @@ private extension LiveShoppingViewController {
             }
         }).disposed(by: bag)
         
-        vc.inviteRoom.subscribe(onNext: { (room) in
+        vc.inviteRoom.subscribe(onNext: { [unowned self] (room) in
             self.hiddenMaskView()
             
             var message: String
@@ -745,7 +745,7 @@ private extension LiveShoppingViewController {
             }
         }).disposed(by: bag)
         
-        vc.rejectApplicationOfRoom.subscribe(onNext: { (application) in
+        vc.rejectApplicationOfRoom.subscribe(onNext: { [unowned self] (application) in
             self.hiddenMaskView()
             
             var message: String
@@ -762,7 +762,7 @@ private extension LiveShoppingViewController {
             }
         }).disposed(by: bag)
         
-        vc.accepteApplicationOfRoom.subscribe(onNext: { (application) in
+        vc.accepteApplicationOfRoom.subscribe(onNext: { [unowned self] (application) in
             self.hiddenMaskView()
             
             var message: String

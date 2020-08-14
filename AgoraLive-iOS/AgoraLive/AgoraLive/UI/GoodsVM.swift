@@ -14,6 +14,7 @@ import AlamoClient
 struct GoodsItem {
     var name: String
     var image: UIImage
+    var bigImage: UIImage
     var description: String
     var price: Float
     var id: String
@@ -22,8 +23,9 @@ struct GoodsItem {
     init(dic: StringAnyDic) throws {
         self.id = try dic.getStringValue(of: "productId")
         self.image = UIImage(named: "pic-商品0\(self.id)")!
+        self.bigImage = UIImage(named: "pic-商品B0\(self.id)-slices")!
         self.name = try dic.getStringValue(of: "productName")
-        self.price = 0 //try dic.getFloatInfoValue(of: "price")
+        self.price = try dic.getFloatInfoValue(of: "price")
         self.isSale = (try dic.getBoolInfoValue(of: "state"))
         self.description = "description"
     }

@@ -26,6 +26,7 @@ class LiveListTabViewController: MaskViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         roomListRefresh(false)
+        perMinuterRefresh()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -301,6 +302,10 @@ private extension LiveListTabViewController {
     }
     
     func perMinuterRefresh() {
+        guard timer == nil else {
+            return
+        }
+        
         timer = Timer(fireAt: Date(timeIntervalSinceNow: 60.0),
                       interval: 60.0,
                       target: self,

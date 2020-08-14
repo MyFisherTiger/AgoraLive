@@ -68,14 +68,15 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
         liveSession(session)
         liveRole(session)
         liveRoom(session: session)
+        bottomTools(session: session)
+        
         audience()
         chatList()
         gift()
-        
-        bottomTools(session: session)
         chatInput()
         musicList()
         netMonitor()
+        
         superResolution()
     }
     

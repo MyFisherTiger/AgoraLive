@@ -76,14 +76,15 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
         liveRole(session)
         extralLiveRole(session)
         liveRoom(session: session)
+        bottomTools(session: session)
+        
         audience()
         chatList()
         gift()
-        
-        bottomTools(session: session)
-        
         chatInput()
         musicList()
+        netMonitor()
+        
         multiHostCount()
         liveSeat()
         multiHosts()

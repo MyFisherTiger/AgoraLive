@@ -80,16 +80,17 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         liveRole(session)
         extralLiveRole(session)
         liveRoom(session)
-        multiHosts()
+        bottomTools(session: session)
+        
         audience()
-        liveSeat()
         chatList()
         gift()
-        
-        bottomTools(session: session)
         chatInput()
         musicList()
         netMonitor()
+        
+        multiHosts()
+        liveSeat()
         activeSpeaker()
     }
     
