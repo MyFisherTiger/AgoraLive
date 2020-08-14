@@ -129,6 +129,7 @@ class CVUserListViewController: UIViewController {
     // multi hosts
     private var userListSubscribeOnMultiHosts: Disposable?
     private var applyingUserListSubscribeOnMultiHosts: Disposable?
+    private var invitingUserListSubscribeOnMultiHosts: Disposable?
     
     let inviteUser = PublishRelay<LiveRole>()
     let rejectApplicationOfUser = PublishRelay<MultiHostsVM.Application>()
@@ -137,6 +138,7 @@ class CVUserListViewController: UIViewController {
     // pk
     private var availableRoomsSubscribeOnPK: Disposable?
     private var applyingRoomsSubscribeOnOnPK: Disposable?
+    private var invitingRoomsSubscribeOnOnPK: Disposable?
    
     let inviteRoom = PublishRelay<Room>()
     let rejectApplicationOfRoom = PublishRelay<Battle>()
@@ -208,12 +210,19 @@ class CVUserListViewController: UIViewController {
                     }
                     
                     self.userListSubscribeOnMultiHosts = self.tableViewBindWithUser(self.userListVM.list)
+                    self.invitingUserListSubscribeOnMultiHosts = self.invitingUserList(self.multiHostsVM.invitingUserList)
+                    
                     self.userListSubscribeOnMultiHosts?.disposed(by: self.bag)
+                    self.invitingUserListSubscribeOnMultiHosts?.disposed(by: self.bag)
                     
                     self.userListVM.refetch(onlyAudience: false)
                 case 1:
                     if let subscribe = self.userListSubscribeOnMultiHosts {
                         subscribe.dispose()
+                    }
+                    
+                    if let sub = self.invitingUserListSubscribeOnMultiHosts {
+                        sub.dispose()
                     }
                     
                     self.applyingUserListSubscribeOnMultiHosts = self.tableViewBindWithApplicationsFromUser()
@@ -234,11 +243,18 @@ class CVUserListViewController: UIViewController {
                     }
                     
                     self.availableRoomsSubscribeOnPK = self.tableViewBindWithAvailableRooms()
+                    self.invitingRoomsSubscribeOnOnPK = self.invitingRoomList(self.pkVM.invitingRoomList)
+                    
                     self.availableRoomsSubscribeOnPK?.disposed(by: self.bag)
+                    self.invitingRoomsSubscribeOnOnPK?.disposed(by: self.bag)
                     self.pkVM.refetch()
                 case 1:
                     if let subscribe = self.availableRoomsSubscribeOnPK {
                         subscribe.dispose()
+                    }
+                    
+                    if let sub = self.invitingRoomsSubscribeOnOnPK {
+                        sub.dispose()
                     }
                     
                     self.applyingRoomsSubscribeOnOnPK = self.tableViewBindWithApplicationsFromRoom()
@@ -337,6 +353,14 @@ private extension CVUserListViewController {
         return subscribe
     }
     
+    func invitingUserList(_ list: BehaviorRelay<[LiveRole]>) -> Disposable {
+        let subscribe = list.subscribe(onNext: { [unowned self] (_) in
+            let value = self.userListVM.list.value
+            self.userListVM.list.accept(value)
+        })
+        return subscribe
+    }
+    
     func tableViewBindWithApplicationsFromUser() -> Disposable {
         let images = ALCenter.shared().centerProvideImagesHelper()
         
@@ -372,6 +396,14 @@ private extension CVUserListViewController {
                         cell.delegate = self
         }
         
+        return subscribe
+    }
+    
+    func invitingRoomList(_ list: BehaviorRelay<[Room]>) -> Disposable {
+        let subscribe = list.subscribe(onNext: { [unowned self] (_) in
+            let value = self.pkVM.availableRooms.value
+            self.pkVM.availableRooms.accept(value)
+        })
         return subscribe
     }
     

@@ -268,7 +268,7 @@ private extension PKVM {
             
             self.invitingRoomList.accept(rooms)
         }).disposed(by: bag)
-        
+                
         applicationQueue.queueChanged.subscribe(onNext: { [unowned self] (list) in
             guard let tList = list as? [Battle] else {
                 return
