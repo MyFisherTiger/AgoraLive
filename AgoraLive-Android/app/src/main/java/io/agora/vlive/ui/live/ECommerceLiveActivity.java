@@ -26,7 +26,6 @@ import io.agora.rtm.ErrorInfo;
 import io.agora.rtm.ResultCallback;
 import io.agora.vlive.R;
 import io.agora.vlive.agora.rtm.model.PKStateMessage;
-import io.agora.vlive.agora.rtm.model.ProductStatedChangedMessage;
 import io.agora.vlive.agora.rtm.model.SeatStateMessage;
 import io.agora.vlive.protocol.ClientProxy;
 import io.agora.vlive.protocol.manager.PKServiceManager;
@@ -155,43 +154,47 @@ public class ECommerceLiveActivity extends LiveRoomActivity
 
         @Override
         public void onCloseButtonClicked() {
-            if (mCallController.isCalling()) {
-                String title = getResources().getString(R.string.dialog_ecommerce_end_call_title);
-                String message = getResources().getString(R.string.dialog_ecommerce_end_call_message_and_quit);
-                message = String.format(message, mCallRemoteUserName);
-                curDialog = showDialog(title, message,
-                        R.string.dialog_positive_button,
-                        R.string.dialog_negative_button,
-                        v -> {
-                            if (isOwner) {
-                                mSeatManager.forceLeave(roomId, mCallRemoteUserId, 1);
-                            } else {
-                                mSeatManager.hostLeave(roomId, ownerId, 1);
-                            }
-                            closeDialog();
-                            finish();
-                        },
-                        v -> closeDialog());
-            } else if (mIsInPkMode && isOwner) {
-                String message = getResources().getString(R.string.dialog_pk_force_quit_message);
-                message = String.format(message, mPKRoomUserName);
-                curDialog = showDialog(getResources().getString(R.string.dialog_pk_force_quit_title), message,
-                        R.string.dialog_positive_button,
-                        R.string.dialog_negative_button,
-                        v -> {
-                            leaveRoom();
-                            closeDialog();
-                        },
-                        v -> closeDialog());
-            } else {
-                int messageRes = isOwner
-                        ? R.string.end_live_streaming_message_owner
-                        : R.string.finish_broadcast_message_audience;
-                curDialog = showDialog(R.string.end_live_streaming_title_owner,
-                        messageRes, ECommerceLiveActivity.this);
-            }
+            checkBeforeLeavingRoom();
         }
     };
+
+    private void checkBeforeLeavingRoom() {
+        if (mCallController.isCalling()) {
+            String title = getResources().getString(R.string.dialog_ecommerce_end_call_title);
+            String message = getResources().getString(R.string.dialog_ecommerce_end_call_message_and_quit);
+            message = String.format(message, mCallRemoteUserName);
+            curDialog = showDialog(title, message,
+                    R.string.dialog_positive_button,
+                    R.string.dialog_negative_button,
+                    v -> {
+                        if (isOwner) {
+                            mSeatManager.forceLeave(roomId, mCallRemoteUserId, 1);
+                        } else {
+                            mSeatManager.hostLeave(roomId, ownerId, 1);
+                        }
+                        closeDialog();
+                        finish();
+                    },
+                    v -> closeDialog());
+        } else if (mIsInPkMode && isOwner) {
+            String message = getResources().getString(R.string.dialog_pk_force_quit_message);
+            message = String.format(message, mPKRoomUserName);
+            curDialog = showDialog(getResources().getString(R.string.dialog_pk_force_quit_title), message,
+                    R.string.dialog_positive_button,
+                    R.string.dialog_negative_button,
+                    v -> {
+                        leaveRoom();
+                        closeDialog();
+                    },
+                    v -> closeDialog());
+        } else {
+            int messageRes = isOwner
+                    ? R.string.end_live_streaming_message_owner
+                    : R.string.finish_broadcast_message_audience;
+            curDialog = showDialog(R.string.end_live_streaming_title_owner,
+                    messageRes, ECommerceLiveActivity.this);
+        }
+    }
 
     private ProductActionSheet.OnProductActionListener mProductActionListener
             = new ProductActionSheet.OnProductActionListener() {
@@ -495,6 +498,11 @@ public class ECommerceLiveActivity extends LiveRoomActivity
         if (isOwner) return AbsBottomLayout.ROLE_OWNER;
         else if (isHost) return AbsBottomLayout.ROLE_HOST;
         else return AbsBottomLayout.ROLE_AUDIENCE;
+    }
+
+    @Override
+    public void onBackPressed() {
+        checkBeforeLeavingRoom();
     }
 
     @Override

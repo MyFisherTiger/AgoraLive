@@ -241,8 +241,7 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.live_bottom_btn_close:
-                curDialog = showDialog(R.string.end_live_streaming_title_owner,
-                        R.string.end_live_streaming_message_owner, this);
+                checkBeforeLeaving();
                 break;
             case R.id.live_bottom_btn_more:
                 LiveRoomToolActionSheet toolSheet =
@@ -273,10 +272,22 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
                 }
                 break;
             case R.id.dialog_positive_button:
+                if (mConnected) {
+                    if (isOwner) {
+                        mSeatManager.forceLeave(roomId, mHostUserId, 1);
+                    } else {
+                        mSeatManager.hostLeave(roomId, ownerId, 1);
+                    }
+                }
                 closeDialog();
                 finish();
                 break;
         }
+    }
+
+    private void checkBeforeLeaving() {
+        curDialog = showDialog(R.string.end_live_streaming_title_owner,
+                R.string.end_live_streaming_message_owner, this);
     }
 
     @Override
@@ -293,7 +304,6 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
             String myId = config().getUserProfile().getUserId();
             if (!isOwner && myId.equals(response.data.room.owner.userId)) {
                 isOwner = true;
-
                 myRtcRole = Constants.CLIENT_ROLE_BROADCASTER;
                 rtcEngine().setClientRole(myRtcRole);
                 mVirtualImageSelected = virtualImageNameToId(
@@ -511,22 +521,10 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
         super.onActivityResult(requestCode, resultCode, data);
         if (data == null) return;
 
-        Config.UserProfile profile = config().getUserProfile();
         String peerId = data.getStringExtra(Global.Constants.KEY_PEER_ID);
-        String nickname = data.getStringExtra(Global.Constants.KEY_NICKNAME);
-//        getMessageManager().acceptInvitation(peerId, nickname,
-//                profile.getUserId(), 1, mMessageResultCallback);
-//        mSeatManager.audienceAccept(roomId, userId, 1);
-
         mVirtualImageSelected = data.getIntExtra(
                 Global.Constants.KEY_VIRTUAL_IMAGE, -1);
-        ModifySeatStateRequest request = new ModifySeatStateRequest(
-                profile.getToken(), roomId,
-                profile.getUserId(),
-                1,   // Only one seat here in virtual image live room
-                SeatInfo.TAKEN);
-        request.setVirtualAvatar(virtualImageIdToName(mVirtualImageSelected));
-        sendRequest(Request.MODIFY_SEAT_STATE, request);
+        mSeatManager.audienceAccept(roomId, peerId, 1);
         mFunBtn.setVisibility(View.VISIBLE);
         mFunBtn.setText(R.string.live_virtual_image_stop_invite);
     }
