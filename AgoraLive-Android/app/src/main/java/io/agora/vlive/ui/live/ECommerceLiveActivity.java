@@ -4,9 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -61,7 +63,7 @@ import io.agora.vlive.utils.UserUtil;
 public class ECommerceLiveActivity extends LiveRoomActivity
         implements View.OnClickListener, PkRoomListActionSheet.OnPkRoomSelectedListener,
         InviteUserActionSheet.InviteUserActionSheetListener, View.OnTouchListener {
-    private static final String TAG = SingleHostLiveActivity.class.getSimpleName();
+    private static final String TAG = ECommerceLiveActivity.class.getSimpleName();
 
     private static final int PK_RESULT_DISPLAY_LAST = 2000;
 
@@ -95,6 +97,8 @@ public class ECommerceLiveActivity extends LiveRoomActivity
     private ProductActionSheet mProductListActionSheet;
     private InviteUserActionSheet mInviteAudienceActionSheet;
     private LiveRoomUserListActionSheet mRoomUserListActionSheet;
+
+    private ProductDetailWindow mProductDetailWindow;
 
     private AbsBottomLayout.BottomButtonListener mBottomListener = new AbsBottomLayout.BottomButtonListener() {
         @Override
@@ -204,10 +208,10 @@ public class ECommerceLiveActivity extends LiveRoomActivity
         }
 
         private void showProductDetailWindow(Product product) {
-            ProductDetailWindow window = new ProductDetailWindow(
+            mProductDetailWindow = new ProductDetailWindow(
                     ECommerceLiveActivity.this,
                     R.style.product_detail_window, product);
-            window.show();
+            mProductDetailWindow.show();
         }
 
         @Override
@@ -959,12 +963,17 @@ public class ECommerceLiveActivity extends LiveRoomActivity
 
     private class ProductDetailWindow extends Dialog {
         private Product mProduct;
-        private RelativeLayout mVideoLayout;
+        private RelativeLayout mVideo;
+        private RelativeLayout mOwnerVideoLayout;
+        private float mTranslateX;
+        private float mTranslateY;
+        private int mPictureRes;
 
         public ProductDetailWindow(@NonNull Context context, int styleRes,
                                    Product product) {
             super(context, styleRes);
             mProduct = product;
+            mPictureRes = productIdToPictureResource(mProduct.productId);
         }
 
         @Override
@@ -980,11 +989,28 @@ public class ECommerceLiveActivity extends LiveRoomActivity
                 dismiss();
             });
 
-            mVideoLayout = findViewById(R.id.product_detail_owner_video_layout);
-            mVideoLayout.setOnTouchListener(ECommerceLiveActivity.this);
+            findViewById(R.id.product_detail_back).setOnClickListener(view -> dismissProductDetailWindow());
+            findViewById(R.id.product_detail_video_close_btn).setOnClickListener(
+                    view -> {
+                        if (mOwnerVideoLayout != null) {
+                            ViewGroup parent = (ViewGroup) mOwnerVideoLayout.getParent();
+                            parent.removeView(mOwnerVideoLayout);
+                        }
+                    });
+
+            AppCompatImageView pictureImageView = findViewById(R.id.product_detail_big_picture);
+            pictureImageView.setImageResource(mPictureRes);
+
+            mOwnerVideoLayout = findViewById(R.id.product_detail_owner_video_layout);
+            mOwnerVideoLayout.setVisibility(View.VISIBLE);
+
+            mVideo = findViewById(R.id.owner_video);
             SurfaceView surfaceView = setupRemoteVideo(ownerRtcUid);
-            mVideoLayout.removeAllViews();
-            mVideoLayout.addView(surfaceView);
+            mVideo.removeAllViews();
+            mVideo.addView(surfaceView);
+
+            mTranslateX = mOwnerVideoLayout.getTranslationX();
+            mTranslateY = mOwnerVideoLayout.getTranslationY();
 
             if (mIsInPkMode) {
                 mPkLayout.getLeftVideoLayout().removeAllViews();
@@ -997,8 +1023,8 @@ public class ECommerceLiveActivity extends LiveRoomActivity
 
         @Override
         public void dismiss() {
-            if (mVideoLayout != null) {
-                mVideoLayout.removeAllViews();
+            if (mOwnerVideoLayout != null) {
+                mOwnerVideoLayout.removeAllViews();
             }
 
             SurfaceView surfaceView = setupRemoteVideo(ownerRtcUid);
@@ -1010,10 +1036,50 @@ public class ECommerceLiveActivity extends LiveRoomActivity
 
             super.dismiss();
         }
+
+        int productIdToPictureResource(String id) {
+            switch (id) {
+                case "1": return R.drawable.product_picture_1;
+                case "2": return R.drawable.product_picture_2;
+                case "3": return R.drawable.product_picture_3;
+                case "4":
+                default: return R.drawable.product_picture_4;
+            }
+        }
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        Log.i(TAG, "onVideoTouchEventDetected:");
+        if (v.getId() == R.id.product_detail_owner_video_layout) {
+            int action = event.getAction();
+            Log.i(TAG, "onVideoTouchAction:" + action);
+            float x = event.getX();
+            float y = event.getY();
+            if (action == MotionEvent.ACTION_DOWN) {
+                Log.i(TAG, "onVideoTouchDown:x=" + x + " y=" + y);
+            } else if (action == MotionEvent.ACTION_MOVE) {
+                Log.i(TAG, "onVideoTouchMove:x=" + x + " y=" + y);
+            } else if (action == MotionEvent.ACTION_UP) {
+                Log.i(TAG, "onVideoTouchUp:x=" + x + " y=" + y);
+            }
+        }
         return false;
+    }
+
+    @Override
+    public void onRtmLeaveMessage() {
+        runOnUiThread(() -> {
+            dismissProductDetailWindow();
+            leaveRoom();
+        });
+    }
+
+    private void dismissProductDetailWindow() {
+        Log.d(TAG, "dismiss product");
+        if (mProductDetailWindow != null &&
+                mProductDetailWindow.isShowing()) {
+            mProductDetailWindow.dismiss();
+        }
     }
 }

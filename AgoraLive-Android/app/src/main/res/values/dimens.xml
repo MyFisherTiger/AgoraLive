@@ -140,6 +140,9 @@
     <dimen name="ecommerce_remote_video_height">160dp</dimen>
     <dimen name="ecommerce_remote_video_close_btn_size">20dp</dimen>
 
+    <dimen name="product_detail_back_size">36dp</dimen>
+    <dimen name="product_detail_back_margin_top">32dp</dimen>
+
     <!-- Action Sheets -->
     <dimen name="live_room_action_sheet_margin">24dp</dimen>
     <dimen name="live_room_action_sheet_text_margin">16dp</dimen>

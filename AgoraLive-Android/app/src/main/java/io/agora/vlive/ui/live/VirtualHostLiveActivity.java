@@ -1,6 +1,8 @@
 package io.agora.vlive.ui.live;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -45,6 +47,8 @@ import io.agora.vlive.utils.UserUtil;
 public class VirtualHostLiveActivity extends LiveRoomActivity implements View.OnClickListener,
         InviteUserActionSheet.InviteUserActionSheetListener {
     private static final String TAG = VirtualHostLiveActivity.class.getSimpleName();
+    private static final String SAVED_IMAGE = "saved-image";
+
     private static final int AUDIENCE_SELECT_IMAGE_REQ_CODE = 1;
     private static final int SURFACE_VIEW_DRAW_LATENCY = 600;
 
@@ -279,6 +283,7 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
                         mSeatManager.hostLeave(roomId, ownerId, 1);
                     }
                 }
+                removeCachedVirtualImage();
                 closeDialog();
                 finish();
                 break;
@@ -306,8 +311,7 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
                 isOwner = true;
                 myRtcRole = Constants.CLIENT_ROLE_BROADCASTER;
                 rtcEngine().setClientRole(myRtcRole);
-                mVirtualImageSelected = virtualImageNameToId(
-                                response.data.user.virtualAvatar);
+                mVirtualImageSelected = getCachedVirtualImage();
             }
 
             // Check if someone is the host
@@ -334,8 +338,7 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
                 if (mConnected) {
                     toChatDisplay();
                     isHost = myId.equals(mHostUserId);
-                    mVirtualImageSelected = virtualImageNameToId(
-                            response.data.user.virtualAvatar);
+                    mVirtualImageSelected = getCachedVirtualImage();
 
                     if (isHost) {
                         SeatInfo info = response.data.room.coVideoSeats.get(0);
@@ -450,6 +453,7 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
                             request.setVirtualAvatar(
                                     virtualImageIdToName(mVirtualImageSelected));
                             sendRequest(Request.MODIFY_SEAT_STATE, request);
+                            removeCachedVirtualImage();
                             curDialog.dismiss();
                         }
                     },
@@ -524,6 +528,7 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
         String peerId = data.getStringExtra(Global.Constants.KEY_PEER_ID);
         mVirtualImageSelected = data.getIntExtra(
                 Global.Constants.KEY_VIRTUAL_IMAGE, -1);
+        saveCachedVirtualImage(mVirtualImageSelected);
         mSeatManager.audienceAccept(roomId, peerId, 1);
         mFunBtn.setVisibility(View.VISIBLE);
         mFunBtn.setText(R.string.live_virtual_image_stop_invite);
@@ -681,5 +686,17 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
 
     private boolean isVideoReceivingState(int state) {
         return state == Constants.REMOTE_VIDEO_STATE_DECODING;
+    }
+
+    private int getCachedVirtualImage() {
+        return application().getSharedPreferences(SAVED_IMAGE, Context.MODE_PRIVATE).getInt(roomId, 0);
+    }
+
+    private void saveCachedVirtualImage(int image) {
+        getSharedPreferences(SAVED_IMAGE, Context.MODE_PRIVATE).edit().putInt(roomId, image).apply();
+    }
+
+    private void removeCachedVirtualImage() {
+        getSharedPreferences(SAVED_IMAGE, Context.MODE_PRIVATE).edit().remove(roomId).apply();
     }
 }
