@@ -57,7 +57,9 @@ class LiveUserListVM: RTMObserver {
     }
     
     deinit {
+        #if !RELEASE
         print("deinit LiveUserListVM")
+        #endif
     }
     
     func updateGiftListWithJson(list: [StringAnyDic]?) {

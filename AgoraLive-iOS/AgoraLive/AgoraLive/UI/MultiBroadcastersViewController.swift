@@ -59,7 +59,9 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
     var monitor = NetworkMonitor(host: "www.apple.com")
     
     deinit {
+        #if !RELEASE
         print("deinit MultiBroadcastersViewController")
+        #endif
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

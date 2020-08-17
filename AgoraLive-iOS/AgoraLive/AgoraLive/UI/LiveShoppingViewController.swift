@@ -72,7 +72,9 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
     var monitor = NetworkMonitor(host: "www.apple.com")
     
     deinit {
+        #if !RELEASE
         print("deinit LiveShoppingViewController")
+        #endif
     }
     
     override func viewDidLoad() {

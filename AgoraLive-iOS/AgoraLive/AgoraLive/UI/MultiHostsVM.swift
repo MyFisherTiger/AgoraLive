@@ -76,6 +76,12 @@ class MultiHostsVM: RTMObserver {
         super.init()
         observe()
     }
+    
+    deinit {
+        #if !RELEASE
+        print("deinit MultiHostsVM")
+        #endif
+    }
 }
 
 // MARK: Owner

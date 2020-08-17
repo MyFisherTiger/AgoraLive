@@ -52,7 +52,9 @@ class SingleBroadcasterViewController: MaskViewController, LiveViewController {
     var monitor = NetworkMonitor(host: "www.apple.com")
     
     deinit {
+        #if !RELEASE
         print("deinit SingleBroadcasterViewController")
+        #endif
     }
     
     override func viewDidLoad() {

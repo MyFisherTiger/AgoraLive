@@ -140,7 +140,9 @@ class PKVM: RTMObserver {
     }
     
     deinit {
+        #if !RELEASE
         print("deinit PKVM")
+        #endif
     }
     
     func sendInvitationTo(room: Room) {

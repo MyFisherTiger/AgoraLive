@@ -62,7 +62,9 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
     var monitor = NetworkMonitor(host: "www.apple.com")
     
     deinit {
+        #if !RELEASE
         print("deinit VirtualBroadcastersViewController")
+        #endif
     }
     
     override func viewDidLoad() {

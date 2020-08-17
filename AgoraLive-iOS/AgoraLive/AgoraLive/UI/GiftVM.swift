@@ -95,7 +95,9 @@ class GiftVM: RTMObserver {
     }
     
     deinit {
+        #if !RELEASE
         print("deinit GiftVM")
+        #endif
     }
     
     func present(gift: Gift, fail: Completion) {

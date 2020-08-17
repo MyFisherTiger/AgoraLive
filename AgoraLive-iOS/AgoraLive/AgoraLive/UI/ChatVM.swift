@@ -52,7 +52,9 @@ class ChatVM: RTMObserver {
     }
     
     deinit {
+        #if !RELEASE
         print("deinit ChatVM")
+        #endif
     }
     
     func newMessages(_ chats: [Chat]) {

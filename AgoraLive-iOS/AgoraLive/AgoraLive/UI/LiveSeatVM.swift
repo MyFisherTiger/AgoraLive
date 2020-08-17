@@ -37,6 +37,12 @@ struct LiveSeat {
             self.user = try LiveRoleItem(dic: broadcaster)
         }
     }
+    
+    deinit {
+        #if !RELEASE
+        print("deinit LiveSeatVM")
+        #endif
+    }
 }
 
 class LiveSeatVM: RTMObserver {

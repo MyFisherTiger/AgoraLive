@@ -29,7 +29,9 @@ class PKViewController: UIViewController {
     private var timer: Timer!
     
     deinit {
+        #if !RELEASE
         print("deinit PKViewController")
+        #endif
     }
     
     override func viewDidLoad() {

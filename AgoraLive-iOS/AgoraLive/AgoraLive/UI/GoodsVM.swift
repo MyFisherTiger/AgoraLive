@@ -29,6 +29,12 @@ struct GoodsItem {
         self.isSale = (try dic.getBoolInfoValue(of: "state"))
         self.description = "description"
     }
+    
+    deinit {
+        #if !RELEASE
+        print("deinit GoodsVM")
+        #endif
+    }
 }
 
 class GoodsVM: RTMObserver {

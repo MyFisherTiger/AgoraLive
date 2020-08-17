@@ -59,7 +59,9 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
     var monitor = NetworkMonitor(host: "www.apple.com")
     
     deinit {
+        #if !RELEASE
         print("deinit PKBroadcastersViewController")
+        #endif
     }
     
     override func viewDidLoad() {
