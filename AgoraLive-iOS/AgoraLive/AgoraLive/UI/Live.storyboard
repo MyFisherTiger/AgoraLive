@@ -748,6 +748,7 @@
                     <navigationItem key="navigationItem" id="UJC-YM-jdP"/>
                     <connections>
                         <outlet property="backButton" destination="UXG-0q-9bC" id="UAa-WZ-qJQ"/>
+                        <outlet property="bottomViewHeight" destination="TDE-cY-2Wx" id="Q4L-o4-BAf"/>
                         <outlet property="imageView" destination="pNd-qI-KMm" id="y1b-du-KNp"/>
                         <outlet property="label" destination="W7I-Ep-w7h" id="2LT-xC-6Sx"/>
                         <outlet property="purchaseButton" destination="m5x-q5-UEz" id="Mf2-Jh-RC2"/>

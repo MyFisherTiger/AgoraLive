@@ -57,6 +57,8 @@ class MultiHostsVM: RTMObserver {
     var invitationByAccepted = PublishRelay<Invitation>()
     var receivedApplication = PublishRelay<Application>()
     
+    let invitationTimeout = PublishRelay<[Invitation]>()
+    
     // Broadcaster
     var receivedEndBroadcasting = PublishRelay<()>()
     
@@ -157,6 +159,17 @@ extension MultiHostsVM {
     }
     
     func accept(invitation: Invitation, success: Completion = nil, fail: ErrorCompletion = nil) {
+        let tInvi = invitationQueue.list.first { (item) -> Bool in
+            return item.id == invitation.id
+        }
+        
+        guard let _ = tInvi else {
+            if let fail = fail {
+                fail(AGEError.fail("invitation timeout"))
+            }
+            return
+        }
+        
         request(seatIndex: invitation.seatIndex,
                 type: 6,
                 userId: "\(invitation.initiator.info.userId)",
@@ -169,6 +182,17 @@ extension MultiHostsVM {
     }
     
     func reject(invitation: Invitation, fail: ErrorCompletion = nil) {
+        let tInvi = invitationQueue.list.first { (item) -> Bool in
+            return item.id == invitation.id
+        }
+        
+        guard let _ = tInvi else {
+            if let fail = fail {
+                fail(AGEError.fail("invitation timeout"))
+            }
+            return
+        }
+        
         request(seatIndex: invitation.seatIndex,
                 type: 4,
                 userId: "\(invitation.initiator.info.userId)",
@@ -254,6 +278,7 @@ private extension MultiHostsVM {
             case  1: // receivedInvitation
                 let id = try data.getIntValue(of: "processId")
                 let invitation = Invitation(id: id, seatIndex: seatIndex, initiator: role, receiver: local)
+                strongSelf.invitationQueue.append(invitation)
                 strongSelf.receivedInvitation.accept(invitation)
             case  3: // applicationByRejected
                 let id = try data.getIntValue(of: "processId")
@@ -294,12 +319,12 @@ private extension MultiHostsVM {
         }
         
         // Owner
-        invitationByRejected.subscribe(onNext: { [weak self] (invitaion) in
-            self?.invitationQueue.remove(invitaion)
+        invitationByRejected.subscribe(onNext: { [unowned self] (invitaion) in
+            self.invitationQueue.remove(invitaion)
         }).disposed(by: bag)
         
-        invitationByAccepted.subscribe(onNext: { [weak self] (invitaion) in
-            self?.invitationQueue.remove(invitaion)
+        invitationByAccepted.subscribe(onNext: { [unowned self] (invitaion) in
+            self.invitationQueue.remove(invitaion)
         }).disposed(by: bag)
         
         //
@@ -325,6 +350,14 @@ private extension MultiHostsVM {
             }
             
             self.applyingUserList.accept(users)
+        }).disposed(by: bag)
+        
+        invitationQueue.timeout.subscribe(onNext: { [unowned self] (list) in
+            guard let tList = list as? [Invitation] else {
+                return
+            }
+            
+            self.invitationTimeout.accept(tList)
         }).disposed(by: bag)
     }
 }

@@ -253,8 +253,9 @@ private extension LiveShoppingViewController {
     }
     
     func presentGoodsList() {
-        guard let role = ALCenter.shared().liveSession?.role.value else {
-            return
+        guard let role = ALCenter.shared().liveSession?.role.value,
+            let owner = ALCenter.shared().liveSession?.owner.value.user else {
+                return
         }
         
         self.showMaskView(color: UIColor.clear)
@@ -315,8 +316,20 @@ private extension LiveShoppingViewController {
                                                          class: ProductDetailViewController.self,
                                                          on: "Live")
                 vc.product = item
+                vc.owner = owner
+                vc.playerVM = self.playerVM
                 vc.purchase.subscribe(onNext: { [unowned self] (item) in
                     self.goodsVM.purchase(item: item)
+                }).disposed(by: self.bag)
+                
+                vc.close.subscribe(onNext: { [unowned self] in
+                    if self.pkVM.state.value.isDuration {
+                        self.playerVM.startRenderVideoStreamOf(user: owner,
+                                                               on: self.pkView!.leftRenderView)
+                    } else {
+                        self.playerVM.startRenderVideoStreamOf(user: owner,
+                                                               on: self.renderView)
+                    }
                 }).disposed(by: self.bag)
                 
                 self.navigationController?.pushViewController(vc, animated: true)
