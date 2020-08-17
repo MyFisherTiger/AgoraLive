@@ -1,13 +1,8 @@
 package io.agora.vlive.ui.live;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.SurfaceView;
@@ -42,7 +37,6 @@ import io.agora.vlive.agora.rtm.RtmMessageManager;
 import io.agora.vlive.agora.rtm.RtmMessageListener;
 import io.agora.vlive.agora.rtm.model.GiftRankMessage;
 import io.agora.vlive.agora.rtm.model.NotificationMessage;
-import io.agora.vlive.agora.rtm.model.PKInvitationMessage;
 import io.agora.vlive.agora.rtm.model.PKStateMessage;
 import io.agora.vlive.agora.rtm.model.SeatStateMessage;
 import io.agora.vlive.ui.BaseActivity;
@@ -144,9 +138,6 @@ public abstract class LiveBaseActivity extends BaseActivity
         mMessageManager.registerMessageHandler(this);
         mMessageManager.setCallbackThread(new Handler(getMainLooper()));
 
-        proxy().registerProxyListener(this);
-        registerRtcHandler(this);
-
         initCameraIfNeeded();
     }
 
@@ -168,6 +159,18 @@ public abstract class LiveBaseActivity extends BaseActivity
     }
 
     protected abstract void onPermissionGranted();
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        registerRtcHandler(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        removeRtcHandler(this);
+    }
 
     protected RtmMessageManager getMessageManager() {
         return mMessageManager;
@@ -479,7 +482,6 @@ public abstract class LiveBaseActivity extends BaseActivity
     @Override
     public void finish() {
         super.finish();
-        removeRtcHandler(this);
         rtcEngine().leaveChannel();
 
         if (mMessageManager != null) {

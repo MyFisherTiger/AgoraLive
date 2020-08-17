@@ -97,7 +97,6 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
         setGlobalLayoutListener();
         systemBarHeight = getStatusBarHeight();
         getDisplaySize();
-        proxy().registerProxyListener(this);
     }
 
     private void setGlobalLayoutListener() {
@@ -402,8 +401,14 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
     }
 
     @Override
-    public void finish() {
-        super.finish();
+    public void onStart() {
+        super.onStart();
+        proxy().registerProxyListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         proxy().removeProxyListener(this);
     }
 

@@ -663,13 +663,13 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
 
             NetworkInfo info = cm.getActiveNetworkInfo();
             if (info == null || !info.isAvailable() || !info.isConnected()) {
-                Toast.makeText(context, R.string.network_unavailable, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.network_unavailable, Toast.LENGTH_SHORT).show();
             } else {
                 int type = info.getType();
                 if (ConnectivityManager.TYPE_WIFI == type) {
-                    Toast.makeText(context, R.string.network_switch_to_wifi, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.network_switch_to_wifi, Toast.LENGTH_SHORT).show();
                 } else if (ConnectivityManager.TYPE_MOBILE == type) {
-                    Toast.makeText(context, R.string.network_switch_to_mobile , Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.network_switch_to_mobile , Toast.LENGTH_SHORT).show();
                 }
             }
         }
