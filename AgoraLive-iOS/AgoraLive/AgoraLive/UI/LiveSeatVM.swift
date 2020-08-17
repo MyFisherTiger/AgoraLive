@@ -37,12 +37,6 @@ struct LiveSeat {
             self.user = try LiveRoleItem(dic: broadcaster)
         }
     }
-    
-    deinit {
-        #if !RELEASE
-        print("deinit LiveSeatVM")
-        #endif
-    }
 }
 
 class LiveSeatVM: RTMObserver {
@@ -63,6 +57,12 @@ class LiveSeatVM: RTMObserver {
         
         super.init()
         observe()
+    }
+    
+    deinit {
+        #if !RELEASE
+        print("deinit LiveSeatVM")
+        #endif
     }
     
     func update(state: SeatState, index: Int, fail: ErrorCompletion) {

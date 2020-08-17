@@ -29,12 +29,6 @@ struct GoodsItem {
         self.isSale = (try dic.getBoolInfoValue(of: "state"))
         self.description = "description"
     }
-    
-    deinit {
-        #if !RELEASE
-        print("deinit GoodsVM")
-        #endif
-    }
 }
 
 class GoodsVM: RTMObserver {
@@ -54,6 +48,12 @@ class GoodsVM: RTMObserver {
         self.room = room
         super.init()
         observe()
+    }
+    
+    deinit {
+        #if !RELEASE
+        print("deinit GoodsVM")
+        #endif
     }
         
     func itemOnShelf(_ item: GoodsItem) {
