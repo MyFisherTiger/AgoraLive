@@ -8,12 +8,32 @@
 
 import UIKit
 
-class ShoppingSmallRenderView: UIView {
+class ShoppingSmallRenderView: RxView {
     private let shadow = UIImageView()
+    private let limitMinX: CGFloat = 0
+    private let limitMinY: CGFloat = 0
+    private var limitMaxX: CGFloat
+    private var limitMaxY: CGFloat
     
     let nameLabel = UILabel()
     let renderView = UIView()
     let closeButton = UIButton()
+    
+    var isCanMove: Bool = false
+    
+    override init(frame: CGRect) {
+        self.limitMaxY = frame.origin.y
+        self.limitMaxX = frame.origin.x
+        super.init(frame: frame)
+        initViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        self.limitMaxY = 0
+        self.limitMaxX = 0
+        super.init(coder: coder)
+        initViews()
+    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -46,14 +66,30 @@ class ShoppingSmallRenderView: UIView {
                                    height: buttonHeight)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        initViews()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        initViews()
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first,
+            isCanMove else {
+            return
+        }
+        
+        let currentPoint = touch.location(in: self)
+        let previousPoint = touch.previousLocation(in: self)
+        
+        var offX: CGFloat = previousPoint.x - currentPoint.x
+        var offY: CGFloat =  previousPoint.y - currentPoint.y
+        
+        let futureX: CGFloat = self.frame.origin.x - offX
+        let futureY: CGFloat = self.frame.origin.y - offY
+        
+        if futureX < limitMinX || futureX > limitMaxX {
+            offX = 0
+        }
+        
+        if futureY < limitMinY || futureY > limitMaxY {
+            offY = 0
+        }
+        
+        self.transform = self.transform.translatedBy(x: -offX, y: -offY)
     }
     
     func initViews() {

@@ -23,10 +23,27 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
                                             .arrowSize(CGSize(width: 8, height: 4))])
     private var popoverContent = UILabel(frame: CGRect.zero)
     
-    private var pkView: PKViewController?
-    private var broadcasteRender: ShoppingSmallRenderView?
+    private lazy var broadcasteRender: ShoppingSmallRenderView = {
+        let width: CGFloat = 140
+        let height: CGFloat = 180
+        let x: CGFloat = self.view.bounds.width - width
+        let y: CGFloat = self.view.bounds.height - self.bottomToolsVC!.view.bounds.height - height - UIScreen.main.heightOfSafeAreaBottom - 15
+        let frame = CGRect(x: x, y: y, width: width, height: height)
+        let view = ShoppingSmallRenderView(frame: frame)
+        
+        guard let session = ALCenter.shared().liveSession else {
+            assert(false)
+            return view
+        }
+        
+        
+        return view
+    }()
+    
+    private weak var pkView: PKViewController?
     
     private var roomListVM = LiveListVM()
+    private var broadcasterSubscribe: Disposable?
     var hostCount: BehaviorRelay<HostCount>!
     var goodsVM: GoodsVM!
     var multiHostsVM: MultiHostsVM!
@@ -481,10 +498,7 @@ private extension LiveShoppingViewController {
             
             switch hostCount {
             case .single(let user):
-                if let view = self.broadcasteRender {
-                    view.removeFromSuperview()
-                }
-                
+                self.broadcasteRender.removeFromSuperview()
                 self.playerVM.startRenderVideoStreamOf(user: user,
                                                        on: self.renderView)
             case .multi(let list):
@@ -492,22 +506,17 @@ private extension LiveShoppingViewController {
                     return
                 }
                 
-                let width: CGFloat = 140
-                let height: CGFloat = 180
-                let x: CGFloat = self.view.bounds.width - width
-                let y: CGFloat = self.view.bounds.height - self.bottomToolsVC!.view.bounds.height - height - UIScreen.main.heightOfSafeAreaBottom - 15
-                let frame = CGRect(x: x, y: y, width: width, height: height)
-                let view = ShoppingSmallRenderView(frame: frame)
-                view.nameLabel.text = user.info.name
-                self.broadcasteRender = view
-                self.view.addSubview(view)
+                if let subscribe = self.broadcasterSubscribe {
+                    subscribe.dispose()
+                }
                 
+                self.view.addSubview(self.broadcasteRender)
                 self.playerVM.startRenderVideoStreamOf(user: user,
-                                                       on: view.renderView)
+                                                       on: self.broadcasteRender.renderView)
                 
                 switch session.role.value.type {
                 case .owner:
-                    view.closeButton.rx.tap.subscribe(onNext: { [unowned self] in
+                    self.broadcasterSubscribe = self.broadcasteRender.closeButton.rx.tap.subscribe(onNext: { [unowned self] in
                         var message: String
                         if DeviceAssistant.Language.isChinese {
                             message = "确定\"\(user.info.name)\"下麦?"
@@ -523,9 +532,9 @@ private extension LiveShoppingViewController {
                                                                                 self.showTextToast(text: "force user end broadcasting fail")
                                         }
                         }
-                    }).disposed(by: self.bag)
+                    })
                 case .broadcaster:
-                    view.closeButton.rx.tap.subscribe(onNext: { [unowned self] in
+                    self.broadcasterSubscribe = self.broadcasteRender.closeButton.rx.tap.subscribe(onNext: { [unowned self] in
                         self.showAlert(message: NSLocalizedString("Confirm_End_Broadcasting"),
                                        action1: NSLocalizedString("Cancel"),
                                        action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
@@ -537,9 +546,9 @@ private extension LiveShoppingViewController {
                                             session.broadcasterToAudience()
                                         })
                         }
-                    }).disposed(by: self.bag)
+                    })
                 case .audience:
-                    view.closeButton.isHidden = true
+                    self.broadcasteRender.closeButton.isHidden = true
                 }
             }
         }).disposed(by: bag)

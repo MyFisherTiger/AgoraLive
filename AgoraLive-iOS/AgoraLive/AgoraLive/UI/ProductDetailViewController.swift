@@ -52,6 +52,7 @@ class ProductDetailViewController: UIViewController, ShowAlertProtocol {
         let frame = CGRect(x: x, y: y, width: width, height: height)
         let view = ShoppingSmallRenderView(frame: frame)
         view.nameLabel.text = owner.info.name
+        view.isCanMove = true
         self.view.addSubview(view)
         
         view.closeButton.rx.tap.subscribe(onNext: { [unowned view] in

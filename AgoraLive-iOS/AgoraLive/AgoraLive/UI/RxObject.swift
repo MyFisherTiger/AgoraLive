@@ -12,3 +12,7 @@ import RxSwift
 class RxObject: NSObject {
     let bag = DisposeBag()
 }
+
+class RxView: UIView {
+    let bag = DisposeBag()
+}
