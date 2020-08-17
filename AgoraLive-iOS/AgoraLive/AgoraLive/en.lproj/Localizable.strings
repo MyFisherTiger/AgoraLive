@@ -179,3 +179,4 @@ Inviting="inviting";
 Buy_This_Product="Do you want to buy this pruduct?";
 Buy_Now="By now";
 Product_Purchased_Successfully="Product purchased successfully";
+User_Invitation_Timeout="Invitation time out";

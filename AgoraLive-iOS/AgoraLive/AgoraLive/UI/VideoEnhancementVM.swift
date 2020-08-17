@@ -87,27 +87,32 @@ extension VideoEnhancementVM {
         }
     }
     
-    func virtualAppearance(_ appearance: VirtualAppearance) {
+    func virtualAppearance(_ appearance: VirtualAppearance, success: Completion, fail: Completion) {
         enhancement.virtualAppearance(appearance, success: { [weak self] in
             UserDefaults.standard.set(appearance.item, forKey: "VirtualAppearance")
             DispatchQueue.main.async { [weak self] in
                 self?.virtualAppearance.accept(appearance)
+                if let success = success {
+                    success()
+                }
             }
-            
         }) { [weak self] in
             DispatchQueue.main.async { [weak self] in
                 self?.virtualAppearance.accept(.none)
+                if let fail = fail {
+                    fail()
+                }
             }
         }
     }
     
-    func localVirtualAppearance() {
+    func localVirtualAppearance(success: Completion = nil, fail: Completion = nil) {
         guard let string = UserDefaults.standard.value(forKey: "VirtualAppearance") as? String else {
             return
         }
         
         let item = VirtualAppearance.item(string)
-        virtualAppearance(item)
+        virtualAppearance(item, success: success, fail: fail)
     }
     
     func reset() {

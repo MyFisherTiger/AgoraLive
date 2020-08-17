@@ -26,6 +26,7 @@ class TimestampQueue: NSObject {
     }
     
     let queueChanged = PublishRelay<[TimestampModel]>()
+    let timeout = PublishRelay<[TimestampModel]>()
     
     var max = 10
     
@@ -68,9 +69,13 @@ extension TimestampQueue: SubThreadTimerDelegate {
                 break
             }
         }
-             
+        
         if let needRemoveIndex = needRemoveIndex {
-            list.removeSubrange(0 ..< (needRemoveIndex + 1))
+            DispatchQueue.main.async { [unowned self] in
+                let timeouts = self.list.prefix(needRemoveIndex + 1)
+                self.timeout.accept(Array(timeouts))
+                self.list.removeSubrange(0...needRemoveIndex)
+            }
         }
     }
 }

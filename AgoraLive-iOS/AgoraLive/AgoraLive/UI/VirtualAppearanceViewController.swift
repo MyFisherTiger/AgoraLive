@@ -8,6 +8,7 @@
 
 import UIKit
 import RxSwift
+import RxRelay
 
 class VirtualAppearanceViewController: UIViewController, RxViewController, ShowAlertProtocol {
     @IBOutlet weak var titleLabel: UILabel!
@@ -17,6 +18,7 @@ class VirtualAppearanceViewController: UIViewController, RxViewController, ShowA
     @IBOutlet weak var confirmButton: UIButton!
     @IBOutlet weak var closeButton: UIButton!
     
+    private var selectedAppearance = BehaviorRelay(value: VirtualAppearance.girl)
     private let enhancementVM = VideoEnhancementVM()
     private var virtualAppearanceSubscribe: Disposable?
     
@@ -34,21 +36,21 @@ class VirtualAppearanceViewController: UIViewController, RxViewController, ShowA
         rightButton.imageView?.contentMode = .scaleAspectFit
         
         leftButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.enhancementVM.virtualAppearance(.dog)
+            self.selectedAppearance.accept(.dog)
         }).disposed(by: bag)
         
         rightButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.enhancementVM.virtualAppearance(.girl)
+            self.selectedAppearance.accept(.girl)
         }).disposed(by: bag)
         
         confirmButton.rx.tap.subscribe(onNext: { [unowned self] in
-            if let navigation = self.navigationController {
-                let vc = UIStoryboard.initViewController(of: "CreateLiveViewController",
-                                                         class: CreateLiveViewController.self)
-                vc.liveType = .virtual
-                navigation.pushViewController(vc, animated: true)
-            } else {
-                self.dismiss(animated: true, completion: nil)
+            self.enhancementVM.virtualAppearance(self.selectedAppearance.value,
+                                                 success: { [unowned self] in
+                                                    self.push()
+            }) { [unowned self] in
+                self.showAlert(message: "Load Animoji fail") { [unowned self] (_) in
+                    self.close()
+                }
             }
         }).disposed(by: bag)
         
@@ -56,7 +58,7 @@ class VirtualAppearanceViewController: UIViewController, RxViewController, ShowA
             self.close()
         }).disposed(by: bag)
         
-        virtualAppearanceSubscribe = enhancementVM.virtualAppearance.subscribe(onNext: { (appearance) in
+        selectedAppearance.subscribe(onNext: { (appearance) in
             switch appearance {
             case .girl:
                 self.rightButton.isDeselected = false
@@ -67,15 +69,25 @@ class VirtualAppearanceViewController: UIViewController, RxViewController, ShowA
                 self.leftButton.isDeselected = false
                 self.bigImageView.image = appearance.image
             case .none:
-                self.showAlert(message: "Load Animoji fail") { [unowned self] (_) in
-                    self.close()
-                }
+                assert(false)
+                break
             }
-        })
+        }).disposed(by: bag)
     }
 }
 
 private extension VirtualAppearanceViewController {
+    func push() {
+        if let navigation = self.navigationController {
+            let vc = UIStoryboard.initViewController(of: "CreateLiveViewController",
+                                                     class: CreateLiveViewController.self)
+            vc.liveType = .virtual
+            navigation.pushViewController(vc, animated: true)
+        } else {
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
     func close() {
         virtualAppearanceSubscribe?.dispose()
         enhancementVM.reset()

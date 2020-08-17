@@ -454,6 +454,10 @@ private extension MultiBroadcastersViewController {
                 self.showTextToast(text: chat.content.string)
             }
         }).disposed(by: bag)
+        
+        multiHostsVM.invitationTimeout.subscribe(onNext: { [unowned self] (_) in
+            self.showTextToast(text: NSLocalizedString("User_Invitation_Timeout"))
+        }).disposed(by: bag)
     }
 }
 

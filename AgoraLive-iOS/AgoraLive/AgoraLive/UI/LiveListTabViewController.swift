@@ -101,14 +101,14 @@ class LiveListTabViewController: MaskViewController {
         case "VirtualBroadcastersViewController":
             guard let seatInfo = info.seatInfo,
                 let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
-                let session = ALCenter.shared().liveSession else {
+                let session = ALCenter.shared().liveSession,
+                let vc = segue.destination as? VirtualBroadcastersViewController else {
                     assert(false)
                     return
             }
             
-            let vc = segue.destination as? VirtualBroadcastersViewController
-            vc?.multiHostsVM = MultiHostsVM(room: info.room)
-            vc?.seatVM = seatVM
+            vc.multiHostsVM = MultiHostsVM(room: info.room)
+            vc.seatVM = seatVM
             
             var hostCount: HostCount
             
@@ -118,7 +118,12 @@ class LiveListTabViewController: MaskViewController {
             } else {
                 hostCount = .single(session.owner.value.user)
             }
-            vc?.hostCount = BehaviorRelay(value: hostCount)
+            vc.hostCount = BehaviorRelay(value: hostCount)
+            
+            vc.enhancementVM.localVirtualAppearance(fail: { [unowned self, unowned vc] in
+                vc.leave()
+                self.showTextToast(text: "Load Animoji fail")
+            })
         case "LiveShoppingViewController":
             guard let seatInfo = info.seatInfo,
                 let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
