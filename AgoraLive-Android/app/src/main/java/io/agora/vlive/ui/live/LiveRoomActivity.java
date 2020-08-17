@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -16,6 +18,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatEditText;
 
@@ -111,6 +114,8 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
         }
     };
 
+    private NetworkReceiver mNetworkReceiver = new NetworkReceiver();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,16 +198,6 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
             case 0: return "dog";
             case 1: return "girl";
             default: return null;
-        }
-    }
-
-    protected int virtualImageNameToId(String name) {
-        if ("dog".equals(name)) {
-            return 0;
-        } else if ("girl".equals(name)) {
-            return 1;
-        } else {
-            return -1;
         }
     }
 
@@ -642,5 +637,41 @@ public abstract class LiveRoomActivity extends LiveBaseActivity implements
         XLog.e("request:" + requestType + " error:" + error + " msg:" + message);
         runOnUiThread(() -> showLongToast("request type: "+
                 Request.getRequestString(requestType) + " " + message));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        IntentFilter filter = new IntentFilter(
+                ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mNetworkReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(mNetworkReceiver);
+    }
+
+    protected static class NetworkReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager cm = (ConnectivityManager) context.
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) return;
+
+            NetworkInfo info = cm.getActiveNetworkInfo();
+            if (info == null || !info.isAvailable() || !info.isConnected()) {
+                Toast.makeText(context, R.string.network_unavailable, Toast.LENGTH_LONG).show();
+            } else {
+                int type = info.getType();
+                if (ConnectivityManager.TYPE_WIFI == type) {
+                    Toast.makeText(context, R.string.network_switch_to_wifi, Toast.LENGTH_LONG).show();
+                } else if (ConnectivityManager.TYPE_MOBILE == type) {
+                    Toast.makeText(context, R.string.network_switch_to_mobile , Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 }
