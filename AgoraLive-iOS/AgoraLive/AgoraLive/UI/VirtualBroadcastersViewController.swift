@@ -182,7 +182,7 @@ extension VirtualBroadcastersViewController {
     
     func extralLiveRole(_ session: LiveSession) {
         let role = session.role
-        role.subscribe(onNext: { (local) in
+        role.subscribe(onNext: { [unowned self] (local) in
             switch local.type {
             case .owner:
                 self.inviteButton.isHidden = false
@@ -239,7 +239,7 @@ extension VirtualBroadcastersViewController {
         }).disposed(by: bag)
         
         // audience
-        multiHostsVM.receivedInvitation.subscribe(onNext: { (invitation) in
+        multiHostsVM.receivedInvitation.subscribe(onNext: { [unowned self] (invitation) in
             self.showAlert(NSLocalizedString("Broadcasting_Invitation"),
                            message: NSLocalizedString("Confirm_Accept_Broadcasting_Invitation"),
                            action1: NSLocalizedString("Reject"),

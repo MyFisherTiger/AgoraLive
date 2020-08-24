@@ -25,6 +25,12 @@ class VirtualAppearanceViewController: UIViewController, RxViewController, ShowA
     var presentingAlert: UIAlertController?
     var bag = DisposeBag()
     
+    deinit {
+        #if !RELEASE
+        print("deinit VirtualAppearanceViewController")
+        #endif
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
