@@ -107,8 +107,8 @@ class LiveShoppingViewController: MaskViewController, LiveViewController {
         liveSession(session)
         liveRole(session)
         liveRoom(session)
-        bottomTools(session: session)
-        extralBottomTools(session: session)
+        bottomTools(session)
+        extralBottomTools(session)
         
         audience()
         chatList()
@@ -191,7 +191,7 @@ extension LiveShoppingViewController {
         }).disposed(by: bag)
     }
     
-    func extralBottomTools(session: LiveSession) {
+    func extralBottomTools(_ session: LiveSession) {
         guard let bottomToolsVC = self.bottomToolsVC else {
             return
         }

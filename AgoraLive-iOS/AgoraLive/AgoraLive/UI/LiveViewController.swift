@@ -187,7 +187,7 @@ extension LiveViewController {
 // MARK: - View
 extension LiveViewController {
     // MARK: - Bottom Tools
-    func bottomTools(session: LiveSession) {
+    func bottomTools(_ session: LiveSession) {
         guard let bottomToolsVC = self.bottomToolsVC else {
             return
         }

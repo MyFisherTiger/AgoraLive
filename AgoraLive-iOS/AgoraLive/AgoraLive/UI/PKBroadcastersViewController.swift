@@ -77,7 +77,7 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
         liveSession(session)
         liveRole(session)
         liveRoom(session: session)
-        bottomTools(session: session)
+        bottomTools(session)
         
         audience()
         chatList()

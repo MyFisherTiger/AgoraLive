@@ -46,6 +46,8 @@
         CFRunLoopStop(runloop);
         self.subRunLoop = nil;
     }
+    
+    self.thread = nil;
 }
 
 - (void)run {

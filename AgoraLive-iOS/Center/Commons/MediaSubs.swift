@@ -106,7 +106,7 @@ class Capture: NSObject {
         guard let camera = cameraSession else {
             throw AGEError(type: .valueNil("camera session"))
         }
-         
+        
         try camera.switchPosition(camera.position.toggle)
     }
     #endif

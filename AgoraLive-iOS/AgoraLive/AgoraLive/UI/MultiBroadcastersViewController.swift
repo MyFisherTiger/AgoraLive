@@ -82,7 +82,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         liveRole(session)
         extralLiveRole(session)
         liveRoom(session)
-        bottomTools(session: session)
+        bottomTools(session)
         
         audience()
         chatList()
@@ -91,7 +91,7 @@ class MultiBroadcastersViewController: MaskViewController, LiveViewController {
         musicList()
         netMonitor()
         
-        multiHosts()
+        multiHosts(session)
         liveSeat()
         activeSpeaker()
     }
@@ -362,7 +362,7 @@ private extension MultiBroadcastersViewController {
         self.roomNameLabel.text = session.room.name
     }
     
-    func multiHosts() {
+    func multiHosts(_ session: LiveSession) {
         // owner
         multiHostsVM.receivedApplication.subscribe(onNext: { [unowned self] (application) in
             self.showAlert(message: "\"\(application.initiator.info.name)\" " + NSLocalizedString("Apply_For_Broadcasting"),
@@ -457,7 +457,12 @@ private extension MultiBroadcastersViewController {
             }
         }).disposed(by: bag)
         
+        let owner = session.owner.value
+        
         multiHostsVM.invitationTimeout.subscribe(onNext: { [unowned self] (_) in
+            guard owner.isLocal else {
+                return
+            }
             self.showTextToast(text: NSLocalizedString("User_Invitation_Timeout"))
         }).disposed(by: bag)
     }

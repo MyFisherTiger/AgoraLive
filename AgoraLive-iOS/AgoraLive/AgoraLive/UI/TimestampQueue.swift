@@ -74,7 +74,9 @@ extension TimestampQueue: SubThreadTimerDelegate {
             DispatchQueue.main.async { [unowned self] in
                 let timeouts = self.list.prefix(needRemoveIndex + 1)
                 self.timeout.accept(Array(timeouts))
-                self.list.removeSubrange(0...needRemoveIndex)
+                if self.list.count > 0 {
+                    self.list.removeSubrange(0...needRemoveIndex)
+                }
             }
         }
     }

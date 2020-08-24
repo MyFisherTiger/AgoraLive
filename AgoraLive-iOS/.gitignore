@@ -13,6 +13,7 @@ Super app-icon_slices
 Super app-picture_slices
 app
 local_build.sh
+short_local.sh
 
 # Xcode
 #

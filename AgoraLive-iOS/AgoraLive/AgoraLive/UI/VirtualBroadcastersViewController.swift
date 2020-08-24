@@ -78,7 +78,7 @@ class VirtualBroadcastersViewController: MaskViewController, LiveViewController 
         liveRole(session)
         extralLiveRole(session)
         liveRoom(session: session)
-        bottomTools(session: session)
+        bottomTools(session)
         
         audience()
         chatList()
