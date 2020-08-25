@@ -272,6 +272,7 @@ public class Config {
                         Global.Constants.RESOLUTIONS_MULTI_HOST[0],
                         Global.Constants.FRAME_RATES[0],
                         VideoEncoderConfiguration.STANDARD_BITRATE,
+
                         VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE);
             case LIVE_TYPE_SINGLE_HOST:
                 return new VideoEncoderConfiguration(

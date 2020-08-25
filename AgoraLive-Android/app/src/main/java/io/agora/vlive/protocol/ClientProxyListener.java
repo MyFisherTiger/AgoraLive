@@ -61,5 +61,7 @@ public interface ClientProxyListener {
 
     void onProductPurchasedResponse(boolean success);
 
+    void onSeatInteractionResponse(long processId, String userId, int seatNo, int type);
+
     void onResponseError(int requestType, int error, String message);
 }

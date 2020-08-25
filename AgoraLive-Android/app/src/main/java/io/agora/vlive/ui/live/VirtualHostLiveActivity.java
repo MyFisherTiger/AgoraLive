@@ -535,12 +535,12 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
     }
 
     @Override
-    public void onRtmInvitationAccepted(String userId, String userName, int index) {
+    public void onRtmInvitationAccepted(long processId, String userId, String userName, int index) {
         showShortToast(getResources().getString(R.string.invite_success));
     }
 
     @Override
-    public void onRtmInvitationRejected(String userId, String userName, int index) {
+    public void onRtmInvitationRejected(long processId, String userId, String userName, int index) {
         closeDialog();
         String title = getResources().getString(R.string.live_room_host_in_invite_rejected);
         String message = getResources().getString(R.string.live_room_host_in_invite_rejected_message);

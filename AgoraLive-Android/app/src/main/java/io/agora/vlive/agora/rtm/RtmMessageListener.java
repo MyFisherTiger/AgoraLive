@@ -30,13 +30,13 @@ public interface RtmMessageListener {
 
     void onRtmSeatApplied(String userId, String userName, int index);
 
-    void onRtmInvitationAccepted(String userId, String userName, int index);
+    void onRtmInvitationAccepted(long processId, String userId, String userName, int index);
 
-    void onRtmApplicationAccepted(String userId, String userName, int index);
+    void onRtmApplicationAccepted(long processId, String userId, String userName, int index);
 
-    void onRtmInvitationRejected(String userId, String userName, int index);
+    void onRtmInvitationRejected(long processId, String userId, String userName, int index);
 
-    void onRtmApplicationRejected(String userId, String userName, int index);
+    void onRtmApplicationRejected(long processId, String userId, String userName, int index);
 
     void onRtmOwnerForceLeaveSeat(String userId, String userName, int index);
 

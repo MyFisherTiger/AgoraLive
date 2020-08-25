@@ -31,6 +31,7 @@ public class LiveRoomUserLayout extends RelativeLayout {
     private int mIconMargin;
     private AppCompatTextView mCountText;
     private RelativeLayout mIconLayout;
+    private View mNotification;
 
     private UserLayoutListener mListener;
 
@@ -40,10 +41,6 @@ public class LiveRoomUserLayout extends RelativeLayout {
 
     public LiveRoomUserLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public LiveRoomUserLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
     }
 
     public void init(boolean lightMode) {
@@ -62,6 +59,8 @@ public class LiveRoomUserLayout extends RelativeLayout {
             .setOnClickListener(view -> {
                 if (mListener != null) mListener.onUserLayoutShowUserList(view);
             });
+
+        mNotification = findViewById(R.id.notification_point);
     }
 
     public void init() {
@@ -144,5 +143,17 @@ public class LiveRoomUserLayout extends RelativeLayout {
         imageView.setId(referenceId + 1);
         imageView.setImageDrawable(drawable);
         mIconLayout.addView(imageView, params);
+    }
+
+    public void showNotification(boolean show) {
+        if (mNotification != null) {
+            int visibility = show ? VISIBLE : GONE;
+            mNotification.setVisibility(visibility);
+        }
+    }
+
+    public boolean notificationShown() {
+        return mNotification != null &&
+                mNotification.getVisibility() == VISIBLE;
     }
 }

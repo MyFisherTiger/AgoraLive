@@ -174,6 +174,13 @@
 
     <string name="live_room_virtual_image_invited_message">"%s" 邀请你上麦，是否接受？</string>
 
+    <string name="live_room_online_user_invite_call_btn">邀请</string>
+    <string name="live_room_online_user_invited_btn">正在邀请</string>
+    <string name="live_room_online_user_call_agree">同意</string>
+    <string name="live_room_online_user_call_reject">拒绝</string>
+    <string name="live_room_online_user_tab_all">全部</string>
+    <string name="live_room_online_user_tab_application">连麦申请</string>
+
     <!-- dialog -->
     <string name="dialog_negative_button">取消</string>
     <string name="dialog_positive_button">确定</string>
@@ -201,6 +208,8 @@
     <string name="dialog_multi_host_leave_title">下麦</string>
     <string name="dialog_multi_host_leave_message_owner">确认 "%s" 下麦？</string>
     <string name="dialog_multi_host_leave_message_host">确定下麦？</string>
+
+    <string name="dialog_ecommerce_duplicate_call_request">您已经连麦了</string>
 
     <string name="live_room_pk_room_list_button_text">邀请PK</string>
     <string name="live_room_pk_room_receive_pk_request_title">PK邀请</string>

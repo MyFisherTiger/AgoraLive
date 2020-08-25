@@ -204,16 +204,16 @@ public class RtmMessageManager implements RtmClientListener, RtmChannelListener 
                     listener.onRtmSeatApplied(userId, userName, seatNo);
                     break;
                 case SeatInteraction.OWNER_REJECT:
-                    listener.onRtmApplicationRejected(userId, userName, seatNo);
+                    listener.onRtmApplicationRejected(message.data.processId, userId, userName, seatNo);
                     break;
                 case SeatInteraction.AUDIENCE_REJECT:
-                    listener.onRtmInvitationRejected(userId, userName, seatNo);
+                    listener.onRtmInvitationRejected(message.data.processId, userId, userName, seatNo);
                     break;
                 case SeatInteraction.OWNER_ACCEPT:
-                    listener.onRtmApplicationAccepted(userId, userName, seatNo);
+                    listener.onRtmApplicationAccepted(message.data.processId, userId, userName, seatNo);
                     break;
                 case SeatInteraction.AUDIENCE_ACCEPT:
-                    listener.onRtmInvitationAccepted(userId, userName, seatNo);
+                    listener.onRtmInvitationAccepted(message.data.processId, userId, userName, seatNo);
                     break;
                 case SeatInteraction.OWNER_FORCE_LEAVE:
                     listener.onRtmOwnerForceLeaveSeat(userId, userName, seatNo);

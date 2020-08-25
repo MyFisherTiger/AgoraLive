@@ -4,6 +4,11 @@ import android.text.TextUtils;
 
 import com.elvishew.xlog.XLog;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.agora.vlive.AgoraLiveApplication;
 import io.agora.vlive.protocol.model.request.Request;
 import io.agora.vlive.protocol.model.request.SeatInteractionRequest;
@@ -14,7 +19,59 @@ import io.agora.vlive.protocol.model.types.SeatInteraction;
  * room owners and audience, and seat state changes.
  */
 public class SeatServiceManager {
+    public static class SeatApplicationUserInfo {
+        public String userId;
+        public String userName;
+
+        public SeatApplicationUserInfo(String userId, String userName) {
+            this.userId = userId;
+            this.userName = userName;
+        }
+    }
+
     private AgoraLiveApplication mApplication;
+
+    private HashMap<String, Long> mInvitingList = new HashMap<>();
+
+    private ArrayList<SeatApplicationUserInfo> mApplicationList = new ArrayList<>();
+    private HashMap<String, SeatApplicationUserInfo> mApplicationUserIdMap = new HashMap<>();
+
+    public void addToInvitingList(String userId, long processId) {
+        mInvitingList.remove(userId);
+        mInvitingList.put(userId, processId);
+    }
+
+    public void removeFromInvitingList(String userId) {
+        mInvitingList.remove(userId);
+    }
+
+    public void addToApplicationList(String userId, String userName) {
+        if (!mApplicationUserIdMap.containsKey(userId)) {
+            SeatApplicationUserInfo info = new SeatApplicationUserInfo(userId, userName);
+            mApplicationList.add(info);
+            mApplicationUserIdMap.put(userId, info);
+        }
+    }
+
+    public void removeFromApplicationList(String userId) {
+        SeatApplicationUserInfo info = mApplicationUserIdMap.remove(userId);
+        if (info != null) {
+            mApplicationList.remove(info);
+        }
+    }
+
+    public List<SeatApplicationUserInfo> getAudienceApplication() {
+        return mApplicationList;
+    }
+
+    public void clearAllList() {
+        mInvitingList.clear();
+        mApplicationList.clear();
+    }
+
+    public boolean userIsInvited(String userId) {
+        return !mInvitingList.isEmpty() && mInvitingList.containsKey(userId);
+    }
 
     public SeatServiceManager(AgoraLiveApplication application) {
         mApplication = application;

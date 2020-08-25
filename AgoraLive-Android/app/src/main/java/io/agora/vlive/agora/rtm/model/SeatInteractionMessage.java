@@ -7,6 +7,7 @@ public class SeatInteractionMessage extends AbsRtmMessage {
     public class SeatInteractionInfo {
         public int no;
         public int type;
+        public long processId;
         public SeatInteractionFromUser fromUser;
     }
 

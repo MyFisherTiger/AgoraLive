@@ -344,22 +344,22 @@ public abstract class LiveBaseActivity extends BaseActivity
     }
 
     @Override
-    public void onRtmInvitationAccepted(String userId, String userName, int index) {
+    public void onRtmInvitationAccepted(long processId, String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmApplicationAccepted(String userId, String userName, int index) {
+    public void onRtmApplicationAccepted(long processId, String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmInvitationRejected(String userId, String userName, int index) {
+    public void onRtmInvitationRejected(long processId, String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmApplicationRejected(String userId, String userName, int index) {
+    public void onRtmApplicationRejected(long processId, String userId, String userName, int index) {
 
     }
 

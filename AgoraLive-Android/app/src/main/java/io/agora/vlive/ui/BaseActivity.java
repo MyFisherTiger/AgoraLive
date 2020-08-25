@@ -51,6 +51,7 @@ import io.agora.vlive.protocol.model.response.SendGiftResponse;
 import io.agora.vlive.ui.actionsheets.AbstractActionSheet;
 import io.agora.vlive.ui.actionsheets.GiftActionSheet;
 import io.agora.vlive.ui.actionsheets.LiveRoomUserListActionSheet;
+import io.agora.vlive.ui.actionsheets.OnlineUserInviteCallActionSheet;
 import io.agora.vlive.ui.actionsheets.ProductActionSheet;
 import io.agora.vlive.ui.actionsheets.toolactionsheet.LiveRoomToolActionSheet;
 import io.agora.vlive.ui.actionsheets.InviteUserActionSheet;
@@ -78,6 +79,7 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
     protected static final int ACTION_SHEET_ROOM_USER = 7;
     protected static final int ACTION_SHEET_PK_ROOM_LIST = 8;
     protected static final int ACTION_SHEET_PRODUCT_LIST = 9;
+    protected static final int ACTION_SHEET_PRODUCT_INVITE_ONLINE_SHOP = 10;
 
     private static final int ACTION_SHEET_DIALOG_STYLE_RES = R.style.live_room_dialog;
     private static final int TOAST_SHORT_INTERVAL = 2000;
@@ -227,6 +229,9 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
                 break;
             case ACTION_SHEET_PRODUCT_LIST:
                 actionSheet = new ProductActionSheet(this);
+                break;
+            case ACTION_SHEET_PRODUCT_INVITE_ONLINE_SHOP:
+                actionSheet = new OnlineUserInviteCallActionSheet(this);
                 break;
             default:
                 actionSheet = new LiveRoomSettingActionSheet(this);
@@ -509,6 +514,11 @@ public abstract class BaseActivity extends AppCompatActivity implements ClientPr
 
     @Override
     public void onProductPurchasedResponse(boolean success) {
+
+    }
+
+    @Override
+    public void onSeatInteractionResponse(long processId, String userId, int seatNo, int type) {
 
     }
 

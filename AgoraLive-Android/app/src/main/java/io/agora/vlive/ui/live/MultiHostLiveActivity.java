@@ -557,17 +557,17 @@ public class MultiHostLiveActivity extends LiveRoomActivity implements View.OnCl
     }
 
     @Override
-    public void onRtmApplicationAccepted(String userId, String userName, int index) {
+    public void onRtmApplicationAccepted(long processId, String userId, String userName, int index) {
         showShortToast(getResources().getString(R.string.apply_seat_success));
     }
 
     @Override
-    public void onRtmInvitationAccepted(String userId, String userName, int index) {
+    public void onRtmInvitationAccepted(long processId, String userId, String userName, int index) {
         showShortToast(getResources().getString(R.string.invite_success));
     }
 
     @Override
-    public void onRtmApplicationRejected(String userId, String nickname, int index) {
+    public void onRtmApplicationRejected(long processId, String userId, String nickname, int index) {
         String title = getResources().getString(R.string.live_room_host_in_apply_rejected);
         String message = getResources().getString(R.string.live_room_host_in_apply_rejected_message);
         message = String.format(message, nickname);
@@ -575,7 +575,7 @@ public class MultiHostLiveActivity extends LiveRoomActivity implements View.OnCl
     }
 
     @Override
-    public void onRtmInvitationRejected(String userId, String nickname, int index) {
+    public void onRtmInvitationRejected(long processId, String userId, String nickname, int index) {
         String title = getResources().getString(R.string.live_room_host_in_invite_rejected);
         String message = getResources().getString(R.string.live_room_host_in_invite_rejected_message);
         message = String.format(message, nickname);

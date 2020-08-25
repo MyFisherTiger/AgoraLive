@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +44,10 @@ import io.agora.vlive.protocol.model.response.ProductListResponse;
 import io.agora.vlive.protocol.model.response.Response;
 import io.agora.vlive.protocol.model.response.RoomListResponse;
 import io.agora.vlive.protocol.model.types.PKConstant;
+import io.agora.vlive.protocol.model.types.SeatInteraction;
 import io.agora.vlive.ui.actionsheets.InviteUserActionSheet;
 import io.agora.vlive.ui.actionsheets.LiveRoomUserListActionSheet;
+import io.agora.vlive.ui.actionsheets.OnlineUserInviteCallActionSheet;
 import io.agora.vlive.ui.actionsheets.PkRoomListActionSheet;
 import io.agora.vlive.ui.actionsheets.ProductActionSheet;
 import io.agora.vlive.ui.actionsheets.toolactionsheet.AbsToolActionSheet;
@@ -62,7 +63,7 @@ import io.agora.vlive.utils.UserUtil;
 
 public class ECommerceLiveActivity extends LiveRoomActivity
         implements View.OnClickListener, PkRoomListActionSheet.OnPkRoomSelectedListener,
-        InviteUserActionSheet.InviteUserActionSheetListener, View.OnTouchListener {
+        InviteUserActionSheet.InviteUserActionSheetListener {
     private static final String TAG = ECommerceLiveActivity.class.getSimpleName();
 
     private static final int PK_RESULT_DISPLAY_LAST = 2000;
@@ -97,6 +98,7 @@ public class ECommerceLiveActivity extends LiveRoomActivity
     private ProductActionSheet mProductListActionSheet;
     private InviteUserActionSheet mInviteAudienceActionSheet;
     private LiveRoomUserListActionSheet mRoomUserListActionSheet;
+    private OnlineUserInviteCallActionSheet mOnlineUserInviteActionSheet;
 
     private ProductDetailWindow mProductDetailWindow;
 
@@ -186,10 +188,7 @@ public class ECommerceLiveActivity extends LiveRoomActivity
             curDialog = showDialog(getResources().getString(R.string.dialog_pk_force_quit_title), message,
                     R.string.dialog_positive_button,
                     R.string.dialog_negative_button,
-                    v -> {
-                        leaveRoom();
-                        closeDialog();
-                    },
+                    v -> leaveRoom(),
                     v -> closeDialog());
         } else {
             int messageRes = isOwner
@@ -227,6 +226,33 @@ public class ECommerceLiveActivity extends LiveRoomActivity
         }
     };
 
+    private OnlineUserInviteCallActionSheet.OnlineUserActionListener
+            mOnlineUserInviteActionListener = new OnlineUserInviteCallActionSheet.OnlineUserActionListener() {
+        @Override
+        public void onUserInvited(String userId, String userName) {
+            mSeatManager.invite(roomId, userId, 1);
+            dismissActionSheetDialog();
+        }
+
+        @Override
+        public void onUserApplicationAccepted(String userId, String userName) {
+            mSeatManager.ownerAccept(roomId, userId, 1);
+            dismissActionSheetDialog();
+        }
+
+        @Override
+        public void onUserApplicationRejected(String userId, String userName) {
+            mSeatManager.ownerReject(roomId, userId, 1);
+            dismissActionSheetDialog();
+        }
+
+        @Override
+        public void onUserListTabChanged(boolean showAll) {
+            if (!showAll) {
+                participants.showNotification(false);
+            }
+        }
+    };
 
     @Override
     public void onProductStateChangedResponse(String productId, int state, boolean success) {
@@ -257,7 +283,11 @@ public class ECommerceLiveActivity extends LiveRoomActivity
                     if (isOwner) {
                         onActionSheetSettingClicked();
                     } else {
-                        requestToConnect();
+                        if (mCallController.isCalling()) {
+                            showShortToast(getString(R.string.dialog_ecommerce_duplicate_call_request));
+                        } else {
+                            requestToConnect();
+                        }
                         dismissActionSheetDialog();
                     }
                     break;
@@ -513,7 +543,7 @@ public class ECommerceLiveActivity extends LiveRoomActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.dialog_positive_button:
-                closeDialog();
+                leaveRoom();
                 finish();
                 break;
             case R.id.remote_call_close_btn:
@@ -556,10 +586,14 @@ public class ECommerceLiveActivity extends LiveRoomActivity
     public void onUserLayoutShowUserList(View view) {
         // Show invite user list
         if (isOwner) {
-            mInviteAudienceActionSheet = (InviteUserActionSheet)
-                    showActionSheetDialog(ACTION_SHEET_INVITE_AUDIENCE,
+            mOnlineUserInviteActionSheet = (OnlineUserInviteCallActionSheet)
+                    showActionSheetDialog(ACTION_SHEET_PRODUCT_INVITE_ONLINE_SHOP,
                             tabIdToLiveType(tabId), isHost, true, this);
-            mInviteAudienceActionSheet.setSeatNo(1);
+            mOnlineUserInviteActionSheet.setup(proxy(), this, roomId, config().getUserProfile().getToken());
+            mOnlineUserInviteActionSheet.setSeatManager(mSeatManager);
+            mOnlineUserInviteActionSheet.setOnlineUserListener(mOnlineUserInviteActionListener);
+            mOnlineUserInviteActionSheet.setOwnerUserId(ownerId);
+            mOnlineUserInviteActionSheet.showNotification(participants.notificationShown());
             requestAudienceList();
         } else {
             mRoomUserListActionSheet = (LiveRoomUserListActionSheet)
@@ -572,7 +606,7 @@ public class ECommerceLiveActivity extends LiveRoomActivity
     private void requestAudienceList() {
         sendRequest(Request.AUDIENCE_LIST, new AudienceListRequest(
                 config().getUserProfile().getToken(),
-                roomId, null, AudienceListRequest.TYPE_AUDIENCE));
+                roomId, null, AudienceListRequest.TYPE_ALL));
     }
 
     @Override
@@ -580,8 +614,7 @@ public class ECommerceLiveActivity extends LiveRoomActivity
         if (mInviteAudienceActionSheet != null &&
                 mInviteAudienceActionSheet.isShown()) {
             runOnUiThread(() -> mInviteAudienceActionSheet.append(response.data.list));
-        } else if (mRoomUserListActionSheet != null &&
-                mRoomUserListActionSheet.isShown()) {
+        } else {
             List<UserProfile> userList = new ArrayList<>();
             for (AudienceListResponse.AudienceInfo info : response.data.list) {
                 UserProfile profile = new UserProfile();
@@ -590,7 +623,24 @@ public class ECommerceLiveActivity extends LiveRoomActivity
                 profile.setAvatar(info.avatar);
                 userList.add(profile);
             }
-            runOnUiThread(() -> mRoomUserListActionSheet.appendUsers(userList));
+
+            if (isOwner && onlineUserActionSheetIsShown()) {
+                runOnUiThread(() -> mOnlineUserInviteActionSheet.append(userList));
+            } else if (mRoomUserListActionSheet != null &&
+                    mRoomUserListActionSheet.isShown()) {
+                runOnUiThread(() -> mRoomUserListActionSheet.appendUsers(userList));
+            }
+        }
+    }
+
+    private boolean onlineUserActionSheetIsShown() {
+        return mOnlineUserInviteActionSheet != null &&
+                mOnlineUserInviteActionSheet.isShown();
+    }
+
+    private void refreshOnlineUserState() {
+        if (onlineUserActionSheetIsShown()) {
+            runOnUiThread(() -> mOnlineUserInviteActionSheet.notifyDataSetChanged());
         }
     }
 
@@ -606,6 +656,20 @@ public class ECommerceLiveActivity extends LiveRoomActivity
                 mInviteAudienceActionSheet.isShown()) {
             dismissActionSheetDialog();
         }
+    }
+
+    @Override
+    public void onSeatInteractionResponse(long processId, String userId, int seatNo, int type) {
+        Log.i(TAG, "SeatInteractionResponse " + type);
+        // Tell seat manager that the response has been sent out
+        if (type == SeatInteraction.OWNER_INVITE) {
+            mSeatManager.addToInvitingList(userId, processId);
+        } else if (type == SeatInteraction.OWNER_ACCEPT ||
+                type == SeatInteraction.OWNER_REJECT) {
+            mSeatManager.removeFromApplicationList(userId);
+        }
+
+        refreshOnlineUserState();
     }
 
     @Override
@@ -628,38 +692,32 @@ public class ECommerceLiveActivity extends LiveRoomActivity
 
     @Override
     public void onRtmSeatApplied(String userId, String userName, int seatId) {
-        // If I am the room owner, the method is called when
-        // some audience applies to be a host, and he is
-        // waiting for my response
         if (!isOwner) return;
-        String title = getResources().getString(R.string.live_room_host_in_audience_apply_title);
-        String message = getResources().getString(R.string.live_room_host_in_audience_apply_owner_message_simple);
-        message = String.format(message, userName);
-        curDialog = showDialog(title, message,
-                R.string.dialog_positive_button_accept, R.string.dialog_negative_button_refuse,
-                view -> {
-                    mSeatManager.ownerAccept(roomId, userId, seatId);
-                    mCallRemoteUserId = userId;
-                    curDialog.dismiss();
-                },
-                view -> {
-                    mSeatManager.ownerReject(roomId, userId, seatId);
-                    curDialog.dismiss();
-                });
+        mSeatManager.addToApplicationList(userId, userName);
+        refreshOnlineUserState();
+
+        if (onlineUserActionSheetIsShown()) {
+            participants.showNotification(mOnlineUserInviteActionSheet.checkIfShowNotification());
+        } else {
+            participants.showNotification(true);
+        }
+
     }
 
     @Override
-    public void onRtmApplicationAccepted(String userId, String userName, int index) {
+    public void onRtmApplicationAccepted(long processId, String userId, String userName, int index) {
         showShortToast(getResources().getString(R.string.apply_seat_success));
     }
 
     @Override
-    public void onRtmInvitationAccepted(String userId, String userName, int index) {
+    public void onRtmInvitationAccepted(long processId, String userId, String userName, int index) {
         showShortToast(getResources().getString(R.string.invite_success));
+        mSeatManager.removeFromInvitingList(userId);
+        refreshOnlineUserState();
     }
 
     @Override
-    public void onRtmApplicationRejected(String userId, String nickname, int index) {
+    public void onRtmApplicationRejected(long processId, String userId, String nickname, int index) {
         String title = getResources().getString(R.string.live_room_host_in_apply_rejected);
         String message = getResources().getString(R.string.live_room_host_in_apply_rejected_message);
         message = String.format(message, nickname);
@@ -667,11 +725,13 @@ public class ECommerceLiveActivity extends LiveRoomActivity
     }
 
     @Override
-    public void onRtmInvitationRejected(String userId, String nickname, int index) {
+    public void onRtmInvitationRejected(long processId, String userId, String nickname, int index) {
         String title = getResources().getString(R.string.live_room_host_in_invite_rejected);
         String message = getResources().getString(R.string.live_room_host_in_invite_rejected_message);
         message = String.format(message, nickname);
         curDialog = showSingleButtonConfirmDialog(title, message, view -> curDialog.dismiss());
+        mSeatManager.removeFromInvitingList(userId);
+        refreshOnlineUserState();
     }
 
     @Override
@@ -684,7 +744,12 @@ public class ECommerceLiveActivity extends LiveRoomActivity
                     mCallRemoteUserId = item.user.userId;
                     mCallRemoteRtcUid = item.user.uid;
                     mCallRemoteUserName = item.user.userName;
-                    mCallController.startCall(mCallRemoteRtcUid);
+                    if (config().getUserProfile().getUserId()
+                            .equals(mCallRemoteUserId) || isOwner) {
+                        mCallController.startCall(mCallRemoteRtcUid);
+                    } else {
+                        mCallController.viewOtherAudienceCall(mCallRemoteRtcUid);
+                    }
                 } else if (item.seat.state != SeatInfo.TAKEN &&
                         mCallController.isCalling()) {
                     mCallController.endCall(mCallRemoteRtcUid);
@@ -761,6 +826,7 @@ public class ECommerceLiveActivity extends LiveRoomActivity
             surfaceView.setZOrderMediaOverlay(true);
             mVideoLayout.removeAllViews();
             mVideoLayout.addView(surfaceView);
+            messageList.setNarrow(true);
         }
 
         public boolean isCalling() {
@@ -965,8 +1031,6 @@ public class ECommerceLiveActivity extends LiveRoomActivity
         private Product mProduct;
         private RelativeLayout mVideo;
         private RelativeLayout mOwnerVideoLayout;
-        private float mTranslateX;
-        private float mTranslateY;
         private int mPictureRes;
 
         public ProductDetailWindow(@NonNull Context context, int styleRes,
@@ -1009,9 +1073,6 @@ public class ECommerceLiveActivity extends LiveRoomActivity
             mVideo.removeAllViews();
             mVideo.addView(surfaceView);
 
-            mTranslateX = mOwnerVideoLayout.getTranslationX();
-            mTranslateY = mOwnerVideoLayout.getTranslationY();
-
             if (mIsInPkMode) {
                 mPkLayout.getLeftVideoLayout().removeAllViews();
             } else {
@@ -1046,25 +1107,6 @@ public class ECommerceLiveActivity extends LiveRoomActivity
                 default: return R.drawable.product_picture_4;
             }
         }
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        Log.i(TAG, "onVideoTouchEventDetected:");
-        if (v.getId() == R.id.product_detail_owner_video_layout) {
-            int action = event.getAction();
-            Log.i(TAG, "onVideoTouchAction:" + action);
-            float x = event.getX();
-            float y = event.getY();
-            if (action == MotionEvent.ACTION_DOWN) {
-                Log.i(TAG, "onVideoTouchDown:x=" + x + " y=" + y);
-            } else if (action == MotionEvent.ACTION_MOVE) {
-                Log.i(TAG, "onVideoTouchMove:x=" + x + " y=" + y);
-            } else if (action == MotionEvent.ACTION_UP) {
-                Log.i(TAG, "onVideoTouchUp:x=" + x + " y=" + y);
-            }
-        }
-        return false;
     }
 
     @Override

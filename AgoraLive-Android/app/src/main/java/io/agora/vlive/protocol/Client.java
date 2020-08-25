@@ -737,6 +737,11 @@ class Client {
                                     seatBehaviorResponse == null ? ERROR_NULL : seatBehaviorResponse.code,
                                     seatBehaviorResponse == null ? MSG_NULL_RESPONSE : seatBehaviorResponse.msg);
                         }
+                    } else {
+                        for (ClientProxyListener listener : mProxyListeners) {
+                            listener.onSeatInteractionResponse(seatBehaviorResponse.data,
+                                    userId, seatNo, type);
+                        }
                     }
                 }
 

@@ -184,6 +184,13 @@
     <string name="live_room_action_sheet_product_action_list">Launch</string>
     <string name="live_room_action_sheet_product_action_unlisted">Retire</string>
 
+    <string name="live_room_online_user_invite_call_btn">Invite</string>
+    <string name="live_room_online_user_invited_btn">Inviting</string>
+    <string name="live_room_online_user_call_agree">Agree</string>
+    <string name="live_room_online_user_call_reject">Reject</string>
+    <string name="live_room_online_user_tab_all">All Users</string>
+    <string name="live_room_online_user_tab_application">Applications</string>
+
     <!-- dialog -->
     <string name="dialog_negative_button">Cancel</string>
     <string name="dialog_positive_button">Confirm</string>
@@ -215,6 +222,8 @@
     <string name="dialog_ecommerce_end_call_title">End Call</string>
     <string name="dialog_ecommerce_end_call_message">End the call with "%s"?</string>
     <string name="dialog_ecommerce_end_call_message_and_quit">End the call with "%s",\n and leave this room?</string>
+
+    <string name="dialog_ecommerce_duplicate_call_request">You are already calling</string>
 
     <string name="dialog_pk_force_quit_title">End PK</string>
     <string name="dialog_pk_force_quit_message">End PK with "%s",\n and leave this room?</string>

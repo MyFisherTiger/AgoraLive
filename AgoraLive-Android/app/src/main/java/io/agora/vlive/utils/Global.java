@@ -102,7 +102,7 @@ public class Global {
         };
 
         public static final VideoEncoderConfiguration.VideoDimensions[] RESOLUTIONS_PK_HOST = {
-                VideoEncoderConfiguration.VD_640x360
+                new VideoEncoderConfiguration.VideoDimensions(360, 640)
         };
 
         public static final VideoEncoderConfiguration.VideoDimensions[] RESOLUTIONS_VIRTUAL_IMAGE = {

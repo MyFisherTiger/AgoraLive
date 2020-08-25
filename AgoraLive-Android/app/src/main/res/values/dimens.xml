@@ -143,6 +143,9 @@
     <dimen name="product_detail_back_size">36dp</dimen>
     <dimen name="product_detail_back_margin_top">32dp</dimen>
 
+    <dimen name="notification_point_size">6dp</dimen>
+    <dimen name="notification_point_margin">4dp</dimen>
+
     <!-- Action Sheets -->
     <dimen name="live_room_action_sheet_margin">24dp</dimen>
     <dimen name="live_room_action_sheet_text_margin">16dp</dimen>
@@ -184,7 +187,7 @@
 
     <dimen name="live_room_invite_audience_action_sheet_max_height">540dp</dimen>
 
-    <dimen name="live_room_product_action_sheet_type_title_width">64dp</dimen>
+    <dimen name="live_room_product_action_sheet_type_title_width">84dp</dimen>
     <dimen name="live_room_product_action_sheet_type_title_height">52dp</dimen>
     <dimen name="live_room_product_action_sheet_type_title_margin">58dp</dimen>
     <dimen name="live_room_product_action_sheet_product_item_bg_corner">4dp</dimen>

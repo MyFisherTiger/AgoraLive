@@ -139,6 +139,11 @@ public abstract class AbstractFragment extends Fragment implements ClientProxyLi
     }
 
     @Override
+    public void onSeatInteractionResponse(long processId, String userId, int seatNo, int type) {
+
+    }
+
+    @Override
     public void onResponseError(int requestType, int error, String message) {
 
     }

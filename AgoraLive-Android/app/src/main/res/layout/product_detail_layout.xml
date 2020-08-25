@@ -168,7 +168,8 @@
         android:layout_width="@dimen/ecommerce_remote_video_layout_width"
         android:layout_height="@dimen/ecommerce_remote_video_layout_height"
         android:layout_above="@id/product_bottom_action_layout"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:visibility="gone">
         <RelativeLayout
