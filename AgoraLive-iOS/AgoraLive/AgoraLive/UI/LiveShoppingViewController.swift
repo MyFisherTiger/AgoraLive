@@ -304,7 +304,7 @@ private extension LiveShoppingViewController {
                 if DeviceAssistant.Language.isChinese {
                     message = "你是否要上架\"\(item.name)\"?"
                 } else {
-                    message = "Add \(item.name) on shelf?"
+                    message = "Lauch \(item.name)?"
                 }
                 
                 self.showAlert(message: message,
@@ -320,7 +320,7 @@ private extension LiveShoppingViewController {
                 if DeviceAssistant.Language.isChinese {
                     message = "你是否要下架\"\(item.name)\"?"
                 } else {
-                    message = "Put \(item.name) off shelf?"
+                    message = "Retire \(item.name)?"
                 }
                 
                 self.showAlert(message: message,
