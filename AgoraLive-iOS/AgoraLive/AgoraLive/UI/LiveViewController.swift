@@ -263,7 +263,7 @@ extension LiveViewController {
             
             let isShow = info.endFrame.minY < UIScreen.main.bounds.height ? true : false
             
-            if isShow && strongSelf.chatInputView.isHidden {
+            if isShow {
                 strongSelf.showMaskView(color: UIColor.clear) { [weak self] in
                     guard let strongSelf = self else {
                         return
@@ -278,10 +278,10 @@ extension LiveViewController {
                 strongSelf.view.addSubview(strongSelf.chatInputView)
                 strongSelf.chatInputView.textView.becomeFirstResponder()
                 strongSelf.chatInputView.showAbove(frame: info.endFrame,
-                                             duration: info.duration) { (done) in
-                    
+                                                   duration: info.duration) { (done) in
+                                                    
                 }
-            } else if !strongSelf.chatInputView.isHidden {
+            } else {
                 strongSelf.chatInputView.hidden(duration: info.duration) { [weak self] (done) in
                     guard let strongSelf = self else {
                         return
