@@ -11,6 +11,23 @@ import RxSwift
 import RxRelay
 import MBProgressHUD
 
+//MARK: - Block
+typealias DicCompletion = (([String: Any]) -> Void)?
+typealias AnyCompletion = ((Any?) -> Void)?
+typealias StringCompletion = ((String) -> Void)?
+typealias IntCompletion = ((Int) -> Void)?
+typealias Completion = (() -> Void)?
+
+typealias DicEXCompletion = (([String: Any]) throws -> Void)?
+typealias StringExCompletion = ((String) throws -> Void)?
+typealias DataExCompletion = ((Data) throws -> Void)?
+
+typealias ErrorCompletion = ((Error) -> Void)?
+typealias ErrorBoolCompletion = ((Error) -> Bool)?
+
+//MARK: - Dictinary
+typealias StringAnyDic = [String: Any]
+
 public func NSLocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, comment: "")
 }
