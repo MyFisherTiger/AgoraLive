@@ -55,7 +55,6 @@ class CreateLiveViewController: MaskViewController {
     
     private var videoConfiguration = VideoConfiguration()
     
-    private var firstLayoutSubviews: Bool = false
     private var mediaSettingsNavi: UIViewController?
     private var beautyVC: UIViewController?
     

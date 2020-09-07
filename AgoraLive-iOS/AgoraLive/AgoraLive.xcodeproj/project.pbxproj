@@ -107,10 +107,6 @@
 		A75C70C524FCF878003E5AD9 /* ALCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C708724FCF878003E5AD9 /* ALCenter.swift */; };
 		A75C70C624FCF878003E5AD9 /* ALKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C708824FCF878003E5AD9 /* ALKeys.swift */; };
 		A75C70C724FCF878003E5AD9 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C708924FCF878003E5AD9 /* Utils.swift */; };
-		A75C70C824FCF878003E5AD9 /* AgoraLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A75C708B24FCF878003E5AD9 /* AgoraLive.xcdatamodeld */; };
-		A75C70C924FCF878003E5AD9 /* UserData+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C708D24FCF878003E5AD9 /* UserData+CoreDataClass.swift */; };
-		A75C70CA24FCF878003E5AD9 /* UserData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C708E24FCF878003E5AD9 /* UserData+CoreDataProperties.swift */; };
-		A75C70CB24FCF878003E5AD9 /* UserDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C708F24FCF878003E5AD9 /* UserDataHelper.swift */; };
 		A75C70D024FCF95F003E5AD9 /* FilletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C70CF24FCF95F003E5AD9 /* FilletView.swift */; };
 		A75C70D224FCF97B003E5AD9 /* DeviceAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C70D124FCF97B003E5AD9 /* DeviceAssistant.swift */; };
 		A75C70DD24FCFA2F003E5AD9 /* AgoraLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A75C70D824FCFA2F003E5AD9 /* AgoraLive.xcdatamodeld */; };
@@ -305,10 +301,6 @@
 		A75C708724FCF878003E5AD9 /* ALCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALCenter.swift; sourceTree = "<group>"; };
 		A75C708824FCF878003E5AD9 /* ALKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALKeys.swift; sourceTree = "<group>"; };
 		A75C708924FCF878003E5AD9 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		A75C708C24FCF878003E5AD9 /* AgoraLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AgoraLive.xcdatamodel; sourceTree = "<group>"; };
-		A75C708D24FCF878003E5AD9 /* UserData+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserData+CoreDataClass.swift"; sourceTree = "<group>"; };
-		A75C708E24FCF878003E5AD9 /* UserData+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserData+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		A75C708F24FCF878003E5AD9 /* UserDataHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDataHelper.swift; sourceTree = "<group>"; };
 		A75C70CF24FCF95F003E5AD9 /* FilletView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilletView.swift; sourceTree = "<group>"; };
 		A75C70D124FCF97B003E5AD9 /* DeviceAssistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceAssistant.swift; sourceTree = "<group>"; };
 		A75C70D924FCFA2F003E5AD9 /* AgoraLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AgoraLive.xcdatamodel; sourceTree = "<group>"; };
@@ -529,7 +521,6 @@
 				A75C707B24FCF878003E5AD9 /* Specials */,
 				A75C703124FCF877003E5AD9 /* Commons */,
 				A75C70D724FCFA2F003E5AD9 /* LocalStorage */,
-				A75C708A24FCF878003E5AD9 /* LocalStorage */,
 			);
 			name = Center;
 			path = ../Center;
@@ -645,17 +636,6 @@
 				A75C708924FCF878003E5AD9 /* Utils.swift */,
 			);
 			path = ALCenter;
-			sourceTree = "<group>";
-		};
-		A75C708A24FCF878003E5AD9 /* LocalStorage */ = {
-			isa = PBXGroup;
-			children = (
-				A75C708B24FCF878003E5AD9 /* AgoraLive.xcdatamodeld */,
-				A75C708D24FCF878003E5AD9 /* UserData+CoreDataClass.swift */,
-				A75C708E24FCF878003E5AD9 /* UserData+CoreDataProperties.swift */,
-				A75C708F24FCF878003E5AD9 /* UserDataHelper.swift */,
-			);
-			path = LocalStorage;
 			sourceTree = "<group>";
 		};
 		A75C70D324FCF9A8003E5AD9 /* Media */ = {
@@ -1045,7 +1025,6 @@
 				A75C6FA924FCCA6E003E5AD9 /* TimestampModel.swift in Sources */,
 				A75C70A124FCF878003E5AD9 /* AGELock.swift in Sources */,
 				A75C70B924FCF878003E5AD9 /* NetworkMonitor.swift in Sources */,
-				A75C70CA24FCF878003E5AD9 /* UserData+CoreDataProperties.swift in Sources */,
 				A773BD50240E4CC1003ECBFD /* MainTabBarViewController.swift in Sources */,
 				A75C70AD24FCF878003E5AD9 /* minishared.c in Sources */,
 				A75C70BA24FCF878003E5AD9 /* RTMExtension.swift in Sources */,
@@ -1063,7 +1042,6 @@
 				A75C709F24FCF878003E5AD9 /* FUClient.m in Sources */,
 				A75C70E024FCFA2F003E5AD9 /* UserDataHelper.swift in Sources */,
 				A7588528242E01C10011FCCF /* BottomToolsViewController.swift in Sources */,
-				A75C70CB24FCF878003E5AD9 /* UserDataHelper.swift in Sources */,
 				A75C6F6F24FCC816003E5AD9 /* LiveListVM.swift in Sources */,
 				A75C709E24FCF878003E5AD9 /* DataExtension.swift in Sources */,
 				A75C70B624FCF878003E5AD9 /* aestab.c in Sources */,
@@ -1097,10 +1075,8 @@
 				A75C70B524FCF878003E5AD9 /* pwd2key.c in Sources */,
 				A75C70A724FCF878003E5AD9 /* crypt.c in Sources */,
 				A75C70AF24FCF878003E5AD9 /* hmac.c in Sources */,
-				A75C70C924FCF878003E5AD9 /* UserData+CoreDataClass.swift in Sources */,
 				A75C6FAE24FCCA6E003E5AD9 /* UIImage+CSClipToCycle.m in Sources */,
 				A75C6F6E24FCC816003E5AD9 /* PlayerVM.swift in Sources */,
-				A75C70C824FCF878003E5AD9 /* AgoraLive.xcdatamodeld in Sources */,
 				A72B7BEE24445EBB00E965FB /* PKBar.swift in Sources */,
 				A75C70D024FCF95F003E5AD9 /* FilletView.swift in Sources */,
 				A75C70BD24FCF878003E5AD9 /* AppAssistant.swift in Sources */,
@@ -2356,16 +2332,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		A75C708B24FCF878003E5AD9 /* AgoraLive.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				A75C708C24FCF878003E5AD9 /* AgoraLive.xcdatamodel */,
-			);
-			currentVersion = A75C708C24FCF878003E5AD9 /* AgoraLive.xcdatamodel */;
-			path = AgoraLive.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
 		A75C70D824FCFA2F003E5AD9 /* AgoraLive.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

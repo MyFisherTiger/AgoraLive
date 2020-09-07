@@ -172,8 +172,6 @@ private extension LiveListTabViewController {
     }
     
     func updateTabSelectView() {
-        
-        
         tabView.underlineHeight = 3
         tabView.titleSpace = 28
         
@@ -203,7 +201,7 @@ private extension LiveListTabViewController {
     
     func updateLiveListVC() {
         guard let vc = listVC else {
-    
+            assert(false)
             return
         }
         
@@ -228,7 +226,7 @@ private extension LiveListTabViewController {
         
         // MJRefresh
         vc.collectionView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned vc] in
-            self.listVM.refetch(success: {
+            self.listVM.refetch(success: { [unowned vc] in
                 vc.collectionView.mj_header?.endRefreshing()
             }) { [unowned vc] in // fail
                 vc.collectionView.mj_header?.endRefreshing()
@@ -236,7 +234,7 @@ private extension LiveListTabViewController {
         })
         
         vc.collectionView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned vc] in
-            self.listVM.fetch(success: {
+            self.listVM.fetch(success: { [unowned vc] in
                 vc.collectionView.mj_footer?.endRefreshing()
             }) { [unowned vc] in // fail
                 vc.collectionView.mj_footer?.endRefreshing()
