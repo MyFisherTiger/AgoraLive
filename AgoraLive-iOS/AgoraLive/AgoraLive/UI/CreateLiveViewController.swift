@@ -82,21 +82,21 @@ class CreateLiveViewController: MaskViewController {
         
         switch liveType {
         case .multi:
-            videoConfiguration.resolution = AgoraVideoDimension240x240
+            videoConfiguration.resolution = CGSize.AgoraVideoDimension360x640
             videoConfiguration.frameRate = .fps15
-            videoConfiguration.bitRate = 200
+            videoConfiguration.bitRate = AgoraVideoBitrateStandard
         case .single:
             videoConfiguration.resolution = CGSize.AgoraVideoDimension360x640
             videoConfiguration.frameRate = .fps15
-            videoConfiguration.bitRate = 600
+            videoConfiguration.bitRate = AgoraVideoBitrateStandard
         case .pk:
             videoConfiguration.resolution = CGSize.AgoraVideoDimension360x640
             videoConfiguration.frameRate = .fps15
-            videoConfiguration.bitRate = 800
+            videoConfiguration.bitRate = AgoraVideoBitrateStandard
         case .virtual:
             videoConfiguration.resolution = CGSize.AgoraVideoDimension720x1280
             videoConfiguration.frameRate = .fps15
-            videoConfiguration.bitRate = 1000
+            videoConfiguration.bitRate = AgoraVideoBitrateStandard
             
             startButton.backgroundColor = UIColor(hexString: "#0088EB")
             settingsButton.isHidden = true
@@ -108,6 +108,13 @@ class CreateLiveViewController: MaskViewController {
             videoConfiguration.resolution = CGSize.AgoraVideoDimension360x640
             videoConfiguration.frameRate = .fps15
             videoConfiguration.bitRate = 600
+        }
+        
+        switch videoConfiguration.resolution {
+        case CGSize.AgoraVideoDimension720x1280:
+            deviceVM.cameraCaptureResolution(.hd1280x720)
+        default:
+            break
         }
     }
     

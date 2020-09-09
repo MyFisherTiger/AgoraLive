@@ -112,6 +112,10 @@ class MediaKit: NSObject, AGELogBase {
     func stopRelayingMediaStream() {
         agoraKit.stopChannelMediaRelay()
     }
+    
+    func setParameters(_ parameters: String) {
+        agoraKit.setParameters(parameters)
+    }
 }
 
 extension MediaKit {

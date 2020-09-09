@@ -248,25 +248,25 @@ private extension LiveListTabViewController {
             
             switch type {
             case .multi:
-                media.resolution = AgoraVideoDimension240x240
+                media.resolution = CGSize.AgoraVideoDimension360x640
                 media.frameRate = .fps15
-                media.bitRate = 200
+                media.bitRate = AgoraVideoBitrateStandard
             case .single:
                 media.resolution = CGSize.AgoraVideoDimension360x640
                 media.frameRate = .fps15
-                media.bitRate = 600
+                media.bitRate = AgoraVideoBitrateStandard
             case .pk:
                 media.resolution = CGSize.AgoraVideoDimension360x640
                 media.frameRate = .fps15
-                media.bitRate = 800
+                media.bitRate = AgoraVideoBitrateStandard
             case .virtual:
                 media.resolution = CGSize.AgoraVideoDimension720x1280
                 media.frameRate = .fps15
-                media.bitRate = 1000
+                media.bitRate = AgoraVideoBitrateStandard
             case .shopping:
                 media.resolution = CGSize.AgoraVideoDimension360x640
                 media.frameRate = .fps15
-                media.bitRate = 600
+                media.bitRate = AgoraVideoBitrateStandard
             }
             
             let local = ALCenter.shared().centerProvideLocalUser()

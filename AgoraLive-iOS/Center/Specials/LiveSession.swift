@@ -167,6 +167,18 @@ class LiveSession: RTMObserver {
             let mediaKit = ALCenter.shared().centerProvideMediaHelper()
             self.setupPublishedVideoStream(self.videoConfiguration)
             
+            mediaKit.setParameters("{\"che.video.videoEduSpecialSet:\":0}")
+            mediaKit.setParameters("{\"rtc.enable_fec_rexfer:\":true}")
+            
+            switch self.videoConfiguration.resolution {
+            case CGSize.AgoraVideoDimension360x640:
+                mediaKit.setParameters("{\"che.video.videoCodecIndex:\":1}")
+                mediaKit.setParameters("{\"che.video.enable_high_quality_capture:\":true}")
+                break
+            default:
+                break
+            }
+            
             mediaKit.join(channel: channel, token: ALKeys.AgoraRtcToken, streamId: agUId) { [unowned self] in
                 mediaKit.channelReport.subscribe(onNext: { [weak self] (statistic) in
                     guard let strongSelf = self else {
@@ -258,6 +270,13 @@ extension LiveSession {
         var permission = audience.permission
         permission.insert(.camera)
         permission.insert(.mic)
+        
+        switch videoConfiguration.resolution {
+        case CGSize.AgoraVideoDimension720x1280:
+            media.capture.videoResolution(.hd1280x720)
+        default:
+            break
+        }
         
         let role = LiveLocalUser(type: .broadcaster,
                                  info: audience.info,
