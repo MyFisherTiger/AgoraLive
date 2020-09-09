@@ -109,13 +109,6 @@ class CreateLiveViewController: MaskViewController {
             videoConfiguration.frameRate = .fps15
             videoConfiguration.bitRate = 600
         }
-        
-        switch videoConfiguration.resolution {
-        case CGSize.AgoraVideoDimension720x1280:
-            deviceVM.cameraCaptureResolution(.hd1280x720)
-        default:
-            break
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -267,16 +267,10 @@ extension LiveSession {
         let media = ALCenter.shared().centerProvideMediaHelper()
         media.capture.audio = .on
         try! media.capture.video(.on)
+        media.capture.videoResolution(.high)
         var permission = audience.permission
         permission.insert(.camera)
         permission.insert(.mic)
-        
-        switch videoConfiguration.resolution {
-        case CGSize.AgoraVideoDimension720x1280:
-            media.capture.videoResolution(.hd1280x720)
-        default:
-            break
-        }
         
         let role = LiveLocalUser(type: .broadcaster,
                                  info: audience.info,
