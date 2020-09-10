@@ -74,6 +74,7 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
             return
         }
         
+        setIdleTimerActive(false)
         liveSession(session)
         liveRole(session)
         liveRoom(session: session)

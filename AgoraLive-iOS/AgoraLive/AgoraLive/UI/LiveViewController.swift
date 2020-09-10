@@ -627,6 +627,11 @@ extension LiveViewController {
         ALCenter.shared().liveSession?.leave()
         ALCenter.shared().liveSession = nil
         enhancementVM.reset()
+        setIdleTimerActive(true)
+    }
+    
+    func setIdleTimerActive(_ active: Bool) {
+        UIApplication.shared.isIdleTimerDisabled = !active
     }
     
     func dimissSelf() {
