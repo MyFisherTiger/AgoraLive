@@ -394,9 +394,9 @@ private extension LiveShoppingViewController {
             self.showAlert(message: NSLocalizedString("Confirm_Accept_Broadcasting_Invitation"),
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Confirm"),
-                           handler1: {[unowned self] (_) in
+                           handler1: { [unowned self] (_) in
                             self.multiHostsVM.reject(invitation: invitation)
-            }) {[unowned self] (_) in
+            }) { [unowned self] (_) in
                 self.multiHostsVM.accept(invitation: invitation, success: {
                     guard let session = ALCenter.shared().liveSession else {
                         return
