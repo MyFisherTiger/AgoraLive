@@ -228,11 +228,11 @@ extension MultiBroadcastersViewController {
                                handler2: handler)
             // owner
             case .invitation:
-                self.presentInvitationList { (user) in
+                self.presentInvitationList { [unowned self] (user) in
                     self.hiddenMaskView()
                     
                     let handler: ((UIAlertAction) -> Void)? = { [unowned self] (_) in
-                        self.multiHostsVM.sendInvitation(to: user, on: action.seat.index) { (_) in
+                        self.multiHostsVM.sendInvitation(to: user, on: action.seat.index) { [unowned self] (_) in
                             self.showTextToast(text: NSLocalizedString("Invite_Broadcasting_Fail"))
                         }
                     }
@@ -262,7 +262,7 @@ extension MultiBroadcastersViewController {
                         }
                     } else if action.command == .forceToAudience {
                         self.multiHostsVM.forceEndBroadcasting(user: user,
-                                                               on: action.seat.index) { (_) in
+                                                               on: action.seat.index) { [unowned self] (_) in
                                                                 self.showTextToast(text: "force user end broadcasting fail")
                         }
                     }
@@ -281,7 +281,7 @@ extension MultiBroadcastersViewController {
                                action1: NSLocalizedString("Cancel"),
                                action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
                                 guard let user = action.seat.user else {
-                                        return
+                                    return
                                 }
                                 
                                 self.multiHostsVM.endBroadcasting(seatIndex: action.seat.index, user: user, success: {
@@ -368,7 +368,8 @@ private extension MultiBroadcastersViewController {
         multiHostsVM.receivedApplication.subscribe(onNext: { [unowned self] (application) in
             self.showAlert(message: "\"\(application.initiator.info.name)\" " + NSLocalizedString("Apply_For_Broadcasting"),
                            action1: NSLocalizedString("Reject"),
-                           action2: NSLocalizedString("Confirm"), handler1: { (_) in
+                           action2: NSLocalizedString("Confirm"),
+                           handler1: { [unowned self] (_) in
                             self.multiHostsVM.reject(application: application)
             }) { [unowned self] (_) in
                 self.multiHostsVM.accept(application: application)
@@ -403,9 +404,9 @@ private extension MultiBroadcastersViewController {
             self.showAlert(message: NSLocalizedString("Confirm_Accept_Broadcasting_Invitation"),
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Confirm"),
-                           handler1: {[unowned self] (_) in
+                           handler1: { [unowned self] (_) in
                             self.multiHostsVM.reject(invitation: invitation)
-            }) {[unowned self] (_) in
+            }) { [unowned self] (_) in
                 self.multiHostsVM.accept(invitation: invitation, success: {
                     guard let session = ALCenter.shared().liveSession else {
                         return
