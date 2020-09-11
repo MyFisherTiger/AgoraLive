@@ -24,17 +24,7 @@ class MediaDeviceVM: RxObject {
         }
     }
     
-    var cameraPosition: AGECamera.Position {
-        get {
-            let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-            return mediaKit.capture.cameraPostion
-        }
-        
-        set {
-            let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-            mediaKit.capture.cameraPostion = newValue
-        }
-    }
+    var cameraPosition = BehaviorRelay(value: ALCenter.shared().centerProvideMediaHelper().capture.cameraPostion)
     
     var mic: AGESwitch {
         get {
@@ -69,7 +59,13 @@ class MediaDeviceVM: RxObject {
     
     func switchCamera() {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
-        try? mediaKit.capture.switchCamera()
+        
+        do {
+            try mediaKit.capture.switchCamera()
+            cameraPosition.accept(mediaKit.capture.cameraPostion)
+        } catch {
+            assert(false)
+        }
     }
     
     func cameraCaptureResolution(_ resolution: AVCaptureSession.Preset) {
@@ -81,5 +77,9 @@ class MediaDeviceVM: RxObject {
         super.init()
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
         mediaKit.player.audioOutputRouting.bind(to: audioOutput).disposed(by: bag)
+        
+        cameraPosition.subscribe(onNext: { [unowned mediaKit] (position) in
+            mediaKit.capture.cameraPostion = position
+        }).disposed(by: bag)
     }
 }

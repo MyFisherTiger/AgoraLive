@@ -128,7 +128,9 @@ class LiveUserListVM: RTMObserver {
         let client = ALCenter.shared().centerProvideRequestHelper()
         var parameters: StringAnyDic = ["type": onlyAudience ? 2 : 1]
         
-        if list.value.count != 0 {
+        if list.value.count < 10 {
+            parameters["count"] = 10
+        } else {
             parameters["count"] = list.value.count
         }
         

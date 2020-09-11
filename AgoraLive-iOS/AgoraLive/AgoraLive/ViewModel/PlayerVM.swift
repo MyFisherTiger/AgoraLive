@@ -20,10 +20,11 @@ class PlayerVM: RxObject {
         self.observe()
     }
     
-    func startRenderPreview(on view: UIView) {
+    func startRenderPreview(on view: UIView, isMirror: Bool = false) {
         let mediaKit = ALCenter.shared().centerProvideMediaHelper()
         mediaKit.player.startRenderLocalVideoStream(id: 0,
-                                                    view: view)
+                                                    view: view,
+                                                    isMirror: isMirror)
     }
     
     func startRenderVideoStreamOf(user: LiveRole, on view: UIView) {

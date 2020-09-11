@@ -65,6 +65,7 @@ class Capture: NSObject {
             video = .on
             #if (!arch(i386) && !arch(x86_64))
             let configuration = AGESingleCamera.CaptureConfiguration()
+            configuration.isMirror = true
             try cameraSession?.start(work: .capture(configuration: configuration))
             #endif
         case .off:
@@ -135,10 +136,11 @@ class Player: NSObject, AGELogBase {
     }
     
     func startRenderLocalVideoStream(id: Int, view: UIView, isMirror: Bool = false) {
-        log(info: "render local video stream", extra: "id: \(id), view frame: \(view.frame)")
+        log(info: "render local video stream", extra: "id: \(id), view frame: \(view.frame), isMirror: \(isMirror)")
+        
         let canvas = AgoraRtcVideoCanvas(streamId: id, view: view)
-        canvas.mirrorMode = isMirror ? .enabled : .disabled
         agoraKit.setupLocalVideo(canvas)
+        agoraKit.setLocalVideoMirrorMode(isMirror ? .enabled : .disabled)
     }
     
     func startRenderRemoteVideoStream(id: Int, view: UIView) {

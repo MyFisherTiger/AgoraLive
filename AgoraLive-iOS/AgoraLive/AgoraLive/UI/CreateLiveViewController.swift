@@ -69,7 +69,7 @@ class CreateLiveViewController: MaskViewController {
         randomName()
         
         deviceVM.camera = .on
-        deviceVM.cameraPosition = .front
+        deviceVM.cameraPosition.accept(.front)
         deviceVM.cameraCaptureResolution(.high)
         
         // workaround: make local preview render scale to 16:9
