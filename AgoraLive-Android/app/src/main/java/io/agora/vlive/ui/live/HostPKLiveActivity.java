@@ -21,6 +21,7 @@ import io.agora.vlive.R;
 import io.agora.vlive.agora.rtm.model.PKStateMessage;
 import io.agora.vlive.protocol.ClientProxy;
 import io.agora.vlive.protocol.manager.PKServiceManager;
+import io.agora.vlive.protocol.model.model.RoomInfo;
 import io.agora.vlive.protocol.model.model.SeatInfo;
 import io.agora.vlive.protocol.model.request.Request;
 import io.agora.vlive.protocol.model.request.RoomRequest;
@@ -390,8 +391,23 @@ public class HostPKLiveActivity extends LiveRoomActivity
     public void onRoomListResponse(RoomListResponse response) {
         super.onRoomListResponse(response);
         if (mPkRoomListActionSheet != null && mPkRoomListActionSheet.isShown()) {
-            runOnUiThread(() -> mPkRoomListActionSheet.appendUsers(response.data));
+            runOnUiThread(() -> {
+                filterOutCurrentRoom(response.data);
+                mPkRoomListActionSheet.appendUsers(response.data);
+            });
         }
+    }
+
+    private void filterOutCurrentRoom(RoomListResponse.RoomList list) {
+        RoomInfo temp = null;
+        for (RoomInfo info : list.list) {
+            if (roomId.equals(info.roomId)) {
+                temp = info;
+                break;
+            }
+        }
+
+        if (temp != null) list.list.remove(temp);
     }
 
     @Override
