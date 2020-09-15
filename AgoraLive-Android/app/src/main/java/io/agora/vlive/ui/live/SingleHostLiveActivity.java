@@ -97,8 +97,7 @@ public class SingleHostLiveActivity extends LiveRoomActivity implements View.OnC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.live_bottom_btn_close:
-                curDialog = showDialog(R.string.end_live_streaming_title_owner,
-                        R.string.end_live_streaming_message_owner, this);
+                onBackPressed();
                 break;
             case R.id.live_bottom_btn_more:
                 LiveRoomToolActionSheet toolSheet = (LiveRoomToolActionSheet) showActionSheetDialog(
@@ -118,10 +117,6 @@ public class SingleHostLiveActivity extends LiveRoomActivity implements View.OnC
                 if (isHost || isOwner) {
                     showActionSheetDialog(ACTION_SHEET_BEAUTY, tabIdToLiveType(tabId), true, true, this);
                 }
-                break;
-            case R.id.dialog_positive_button:
-                closeDialog();
-                finish();
                 break;
         }
     }
@@ -188,12 +183,6 @@ public class SingleHostLiveActivity extends LiveRoomActivity implements View.OnC
     private void setupRemotePreview() {
         SurfaceView surfaceView = setupRemoteVideo(ownerRtcUid);
         mVideoLayout.addView(surfaceView);
-    }
-
-    @Override
-    public void onBackPressed() {
-        curDialog = showDialog(R.string.end_live_streaming_title_owner,
-                R.string.end_live_streaming_message_owner, this);
     }
 
     @Override

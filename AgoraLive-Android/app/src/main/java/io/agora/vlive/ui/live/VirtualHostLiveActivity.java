@@ -284,8 +284,7 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
                     }
                 }
                 removeCachedVirtualImage();
-                closeDialog();
-                finish();
+                leaveRoom();
                 break;
         }
     }
@@ -423,8 +422,7 @@ public class VirtualHostLiveActivity extends LiveRoomActivity implements View.On
 
     @Override
     public void onBackPressed() {
-        curDialog = showDialog(R.string.end_live_streaming_title_owner,
-                R.string.end_live_streaming_message_owner, this);
+        checkBeforeLeaving();
     }
 
     @Override

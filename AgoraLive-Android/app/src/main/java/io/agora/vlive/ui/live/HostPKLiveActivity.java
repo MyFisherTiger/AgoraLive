@@ -418,10 +418,6 @@ public class HostPKLiveActivity extends LiveRoomActivity
                     showActionSheetDialog(ACTION_SHEET_BEAUTY, tabIdToLiveType(tabId), true, true, this);
                 }
                 break;
-            case R.id.dialog_positive_button:
-                closeDialog();
-                finish();
-                break;
             case R.id.start_pk_button:
                 if (isOwner) {
                     mPkRoomListActionSheet = (PkRoomListActionSheet)
@@ -443,10 +439,7 @@ public class HostPKLiveActivity extends LiveRoomActivity
             curDialog = showDialog(title, message,
                     R.string.dialog_positive_button,
                     R.string.dialog_negative_button,
-                    v -> {
-                        closeDialog();
-                        leaveRoom();
-                    },
+                    v -> leaveRoom(),
                     v -> closeDialog());
         } else {
             super.onBackPressed();

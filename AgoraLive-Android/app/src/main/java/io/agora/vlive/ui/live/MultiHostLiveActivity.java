@@ -319,8 +319,7 @@ public class MultiHostLiveActivity extends LiveRoomActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.live_bottom_btn_close:
-                curDialog = showDialog(R.string.end_live_streaming_title_owner,
-                        R.string.end_live_streaming_message_owner, this);
+                onBackPressed();
                 break;
             case R.id.live_bottom_btn_more:
                 LiveRoomToolActionSheet toolSheet = (LiveRoomToolActionSheet)
@@ -340,11 +339,6 @@ public class MultiHostLiveActivity extends LiveRoomActivity implements View.OnCl
                     // this button is hidden when current user is not host.
                     showActionSheetDialog(ACTION_SHEET_BEAUTY, tabIdToLiveType(tabId), true, true, this);
                 }
-                break;
-            case R.id.dialog_positive_button:
-                closeDialog();
-                finish();
-
                 break;
         }
     }
