@@ -350,10 +350,12 @@ private extension CreateLiveViewController {
         
         let center = ALCenter.shared()
         center.liveSession = session
-        session.join(success: { [unowned session, unowned self] (info: LiveSession.JoinedInfo) in
+        let type = session.type
+        
+        session.join(success: { [unowned self] (info: LiveSession.JoinedInfo) in
             self.hiddenHUD()
             
-            switch session.type {
+            switch type {
             case .multi:
                 self.performSegue(withIdentifier: "MultiBroadcastersViewController", sender: info)
             case .single:

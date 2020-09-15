@@ -46,7 +46,7 @@ class LiveUserListVM: RTMObserver {
     var list = BehaviorRelay(value: [LiveRole]())
     var audienceList = BehaviorRelay(value: [LiveRole]())
     
-    var join = PublishRelay<[LiveRoleItem]>()
+    var joined = PublishRelay<[LiveRoleItem]>()
     var left = PublishRelay<[LiveRoleItem]>()
     var total = BehaviorRelay(value: 0)
     
@@ -244,7 +244,7 @@ private extension LiveUserListVM {
             }
         }
         
-        self.join.accept(joins)
+        self.joined.accept(joins)
         self.left.accept(lefts)
     }
 }

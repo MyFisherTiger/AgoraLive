@@ -76,7 +76,7 @@ extension LiveViewController {
             self.personCountView.label.text = "\(total)"
         }).disposed(by: bag)
         
-        userListVM.join.subscribe(onNext: { [unowned self] (list) in
+        userListVM.joined.subscribe(onNext: { [unowned self] (list) in
             let chats = list.map { (user) -> Chat in
                 let chat = Chat(name: user.info.name,
                                 text: " \(NSLocalizedString("Join_Live_Room"))")
