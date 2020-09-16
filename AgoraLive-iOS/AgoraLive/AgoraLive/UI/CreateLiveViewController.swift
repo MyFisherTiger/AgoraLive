@@ -86,9 +86,9 @@ class CreateLiveViewController: MaskViewController {
             videoConfiguration.frameRate = .fps15
             videoConfiguration.bitRate = 200
         case .single:
-            videoConfiguration.resolution = CGSize.AgoraVideoDimension360x640
+            videoConfiguration.resolution = CGSize.AgoraVideoDimension720x1280
             videoConfiguration.frameRate = .fps15
-            videoConfiguration.bitRate = 600
+            videoConfiguration.bitRate = 2000
         case .pk:
             videoConfiguration.resolution = CGSize.AgoraVideoDimension360x640
             videoConfiguration.frameRate = .fps15
@@ -96,7 +96,7 @@ class CreateLiveViewController: MaskViewController {
         case .virtual:
             videoConfiguration.resolution = CGSize.AgoraVideoDimension720x1280
             videoConfiguration.frameRate = .fps15
-            videoConfiguration.bitRate = 1000
+            videoConfiguration.bitRate = 2000
             
             startButton.backgroundColor = UIColor(hexString: "#0088EB")
             settingsButton.isHidden = true
@@ -105,9 +105,9 @@ class CreateLiveViewController: MaskViewController {
             backButton.setImage(UIImage(named: "icon-back-black"),
                                 for: .normal)
         case .shopping:
-            videoConfiguration.resolution = CGSize.AgoraVideoDimension360x640
+            videoConfiguration.resolution = CGSize.AgoraVideoDimension720x1280
             videoConfiguration.frameRate = .fps15
-            videoConfiguration.bitRate = 600
+            videoConfiguration.bitRate = 2000
         }
     }
     
