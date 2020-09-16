@@ -357,6 +357,7 @@
 		C2D44922AAD142739147F232 /* Pods-AgoraLive.lab2020-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.lab2020-dev.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.lab2020-dev.xcconfig"; sourceTree = "<group>"; };
 		EB5512637E9134229608F7E1 /* Pods-AgoraLive.release-test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.release-test.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.release-test.xcconfig"; sourceTree = "<group>"; };
 		FE7AEBFEC18103833CA7C8E4 /* Pods-AgoraLive.qa-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.qa-pre.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.qa-pre.xcconfig"; sourceTree = "<group>"; };
+		FF0791E8702911B8363FEAD8 /* Pods-AgoraLive.test2020-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AgoraLive.test2020-dev.xcconfig"; path = "Target Support Files/Pods-AgoraLive/Pods-AgoraLive.test2020-dev.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -394,6 +395,7 @@
 				375A514FF6F13F60A1383456 /* Pods-AgoraLive.test2019-dev.xcconfig */,
 				3081F7E59DB9D6938ECEB5E0 /* Pods-AgoraLive.lab2020-pre.xcconfig */,
 				89CA4AE9BA7392A73BC8D5A5 /* Pods-AgoraLive.test2020-pre.xcconfig */,
+				FF0791E8702911B8363FEAD8 /* Pods-AgoraLive.test2020-dev.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1547,7 +1549,7 @@
 		};
 		A75FA90F2510E728001B3AFC /* Test2020-Dev */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 375A514FF6F13F60A1383456 /* Pods-AgoraLive.test2019-dev.xcconfig */;
+			baseConfigurationReference = FF0791E8702911B8363FEAD8 /* Pods-AgoraLive.test2020-dev.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
