@@ -9,23 +9,23 @@ trigger:
 
 jobs:
 
-- template: AgoraLive-Android/build-templates/build-release.yml
-  parameters:
-    project: 'AgoraLive-Android'
-    name: 'AgoraLive_Android'
-        
-- template: AgoraLive-iOS/Build/azure/build.yml
-  parameters:
-    displayName: 'AgoraLive_iOS_Lab2020_Dev'
-    mode: 'Lab2020-Dev'
-    bundleId: 'io.agora.AgoraLiveBroadcastLab2020'
-    upload: 1
-    bugly: 1
-
-- template: AgoraLive-iOS/Build/azure/build.yml
-  parameters:
-    displayName: 'AgoraLive_iOS_Test2019_Dev'
-    bundleId: 'io.agora.AgoraLiveBroadcastTest2019'
-    mode: 'Test2019-Dev'
-    upload: 1
-    bugly: 1
+#- template: AgoraLive-Android/build-templates/build-release.yml
+#  parameters:
+#    project: 'AgoraLive-Android'
+#    name: 'AgoraLive_Android'
+#
+#- template: AgoraLive-iOS/Build/azure/build.yml
+#  parameters:
+#    displayName: 'AgoraLive_iOS_Lab2020_Dev'
+#    mode: 'Lab2020-Dev'
+#    bundleId: 'io.agora.AgoraLiveBroadcastLab2020'
+#    upload: 1
+#    bugly: 1
+#
+#- template: AgoraLive-iOS/Build/azure/build.yml
+#  parameters:
+#    displayName: 'AgoraLive_iOS_Test2019_Dev'
+#    bundleId: 'io.agora.AgoraLiveBroadcastTest2019'
+#    mode: 'Test2019-Dev'
+#    upload: 1
+#    bugly: 1
