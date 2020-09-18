@@ -169,6 +169,7 @@ class LiveSession: RTMObserver {
             
             mediaKit.setParameters("{\"che.video.videoEduSpecialSet:\":0}")
             mediaKit.setParameters("{\"rtc.enable_fec_rexfer:\":true}")
+            mediaKit.setParameters("{\"che.video.h265_dec_enable:\":false}")
             
             switch self.videoConfiguration.resolution {
             case CGSize.AgoraVideoDimension360x640:
