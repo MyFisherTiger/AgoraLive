@@ -588,7 +588,7 @@ extension LiveViewController {
         
         giftVC.selectGift.subscribe(onNext: { [unowned self] (gift) in
             self.hiddenMaskView()
-            self.giftVM.present(gift: gift) {
+            self.giftVM.present(gift: gift) { [unowned self] in
                 self.showAlert(message: NSLocalizedString("Present_Gift_Fail"))
             }
         }).disposed(by: bag)
