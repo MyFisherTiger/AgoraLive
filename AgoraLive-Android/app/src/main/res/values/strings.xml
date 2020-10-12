@@ -91,6 +91,16 @@
 
     <string name="product_default_description">Apple iPad Pro 11英寸平板电脑 2020年新款(256G WLAN版/全面屏/A12Z/FaceID/MXDC2CH/A) 深空灰色</string>
 
+    <string name="product_name_1">Lipstick</string>
+    <string name="product_name_2">Rucksack</string>
+    <string name="product_name_3">iPad</string>
+    <string name="product_name_4">Pants</string>
+
+    <string name="product_desp_1">Revlon Super Lustrous Lipstick, High Impact Lipcolor</string>
+    <string name="product_desp_2">Keepall 55 Monogram Eclipse Canvas M40605</string>
+    <string name="product_desp_3">New Apple iPad Pro (12.9-inch, Wi-Fi, 128GB) - Silver </string>
+    <string name="product_desp_4">Men\'s K87 Workwear Pocket Short Sleeve T-Shirt </string>
+
     <!-- Messages -->
     <string name="live_message_gift_send">has sent out</string>
 

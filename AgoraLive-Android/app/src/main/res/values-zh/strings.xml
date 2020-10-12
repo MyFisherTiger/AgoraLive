@@ -94,6 +94,15 @@
     <string name="product_promote_actual_price">6599</string>
 
     <string name="product_default_description">Apple iPad Pro 11英寸平板电脑 2020年新款(256G WLAN版/全面屏/A12Z/FaceID/MXDC2CH/A) 深空灰色</string>
+    <string name="product_name_1">口红</string>
+    <string name="product_name_2">背包</string>
+    <string name="product_name_3">iPad</string>
+    <string name="product_name_4">裤子</string>
+
+    <string name="product_desp_1">烈焰幻魅唇膏16# (SCARLET GOUGE) 3g TF黑管口红</string>
+    <string name="product_desp_2">Supreme x Louis Vuitton LV Shoulder Bag 17SS 大号斜挎包</string>
+    <string name="product_desp_3">苹果 iPad Pro (12.9英寸, WLAN, 64GB) - Silver </string>
+    <string name="product_desp_4">花花公子衬衫男短袖，夏季</string>
 
     <!-- Messages -->
     <string name="live_message_gift_send">向主播赠送了一个</string>

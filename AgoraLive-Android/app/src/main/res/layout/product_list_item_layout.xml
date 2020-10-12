@@ -16,7 +16,7 @@
         android:layout_height="@dimen/live_room_product_action_sheet_product_item_text_height"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/product_list_item_icon"
-        android:layout_marginTop="@dimen/live_room_product_action_sheet_product_item_bg_corner"
+        android:layout_marginTop="@dimen/live_room_product_action_sheet_product_item_padding"
         android:layout_marginEnd="@dimen/live_room_product_action_sheet_product_item_content_padding"
         android:textColor="@android:color/black"/>
     <androidx.appcompat.widget.AppCompatTextView
@@ -25,8 +25,8 @@
         android:layout_height="@dimen/live_room_product_action_sheet_product_item_text_height"
         android:layout_toEndOf="@id/product_list_item_icon"
         android:layout_below="@id/product_list_item_description"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/live_room_product_action_sheet_product_item_bg_corner"
+        android:layout_marginTop="@dimen/live_room_product_action_sheet_product_item_bg_corner"
+        android:layout_marginBottom="@dimen/live_room_product_action_sheet_product_item_padding"
         android:textAlignment="gravity"
         android:gravity="center_vertical"
         android:textColor="@color/red"/>
@@ -37,8 +37,8 @@
         android:background="@drawable/product_item_action_background"
         android:layout_below="@id/product_list_item_description"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/live_room_product_action_sheet_product_item_bg_corner"
+        android:layout_marginTop="@dimen/live_room_product_action_sheet_product_item_bg_corner"
+        android:layout_marginBottom="@dimen/live_room_product_action_sheet_product_item_padding"
         android:layout_marginEnd="@dimen/live_room_product_action_sheet_product_item_content_padding"
         android:textAlignment="gravity"
         android:gravity="center"

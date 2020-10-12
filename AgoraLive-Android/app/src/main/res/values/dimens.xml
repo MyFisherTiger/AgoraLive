@@ -191,7 +191,8 @@
     <dimen name="live_room_product_action_sheet_type_title_height">52dp</dimen>
     <dimen name="live_room_product_action_sheet_type_title_margin">58dp</dimen>
     <dimen name="live_room_product_action_sheet_product_item_bg_corner">4dp</dimen>
-    <dimen name="live_room_product_action_sheet_product_item_height">92dp</dimen>
+    <dimen name="live_room_product_action_sheet_product_item_padding">10dp</dimen>
+    <dimen name="live_room_product_action_sheet_product_item_height">108dp</dimen>
     <dimen name="live_room_product_action_sheet_product_item_content_padding">12dp</dimen>
     <dimen name="live_room_product_action_sheet_product_item_icon_size">66dp</dimen>
     <dimen name="live_room_product_action_sheet_product_item_margin">8dp</dimen>

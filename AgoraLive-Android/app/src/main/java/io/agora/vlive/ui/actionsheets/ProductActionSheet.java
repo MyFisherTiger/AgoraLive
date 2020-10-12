@@ -191,7 +191,7 @@ public class ProductActionSheet extends AbstractActionSheet implements View.OnCl
             if (product == null) return;
 
             holder.icon.setImageResource(productIdToResId(product.productId));
-            holder.description.setText(product.productName);
+            holder.description.setText(productDescription(product.productId));
             holder.price.setText(String.format(mProductPriceFormat, product.price));
             holder.action.setText(getProductActionStringRes());
             holder.action.setTypeface(Typeface.DEFAULT_BOLD);
@@ -221,6 +221,15 @@ public class ProductActionSheet extends AbstractActionSheet implements View.OnCl
             case "3": return R.drawable.icon_product_3;
             case "4": return R.drawable.icon_product_4;
             default: return R.drawable.icon_product_1;
+        }
+    }
+
+    private int productDescription(String productId) {
+        switch(productId) {
+            case "2": return R.string.product_desp_2;
+            case "3": return R.string.product_desp_3;
+            case "4": return R.string.product_desp_4;
+            default: return R.string.product_desp_1;
         }
     }
 
