@@ -27,15 +27,6 @@ jobs:
         inputs:
           provProfileSecureFile: 'AgoraLab2020.mobileprovision'
           
-      - task: InstallAppleCertificate@2
-        inputs:
-          certSecureFile: 'new_agora_sign.p12'
-          certPwd: $(agora.password)
-
-      - task: InstallAppleProvisioningProfile@1
-        inputs:
-          provProfileSecureFile: 'AgoraIOTest2019.mobileprovision'
-          
       - task: DownloadSecureFile@1
         name: downloadAuthpack
         displayName: 'Download face unity authpack'

@@ -21,19 +21,3 @@ jobs:
     bundleId: 'io.agora.AgoraLiveBroadcastLab2020'
     upload: 1
     bugly: 1
-
-- template: AgoraLive-iOS/Build/azure/build.yml
-  parameters:
-    displayName: 'AgoraLive_iOS_Test2020_Dev'
-    bundleId: 'io.agora.AgoraLiveBroadcastTest2019'
-    mode: 'Test2020-Dev'
-    upload: 1
-    bugly: 1
-    
-- template: AgoraLive-iOS/Build/azure/build.yml
-  parameters:
-    displayName: 'AgoraLive_iOS_Release'
-    bundleId: 'io.agora.AgoraLiveBroadcast'
-    mode: 'Release'
-    upload: 1
-    bugly: 1
