@@ -3,6 +3,7 @@ package io.agora.vlive;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
@@ -20,6 +21,7 @@ import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy;
 import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy;
 import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
 import com.faceunity.FURenderer;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import io.agora.capture.video.camera.CameraManager;
 import io.agora.framework.PreprocessorFaceUnity;
@@ -46,6 +48,7 @@ public class AgoraLiveApplication extends Application {
         mConfig = new Config(this);
         initXLog();
         initVideoGlobally();
+        initCrashReport();
         XLog.i("onApplicationCreate");
     }
 
@@ -128,6 +131,16 @@ public class AgoraLiveApplication extends Application {
                 config,                                                         // Specify the log configuration, if not specified, will use new LogConfiguration.Builder().build()
                 androidPrinter,
                 filePrinter);
+    }
+
+    private void initCrashReport() {
+        String buglyAppId = getResources().getString(R.string.bugly_app_id);
+        if (TextUtils.isEmpty(buglyAppId)) {
+            XLog.i("Bugly app id not found, crash report initialize skipped");
+        } else {
+            CrashReport.initCrashReport(getApplicationContext(),
+                    buglyAppId, BuildConfig.DEBUG);
+        }
     }
 
     @Override

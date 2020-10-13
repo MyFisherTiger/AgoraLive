@@ -82,4 +82,7 @@ dependencies {
 
     implementation project(path: ':faceunity')
     implementation project(path: ':framework')
+
+    implementation 'com.tencent.bugly:crashreport:latest.release'
+    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
 }
