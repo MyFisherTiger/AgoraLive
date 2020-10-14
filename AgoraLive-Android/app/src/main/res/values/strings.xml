@@ -13,7 +13,7 @@
     <string name="home_category_title_single">Solo Host</string>
     <string name="home_category_title_pk">PK Host-in</string>
     <string name="home_category_title_virtual_host">Virtual Host</string>
-    <string name="home_category_title_ecommerce">E-Commerce</string>
+    <string name="home_category_title_ecommerce">Live Shopping</string>
 
     <string name="home_category_desp_multi">Invite others to co-host in broadcasting channel</string>
     <string name="home_category_desp_single">Live streaming by single host</string>
