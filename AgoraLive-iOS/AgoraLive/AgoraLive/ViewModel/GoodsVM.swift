@@ -24,10 +24,12 @@ struct GoodsItem {
         self.id = try dic.getStringValue(of: "productId")
         self.image = UIImage(named: "pic-商品0\(self.id)")!
         self.bigImage = UIImage(named: "pic-商品B0\(self.id)-slices")!
-        self.name = try dic.getStringValue(of: "productName")
         self.price = try dic.getFloatInfoValue(of: "price")
         self.isSale = (try dic.getBoolInfoValue(of: "state"))
-        self.description = "description"
+        
+        let name = try dic.getStringValue(of: "productName")
+        self.name = NSLocalizedString(name)
+        self.description = NSLocalizedString(name + "_Description")
     }
 }
 

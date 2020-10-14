@@ -119,8 +119,6 @@ private extension GoodsListViewController {
                 
                 self.offSelfSubscribe = self.tableViewBindWithList(self.vm.offShelfList)
                 self.offSelfSubscribe?.disposed(by: self.bag)
-                
-                
             case 1:
                 if let subscribe = self.offSelfSubscribe {
                     subscribe.dispose()
@@ -146,7 +144,7 @@ private extension GoodsListViewController {
         let subscribe = list.bind(to: self.tableView.rx.items(cellIdentifier: "GoodsCell",
                                                               cellType: GoodsCell.self)) { [unowned self] (index, goods, cell) in
                                                                 cell.goodsImageView.image = goods.image
-                                                                cell.descriptionLabel.text = goods.description
+                                                                cell.descriptionLabel.text = goods.name
                                                                 cell.priceLabel.text = "\(goods.price)"
                                                                 cell.index = index
                                                                 cell.delegate = self

@@ -635,8 +635,8 @@ extension LiveViewController {
     }
     
     func dimissSelf() {
-        if let _ = self.navigationController?.viewControllers.first as? LiveListTabViewController {
-            self.navigationController?.popViewController(animated: true)
+        if let listVC = self.navigationController?.viewControllers.first as? LiveListTabViewController {
+            self.navigationController?.popToViewController(listVC, animated: true)
         } else {
             self.dismiss(animated: true, completion: nil)
         }
