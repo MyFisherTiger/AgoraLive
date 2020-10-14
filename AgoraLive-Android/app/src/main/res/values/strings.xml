@@ -43,7 +43,7 @@
     <string name="version_title">Versions</string>
     <string name="agoralive_version_title">AgoraLive Version</string>
     <string name="agoralive_release_time_title">Release</string>
-    <string name="agoralive_release_time">2020.07.06</string>
+    <string name="agoralive_release_time" translatable="false">2020.10.13</string>
     <string name="agoralive_media_sdk_version_title">Media SDK Version</string>
     <string name="agoralive_media_sdk_version">Ver 3.0.1.1</string>
 
