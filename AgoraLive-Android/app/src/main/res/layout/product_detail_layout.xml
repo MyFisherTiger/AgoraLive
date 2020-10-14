@@ -123,10 +123,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/product_promote_title_layout">
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/product_window_description_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/activity_vertical_margin"
-                    android:text="@string/product_default_description"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/text_size_normal"/>
             </RelativeLayout>

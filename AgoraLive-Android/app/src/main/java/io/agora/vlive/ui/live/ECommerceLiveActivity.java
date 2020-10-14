@@ -1062,6 +1062,9 @@ public class ECommerceLiveActivity extends LiveRoomActivity
                         }
                     });
 
+            AppCompatTextView productDescription = findViewById(R.id.product_window_description_text);
+            productDescription.setText(parseDescription(mProduct.productId));
+
             AppCompatImageView pictureImageView = findViewById(R.id.product_detail_big_picture);
             pictureImageView.setImageResource(mPictureRes);
 
@@ -1080,6 +1083,15 @@ public class ECommerceLiveActivity extends LiveRoomActivity
             }
 
             super.show();
+        }
+
+        private int parseDescription(String productId) {
+            switch(productId) {
+                case "2": return R.string.product_desp_2;
+                case "3": return R.string.product_desp_3;
+                case "4": return R.string.product_desp_4;
+                default: return R.string.product_desp_1;
+            }
         }
 
         @Override
