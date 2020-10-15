@@ -201,16 +201,22 @@ public class LiveRoomSettingActionSheet extends AbstractActionSheet implements V
     }
 
     private String getResolutionText() {
+        int savedIndex = application().config().resolutionIndex();
         switch (mLiveType) {
             case Config.LIVE_TYPE_MULTI_HOST:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_MULTI_HOST_TEXT.length)
                 return Global.Constants.RESOLUTIONS_MULTI_HOST_TEXT[application().config().resolutionIndex()];
             case Config.LIVE_TYPE_SINGLE_HOST:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_SINGLE_HOST_TEXT.length)
                 return Global.Constants.RESOLUTIONS_SINGLE_HOST_TEXT[application().config().resolutionIndex()];
             case Config.LIVE_TYPE_PK_HOST:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_PK_HOST_TEXT.length)
                 return Global.Constants.RESOLUTIONS_PK_HOST_TEXT[application().config().resolutionIndex()];
             case Config.LIVE_TYPE_VIRTUAL_HOST:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_VIRTUAL_IMAGE_TEXT.length)
                 return Global.Constants.RESOLUTIONS_VIRTUAL_IMAGE_TEXT[application().config().resolutionIndex()];
             case Config.LIVE_TYPE_ECOMMERCE:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_ECOMMERCE_TEXT.length)
                 return Global.Constants.RESOLUTIONS_ECOMMERCE_TEXT[application().config().resolutionIndex()];
             default: return null;
         }
