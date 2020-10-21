@@ -7,25 +7,17 @@ trigger:
 - master
 - dev/*
 
-variables:
-  AgoraiOSMode: 'Debug'
-
 jobs:
 
 - template: AgoraLive-Android/build-templates/build-release.yml
   parameters:
     project: 'AgoraLive-Android'
     name: 'AgoraLive_Android'
-    
+        
 - template: AgoraLive-iOS/Build/azure/build.yml
   parameters:
-    displayName: 'AgoraLive_iOS_Debug'
-    mode: 'Debug'
-    upload: 0
-    
-- template: AgoraLive-iOS/Build/azure/build.yml
-  parameters:
-    displayName: 'AgoraLive_iOS_QA_Dev'
-    mode: 'QA-Dev'
+    displayName: 'AgoraLive_iOS_Lab2020_Dev'
+    mode: 'Lab2020-Dev'
+    bundleId: 'io.agora.AgoraLiveBroadcastLab2020'
     upload: 1
-    
+    bugly: 1

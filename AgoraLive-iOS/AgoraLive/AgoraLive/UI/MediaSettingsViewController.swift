@@ -27,7 +27,7 @@ class MediaSettingsViewController: UITableViewController {
     @IBOutlet weak var frameRateContentView: UIView!
     private let bag = DisposeBag()
     
-    var settings: BehaviorRelay<LocalLiveSettings.Media>?
+    var settings: BehaviorRelay<VideoConfiguration>?
     
     override func viewDidLoad() {
         super.viewDidLoad()

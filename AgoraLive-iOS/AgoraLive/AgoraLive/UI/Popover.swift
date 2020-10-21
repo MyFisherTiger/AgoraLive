@@ -232,6 +232,22 @@ open class Popover: UIView {
         }
     }
     
+    @objc open func dismissWithoutAnimation() {
+        if self.superview != nil {
+            self.willDismissHandler?()
+            self.transform = CGAffineTransform(scaleX: 0.0001, y: 0.0001)
+            self.blackOverlay.alpha = 0
+            
+            self.contentView.removeFromSuperview()
+            self.blackOverlay.removeFromSuperview()
+            self.removeFromSuperview()
+            self.transform = CGAffineTransform.identity
+            self.didDismissHandler?()
+            
+            self.delegate?.popoverDidDismiss(self)
+        }
+    }
+    
     override open func draw(_ rect: CGRect) {
         super.draw(rect)
         let stroke = UIBezierPath()

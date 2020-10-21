@@ -59,3 +59,40 @@ class IconTextView: UIControl {
         label.frame = labelFrame
     }
 }
+
+class RemindIconTextView: IconTextView {
+    private var remindView = FilletView(frame: CGRect.zero, filletRadius: 3)
+    
+    var needRemind: Bool = false {
+        didSet {
+            remindView.isHidden = !needRemind
+        }
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        needRemind = false
+        remindView.backgroundColor = .clear
+        remindView.insideBackgroundColor = UIColor(hexString: "#FF097E")
+        addSubview(remindView)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let w: CGFloat = 6
+        let h: CGFloat = 6
+        let x: CGFloat = bounds.width - w
+        let y: CGFloat = 0
+        
+        remindView.frame = CGRect(x: x,
+                                  y: y,
+                                  width: w,
+                                  height: h)
+    }
+}
+
+protocol UIRemind {
+    var remindView: FilletView {get set}
+    var needRemind: Bool {get set}
+}

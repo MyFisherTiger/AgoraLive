@@ -53,12 +53,12 @@ class CreateLiveViewController: MaskViewController {
     private let playerVM = PlayerVM()
     private let enhancementVM = VideoEnhancementVM()
     
-    private var localSettings = LocalLiveSettings(title: "")
-    private var firstLayoutSubviews: Bool = false
+    private var videoConfiguration = VideoConfiguration()
+    
     private var mediaSettingsNavi: UIViewController?
     private var beautyVC: UIViewController?
     
-    var liveType: LiveType = .multiBroadcasters
+    var liveType: LiveType = .multi
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,43 +69,34 @@ class CreateLiveViewController: MaskViewController {
         randomName()
         
         deviceVM.camera = .on
-        deviceVM.cameraPosition = .front
-        deviceVM.cameraResolution(.high)
+        deviceVM.cameraPosition.accept(.front)
+        deviceVM.cameraCaptureResolution(.high)
         
         // workaround: make local preview render scale to 16:9
         let media = ALCenter.shared().centerProvideMediaHelper()
-        media.setupVideo(resolution: CGSize.AgoraVideoDimension720x1280,
-                         frameRate: .fps15,
-                         bitRate: 1000)
+        media.setupPublishedVideoStream(resolution: CGSize.AgoraVideoDimension720x1280,
+                                        frameRate: .fps15,
+                                        bitRate: 1000)
         
-        playerVM.startRenderLocalVideoStream(id: 0,
-                                             view: self.cameraPreview)
+        playerVM.startRenderPreview(on: self.cameraPreview)
         
         switch liveType {
-        case .multiBroadcasters:
-            var media = localSettings.media
-            media.resolution = AgoraVideoDimension240x240
-            media.frameRate = .fps15
-            media.bitRate = 200
-            localSettings.media = media
-        case .singleBroadcaster:
-            var media = localSettings.media
-            media.resolution = CGSize.AgoraVideoDimension360x640
-            media.frameRate = .fps15
-            media.bitRate = 600
-            localSettings.media = media
-        case .pkBroadcasters:
-            var media = localSettings.media
-            media.resolution = CGSize.AgoraVideoDimension360x640
-            media.frameRate = .fps15
-            media.bitRate = 800
-            localSettings.media = media
-        case .virtualBroadcasters:
-            var media = localSettings.media
-            media.resolution = CGSize.AgoraVideoDimension720x1280
-            media.frameRate = .fps15
-            media.bitRate = 1000
-            localSettings.media = media
+        case .multi:
+            videoConfiguration.resolution = AgoraVideoDimension240x240
+            videoConfiguration.frameRate = .fps15
+            videoConfiguration.bitRate = 200
+        case .single:
+            videoConfiguration.resolution = CGSize.AgoraVideoDimension720x1280
+            videoConfiguration.frameRate = .fps15
+            videoConfiguration.bitRate = 2000
+        case .pk:
+            videoConfiguration.resolution = CGSize.AgoraVideoDimension360x640
+            videoConfiguration.frameRate = .fps15
+            videoConfiguration.bitRate = 800
+        case .virtual:
+            videoConfiguration.resolution = CGSize.AgoraVideoDimension720x1280
+            videoConfiguration.frameRate = .fps15
+            videoConfiguration.bitRate = 2000
             
             startButton.backgroundColor = UIColor(hexString: "#0088EB")
             settingsButton.isHidden = true
@@ -113,6 +104,10 @@ class CreateLiveViewController: MaskViewController {
             switchCameraButton.isHidden = true
             backButton.setImage(UIImage(named: "icon-back-black"),
                                 for: .normal)
+        case .shopping:
+            videoConfiguration.resolution = CGSize.AgoraVideoDimension720x1280
+            videoConfiguration.frameRate = .fps15
+            videoConfiguration.bitRate = 2000
         }
     }
     
@@ -122,69 +117,85 @@ class CreateLiveViewController: MaskViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let segueId = segue.identifier else {
+        guard let segueId = segue.identifier,
+            let sender = sender,
+            let info = sender as? LiveSession.JoinedInfo,
+            let vc = segue.destination as? LiveViewController else {
             return
         }
         
+        vc.userListVM = LiveUserListVM(room: info.room)
+        vc.userListVM.updateGiftListWithJson(list: info.giftAudience)
+        
+        vc.giftVM = GiftVM(room: info.room)
+        
         switch segueId {
         case "MultiBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let seatInfo = info.seatInfo else {
-                    fatalError()
+            guard let seatInfo = info.seatInfo,
+                let vm = try? LiveSeatVM(room: info.room, list: seatInfo) else {
+                    assert(false)
+                    return
             }
             
             let vc = segue.destination as? MultiBroadcastersViewController
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            vc?.seatVM = try! LiveSeatVM(list: seatInfo)
-        case "SingleBroadcasterViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo else {
-                    fatalError()
-            }
-            
-            let vc = segue.destination as? SingleBroadcasterViewController
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.multiHostsVM = MultiHostsVM(room: info.room)
+            vc?.seatVM = vm
         case "PKBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo else {
-                    fatalError()
-            }
-            
-            var statistics: PKStatistics
-            
-            if let pkInfo = info.pkInfo {
-                statistics = try! PKStatistics(dic: pkInfo)
-            } else {
-                statistics = PKStatistics(state: .none)
+            guard let pkInfo = info.pkInfo,
+                let vm = try? PKVM(room: info.room, type: .pk, state: pkInfo) else {
+                    assert(false)
+                    return
             }
             
             let vc = segue.destination as? PKBroadcastersViewController
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            vc?.pkVM = PKVM(statistics: statistics)
+            vc?.pkVM = vm
         case "VirtualBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let seatInfo = info.seatInfo,
+            guard let seatInfo = info.seatInfo,
+                let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
                 let session = ALCenter.shared().liveSession else {
-                    fatalError()
+                    assert(false)
+                    return
             }
             
             let vc = segue.destination as? VirtualBroadcastersViewController
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            let seatVM = try! LiveSeatVM(list: seatInfo)
+            vc?.multiHostsVM = MultiHostsVM(room: info.room)
             vc?.seatVM = seatVM
             
-            var broadcasting: VirtualVM.Broadcasting
+            var hostCount: HostCount
             
             if seatVM.list.value.count == 1,
                 let remote = seatVM.list.value[0].user {
-                broadcasting = .multi([session.owner.user, remote])
+                hostCount = .multi([session.owner.value.user, remote])
             } else {
-                broadcasting = .single(session.owner.user)
+                hostCount = .single(session.owner.value.user)
+            }
+            vc?.hostCount = BehaviorRelay(value: hostCount)
+        case "LiveShoppingViewController":
+            guard let seatInfo = info.seatInfo,
+                let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
+                let pkInfo = info.pkInfo,
+                let pkVM = try? PKVM(room: info.room, type: .shopping, state: pkInfo),
+                let session = ALCenter.shared().liveSession else {
+                    assert(false)
+                    return
             }
             
-            vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
+            let vc = segue.destination as? LiveShoppingViewController
+            vc?.userListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.multiHostsVM = MultiHostsVM(room: info.room)
+            vc?.goodsVM = GoodsVM(room: info.room)
+            vc?.seatVM = seatVM
+            vc?.pkVM = pkVM
+            
+            var hostCount: HostCount
+            
+            if seatVM.list.value.count == 1,
+                let remote = seatVM.list.value[0].user {
+                hostCount = .multi([session.owner.value.user, remote])
+            } else {
+                hostCount = .single(session.owner.value.user)
+            }
+            vc?.hostCount = BehaviorRelay(value: hostCount)
         default:
             break
         }
@@ -203,7 +214,7 @@ class CreateLiveViewController: MaskViewController {
     }
     
     @IBAction func doClosePressed(_ sender: UIButton) {
-        if liveType != .virtualBroadcasters {
+        if liveType != .virtual {
             self.enhancementVM.reset()
             self.deviceVM.camera = .off
             self.navigationController?.dismiss(animated: true,
@@ -215,7 +226,6 @@ class CreateLiveViewController: MaskViewController {
     
     @IBAction func doBeautyPressed(_ sender: UIButton) {
         self.showMaskView(color: UIColor.clear) { [unowned self] in
-            self.hiddenMaskView()
             self.hiddenSubSettings()
         }
         presentBeautySettings()
@@ -223,21 +233,18 @@ class CreateLiveViewController: MaskViewController {
     
     @IBAction func doRoomSettingsPressed(_ sender: UIButton) {
         self.showMaskView(color: UIColor.clear) { [unowned self] in
-            self.hiddenMaskView()
             self.hiddenSubSettings()
         }
         presentMediaSettings()
     }
     
     @IBAction func doStartPressed(_ sender: UIButton) {
-        if let title = nameTextField.text, title.count > 0 {
-            localSettings.title = title
-        } else {
+        guard let title = nameTextField.text, title.count > 0 else {
             self.showAlert("未输入房间名")
             return
         }
         
-        self.startLivingWithLocalSettings(localSettings)
+        self.startLivingWithName(title, videoConfiguration: videoConfiguration)
     }
     
     func hiddenSubSettings() {
@@ -273,17 +280,16 @@ private extension CreateLiveViewController {
     }
     
     func presentMediaSettings() {
-        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let identifier = "MediaSettingsNavigation"
-        let mediaSettingsNavi = storyboard.instantiateViewController(withIdentifier: identifier)
+        let mediaSettingsNavi = UIStoryboard.initViewController(of: "MediaSettingsNavigation",
+                                                       class: UINavigationController.self,
+                                                       on: "Popover")
+        
         let mediaSettingsVC = mediaSettingsNavi.children.first! as! MediaSettingsViewController
         self.mediaSettingsNavi = mediaSettingsNavi
         
-        mediaSettingsVC.settings = BehaviorRelay(value: localSettings.media)
+        mediaSettingsVC.settings = BehaviorRelay(value: videoConfiguration)
         mediaSettingsVC.settings?.subscribe(onNext: { [unowned self] (newMedia) in
-            var newSettings = self.localSettings
-            newSettings.media = newMedia
-            self.localSettings = newSettings
+            self.videoConfiguration = newMedia
         }).disposed(by: bag)
         
         mediaSettingsVC.view.cornerRadius(5)
@@ -301,7 +307,8 @@ private extension CreateLiveViewController {
     
     func presentBeautySettings() {
         let beautyVC = UIStoryboard.initViewController(of: "BeautySettingsViewController",
-                                                       class: BeautySettingsViewController.self)
+                                                       class: BeautySettingsViewController.self,
+                                                       on: "Popover")
         self.beautyVC = beautyVC
         
         beautyVC.view.cornerRadius(5)
@@ -316,24 +323,20 @@ private extension CreateLiveViewController {
                           animated: true,
                           presentedFrame: presentedFrame)
         
-        beautyVC.workSwitch.rx.value.subscribe(onNext: { [unowned self] (value) in
-            self.beautyButton.isSelected = value
-        }).disposed(by: bag)
+        beautyVC.workSwitch.rx.value.bind(to: beautyButton.rx.isSelected).disposed(by: bag)
     }
 }
 
 private extension CreateLiveViewController {
-    func startLivingWithLocalSettings(_ settings: LocalLiveSettings) {
+    func startLivingWithName(_ name: String, videoConfiguration: VideoConfiguration) {
         self.showHUD()
         
-        var extra: [String: Any]? = nil
-        if liveType == .virtualBroadcasters {
-            extra = ["virtualAvatar": enhancementVM.virtualAppearance.value.item]
-        }
+        let local = ALCenter.shared().centerProvideLocalUser().info.value
         
-        LiveSession.create(roomSettings: settings,
+        LiveSession.create(roomName: name,
+                           videoConfiguration: videoConfiguration,
                            type: liveType,
-                           extra: extra,
+                           ownerInfo: local,
                            success: { [unowned self] (session) in
                             self.joinLiving(session: session)
         }) { [unowned self] in
@@ -347,18 +350,22 @@ private extension CreateLiveViewController {
         
         let center = ALCenter.shared()
         center.liveSession = session
-        session.join(success: { [unowned session, unowned self] (info: LiveSession.JoinedInfo) in
+        let type = session.type
+        
+        session.join(success: { [unowned self] (info: LiveSession.JoinedInfo) in
             self.hiddenHUD()
             
-            switch session.type {
-            case .multiBroadcasters:
+            switch type {
+            case .multi:
                 self.performSegue(withIdentifier: "MultiBroadcastersViewController", sender: info)
-            case .singleBroadcaster:
+            case .single:
                 self.performSegue(withIdentifier: "SingleBroadcasterViewController", sender: info)
-            case .pkBroadcasters:
+            case .pk:
                 self.performSegue(withIdentifier: "PKBroadcastersViewController", sender: info)
-            case .virtualBroadcasters:
+            case .virtual:
                 self.performSegue(withIdentifier: "VirtualBroadcastersViewController", sender: info)
+            case .shopping:
+                self.performSegue(withIdentifier: "LiveShoppingViewController", sender: info)
             }
         }) { [unowned self] in
             self.hiddenHUD()

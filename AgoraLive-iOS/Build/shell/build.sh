@@ -23,9 +23,15 @@ ArchivePath=../Build/product/${APP_TARGET}-${BUILD_DATE}_${MODE}.xcarchive
 if [[ $MODE =~ "Release" ]] 
 then
 Export_Plist_File=exportPlist_release.plist
-elif [[ $MODE =~ "QA" ]] 
+elif [[ $MODE =~ "Lab2020" ]] 
 then
-Export_Plist_File=exportPlist_qa.plist
+Export_Plist_File=exportPlist_Lab2020.plist
+elif [[ $MODE =~ "Test2019" ]] 
+then
+Export_Plist_File=exportPlist_Test2019.plist
+elif [[ $MODE =~ "Test2020" ]] 
+then
+Export_Plist_File=exportPlist_Test2020.plist
 else 
 Export_Plist_File=exportPlist.plist
 fi

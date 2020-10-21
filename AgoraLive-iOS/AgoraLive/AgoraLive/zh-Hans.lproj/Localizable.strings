@@ -6,19 +6,21 @@
   Copyright © 2020 Agora. All rights reserved.
 */
 
-
 Cancel="取消";
 Done="完成";
 Confirm="确定";
 Reject="拒绝";
 End="结束";
 Accept="接受";
+Music="音乐";
 
 Lost_Connection="网络异常";
 Lost_Connection_Description="当前网络连接错误，请稍后再试";
 
 Lost_Connection_Retry="网络不给力，请稍后再试";
 Use_Cellular_Data="当前网络无WIFI，继续使用可能产生流量费用";
+
+Upload_Log="上传日志";
 
 // Main Page
 Multi_Broadcasters="多人连麦直播";
@@ -29,6 +31,8 @@ PK_Live="PK直播";
 PK_Live_Description="两个不同直播间的主播跨频道连麦PK，引爆直播间";
 Virtual_Live="虚拟主播";
 Virtual_Live_Description="用卡通形象模拟真人进行对话或直播";
+Live_Shopping="电商直播";
+Live_Shopping_Description="通过观众连麦和主播PK的方式带货";
 
 // Create Room Page
 Create_A_Live_Room="请创建一个房间";
@@ -140,7 +144,7 @@ Invite_PK="PK邀请";
 PK_Remaining="PK剩余";
 PK_Recieved_Invite="收到邀请";
 PK_Invite_Fail="PK邀请失败";
-PK_Invite_Reject="拒绝PK";
+PK_Invite_Reject="你的PK邀请被拒绝";
 Join_Other_Live_Room_Fail="进入另一个直播间失败";
 PK_End="PK结束";
 End_PK="结束PK";
@@ -153,5 +157,37 @@ Confirm_Apply_For_Broadcasting="你确定要\“申请上麦\”吗？";
 Broadcasting_Invitation="上麦邀请";
 Confirm_Accept_Broadcasting_Invitation="邀请您上麦是否接受？";
 
-Ending_Broadcasting="终止连麦";
-Confirm_Ending_Broadcasting="确定终止连麦？";
+End_Broadcasting="终止连麦";
+Confirm_End_Broadcasting="确定终止连麦？";
+
+// Live Shopping
+Product_List="商品列表";
+Product_Pending="待上架";
+Product_OnShelf="已上架";
+Product_Has_Been_Added_On_Shelf="商品已上架";
+Product_Is_No_Longer_Available="商品已下架";
+Product_Launch="上架";
+Product_Off_Shelf="下架";
+Product_Go="去看看";
+Product_On_Shelf_Notification="上架!";
+PK_Invitation="PK邀请";
+PK_Application="PK申请";
+Online_User="在线用户";
+All="全部";
+ApplicationOfBroadcasting="申请上麦";
+Invite="邀请";
+Inviting="邀请中";
+Buy_This_Product="你是否确定要购买这件商品?";
+Buy_Now="立即购买";
+Product_Purchased_Successfully="商品购买成功";
+User_Invitation_Timeout="对方未接受连麦邀请";
+
+Lipstick="口红";
+Rucksack="背包";
+iPad="iPad";
+Pants="裤子";
+
+Lipstick_Description="烈焰魅唇膏 16#(SCARLETROUGE)3g TF黑管口红";
+Rucksack_Description="Supreme x Louis Vuitton LV Shoulder Bag 17SS 大号斜跨包";
+iPad_Description="APPLE苹果 2020新款 iPad Pro 12.9英寸 银色 64GB WLAN版";
+Pants_Description="花花公子衬衫男短袖夏季";

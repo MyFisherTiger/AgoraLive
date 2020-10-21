@@ -16,6 +16,8 @@ class BottomToolsViewController: UIViewController {
     lazy var closeButton = UIButton()
     lazy var giftButton = UIButton()
     lazy var superRenderButton = UIButton()
+    lazy var shoppingButton = UIButton()
+    lazy var pkButton = RemindButton()
     
     var tintColor: UIColor = .black {
         didSet {
@@ -29,12 +31,8 @@ class BottomToolsViewController: UIViewController {
             giftButton.backgroundColor = tintColor
         }
     }
-    var liveType: LiveType = .multiBroadcasters {
-        didSet {
-            updateViews()
-            viewDidLayoutSubviews()
-        }
-    }
+    
+    var liveType: LiveType = .multi
     
     var perspective: LiveRoleType = .owner {
         didSet {
@@ -85,77 +83,81 @@ class BottomToolsViewController: UIViewController {
         
         var lastButton: UIButton
         
+        func buttonsLayout(_ buttons: [UIButton], extensionButton: UIButton, buttonWH: CGFloat, space: CGFloat) {
+            var lastButton: UIButton = extensionButton
+            
+            for button in buttons {
+                button.frame = CGRect(x: lastButton.frame.minX - space - buttonWH,
+                                      y: 0,
+                                      width: buttonWH,
+                                      height: buttonWH)
+                button.isCycle = true
+                lastButton = button
+            }
+        }
+        
         switch (liveType, perspective) {
-        case (.multiBroadcasters, .owner): fallthrough
-        case (.pkBroadcasters, .owner):    fallthrough
-        case (.singleBroadcaster, .owner):
-            musicButton.frame = CGRect(x: extensionButton.frame.minX - space - buttonWH,
-                                       y: 0,
-                                       width: buttonWH,
-                                       height: buttonWH)
-            musicButton.isCycle = true
-            
-            beautyButton.frame = CGRect(x: musicButton.frame.minX - space - buttonWH,
-                                        y: 0,
-                                        width: buttonWH,
-                                        height: buttonWH)
-            beautyButton.isCycle = true
+        case (.multi, .owner): fallthrough
+        case (.pk, .owner):    fallthrough
+        case (.single, .owner):
+            buttonsLayout([musicButton, beautyButton],
+                          extensionButton: extensionButton,
+                          buttonWH: buttonWH,
+                          space: space)
             
             lastButton = beautyButton
-        case (.virtualBroadcasters, .owner):
-            musicButton.frame = CGRect(x: extensionButton.frame.minX - space - buttonWH,
-                                       y: 0,
-                                       width: buttonWH,
-                                       height: buttonWH)
-            musicButton.isCycle = true
-            
+        case (.virtual, .owner):
+            buttonsLayout([musicButton],
+                          extensionButton: extensionButton,
+                          buttonWH: buttonWH,
+                          space: space)
+           
             lastButton = musicButton
-        case (.multiBroadcasters, .broadcaster):
-            giftButton.frame = CGRect(x: extensionButton.frame.minX - space - buttonWH,
-                                      y: 0,
-                                      width: buttonWH,
-                                      height: buttonWH)
-            giftButton.isCycle = true
-            
-            beautyButton.frame = CGRect(x: giftButton.frame.minX - space - buttonWH,
-                                        y: 0,
-                                        width: buttonWH,
-                                        height: buttonWH)
-            beautyButton.isCycle = true
+        case (.multi, .broadcaster):
+            buttonsLayout([giftButton, beautyButton],
+                          extensionButton: extensionButton,
+                          buttonWH: buttonWH,
+                          space: space)
             
             lastButton = beautyButton
-        case (.virtualBroadcasters, .broadcaster):
-            musicButton.frame = CGRect(x: extensionButton.frame.minX - space - buttonWH,
-                                       y: 0,
-                                       width: buttonWH,
-                                       height: buttonWH)
-            musicButton.isCycle = true
+        case (.virtual, .broadcaster):
+            buttonsLayout([musicButton],
+                          extensionButton: extensionButton,
+                          buttonWH: buttonWH,
+                          space: space)
             
             lastButton = musicButton
-        case (.pkBroadcasters, .audience):      fallthrough
-        case (.virtualBroadcasters, .audience): fallthrough
-        case (.multiBroadcasters, .audience):
-            giftButton.frame = CGRect(x: extensionButton.frame.minX - space - buttonWH,
-                                      y: 0,
-                                      width: buttonWH,
-                                      height: buttonWH)
-            giftButton.isCycle = true
+        case (.pk, .audience):      fallthrough
+        case (.virtual, .audience): fallthrough
+        case (.multi, .audience):
+            buttonsLayout([giftButton],
+                          extensionButton: extensionButton,
+                          buttonWH: buttonWH,
+                          space: space)
             
             lastButton = giftButton
-        case (.singleBroadcaster, .audience):
-            superRenderButton.frame = CGRect(x: extensionButton.frame.minX - space - buttonWH,
-                                             y: 0,
-                                             width: buttonWH,
-                                             height: buttonWH)
-            superRenderButton.isCycle = true
-            
-            giftButton.frame = CGRect(x: superRenderButton.frame.minX - space - buttonWH,
-                                      y: 0,
-                                      width: buttonWH,
-                                      height: buttonWH)
-            giftButton.isCycle = true
+        case (.single, .audience):
+            buttonsLayout([superRenderButton, giftButton],
+                          extensionButton: extensionButton,
+                          buttonWH: buttonWH,
+                          space: space)
             
             lastButton = giftButton
+        case (.shopping, .owner):
+            buttonsLayout([pkButton, shoppingButton],
+                          extensionButton: extensionButton,
+                          buttonWH: buttonWH,
+                          space: space)
+            
+            lastButton = shoppingButton
+        case (.shopping, .broadcaster): fallthrough
+        case (.shopping, .audience):
+            buttonsLayout([giftButton, shoppingButton],
+                          extensionButton: extensionButton,
+                          buttonWH: buttonWH,
+                          space: space)
+            
+            lastButton = shoppingButton
         default: fatalError()
         }
         
@@ -175,9 +177,9 @@ private extension BottomToolsViewController {
         superRenderButton.isHidden = true
         
         switch (liveType, perspective) {
-        case (.pkBroadcasters, .owner): fallthrough
-        case (.singleBroadcaster, .owner): fallthrough
-        case (.multiBroadcasters, .owner):
+        case (.pk, .owner): fallthrough
+        case (.single, .owner): fallthrough
+        case (.multi, .owner):
             beautyButton.isHidden = false
             musicButton.isHidden = false
             
@@ -188,7 +190,7 @@ private extension BottomToolsViewController {
             
             self.view.addSubview(beautyButton)
             self.view.addSubview(musicButton)
-        case (.multiBroadcasters, .broadcaster):
+        case (.multi, .broadcaster):
             beautyButton.isHidden = false
             giftButton.isHidden = false
             
@@ -199,7 +201,7 @@ private extension BottomToolsViewController {
             
             self.view.addSubview(beautyButton)
             self.view.addSubview(giftButton)
-        case (.virtualBroadcasters, .owner):
+        case (.virtual, .owner):
             musicButton.isHidden = false
             
             musicButton.setImage(UIImage(named:"icon-music-black"), for: .normal)
@@ -213,8 +215,8 @@ private extension BottomToolsViewController {
                                                                               NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)])
             
             self.view.addSubview(musicButton)
-        case (.virtualBroadcasters, .broadcaster): fallthrough
-        case (.virtualBroadcasters, .audience):
+        case (.virtual, .broadcaster): fallthrough
+        case (.virtual, .audience):
             giftButton.isHidden = false
             
             extensionButton.setImage(UIImage(named: "icon-more-black"), for: .normal)
@@ -226,12 +228,12 @@ private extension BottomToolsViewController {
                                                                               NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)])
             
             self.view.addSubview(giftButton)
-        case (.pkBroadcasters, .audience):          fallthrough
-        case (.multiBroadcasters, .audience):
+        case (.pk, .audience):          fallthrough
+        case (.multi, .audience):
             giftButton.isHidden = false
             giftButton.setImage(UIImage(named:"icon-gift"), for: .normal)
             self.view.addSubview(giftButton)
-        case (.singleBroadcaster, .audience):
+        case (.single, .audience):
             superRenderButton.isHidden = false
             giftButton.isHidden = false
             
@@ -241,6 +243,25 @@ private extension BottomToolsViewController {
             giftButton.setImage(UIImage(named:"icon-gift"), for: .normal)
             
             self.view.addSubview(superRenderButton)
+            self.view.addSubview(giftButton)
+        case (.shopping, .owner):
+            shoppingButton.isHidden = false
+            pkButton.isHidden = false
+            
+            shoppingButton.setImage(UIImage(named: "icon-货架"), for: .normal)
+            pkButton.setImage(UIImage(named: "icon-PK"), for: .normal)
+            
+            self.view.addSubview(shoppingButton)
+            self.view.addSubview(pkButton)
+        case (.shopping, .broadcaster): fallthrough
+        case (.shopping, .audience):
+            shoppingButton.isHidden = false
+            giftButton.isHidden = false
+            
+            shoppingButton.setImage(UIImage(named: "icon-货架"), for: .normal)
+            giftButton.setImage(UIImage(named:"icon-gift"), for: .normal)
+            
+            self.view.addSubview(shoppingButton)
             self.view.addSubview(giftButton)
         default: fatalError()
         }

@@ -11,6 +11,10 @@ import RxSwift
 import RxRelay
 
 class TabSelectView: UIScrollView {
+    enum Aligment {
+        case left, center
+    }
+    
     struct TitleProperty {
         var color: UIColor
         var font: UIFont
@@ -23,16 +27,18 @@ class TabSelectView: UIScrollView {
     }()
     
     private var titles: [String]?
-    private var titleButtons: [UIButton]?
+    private var titleButtons: [RemindButton]?
+    private var needLayoutButtons = false {
+        didSet {
+            if needLayoutButtons {
+                layoutIfNeeded()
+            }
+        }
+    }
     
     private let bag = DisposeBag()
     
-    var selectedIndex = BehaviorRelay(value: 0) {
-        didSet {
-            updateSelectedButton(selectedIndex.value)
-            updateUnderlinePosition()
-        }
-    }
+    let selectedIndex = BehaviorRelay(value: 0)
     
     var underlineColor: UIColor = UIColor(hexString: "#0088EB") {
         didSet {
@@ -46,7 +52,9 @@ class TabSelectView: UIScrollView {
     var selectedTitle = TitleProperty(color: UIColor.black,
                                       font: UIFont.systemFont(ofSize: 16, weight: .medium))
     
+    var alignment = Aligment.left
     var titleSpace: CGFloat = 28.0
+    var titleTopSpace: CGFloat = 0
     var underlineWidth: CGFloat? = nil
     var underlineHeight: CGFloat = 5
     
@@ -55,6 +63,15 @@ class TabSelectView: UIScrollView {
         self.layer.masksToBounds = true
         self.showsHorizontalScrollIndicator = false
         self.showsVerticalScrollIndicator = false
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if needLayoutButtons, let titles = titles {
+            needLayoutButtons = false
+            layoutButtons(titles: titles, space: titleSpace)
+        }
     }
 }
 
@@ -72,29 +89,44 @@ extension TabSelectView {
         }
         
         self.titles = titles
+        needLayoutButtons = true
         
-        layoutButtons(titles: titles, space: titleSpace)
         selectedIndex.accept(0)
         
-        selectedIndex.asObservable().subscribe(onNext: { [unowned self] (index) in
+        selectedIndex.subscribe(onNext: { [unowned self] (index) in
             self.updateSelectedButton(index)
             self.updateUnderlinePosition()
+            self.needRemind(false, index: index)
         }).disposed(by: bag)
+    }
+    
+    func needRemind(_ remind: Bool, index: Int) {
+        guard let buttons = titleButtons,
+            index <= buttons.count - 1
+            else {
+                return
+        }
+        let button = buttons[index]
+        
+        button.needRemind = remind
     }
 }
 
 private extension TabSelectView {
     func layoutButtons(titles: [String], space: CGFloat) {
-        var lastButtonMaxX: CGFloat?
-        var buttons = [UIButton]()
+        var lastButtonMaxX: CGFloat? = nil
+        var buttons = [RemindButton]()
+        
         for (index, title) in titles.enumerated() {
             let textSize = title.size(font: selectedTitle.font,
-                                      drawRange: CGSize(width: 0, height: bounds.height))
+                                      drawRange: CGSize(width: CGFloat(MAXFLOAT), height: bounds.height))
             
-            let button = UIButton(frame: CGRect(x: lastButtonMaxX ?? 0,
-                                                y: 0,
-                                                width: textSize.width,
-                                                height: textSize.height))
+            let frame = CGRect(x: lastButtonMaxX ?? 0,
+                               y: titleTopSpace,
+                               width: textSize.width,
+                               height: textSize.height)
+            
+            let button = RemindButton(frame: frame)
             button.setTitle(title, for: .normal)
             button.titleLabel?.font = unselectedTitle.font
             button.tag = index
@@ -109,12 +141,25 @@ private extension TabSelectView {
                         return
                 }
                 strongSelf.selectedIndex.accept(tButton.tag)
-                
-                let offsetX = tButton.frame.maxX - strongSelf.frame.width
-                let offset = CGPoint(x: offsetX > 0 ? offsetX : 0,
-                                     y: 0)
-                strongSelf.setContentOffset(offset, animated: true)
             }).disposed(by: bag)
+        }
+        
+        lastButtonMaxX = nil
+        
+        if alignment == .center {
+            let totalLength = buttons.last!.frame.maxX
+            let beginX = (bounds.width - totalLength) * 0.5
+            
+            for item in buttons {
+                var frame = item.frame
+                var pointer = frame.origin
+                
+                pointer.x = lastButtonMaxX ?? beginX
+                frame.origin = pointer
+                item.frame = frame
+                
+                lastButtonMaxX = item.frame.maxX + space
+            }
         }
         
         self.contentSize = CGSize(width: buttons.last!.frame.maxX,
@@ -132,7 +177,6 @@ private extension TabSelectView {
             if i == index {
                 item.titleLabel?.font = selectedTitle.font
                 item.setTitleColor(selectedTitle.color, for: .normal)
-                
             } else {
                 item.titleLabel?.font = unselectedTitle.font
                 item.setTitleColor(unselectedTitle.color, for: .normal)
@@ -161,15 +205,69 @@ private extension TabSelectView {
             w = buttons[index].frame.width
         }
         
+        let boundsWidth = UIScreen.main.bounds.width - 30
         let y = bounds.height - h
-        let offsetX: CGFloat = ((x + w) - bounds.width) >= 0 ? ((x + w) - bounds.width) : 0
-        self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
         
+        var offsetX: CGFloat = (x + w) - boundsWidth
+        offsetX = offsetX >= 0 ? offsetX : 0
+        
+        if (contentOffset.x + boundsWidth) < (x + w) {
+            self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+        } else if (contentOffset.x > x) {
+            self.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+        }
+                
         UIView.animate(withDuration: 0.3) { [unowned self] in
             self.underline.frame = CGRect(x: x,
                                           y: y,
                                           width: w,
                                           height: h)
         }
+    }
+}
+
+class RemindButton: UIButton {
+    private var remindView = FilletView(frame: CGRect.zero, filletRadius: 3)
+    
+    var needRemind: Bool = false {
+        didSet {
+            remindView.isHidden = !needRemind
+        }
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        initViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        initViews()
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        initViews()
+    }
+    
+    func initViews() {
+        needRemind = false
+        remindView.backgroundColor = .clear
+        remindView.insideBackgroundColor = UIColor(hexString: "#FF097E")
+        addSubview(remindView)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let w: CGFloat = 6
+        let h: CGFloat = 6
+        let x: CGFloat = bounds.width - w
+        let y: CGFloat = 0
+        
+        remindView.frame = CGRect(x: x,
+                                  y: y,
+                                  width: w,
+                                  height: h)
     }
 }

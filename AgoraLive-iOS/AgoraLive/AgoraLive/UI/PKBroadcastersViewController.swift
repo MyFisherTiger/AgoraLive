@@ -11,125 +11,6 @@ import RxSwift
 import RxRelay
 import MJRefresh
 
-class PKViewController: UIViewController {
-    @IBOutlet weak var pkTimeView: IconTextView!
-    @IBOutlet weak var leftRenderView: UIView!
-    @IBOutlet weak var rightRenderView: UIView!
-    @IBOutlet weak var intoOtherButton: UIButton!
-    @IBOutlet weak var rightLabel: UILabel!
-    @IBOutlet weak var giftBar: PKBar!
-    
-    private lazy var resultImageView: UIImageView = {
-        let wh: CGFloat = 110
-        let y: CGFloat = UIScreen.main.bounds.height
-        let x: CGFloat = ((self.view.bounds.width - wh) * 0.5)
-        let view = UIImageView(frame: CGRect.zero)
-        view.contentMode = .scaleAspectFit
-        view.frame = CGRect(x: x, y: y, width: wh, height: wh)
-        return view
-    }()
-    
-    private var timer: Timer!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view.backgroundColor = .clear
-        pkTimeView.offsetLeftX = -10
-        pkTimeView.offsetRightX = 10
-        pkTimeView.imageView.image = UIImage(named: "icon-time")
-        pkTimeView.label.textColor = .white
-        pkTimeView.label.font = UIFont.systemFont(ofSize: 11)
-        pkTimeView.label.adjustsFontSizeToFitWidth = true
-        pkTimeView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-    }
-    
-    var countDown: Int = 0
-    
-    func startCountingDown() {
-        guard timer == nil else {
-            return
-        }
-        timer = Timer(timeInterval: 1.0,
-                      target: self,
-                      selector: #selector(countingDown),
-                      userInfo: nil,
-                      repeats: true)
-        RunLoop.main.add(timer, forMode: .common)
-        timer.fire()
-    }
-    
-    func stopCountingDown() {
-        guard timer != nil else {
-            return
-        }
-        timer.invalidate()
-        timer = nil
-    }
-    
-    @objc private func countingDown() {
-        DispatchQueue.main.async { [unowned self] in
-            if self.countDown >= 0 {
-                let miniter = self.countDown / (60 * 1000)
-                let second = (self.countDown / 1000) % 60
-                let secondString = String(format: "%0.2d", second)
-                self.pkTimeView.label.textAlignment = .left
-                self.pkTimeView.label.text = "   \(NSLocalizedString("PK_Remaining")): \(miniter):\(secondString)"
-                self.countDown -= 1000
-            } else {
-                self.stopCountingDown()
-            }
-        }
-    }
-    
-    func showWinner(isLeft: Bool, completion: Completion = nil) {
-        resultImageView.image = UIImage(named: "pic-Winner")
-        
-        let wh: CGFloat = 110
-        let y: CGFloat = 127
-        var x: CGFloat
-        
-        if isLeft {
-            x = (leftRenderView.bounds.width - wh) * 0.5
-        } else {
-            x = leftRenderView.frame.maxX + (rightRenderView.bounds.width - wh) * 0.5
-        }
-        
-        self.showResultImgeView(newFrame: CGRect(x: x, y: y, width: wh, height: wh),
-                                completion: completion)
-    }
-    
-    func showDraw(completion: Completion = nil) {
-        resultImageView.image = UIImage(named: "pic-平局")
-        
-        let wh: CGFloat = 110
-        let y: CGFloat = 127
-        let x: CGFloat = ((self.view.bounds.width - wh) * 0.5)
-        self.showResultImgeView(newFrame: CGRect(x: x, y: y, width: wh, height: wh),
-                                completion: completion)
-        
-    }
-    
-    private func showResultImgeView(newFrame: CGRect, completion: Completion = nil) {
-        self.view.insertSubview(resultImageView, at: self.view.subviews.count)
-        resultImageView.isHidden = false
-        
-        UIView.animate(withDuration: TimeInterval.animation, animations: { [unowned self] in
-            self.resultImageView.frame = newFrame
-        }) { [unowned self] (finish) in
-            guard finish else {
-                return
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [unowned self] in
-                self.resultImageView.isHidden = true
-                if let completion = completion {
-                    completion()
-                }
-            }
-        }
-    }
-}
-
 class PKBroadcastersViewController: MaskViewController, LiveViewController {
     @IBOutlet weak var ownerView: IconTextView!
     @IBOutlet weak var pkContainerView: UIView!
@@ -138,7 +19,6 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
     @IBOutlet weak var chatViewHeight: NSLayoutConstraint!
     
     private var pkView: PKViewController?
-    private var roomListVM = LiveListVM()
     var pkVM: PKVM!
     
     // LiveViewController
@@ -150,20 +30,12 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
     var bag: DisposeBag = DisposeBag()
     
     // ViewController
-    var userListVC: UserListViewController?
     var giftAudienceVC: GiftAudienceViewController?
-    var chatVC: ChatViewController?
     var bottomToolsVC: BottomToolsViewController?
-    var beautyVC: BeautySettingsViewController?
-    var musicVC: MusicViewController?
-    var dataVC: RealDataViewController?
-    var extensionVC: ExtensionViewController?
-    var mediaSettingsNavi: UIViewController?
-    var giftVC: GiftViewController?
-    var gifVC: GIFViewController?
+    var chatVC: ChatViewController?
     
     // View
-    @IBOutlet weak var personCountView: IconTextView!
+    @IBOutlet weak var personCountView: RemindIconTextView!
     
     internal lazy var chatInputView: ChatInputView = {
         let chatHeight: CGFloat = 50.0
@@ -177,14 +49,20 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
     }()
     
     // ViewModel
-    var audienceListVM = LiveRoomAudienceList()
+    var userListVM: LiveUserListVM!
+    var giftVM: GiftVM!
     var musicVM = MusicVM()
     var chatVM = ChatVM()
-    var giftVM = GiftVM()
     var deviceVM = MediaDeviceVM()
     var playerVM = PlayerVM()
     var enhancementVM = VideoEnhancementVM()
     var monitor = NetworkMonitor(host: "www.apple.com")
+    
+    deinit {
+        #if !RELEASE
+        print("deinit PKBroadcastersViewController")
+        #endif
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -196,16 +74,19 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
             return
         }
         
+        setIdleTimerActive(false)
         liveSession(session)
+        liveRole(session)
         liveRoom(session: session)
+        bottomTools(session)
+        
         audience()
         chatList()
         gift()
-        
-        bottomTools(session: session, tintColor: tintColor)
         chatInput()
         musicList()
         netMonitor()
+        
         PK(session: session)
     }
     
@@ -219,15 +100,14 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
             let vc = segue.destination as! GiftAudienceViewController
             self.giftAudienceVC = vc
         case "BottomToolsViewController":
-            guard let session = ALCenter.shared().liveSession,
-                let role = session.role else {
+            guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
-            
+            let role = session.role.value
             let vc = segue.destination as! BottomToolsViewController
-            vc.perspective = role.type
             vc.liveType = session.type
+            vc.perspective = role.type
             self.bottomToolsVC = vc
         case "ChatViewController":
             let vc = segue.destination as! ChatViewController
@@ -245,12 +125,7 @@ class PKBroadcastersViewController: MaskViewController, LiveViewController {
 extension PKBroadcastersViewController {
     // MARK: - Live Room
     func liveRoom(session: LiveSession) {
-        guard let owner = session.owner else {
-            assert(false)
-            return
-        }
-        
-        let images = ALCenter.shared().centerProvideImagesHelper()
+        let owner = session.owner
         
         ownerView.offsetLeftX = -14
         ownerView.offsetRightX = 5
@@ -258,25 +133,17 @@ extension PKBroadcastersViewController {
         ownerView.label.font = UIFont.systemFont(ofSize: 11)
         ownerView.backgroundColor = tintColor
         
-        switch owner {
-        case .localUser(let user):
-            ownerView.label.text = user.info.name
-            ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
-            deviceVM.camera = .on
-            deviceVM.mic = .on
-            pkView?.intoOtherButton.isHidden = true
-            pkButton.isHidden = false
-        case .otherUser(let remote):
-            ownerView.label.text = remote.info.name
-            ownerView.imageView.image = images.getHead(index: remote.info.imageIndex)
-            deviceVM.camera = .off
-            deviceVM.mic = .off
-            pkView?.intoOtherButton.isHidden = false
-            pkButton.isHidden = true
-        }
+        owner.subscribe(onNext: { [unowned self] (owner) in
+            let images = ALCenter.shared().centerProvideImagesHelper()
+            let user = owner.user
+            self.ownerView.label.text = user.info.name
+            self.ownerView.imageView.image = images.getHead(index: user.info.imageIndex)
+            self.pkView?.intoOtherButton.isHidden = owner.isLocal
+            self.pkButton.isHidden = !owner.isLocal
+        }).disposed(by: bag)
         
         bottomToolsVC?.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
-            if self.pkVM.statistics.value.state.isDuring {
+            if self.pkVM.state.value.isDuration {
                 self.showAlert(NSLocalizedString("End_PK"),
                                message: NSLocalizedString("End_PK_Message"),
                                action1: NSLocalizedString("Cancel"),
@@ -294,256 +161,235 @@ extension PKBroadcastersViewController {
                 }
             }
         }).disposed(by: bag)
-    }
-    
-    func PK(session: LiveSession) {
-        pkView?.intoOtherButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.intoOtherRoom()
-        }).disposed(by: bag)
-        
-        pkVM.statistics.subscribe(onNext: { [unowned self] (statistics) in
-            self.showResult(statistics: statistics)
-        }).disposed(by: bag)
         
         pkButton.rx.tap.subscribe(onNext: { [unowned self] in
-            self.showMaskView(color: UIColor.clear) { [unowned self] in
-                self.hiddenMaskView()
-                self.hiddenInviteList()
-            }
-            
-            self.presentInviteList()
+            self.presentInvitationRoomList()
+        }).disposed(by: bag)
+    }
+}
+
+private extension PKBroadcastersViewController {
+    func PK(session: LiveSession) {
+        pkView?.intoOtherButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.intoRemoteRoom()
         }).disposed(by: bag)
         
-        // PK VM
-        let roomId = session.roomId
+        // VM
+        pkVM.event.subscribe(onNext: { [unowned self] (event) in
+            switch event {
+            case .start:
+                break
+            case .end(let result):
+                self.show(result: result) { [unowned self] in
+                    self.renderView.isHidden = false
+                    self.pkContainerView.isHidden = true
+                }
+                self.show(result: result)
+                
+            case .rankChanged(let local, let remote):
+                self.pkView?.giftBar.leftValue = local
+                self.pkView?.giftBar.rightValue = remote
+            }
+        }).disposed(by: bag)
         
-        pkVM.receivedPKInvite.subscribe(onNext: { [unowned self] (room) in
+        pkVM.state.subscribe(onNext: { [unowned self] (state) in
+            guard let session = ALCenter.shared().liveSession else {
+                return
+            }
+            
+            let owner = session.owner.value
+            
+            switch state {
+            case .duration(let info):
+                guard let leftRender = self.pkView?.leftRenderView,
+                    let rightRender = self.pkView?.rightRenderView else {
+                    return
+                }
+                self.renderView.isHidden = true
+                self.pkContainerView.isHidden = false
+                self.pkButton.isHidden = true
+                
+                self.playerVM.startRenderVideoStreamOf(user: owner.user,
+                                                       on: leftRender)
+                self.playerVM.startRenderVideoStreamOf(user: info.remoteRoom.owner,
+                                                       on: rightRender)
+                
+                self.pkView?.startCountingDown()
+                self.pkView?.giftBar.leftValue = info.localRank
+                self.pkView?.giftBar.rightValue = info.remoteRank
+                self.pkView?.rightLabel.text = info.remoteRoom.owner.info.name
+                
+                self.pkView?.countDown = info.countDown - (Int(NSDate().timeIntervalSince1970) - Int(info.startTime / 1000))
+                let height = UIScreen.main.bounds.height - self.pkContainerView.frame.maxY - UIScreen.main.heightOfSafeAreaBottom - 20 - self.bottomToolsVC!.view.bounds.height
+                self.chatViewHeight.constant = height
+            case .none:
+                self.pkButton.isHidden = !owner.isLocal
+                
+                self.playerVM.startRenderVideoStreamOf(user: owner.user,
+                                                       on: self.renderView)
+                self.pkView?.stopCountingDown()
+                self.chatViewHeight.constant = 219
+            default:
+                break
+            }
+        }).disposed(by: bag)
+        
+        pkVM.receivedInvitation.subscribe(onNext: { [unowned self] (battle) in
             self.showAlert(message: NSLocalizedString("PK_Recieved_Invite"),
                            action1: NSLocalizedString("Reject"),
                            action2: NSLocalizedString("Confirm"),
                            handler1: { [unowned self] (_) in
-                            guard let role = ALCenter.shared().liveSession?.role else {
-                                assert(false)
-                                return
-                            }
-                            
-                            self.pkVM.rejectPK(localRoom: roomId, localUser: role, inviteRoom: room)
+                            self.pkVM.reject(invitation: battle)
             }) { [unowned self] (_) in
-                self.pkVM.startPK(action: .on,
-                                  roomId: roomId,
-                                  opponentRoomId: room.roomId) { [unowned self] (_) in
-                                    self.showAlert(message: NSLocalizedString("PK_Invite_Fail"))
-                }
+                self.pkVM.accept(invitation: battle)
             }
         }).disposed(by: bag)
         
-        pkVM.receivedPKReject.subscribe(onNext: { [unowned self] (room) in
-            self.showAlert(message: NSLocalizedString("PK_Invite_Reject"))
+        pkVM.invitationIsByRejected.subscribe(onNext: { [unowned self] (battle) in
+            self.showTextToast(text: NSLocalizedString("PK_Invite_Reject"))
+        }).disposed(by: bag)
+        
+        pkVM.requestError.subscribe(onNext: { [unowned self] (text) in
+            self.showTextToast(text: text)
         }).disposed(by: bag)
     }
     
-    func intoOtherRoom() {
-        guard let session = ALCenter.shared().liveSession else {
+    func intoRemoteRoom() {
+        guard let session = ALCenter.shared().liveSession,
+            let pkInfo = self.pkVM.state.value.pkInfo else {
             assert(false)
             return
         }
         
         session.leave()
         
-        let fail: Completion = {
-            self.showAlert(NSLocalizedString("Join_Other_Live_Room_Fail"))
-        }
+        let owner = pkInfo.remoteRoom.owner
+        let role = session.role.value
+        let room = Room(name: "",
+                        roomId: pkInfo.remoteRoom.roomId,
+                        imageURL: "",
+                        personCount: 0,
+                        owner: pkInfo.remoteRoom.owner)
         
-        let settings = LocalLiveSettings(title: "")
-        let newSession = LiveSession(roomId: pkVM.statistics.value.opponentRoomId, settings: settings, type: .pkBroadcasters)
+        let newSession = LiveSession(room: room,
+                                     videoConfiguration: VideoConfiguration(),
+                                     type: .pk,
+                                     owner: .otherUser(owner),
+                                     role: role)
+        
         newSession.join(success: { [unowned newSession, unowned self] (joinedInfo) in
+            guard let pkInfo = joinedInfo.pkInfo,
+                let vm = try? PKVM(room: joinedInfo.room, type: .pk, state: pkInfo),
+                let navigation = self.navigationController else {
+                    assert(false)
+                    return
+            }
+            
             ALCenter.shared().liveSession = newSession
             let newPk = UIStoryboard.initViewController(of: "PKBroadcastersViewController",
-                                                        class: PKBroadcastersViewController.self)
+                                                        class: PKBroadcastersViewController.self,
+                                                        on: "Live")
             
-            var statistics: PKStatistics
+            newPk.userListVM = LiveUserListVM(room: joinedInfo.room)
+            newPk.userListVM.updateGiftListWithJson(list: joinedInfo.giftAudience)
+            newPk.pkVM = vm
             
-            if let pkInfo = joinedInfo.pkInfo {
-                statistics = try! PKStatistics(dic: pkInfo)
-            } else {
-                statistics = PKStatistics(state: .none)
-            }
-            
-            newPk.pkVM = PKVM(statistics: statistics)
-            guard let navigation = self.navigationController else {
-                return
-            }
             navigation.popViewController(animated: false)
             navigation.pushViewController(newPk, animated: false)
-        }, fail: fail)
-    }
-}
-
-private extension PKBroadcastersViewController {
-    func showResult(statistics: PKStatistics) {
-        if let result = statistics.state.hasResult {
-            let completion = { [weak self] in
-                let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
-                view.text = NSLocalizedString("PK_End")
-                self?.showToastView(view, duration: 0.2)
-                self?.updateViewsWith(statistics: statistics)
-            }
-            
-            switch result {
-            case .success:
-                self.pkView?.showWinner(isLeft: true, completion: completion)
-            case .fail:
-                self.pkView?.showWinner(isLeft: false, completion: completion)
-            case .draw:
-                self.pkView?.showDraw(completion: completion)
-            }
-        } else {
-            updateViewsWith(statistics: statistics)
+        }) { [weak self] in
+            self?.showTextToast(text: NSLocalizedString("Join_Other_Live_Room_Fail"))
         }
     }
     
-    func updateViewsWith(statistics: PKStatistics) {
-        guard let session = ALCenter.shared().liveSession,
-            let owner = session.owner else {
-                return
-        }
+    func presentInvitationRoomList() {
+        self.showMaskView(color: UIColor.clear)
         
-        renderView.isHidden = statistics.state.isDuring
-        pkContainerView.isHidden = !statistics.state.isDuring
+        let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
+                                                 class: CVUserListViewController.self,
+                                                 on: "Popover")
         
-        switch (owner, statistics.state.isDuring) {
-        case (.localUser(let user), false):
-            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
-                                                 view: renderView)
-            pkButton.isHidden = false
-        case (.otherUser(let user), false):
-            playerVM.startRenderRemoteVideoStream(id: user.agoraUserId,
-                                             view: renderView)
-            pkButton.isHidden = true
-        case (.localUser(let user), true):
-            guard let pkView = self.pkView else {
-                assert(false)
-                return
-            }
-            
-            let leftRenderView = pkView.leftRenderView
-            let rightRenderView = pkView.rightRenderView
-            
-            playerVM.startRenderLocalVideoStream(id: user.agoraUserId,
-                                                 view: leftRenderView!)
-            
-            let opponentUser = statistics.opponentOwner!.agoraUserId
-            playerVM.startRenderRemoteVideoStream(id: opponentUser,
-                                             view: rightRenderView!)
-            pkButton.isHidden = true
-        case (.otherUser(let user), true):
-            guard let pkView = self.pkView else {
-                assert(false)
-                return
-            }
-            
-            let leftRenderView = pkView.leftRenderView
-            let rightRenderView = pkView.rightRenderView
-            
-            playerVM.startRenderRemoteVideoStream(id: user.agoraUserId,
-                                             view: leftRenderView!)
-            
-            let opponentUser = statistics.opponentOwner!.agoraUserId
-            playerVM.startRenderRemoteVideoStream(id: opponentUser,
-                                             view: rightRenderView!)
-            pkButton.isHidden = true
-        }
+        vc.pkVM = pkVM
+        vc.showType = .onlyInvitationOfPK
+        vc.view.cornerRadius(10)
         
-        self.pkView?.countDown = statistics.countDown
-        
-        if statistics.state.isDuring {
-            self.pkView?.startCountingDown()
-            self.pkView?.giftBar.leftValue = statistics.currentGift
-            self.pkView?.giftBar.rightValue = statistics.opponentGift
-            self.pkView?.rightLabel.text = statistics.opponentOwner!.info.name
-            let height = UIScreen.main.bounds.height - self.pkContainerView.frame.maxY - UIScreen.main.heightOfSafeAreaBottom - 20 - self.bottomToolsVC!.view.bounds.height
-            self.chatViewHeight.constant = height
-        } else {
-            self.pkView?.stopCountingDown()
-            self.chatViewHeight.constant = 219
-        }
-    }
-    
-    func presentInviteList() {
-        guard let session = ALCenter.shared().liveSession,
-            let role = session.role else {
-                assert(false)
-                return
-        }
-        
-        let roomId = session.roomId
-        
-        let inviteVC = UIStoryboard.initViewController(of: "UserListViewController",
-                                                       class: UserListViewController.self)
-        
-        self.userListVC = inviteVC
-        
-        inviteVC.showType = .pk
-        inviteVC.view.cornerRadius(10)
-        
-        let presenetedHeight: CGFloat = UIScreen.main.heightOfSafeAreaTop + 526.0 + 50.0
+        let presenetedHeight: CGFloat = 526.0 + UIScreen.main.heightOfSafeAreaTop
         let y = UIScreen.main.bounds.height - presenetedHeight
         let presentedFrame = CGRect(x: 0,
                                     y: y,
                                     width: UIScreen.main.bounds.width,
                                     height: presenetedHeight)
         
-        self.presentChild(inviteVC,
+        vc.inviteRoom.subscribe(onNext: { [unowned self] (room) in
+            self.hiddenMaskView()
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要邀请\"\(room.name)\"进行PK?"
+            } else {
+                message = "Do you send a invitation to \"\(room.name)\"?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.pkVM.sendInvitationTo(room: room)
+            }
+        }).disposed(by: bag)
+        
+        vc.accepteApplicationOfRoom.subscribe(onNext: { [unowned self] (battle) in
+            self.hiddenMaskView()
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要接受\"\(battle.initatorRoom.name)\"的邀请?"
+            } else {
+                message = "Do you accept \(battle.initatorRoom.name)'s pk invitation?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.pkVM.accept(invitation: battle)
+            }
+        }).disposed(by: bag)
+        
+        vc.rejectApplicationOfRoom.subscribe(onNext: { [unowned self] (battle) in
+            self.hiddenMaskView()
+            var message: String
+            if DeviceAssistant.Language.isChinese {
+                message = "你是否要拒绝\"\(battle.initatorRoom.name)\"的邀请?"
+            } else {
+                message = "Do you reject \(battle.initatorRoom.name)'s pk invitation?"
+            }
+            
+            self.showAlert(message: message,
+                           action1: NSLocalizedString("Cancel"),
+                           action2: NSLocalizedString("Confirm")) { [unowned self] (_) in
+                            self.pkVM.reject(invitation: battle)
+            }
+        }).disposed(by: bag)
+        
+        self.presentChild(vc,
                           animated: true,
                           presentedFrame: presentedFrame)
-        
-        // Room List
-        roomListVM.presentingType = .pkBroadcasters
-        roomListVM.refetch()
-        
-        inviteVC.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned inviteVC] in
-            self.roomListVM.refetch(success: {
-                inviteVC.tableView.mj_header?.endRefreshing()
-            }) { [unowned inviteVC] in // fail
-                inviteVC.tableView.mj_header?.endRefreshing()
-            }
-        })
-        
-        inviteVC.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned inviteVC] in
-            self.roomListVM.fetch(success: {
-                inviteVC.tableView.mj_footer?.endRefreshing()
-            }) { [unowned inviteVC] in // fail
-                inviteVC.tableView.mj_footer?.endRefreshing()
-            }
-        })
-        
-        inviteVC.selectedInviteRoom.subscribe(onNext: { [unowned self] (room) in
-            self.hiddenMaskView()
-            self.hiddenInviteList()
-            
-            self.pkVM.invitePK(localRoom: roomId, localUser: role, inviteRoom: room) { (error) in
-                self.showAlert(message: NSLocalizedString("PK_Invite_Fail"))
-            }
-        }).disposed(by: bag)
-        
-        roomListVM.presentingList.subscribe(onNext: { [unowned self] (list) in
-            var newList = list
-            let index = newList.firstIndex { (room) -> Bool in
-                return roomId == room.roomId
-            }
-            
-            if let index = index {
-                newList.remove(at: index)
-            }
-            
-            self.userListVC?.roomList = newList
-        }).disposed(by: bag)
     }
     
-    func hiddenInviteList() {
-        if let vc = self.userListVC {
-            self.dismissChild(vc, animated: true)
-            self.userListVC = nil
+    func show(result: PKResult, completion: Completion = nil) {
+        let tCompletion = { [weak self] in
+            if let completion = completion {
+                completion()
+            }
+            
+            let view = TextToast(frame: CGRect(x: 0, y: 200, width: 0, height: 44), filletRadius: 8)
+            view.text = NSLocalizedString("PK_End")
+            self?.showToastView(view, duration: 0.2)
+        }
+        
+        switch result {
+        case .win:
+            self.pkView?.showWinner(isLeft: true, completion: tCompletion)
+        case .draw:
+            self.pkView?.showDraw(completion: tCompletion)
+        case .lose:
+            self.pkView?.showWinner(isLeft: false, completion: tCompletion)
         }
     }
 }

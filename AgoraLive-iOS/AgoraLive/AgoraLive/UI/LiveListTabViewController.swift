@@ -26,6 +26,7 @@ class LiveListTabViewController: MaskViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         roomListRefresh(false)
+        perMinuterRefresh()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -54,8 +55,7 @@ class LiveListTabViewController: MaskViewController {
         case "LiveListViewController":
             listVC = segue.destination as? LiveListViewController
         case "CreateLiveNavigation":
-            guard let sender = sender,
-                let type = sender as? LiveType,
+            guard let type = sender as? LiveType,
                 let navi = segue.destination as? UINavigationController,
                 let vc = navi.viewControllers.first as? CreateLiveViewController else {
                     assert(false)
@@ -63,73 +63,93 @@ class LiveListTabViewController: MaskViewController {
             }
             
             vc.liveType = type
+        default:
+            break
+        }
+        
+        guard let sender = sender,
+            let info = sender as? LiveSession.JoinedInfo,
+            let vc = segue.destination as? LiveViewController else {
+            return
+        }
+        
+        vc.userListVM = LiveUserListVM(room: info.room)
+        vc.userListVM.updateGiftListWithJson(list: info.giftAudience)
+        
+        vc.giftVM = GiftVM(room: info.room)
+        
+        switch segueId {
         case "MultiBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let seatInfo = info.seatInfo else {
+            guard let seatInfo = info.seatInfo,
+                let vm = try? LiveSeatVM(room: info.room, list: seatInfo) else {
                     assert(false)
                     return
             }
             
             let vc = segue.destination as? MultiBroadcastersViewController
-            vc?.hidesBottomBarWhenPushed = true
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            vc?.seatVM = try! LiveSeatVM(list: seatInfo)
-        case "SingleBroadcasterViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo else {
-                    fatalError()
-            }
-            
-            let vc = segue.destination as? SingleBroadcasterViewController
-            vc?.hidesBottomBarWhenPushed = true
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.multiHostsVM = MultiHostsVM(room: info.room)
+            vc?.seatVM = vm
         case "PKBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo else {
-                    fatalError()
-            }
-            
-            var statistics: PKStatistics
-            
-            if let pkInfo = info.pkInfo {
-                statistics = try! PKStatistics(dic: pkInfo)
-            } else {
-                statistics = PKStatistics(state: .none)
+            guard let pkInfo = info.pkInfo,
+                let vm = try? PKVM(room: info.room, type: .pk, state: pkInfo) else {
+                    assert(false)
+                    return
             }
             
             let vc = segue.destination as? PKBroadcastersViewController
-            vc?.hidesBottomBarWhenPushed = true
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            vc?.pkVM = PKVM(statistics: statistics)
+            vc?.pkVM = vm
         case "VirtualBroadcastersViewController":
-            guard let sender = sender,
-                let info = sender as? LiveSession.JoinedInfo,
-                let seatInfo = info.seatInfo,
-                let session = ALCenter.shared().liveSession else {
-                    fatalError()
+            guard let seatInfo = info.seatInfo,
+                let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
+                let session = ALCenter.shared().liveSession,
+                let vc = segue.destination as? VirtualBroadcastersViewController else {
+                    assert(false)
+                    return
             }
             
-            let vc = segue.destination as? VirtualBroadcastersViewController
-            vc?.hidesBottomBarWhenPushed = true
-            vc?.audienceListVM.updateGiftListWithJson(list: info.giftAudience)
-            let seatVM = try! LiveSeatVM(list: seatInfo)
-            vc?.seatVM = seatVM
+            vc.multiHostsVM = MultiHostsVM(room: info.room)
+            vc.seatVM = seatVM
             
-            var broadcasting: VirtualVM.Broadcasting
+            var hostCount: HostCount
             
             if seatVM.list.value.count == 1,
                 let remote = seatVM.list.value[0].user {
-                broadcasting = .multi([session.owner.user, remote])
+                hostCount = .multi([session.owner.value.user, remote])
             } else {
-                broadcasting = .single(session.owner.user)
+                hostCount = .single(session.owner.value.user)
+            }
+            vc.hostCount = BehaviorRelay(value: hostCount)
+            
+            vc.enhancementVM.localVirtualAppearance(fail: { [unowned self, unowned vc] in
+                vc.leave()
+                self.showTextToast(text: "Load Animoji fail")
+            })
+        case "LiveShoppingViewController":
+            guard let seatInfo = info.seatInfo,
+                let seatVM = try? LiveSeatVM(room: info.room, list: seatInfo),
+                let pkInfo = info.pkInfo,
+                let pkVM = try? PKVM(room: info.room, type: .shopping, state: pkInfo),
+                let session = ALCenter.shared().liveSession else {
+                    assert(false)
+                    return
             }
             
-            if let virtualAppearance = info.virtualAppearance {
-                vc?.enhancementVM.virtualAppearance(VirtualAppearance.item(virtualAppearance))
-            }
+            let vc = segue.destination as? LiveShoppingViewController
+            vc?.userListVM.updateGiftListWithJson(list: info.giftAudience)
+            vc?.multiHostsVM = MultiHostsVM(room: info.room)
+            vc?.goodsVM = GoodsVM(room: info.room)
+            vc?.seatVM = seatVM
+            vc?.pkVM = pkVM
             
-            vc?.virtualVM = VirtualVM(broadcasting: BehaviorRelay(value: broadcasting))
+            var hostCount: HostCount
+            
+            if seatVM.list.value.count == 1,
+                let remote = seatVM.list.value[0].user {
+                hostCount = .multi([session.owner.value.user, remote])
+            } else {
+                hostCount = .single(session.owner.value.user)
+            }
+            vc?.hostCount = BehaviorRelay(value: hostCount)
         default:
             break
         }
@@ -143,7 +163,7 @@ private extension LiveListTabViewController {
         createButton.layer.shadowColor = UIColor(hexString: "#BD3070").cgColor
         
         createButton.rx.tap.subscribe(onNext: { [unowned self] in
-            if self.listVM.presentingType != .virtualBroadcasters {
+            if self.listVM.presentingType != .virtual {
                 self.performSegue(withIdentifier: "CreateLiveNavigation", sender: self.listVM.presentingType)
             } else {
                 self.performSegue(withIdentifier: "VirtualCreatNavigation", sender: nil)
@@ -165,10 +185,11 @@ private extension LiveListTabViewController {
             var type: LiveType
             
             switch index {
-            case 0: type = .multiBroadcasters
-            case 1: type = .singleBroadcaster
-            case 2: type = .pkBroadcasters
-            case 3: type = .virtualBroadcasters
+            case 0: type = .multi
+            case 1: type = .single
+            case 2: type = .pk
+            case 3: type = .virtual
+            case 4: type = .shopping
             default: fatalError()
             }
             
@@ -205,7 +226,7 @@ private extension LiveListTabViewController {
         
         // MJRefresh
         vc.collectionView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self, unowned vc] in
-            self.listVM.refetch(success: {
+            self.listVM.refetch(success: { [unowned vc] in
                 vc.collectionView.mj_header?.endRefreshing()
             }) { [unowned vc] in // fail
                 vc.collectionView.mj_header?.endRefreshing()
@@ -213,42 +234,51 @@ private extension LiveListTabViewController {
         })
         
         vc.collectionView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self, unowned vc] in
-            self.listVM.fetch(success: {
+            self.listVM.fetch(success: { [unowned vc] in
                 vc.collectionView.mj_footer?.endRefreshing()
             }) { [unowned vc] in // fail
                 vc.collectionView.mj_footer?.endRefreshing()
             }
         })
         
-        vc.collectionView.rx.modelSelected(RoomBrief.self).subscribe(onNext: { [unowned self] (room) in
+        vc.collectionView.rx.modelSelected(Room.self).subscribe(onNext: { [unowned self] (room) in
             let type = self.listVM.presentingType
-            var settings = LocalLiveSettings(title: room.name)
-            var media = settings.media
+            
+            var media = VideoConfiguration()
             
             switch type {
-            case .multiBroadcasters:
+            case .multi:
                 media.resolution = AgoraVideoDimension240x240
                 media.frameRate = .fps15
                 media.bitRate = 200
-            case .singleBroadcaster:
+            case .single:
                 media.resolution = CGSize.AgoraVideoDimension360x640
                 media.frameRate = .fps15
                 media.bitRate = 600
-            case .pkBroadcasters:
+            case .pk:
                 media.resolution = CGSize.AgoraVideoDimension360x640
                 media.frameRate = .fps15
                 media.bitRate = 800
-            case .virtualBroadcasters:
+            case .virtual:
                 media.resolution = CGSize.AgoraVideoDimension720x1280
                 media.frameRate = .fps15
                 media.bitRate = 1000
+            case .shopping:
+                media.resolution = CGSize.AgoraVideoDimension360x640
+                media.frameRate = .fps15
+                media.bitRate = 600
             }
             
-            settings.media = media
-            
-            let session = LiveSession(roomId: room.roomId,
-                                      settings: settings,
-                                      type: type)
+            let local = ALCenter.shared().centerProvideLocalUser()
+            let role = LiveLocalUser(type: .audience,
+                                     info: local.info.value,
+                                     permission: [],
+                                     agUId: 0)
+            let session = LiveSession(room: room,
+                                      videoConfiguration: media,
+                                      type: type,
+                                      owner: LiveSession.Owner.otherUser(room.owner),
+                                      role: role)
             self.joinLiving(session: session)
         }).disposed(by: bag)
         
@@ -275,6 +305,10 @@ private extension LiveListTabViewController {
     }
     
     func perMinuterRefresh() {
+        guard timer == nil else {
+            return
+        }
+        
         timer = Timer(fireAt: Date(timeIntervalSinceNow: 60.0),
                       interval: 60.0,
                       target: self,
@@ -324,18 +358,21 @@ extension LiveListTabViewController {
             self.hiddenHUD()
             
             switch session.type {
-            case .multiBroadcasters:
+            case .multi:
                 self.performSegue(withIdentifier: "MultiBroadcastersViewController", sender: info)
-            case .singleBroadcaster:
+            case .single:
                 self.performSegue(withIdentifier: "SingleBroadcasterViewController", sender: info)
-            case .pkBroadcasters:
+            case .pk:
                 self.performSegue(withIdentifier: "PKBroadcastersViewController", sender: info)
-            case .virtualBroadcasters:
+            case .virtual:
                 self.performSegue(withIdentifier: "VirtualBroadcastersViewController", sender: info)
+            case .shopping:
+                self.performSegue(withIdentifier: "LiveShoppingViewController", sender: info)
             }
         }) { [unowned self] in
             self.hiddenHUD()
             self.showAlert(message:"join live fail")
+            self.roomListRefresh()
         }
     }
 }

@@ -73,5 +73,8 @@ class MusicViewController: UITableViewController {
         musicLinkLabel.backgroundColor = UIColor(hexString: "#EEEEEE")
         musicLinkLabel.cornerRadius(4)
         musicLinkLabel.layer.masksToBounds = true
+        
+        tableView.delegate = nil
+        tableView.dataSource = nil
     }
 }

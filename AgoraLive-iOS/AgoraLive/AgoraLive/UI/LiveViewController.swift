@@ -11,6 +11,17 @@ import RxSwift
 import RxRelay
 import MJRefresh
 
+enum HostCount {
+    case single(LiveRole), multi([LiveRole])
+    
+    var isSingle: Bool {
+        switch self {
+        case .single: return true
+        case .multi:  return false
+        }
+    }
+}
+
 protocol RxViewController where Self: UIViewController {
     var bag: DisposeBag {get set}
 }
@@ -18,28 +29,20 @@ protocol RxViewController where Self: UIViewController {
 protocol LiveViewController: RxViewController where Self: MaskViewController {
     var tintColor: UIColor {get set}
     
-    var chatInputView: ChatInputView {get set}
-    
     // ViewController
-    var userListVC: UserListViewController? {get set}
     var giftAudienceVC: GiftAudienceViewController? {get set}
-    var chatVC: ChatViewController? {get set}
     var bottomToolsVC: BottomToolsViewController? {get set}
-    var beautyVC: BeautySettingsViewController? {get set}
-    var musicVC: MusicViewController? {get set}
-    var dataVC: RealDataViewController? {get set}
-    var extensionVC: ExtensionViewController? {get set}
-    var mediaSettingsNavi: UIViewController? {get set}
-    var giftVC: GiftViewController? {get set}
+    var chatVC: ChatViewController? {get set}
     
     // View
-    var personCountView: IconTextView! {get set}
+    var personCountView: RemindIconTextView! {get set}
+    var chatInputView: ChatInputView {get set}
     
     // View Model
-    var audienceListVM: LiveRoomAudienceList {get set}
+    var userListVM: LiveUserListVM! {get set}
+    var giftVM: GiftVM! {get set}
     var musicVM: MusicVM {get set}
     var chatVM: ChatVM {get set}
-    var giftVM: GiftVM {get set}
     var deviceVM: MediaDeviceVM {get set}
     var playerVM: PlayerVM {get set}
     var enhancementVM: VideoEnhancementVM {get set}
@@ -58,18 +61,22 @@ extension LiveViewController {
         personCountView.label.font = UIFont.systemFont(ofSize: 10)
         
         personCountView.rx.controlEvent(.touchUpInside).subscribe(onNext: { [unowned self] in
-            self.presentAllUserList()
+            guard let session = ALCenter.shared().liveSession,
+                session.type != .shopping else {
+                return
+            }
+            self.presentUserList(type: .onlyUser)
         }).disposed(by: bag)
         
-        audienceListVM.giftList.subscribe(onNext: { [unowned self] (list) in
-            self.giftAudienceVC?.list = list
-        }).disposed(by: bag)
+        if let giftAudienceVC = self.giftAudienceVC {
+            userListVM.giftList.bind(to: giftAudienceVC.list).disposed(by: bag)
+        }
         
-        audienceListVM.total.subscribe(onNext: { [unowned self] (total) in
+        userListVM.total.subscribe(onNext: { [unowned self] (total) in
             self.personCountView.label.text = "\(total)"
         }).disposed(by: bag)
         
-        audienceListVM.join.subscribe(onNext: { [unowned self] (list) in
+        userListVM.joined.subscribe(onNext: { [unowned self] (list) in
             let chats = list.map { (user) -> Chat in
                 let chat = Chat(name: user.info.name,
                                 text: " \(NSLocalizedString("Join_Live_Room"))")
@@ -79,7 +86,7 @@ extension LiveViewController {
             self.chatVM.newMessages(chats)
         }).disposed(by: bag)
         
-        audienceListVM.left.subscribe(onNext: { [unowned self] (list) in
+        userListVM.left.subscribe(onNext: { [unowned self] (list) in
             let chats = list.map { (user) -> Chat in
                 let chat = Chat(name: user.info.name,
                                 text: " \(NSLocalizedString("Leave_Live_Room"))")
@@ -92,9 +99,9 @@ extension LiveViewController {
     
     // MARK: - Chat List
     func chatList() {
-        chatVM.list.subscribe(onNext: { [unowned self] (list) in
-            self.chatVC?.list = list
-        }).disposed(by: bag)
+        if let chatVC = self.chatVC {
+            chatVM.list.bind(to: chatVC.list).disposed(by: bag)
+        }
     }
     
     // MARK: - Gift
@@ -164,97 +171,60 @@ extension LiveViewController {
             }
         }).disposed(by: bag)
     }
+    
+    func liveRole(_ session: LiveSession) {
+        let role = session.role
+        
+        role.subscribe(onNext: { [unowned self] (local) in
+            self.deviceVM.camera = (local.type == .audience) ? .off : .on
+            self.deviceVM.mic = (local.type == .audience) ? .off : .on
+            self.hiddenMaskView()
+            self.bottomToolsVC?.perspective = local.type
+        }).disposed(by: bag)
+    }
 }
 
 // MARK: - View
 extension LiveViewController {
     // MARK: - Bottom Tools
-    func bottomTools(session: LiveSession, tintColor: UIColor = .black) {
-        guard let perspective = session.role?.type else {
-            fatalError()
-        }
-        bottomToolsVC?.liveType = session.type
-        bottomToolsVC?.perspective = perspective
-        bottomToolsVC?.tintColor = tintColor
-        
-        switch perspective {
-        case .owner, .broadcaster:
-            bottomToolsVC?.beautyButton.isSelected = enhancementVM.beauty.value.boolValue
-            
-            bottomToolsVC?.beautyButton.rx.tap.subscribe(onNext: { [unowned self] () in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let beautyVC = self.beautyVC {
-                        self.dismissChild(beautyVC, animated: true)
-                        self.beautyVC = nil
-                    }
-                }
-                self.presentBeautySettings()
-            }).disposed(by: bag)
-            
-            bottomToolsVC?.musicButton.rx.tap.subscribe(onNext: { [unowned self] () in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let musicVC = self.musicVC {
-                        self.dismissChild(musicVC, animated: true)
-                        self.musicVC = nil
-                    }
-                }
-                self.presentMusicList()
-            }).disposed(by: bag)
-            
-            bottomToolsVC?.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let extensionVC = self.extensionVC {
-                        self.dismissChild(extensionVC, animated: true)
-                        self.extensionVC = nil
-                    }
-                }
-                self.presentExtensionFunctions()
-            }).disposed(by: bag)
-            
-            if perspective == .broadcaster {
-                bottomToolsVC?.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
-                    self.showMaskView(color: UIColor.clear) { [unowned self] in
-                        self.hiddenMaskView()
-                        if let giftVC = self.giftVC {
-                            self.dismissChild(giftVC, animated: true)
-                            self.giftVC = nil
-                        }
-                    }
-                    self.presentGiftList()
-                }).disposed(by: bag)
-            }
-        case .audience:
-            bottomToolsVC?.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let giftVC = self.giftVC {
-                        self.dismissChild(giftVC, animated: true)
-                        self.giftVC = nil
-                    }
-                }
-                self.presentGiftList()
-            }).disposed(by: bag)
-            
-            bottomToolsVC?.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
-                self.showMaskView(color: UIColor.clear) { [unowned self] in
-                    self.hiddenMaskView()
-                    if let extensionVC = self.extensionVC {
-                        self.dismissChild(extensionVC, animated: true)
-                        self.extensionVC = nil
-                    }
-                }
-                self.presentExtensionFunctions()
-            }).disposed(by: bag)
+    func bottomTools(_ session: LiveSession) {
+        guard let bottomToolsVC = self.bottomToolsVC else {
+            return
         }
         
-        bottomToolsVC?.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
+        bottomToolsVC.liveType = session.type
+        bottomToolsVC.perspective = session.role.value.type
+        bottomToolsVC.tintColor = tintColor
+        
+        enhancementVM.beauty.map { (action) -> Bool in
+            return action.boolValue
+        }.bind(to: bottomToolsVC.beautyButton.rx.isSelected).disposed(by: bag)
+        
+        bottomToolsVC.musicButton.rx.tap.subscribe(onNext: { [unowned self] () in
+            self.presentMusicList()
+        }).disposed(by: bag)
+        
+        bottomToolsVC.beautyButton.rx.tap.subscribe(onNext: { [unowned self] () in
+            self.presentBeautySettings()
+        }).disposed(by: bag)
+        
+        bottomToolsVC.giftButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.presentGiftList()
+        }).disposed(by: bag)
+        
+        bottomToolsVC.extensionButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.presentExtensionFunctions()
+        }).disposed(by: bag)
+        
+        bottomToolsVC.closeButton.rx.tap.subscribe(onNext: { [unowned self] () in
             if self is PKBroadcastersViewController {
                 return
             }
-            
+
+            if self is LiveShoppingViewController {
+                return
+            }
+
             self.showAlert(NSLocalizedString("Live_End"),
                            message: NSLocalizedString("Confirm_End_Live"),
                            action1: NSLocalizedString("Cancel"),
@@ -268,20 +238,16 @@ extension LiveViewController {
     // MARK: - Chat Input
     func chatInput() {
         chatInputView.textView.rx.controlEvent([.editingDidEndOnExit])
-            .asObservable()
             .subscribe(onNext: { [unowned self] in
                 self.hiddenMaskView()
-                if !self.chatInputView.isHidden {
-                    self.view.endEditing(true)
-                }
                 self.view.endEditing(true)
                 
-                guard let session = ALCenter.shared().liveSession,
-                    let role = session.role else {
+                guard let session = ALCenter.shared().liveSession else {
                         assert(false)
                         return
                 }
                 
+                let role = session.role.value
                 if let text = self.chatInputView.textView.text, text.count > 0 {
                     self.chatInputView.textView.text = nil
                     self.chatVM.sendMessage(text, local: role.info) { [weak self] (_) in
@@ -297,7 +263,7 @@ extension LiveViewController {
             
             let isShow = info.endFrame.minY < UIScreen.main.bounds.height ? true : false
             
-            if isShow && strongSelf.chatInputView.isHidden {
+            if isShow {
                 strongSelf.showMaskView(color: UIColor.clear) { [weak self] in
                     guard let strongSelf = self else {
                         return
@@ -312,10 +278,10 @@ extension LiveViewController {
                 strongSelf.view.addSubview(strongSelf.chatInputView)
                 strongSelf.chatInputView.textView.becomeFirstResponder()
                 strongSelf.chatInputView.showAbove(frame: info.endFrame,
-                                             duration: info.duration) { (done) in
-                    
+                                                   duration: info.duration) { (done) in
+                                                    
                 }
-            } else if !strongSelf.chatInputView.isHidden {
+            } else {
                 strongSelf.chatInputView.hidden(duration: info.duration) { [weak self] (done) in
                     guard let strongSelf = self else {
                         return
@@ -329,63 +295,36 @@ extension LiveViewController {
 
 extension LiveViewController {
     // MARK: - User List
-    func presentUserList(listType: UserListViewController.ShowType) {
-        guard let session = ALCenter.shared().liveSession else {
-            return
-        }
+    func presentUserList(type: CVUserListViewController.ShowType) {
+        self.showMaskView(color: UIColor.clear)
         
-        let listVC = UIStoryboard.initViewController(of: "UserListViewController",
-                                                     class: UserListViewController.self)
+        let vc = UIStoryboard.initViewController(of: "CVUserListViewController",
+                                                 class: CVUserListViewController.self,
+                                                 on: "Popover")
         
-        listVC.showType = listType
-        self.userListVC = listVC
+        vc.userListVM = userListVM
+        vc.showType = type
+        vc.view.cornerRadius(10)
         
-        listVC.view.cornerRadius(10)
-        
-        let presenetedHeight: CGFloat = UIScreen.main.heightOfSafeAreaTop + 326.0 + 50.0
+        let presenetedHeight: CGFloat = 526.0
         let y = UIScreen.main.bounds.height - presenetedHeight
         let presentedFrame = CGRect(x: 0,
                                     y: y,
                                     width: UIScreen.main.bounds.width,
                                     height: presenetedHeight)
         
-        self.presentChild(listVC,
+        self.presentChild(vc,
                           animated: true,
                           presentedFrame: presentedFrame)
-        
-        let isOnlyAudience = (listType == .allUser) ? false : true
-        
-        audienceListVM.refetch(roomId: session.roomId, onlyAudience: isOnlyAudience)
-        
-        audienceListVM.list.subscribe(onNext: { [unowned self] (list) in
-            self.userListVC?.userList = list
-        }).disposed(by: bag)
-        
-        let roomId = session.roomId
-        
-        // Invite VC
-        listVC.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { [unowned self] in
-            self.audienceListVM.refetch(roomId: roomId, onlyAudience: isOnlyAudience, success: { [unowned self] in
-                self.userListVC?.tableView.mj_header?.endRefreshing()
-            }) { [unowned self] in // fail
-                self.userListVC?.tableView.mj_header?.endRefreshing()
-            }
-        })
-        
-        listVC.tableView.mj_footer = MJRefreshBackFooter(refreshingBlock: { [unowned self] in
-            self.audienceListVM.fetch(roomId: roomId, onlyAudience: isOnlyAudience, success: { [unowned self] in
-                self.userListVC?.tableView.mj_footer?.endRefreshing()
-            }) { [unowned self] in // fail
-                self.userListVC?.tableView.mj_footer?.endRefreshing()
-            }
-        })
     }
-    
+
     // MARK: - Beauty Settings
     func presentBeautySettings() {
+        self.showMaskView(color: UIColor.clear)
+        
         let beautyVC = UIStoryboard.initViewController(of: "BeautySettingsViewController",
-                                                       class: BeautySettingsViewController.self)
-        self.beautyVC = beautyVC
+                                                       class: BeautySettingsViewController.self,
+                                                       on: "Popover")
         
         beautyVC.view.cornerRadius(10)
         
@@ -399,16 +338,20 @@ extension LiveViewController {
                           animated: true,
                           presentedFrame: presentedFrame)
         
-        beautyVC.enhanceVM.beauty.subscribe(onNext: { [unowned self] (work) in
-            self.bottomToolsVC?.beautyButton.isSelected = work.boolValue
-        }).disposed(by: bag)
+        if let bottomToolsVC = self.bottomToolsVC {
+            beautyVC.enhanceVM.beauty.map { (action) -> Bool in
+                return action.boolValue
+            }.bind(to: bottomToolsVC.beautyButton.rx.isSelected).disposed(by: bag)
+        }
     }
     
     // MARK: - Music List
     func presentMusicList() {
+        self.showMaskView(color: UIColor.clear)
+        
         let musicVC = UIStoryboard.initViewController(of: "MusicViewController",
-                                                      class: MusicViewController.self)
-        self.musicVC = musicVC
+                                                      class: MusicViewController.self,
+                                                      on: "Popover")
         
         musicVC.view.cornerRadius(10)
         
@@ -422,8 +365,6 @@ extension LiveViewController {
                           animated: true,
                           presentedFrame: presentedFrame)
         
-        musicVC.tableView.dataSource = nil
-        musicVC.tableView.delegate = nil
         musicVM.list?.bind(to: musicVC.tableView.rx.items(cellIdentifier: "MusicCell",
                                                           cellType: MusicCell.self)) { index, music, cell in
                                                             cell.tagImageView.image = music.isPlaying ? musicVC.playingImage : musicVC.pauseImage
@@ -432,25 +373,26 @@ extension LiveViewController {
                                                             cell.singerLabel.text = music.singer
         }.disposed(by: bag)
         
-        musicVC.tableView.rx.itemSelected.asObservable().subscribe(onNext: { [unowned self] (index) in
+        musicVC.tableView.rx.itemSelected.subscribe(onNext: { [unowned self] (index) in
             self.musicVM.listSelectedIndex = index.row
         }).disposed(by: bag)
     }
     
     // MARK: - ExtensionFunctions
     func presentExtensionFunctions() {
-        guard let session = ALCenter.shared().liveSession,
-            let perspective = session.role?.type else {
+        guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
         }
         
+        self.showMaskView(color: UIColor.clear)
+        
+        let perspective = session.role.value.type
         let extensionVC = UIStoryboard.initViewController(of: "ExtensionViewController",
-                                                          class: ExtensionViewController.self)
+                                                          class: ExtensionViewController.self,
+                                                          on: "Popover")
         extensionVC.perspective = perspective
         extensionVC.liveType = session.type
-        self.extensionVC = extensionVC
-        
         extensionVC.view.cornerRadius(10)
         
         var height: CGFloat
@@ -473,29 +415,11 @@ extension LiveViewController {
         
         extensionVC.dataButton.rx.tap.subscribe(onNext: { [unowned self] in
             self.hiddenMaskView()
-            if let extensionVC = self.extensionVC {
-                self.dismissChild(extensionVC, animated: true)
-                self.extensionVC = nil
-            }
-            
             self.presentRealData()
         }).disposed(by: bag)
         
         extensionVC.settingsButton.rx.tap.subscribe(onNext: { [unowned self] in
             self.hiddenMaskView()
-            if let extensionVC = self.extensionVC {
-                self.dismissChild(extensionVC, animated: true)
-                self.extensionVC = nil
-            }
-            
-            self.showMaskView(color: UIColor.clear) { [unowned self] in
-                self.hiddenMaskView()
-                if let mediaNavi = self.mediaSettingsNavi {
-                    self.dismissChild(mediaNavi, animated: true)
-                    self.mediaSettingsNavi = nil
-                }
-            }
-            
             self.presentMediaSettings()
         }).disposed(by: bag)
         
@@ -509,20 +433,21 @@ extension LiveViewController {
             extensionVC.cameraButton.isSelected.toggle()
             self.deviceVM.camera = extensionVC.cameraButton.isSelected ? .off : .on
             
-            guard let session = ALCenter.shared().liveSession,
-                var role = session.role else {
+            guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
             
-            var status = role.status
+            let role = session.role.value
+            var permission = role.permission
             switch self.deviceVM.camera {
             case .on:
-                status.insert(.camera)
+                permission.insert(.camera)
             case .off:
-                status.remove(.camera)
+                permission.remove(.camera)
             }
-            role.updateLocal(status: status, of: session.roomId)
+            
+            role.updateLocal(permission: permission, of: session.room.roomId)
         }).disposed(by: bag)
         
         extensionVC.micButton.isSelected = !self.deviceVM.mic.boolValue
@@ -531,58 +456,67 @@ extension LiveViewController {
             extensionVC.micButton.isSelected.toggle()
             self.deviceVM.mic = extensionVC.micButton.isSelected ? .off : .on
             
-            guard let session = ALCenter.shared().liveSession,
-                var role = session.role else {
+            guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
             
-            var status = role.status
+            let role = session.role.value
+            var permission = role.permission
             switch self.deviceVM.mic {
             case .on:
-                status.insert(.mic)
+                permission.insert(.mic)
             case .off:
-                status.remove(.mic)
+                permission.remove(.mic)
             }
             
-            role.updateLocal(status: status, of: session.roomId)
+            role.updateLocal(permission: permission, of: session.room.roomId)
         }).disposed(by: bag)
         
         extensionVC.audioLoopButton.rx.tap.subscribe(onNext: { [unowned extensionVC, unowned self] in
             guard self.deviceVM.audioOutput.value.isSupportLoop else {
-                self.showAlert(NSLocalizedString("Please_Input_Headset"))
+                self.showTextToast(text: NSLocalizedString("Please_Input_Headset"))
                 return
             }
             extensionVC.audioLoopButton.isSelected.toggle()
             self.deviceVM.audioLoop(extensionVC.audioLoopButton.isSelected ? .off : .on)
         }).disposed(by: bag)
+        
+        extensionVC.beautyButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.hiddenMaskView()
+            self.presentBeautySettings()
+        }).disposed(by: bag)
+        
+        extensionVC.musicButton.rx.tap.subscribe(onNext: { [unowned self] in
+            self.hiddenMaskView()
+            self.presentMusicList()
+        }).disposed(by: bag)
     }
     
     //MARK: - Media Settings
     func presentMediaSettings() {
+        self.showMaskView(color: UIColor.clear)
+        
         guard let session = ALCenter.shared().liveSession else {
             assert(false)
             return
         }
         
         let mediaSettingsNavi = UIStoryboard.initViewController(of: "MediaSettingsNavigation",
-                                                                class: UINavigationController.self)
+                                                                class: UINavigationController.self,
+                                                                on: "Popover")
         
         let mediaSettingsVC = mediaSettingsNavi.children.first! as! MediaSettingsViewController
-        self.mediaSettingsNavi = mediaSettingsNavi
         
-        mediaSettingsVC.settings = BehaviorRelay(value: session.settings.media)
+        mediaSettingsVC.settings = BehaviorRelay(value: session.videoConfiguration)
         mediaSettingsVC.settings?.subscribe(onNext: { (newMedia) in
             guard let session = ALCenter.shared().liveSession else {
                 assert(false)
                 return
             }
             
-            var newSettings = session.settings
-            newSettings.media = newMedia
-            session.settings = newSettings
-            
-            session.setupMediaSettings(newMedia)
+            session.videoConfiguration = newMedia
+            session.setupPublishedVideoStream(newMedia)
         }).disposed(by: bag)
         
         mediaSettingsVC.view.cornerRadius(5)
@@ -600,14 +534,16 @@ extension LiveViewController {
     
     // MARK: - Real Data
     func presentRealData() {
+        self.showMaskView(color: UIColor.clear)
+        
         guard let session = ALCenter.shared().liveSession else {
             assert(false)
             return
         }
         
         let dataVC = UIStoryboard.initViewController(of: "RealDataViewController",
-                                                     class: RealDataViewController.self)
-        self.dataVC = dataVC
+                                                     class: RealDataViewController.self,
+                                                     on: "Popover")
         
         dataVC.view.cornerRadius(10)
         
@@ -625,19 +561,18 @@ extension LiveViewController {
                           presentedFrame: presentedFrame)
         
         dataVC.closeButton.rx.tap.subscribe(onNext: { [unowned self] in
-            if let dataVC = self.dataVC {
-                self.dismissChild(dataVC, animated: true)
-                self.extensionVC = nil
-            }
+            self.hiddenMaskView()
         }).disposed(by: bag)
     }
     
     // MARK: - Gift List
     func presentGiftList() {
-        let giftVC = UIStoryboard.initViewController(of: "GiftViewController",
-                                                     class: GiftViewController.self)
-        self.giftVC = giftVC
+        self.showMaskView(color: UIColor.clear)
         
+        let giftVC = UIStoryboard.initViewController(of: "GiftViewController",
+                                                     class: GiftViewController.self,
+                                                     on: "Popover")
+       
         giftVC.view.cornerRadius(10)
         
         let presenetedHeight: CGFloat = UIScreen.main.heightOfSafeAreaTop + 336.0
@@ -652,29 +587,9 @@ extension LiveViewController {
                           presentedFrame: presentedFrame)
         
         giftVC.selectGift.subscribe(onNext: { [unowned self] (gift) in
-            guard let session = ALCenter.shared().liveSession,
-                let owner = session.owner else {
-                assert(false)
-                return
-            }
-            
             self.hiddenMaskView()
-            if let giftVC = self.giftVC {
-                self.dismissChild(giftVC, animated: true)
-                self.mediaSettingsNavi = nil
-            }
-            
-            switch owner {
-            case .otherUser(let remote):
-                self.giftVM.present(gift: gift,
-                                    to: remote.info,
-                                    from: session.role!.info,
-                                    of: session.roomId) {
-                                        self.showAlert(message: NSLocalizedString("Present_Gift_Fail"))
-                }
-            case .localUser:
-                assert(false)
-                break
+            self.giftVM.present(gift: gift) { [unowned self] in
+                self.showAlert(message: NSLocalizedString("Present_Gift_Fail"))
             }
         }).disposed(by: bag)
     }
@@ -684,7 +599,8 @@ extension LiveViewController {
         self.hiddenMaskView()
         
         let gifVC = UIStoryboard.initViewController(of: "GIFViewController",
-                                                    class: GIFViewController.self)
+                                                    class: GIFViewController.self,
+                                                    on: "Popover")
         
         gifVC.view.cornerRadius(10)
         
@@ -700,23 +616,9 @@ extension LiveViewController {
         let gif = Bundle.main.url(forResource: gift.gifFileName, withExtension: "gif")
         let data = try! Data(contentsOf: gif!)
         
-        gifVC.startAnimating(of: data, repeatCount: 1) { [unowned self, weak gifVC] in
-            if let vc = gifVC {
-                self.dismissChild(vc, animated: true)
-            }
-        }
-    }
-    
-    func presentAllUserList() {
-        self.showMaskView(color: .clear) { [unowned self] in
+        gifVC.startAnimating(of: data, repeatCount: 1) { [unowned self] in
             self.hiddenMaskView()
-            if let vc = self.userListVC {
-                self.dismissChild(vc, animated: true)
-                self.userListVC = nil
-            }
         }
-        
-        self.presentUserList(listType: .allUser)
     }
 }
 
@@ -725,11 +627,16 @@ extension LiveViewController {
         ALCenter.shared().liveSession?.leave()
         ALCenter.shared().liveSession = nil
         enhancementVM.reset()
+        setIdleTimerActive(true)
+    }
+    
+    func setIdleTimerActive(_ active: Bool) {
+        UIApplication.shared.isIdleTimerDisabled = !active
     }
     
     func dimissSelf() {
-        if let _ = self.navigationController?.viewControllers.first as? LiveListTabViewController {
-            self.navigationController?.popViewController(animated: true)
+        if let listVC = self.navigationController?.viewControllers.first as? LiveListTabViewController {
+            self.navigationController?.popToViewController(listVC, animated: true)
         } else {
             self.dismiss(animated: true, completion: nil)
         }

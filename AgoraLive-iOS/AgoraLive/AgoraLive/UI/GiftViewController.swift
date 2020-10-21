@@ -15,8 +15,6 @@ class GiftCell: UICollectionViewCell {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var priceLabel: UILabel!
     
-    private var fillet = FilletView(frame: CGRect.zero, filletRadius: 3)
-    
     var isSelectedNow: Bool = false {
         didSet {
             if isSelectedNow {
@@ -104,8 +102,7 @@ extension GiftViewController: UICollectionViewDataSource {
 
 extension GiftViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let reIndex = IndexPath(item: selectedIndex, section: 0)
         selectedIndex = indexPath.item
-        collectionView.reloadItems(at: [indexPath, reIndex])
+        collectionView.reloadData()
     }
 }

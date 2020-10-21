@@ -12,12 +12,15 @@ Confirm="Confirm";
 Reject="Reject";
 End="End";
 Accept="Accept";
+Music="Music";
 
 Lost_Connection="Network error";
 Lost_Connection_Description="We cannot connect to network now. Please retry later";
 
 Lost_Connection_Retry="Connection lost. Please retry later.";
 Use_Cellular_Data="Use cellular data instead of WIFI. May incur data charges.";
+
+Upload_Log="Upload Log";
 
 // Main Page
 Multi_Broadcasters="Multi Hosts";
@@ -28,6 +31,8 @@ PK_Live="PK Host-in";
 PK_Live_Description="Merge 2 streams from different channels";
 Virtual_Live="Virtual Hosts";
 Virtual_Live_Description="Avatar-based simulation for call or live streaming";
+Live_Shopping="Live Shopping";
+Live_Shopping_Description="Engage audience and other hosts in online shopping";
 
 // Create Room Page
 Create_A_Live_Room="Create a room to start";
@@ -137,7 +142,7 @@ Present="Give";
 Invite_PK="Invitation";
 PK_Recieved_Invite="Received PK invitation";
 PK_Invite_Fail="PK hosts failed to connect";
-PK_Invite_Reject="Reject";
+PK_Invite_Reject="Your invitation is by rejected";
 PK_Remaining="PK remaining";
 Join_Other_Live_Room_Fail="Join the other channel fail";
 PK_End="PK End";
@@ -146,10 +151,42 @@ End_PK_Message="（The countdown is not over yet）";
 
 // Virtual
 Confirm_Accept_Broadcasting="申请上麦，是否接受？";
-Confirm_Apply_For_Broadcasting="你确定要\“申请上麦\”吗？";
+Confirm_Apply_For_Broadcasting="Do you send a application?";
 
 Broadcasting_Invitation="Invite host";
 Confirm_Accept_Broadcasting_Invitation="Do you agree to become a host？";
 
-Ending_Broadcasting="End";
-Confirm_Ending_Broadcasting="Are you sure to end this?";
+End_Broadcasting="End";
+Confirm_End_Broadcasting="Are you sure to end this?";
+
+// Live Shopping
+Product_List="Product list";
+Product_Pending="Pending";
+Product_OnShelf="On shelf";
+Product_Has_Been_Added_On_Shelf="Product has been added on shelf";
+Product_Is_No_Longer_Available="Product is no longer available";
+Product_Launch="Launch";
+Product_Off_Shelf="Off shelf";
+Product_Go="Go";
+Product_On_Shelf_Notification="is available!";
+PK_Invitation="PK invitation";
+PK_Application="PK application";
+Online_User="Online user";
+All="All";
+ApplicationOfBroadcasting="Application";
+Invite="invite";
+Inviting="inviting";
+Buy_This_Product="Do you want to buy this pruduct?";
+Buy_Now="By now";
+Product_Purchased_Successfully="Product purchased successfully";
+User_Invitation_Timeout="Invitation time out";
+
+Lipstick="Lipstick";
+Rucksack="Rucksack";
+iPad="iPad";
+Pants="Pants";
+
+Lipstick_Description="Revlon Super Lustrous Lipstick, High Impact Lipcolor";
+Rucksack_Description="Keepall 55 Monogram Eclipse Canvas M40605";
+iPad_Description="New Apple iPad Pro (12.9-inch, Wi-Fi, 128GB) - Silver";
+Pants_Description="Men's K87 Workwear Pocket Short Sleeve T-Shirt";

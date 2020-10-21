@@ -22,27 +22,37 @@ class ALCenter: NSObject {
     // Abstractions
     private var files = FilesGroup()
     
-    private(set) var current: CurrentUser?
+    private var current: CurrentUser!
     
     lazy var appAssistant = AppAssistant()
+    
     var liveSession: LiveSession?
     
     // Commons
-    private let log = LogTube()
     private lazy var mediaKit = MediaKit(log: log)
     
     private lazy var alamo = AlamoClient(delegate: nil,
                                          logTube: self)
     
+    private lazy var oss = AGOSSClient()
+    
     private lazy var rtm = RTMClient(logTube: log)
+    
     private lazy var userDataHelper = UserDataHelper()
+    
+    private let log = LogTube()
+    
+    override init() {
+        super.init()
+        appInfo()
+    }
 }
 
 extension ALCenter {
     func registerAndLogin() {
         if let current = CurrentUser.local() {
             self.current = current
-            self.login(userId: current.info.userId) {
+            self.login(userId: current.info.value.userId) {
                 self.isWorkNormally.accept(true)
             }
             return
@@ -63,6 +73,19 @@ extension ALCenter {
 }
 
 private extension ALCenter {
+    func appInfo() {
+        let dic: [String: Any] = ["name": AppAssistant.name,
+                                  "buildNumber": AppAssistant.buildNumber,
+                                  "version": AppAssistant.version,
+                                  "bundleId": AppAssistant.bundleId]
+        
+        let formatter = AGELogFormatter(type: .info(dic.description),
+                                        className: NSStringFromClass(ALCenter.self),
+                                        funcName: #function,
+                                        extra: "app-build-info")
+        log.logFromClass(formatter: formatter)
+    }
+    
     func register(success: ((BasicUserInfo) -> Void)?) {
         let url = URLGroup.userRegister
         let event = RequestEvent(name: "user-register")
@@ -129,6 +152,10 @@ private extension ALCenter {
 }
 
 extension ALCenter: CenterHelper {
+    func centerProvideLocalUser() -> CurrentUser {
+        return current
+    }
+    
     func centerProvideRequestHelper() -> AlamoClient {
         return alamo
     }
@@ -156,6 +183,10 @@ extension ALCenter: CenterHelper {
     func centerProvideUserDataHelper() -> UserDataHelper {
         return userDataHelper
     }
+    
+    func centerProvideOSSClient() -> AGOSSClient {
+        return oss
+    }
 }
 
 extension ALCenter: ACLogTube {
@@ -176,7 +207,16 @@ extension ALCenter: ACLogTube {
     }
     
     func log(from: AnyClass, error: Error, extral: String?, funcName: String) {
-        let fromatter = AGELogFormatter(type: .error(error.localizedDescription),
+        var description: String
+        if let cError = error as? ACError {
+            description = cError.localizedDescription
+        } else if let aError = error as? AGEError {
+            description = aError.localizedDescription
+        } else {
+            description = error.localizedDescription
+        }
+        
+        let fromatter = AGELogFormatter(type: .error(description),
                                         className: NSStringFromClass(from),
                                         funcName: funcName,
                                         extra: extral)
