@@ -73,7 +73,7 @@
         </RelativeLayout>
     </io.agora.vlive.ui.components.LinearLayout9to8>
 
-    <io.agora.vlive.ui.components.LiveBottomButtonLayout
+    <io.agora.vlive.ui.components.bottomLayout.LiveBottomButtonLayout
         android:id="@+id/virtual_live_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/live_bottom_layout_height"

@@ -16,13 +16,10 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import io.agora.vlive.R;
+import io.agora.vlive.protocol.model.types.PKConstant;
 
 public class PkLayout extends LinearLayout {
     private static final int TIMER_TICK_PERIOD = 1000;
-
-    private static final int PK_RESULT_LOSE = 0;
-    private static final int PK_RESULT_WIN = 1;
-    private static final int PK_RESULT_DRAW = 2;
 
     private AppCompatTextView mLeftPoint;
     private AppCompatTextView mRightPoint;
@@ -129,7 +126,7 @@ public class PkLayout extends LinearLayout {
         return mRightFrameLayout;
     }
 
-    public void setOtherHostName(String name) {
+    public void setPKHostName(String name) {
         mOtherHostName.setText(name);
     }
 
@@ -147,7 +144,7 @@ public class PkLayout extends LinearLayout {
         }
     }
 
-    public String timestampToCountdown(long remaining) {
+    private String timestampToCountdown(long remaining) {
         if (remaining <= 0) return "00:00";
         long seconds = remaining / 1000;
         long minute = seconds / 60;
@@ -157,18 +154,22 @@ public class PkLayout extends LinearLayout {
         return minuteString + ":" + secondString;
     }
 
+    /**
+     * Set PK result of current PK session.
+     * @param result pk result of current room owner.
+     */
     public void setResult(int result) {
         mPkResultImage = new AppCompatImageView(getContext());
-        if (result == PK_RESULT_LOSE || result == PK_RESULT_WIN) {
+        if (result == PKConstant.PK_RESULT_LOSE || result == PKConstant.PK_RESULT_WIN) {
             mPkResultImage.setImageResource(R.drawable.icon_pk_result_win);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     mResultIconWidth, mResultIconWidth);
             params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-            RelativeLayout container = result == PK_RESULT_LOSE
+            RelativeLayout container = result == PKConstant.PK_RESULT_LOSE
                     ? mRightVideoContainer
                     : mLeftFrameLayout;
             container.addView(mPkResultImage, params);
-        } else if (result == PK_RESULT_DRAW) {
+        } else if (result == PKConstant.PK_RESULT_DRAW) {
             mPkResultImage.setImageResource(R.drawable.icon_pk_result_draw);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     mResultIconWidth, mResultIconWidth);

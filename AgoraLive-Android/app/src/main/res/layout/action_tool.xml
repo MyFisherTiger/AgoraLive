@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:background="@drawable/round_top_corner_white_bg">
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/live_room_action_sheet_tool_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/live_room_action_sheet_text_item_height"
         android:textAlignment="gravity"

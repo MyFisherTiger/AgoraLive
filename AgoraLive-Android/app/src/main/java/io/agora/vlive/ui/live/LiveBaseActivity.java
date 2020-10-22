@@ -1,13 +1,8 @@
 package io.agora.vlive.ui.live;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.SurfaceView;
@@ -42,7 +37,7 @@ import io.agora.vlive.agora.rtm.RtmMessageManager;
 import io.agora.vlive.agora.rtm.RtmMessageListener;
 import io.agora.vlive.agora.rtm.model.GiftRankMessage;
 import io.agora.vlive.agora.rtm.model.NotificationMessage;
-import io.agora.vlive.agora.rtm.model.PKMessage;
+import io.agora.vlive.agora.rtm.model.PKStateMessage;
 import io.agora.vlive.agora.rtm.model.SeatStateMessage;
 import io.agora.vlive.ui.BaseActivity;
 import io.agora.vlive.utils.Global;
@@ -79,8 +74,6 @@ public abstract class LiveBaseActivity extends BaseActivity
     private RtmMessageManager mMessageManager;
     private CameraManager mCameraVideoManager;
     private PreprocessorFaceUnity mFUPreprocessor;
-
-    private NetworkReceiver mNetworkReceiver = new NetworkReceiver();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -145,9 +138,6 @@ public abstract class LiveBaseActivity extends BaseActivity
         mMessageManager.registerMessageHandler(this);
         mMessageManager.setCallbackThread(new Handler(getMainLooper()));
 
-        proxy().registerProxyListener(this);
-        registerRtcHandler(this);
-
         initCameraIfNeeded();
     }
 
@@ -170,6 +160,18 @@ public abstract class LiveBaseActivity extends BaseActivity
 
     protected abstract void onPermissionGranted();
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        registerRtcHandler(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        removeRtcHandler(this);
+    }
+
     protected RtmMessageManager getMessageManager() {
         return mMessageManager;
     }
@@ -189,7 +191,7 @@ public abstract class LiveBaseActivity extends BaseActivity
         return surfaceView;
     }
 
-    protected void remoteRemoteVideo(int uid) {
+    protected void removeRemoteVideo(int uid) {
         rtcEngine().setupRemoteVideo(new VideoCanvas(null, VideoCanvas.RENDER_MODE_HIDDEN, uid));
     }
 
@@ -201,24 +203,10 @@ public abstract class LiveBaseActivity extends BaseActivity
         if (tabId == Config.LIVE_TYPE_MULTI_HOST ||
             tabId == Config.LIVE_TYPE_SINGLE_HOST ||
             tabId == Config.LIVE_TYPE_PK_HOST ||
-            tabId == Config.LIVE_TYPE_VIRTUAL_HOST) {
+            tabId == Config.LIVE_TYPE_VIRTUAL_HOST ||
+            tabId == Config.LIVE_TYPE_ECOMMERCE) {
             return tabId;
         } else return 0;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        IntentFilter filter = new IntentFilter(
-                ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mNetworkReceiver, filter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        unregisterReceiver(mNetworkReceiver);
     }
 
     protected void startCameraCapture() {
@@ -310,27 +298,6 @@ public abstract class LiveBaseActivity extends BaseActivity
         mMessageManager.leaveChannel(callback);
     }
 
-    private static class NetworkReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm = (ConnectivityManager) context.
-                    getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (cm == null) return;
-
-            NetworkInfo info = cm.getActiveNetworkInfo();
-            if (info == null || !info.isAvailable() || !info.isConnected()) {
-                Toast.makeText(context, R.string.network_unavailable, Toast.LENGTH_LONG).show();
-            } else {
-                int type = info.getType();
-                if (ConnectivityManager.TYPE_WIFI == type) {
-                    Toast.makeText(context, R.string.network_switch_to_wifi, Toast.LENGTH_LONG).show();
-                } else if (ConnectivityManager.TYPE_MOBILE == type) {
-                    Toast.makeText(context, R.string.network_switch_to_mobile , Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
-
     @Override
     public void onRtmConnectionStateChanged(int state, int reason) {
 
@@ -367,47 +334,57 @@ public abstract class LiveBaseActivity extends BaseActivity
     }
 
     @Override
-    public void onRtmInvitedByOwner(String ownerId, String nickname, int index) {
+    public void onRtmSeatInvited(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmAppliedForSeat(String peerId, String nickname, String userId, int index) {
+    public void onRtmSeatApplied(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmInvitationAccepted(String peerId, String nickname, int index) {
+    public void onRtmInvitationAccepted(long processId, String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmApplicationAccepted(String peerId, String nickname, int index) {
+    public void onRtmApplicationAccepted(long processId, String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmInvitationRejected(String peerId, String nickname) {
+    public void onRtmInvitationRejected(long processId, String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmApplicationRejected(String peerId, String nickname) {
+    public void onRtmApplicationRejected(long processId, String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmPkReceivedFromAnotherHost(String peerId, String nickname, String pkRoomId) {
+    public void onRtmOwnerForceLeaveSeat(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmPkAcceptedByTargetHost(String peerId, String nickname) {
+    public void onRtmHostLeaveSeat(String userId, String userName, int index) {
 
     }
 
     @Override
-    public void onRtmPkRejectedByTargetHost(String peerId, String nickname) {
+    public void onRtmPkReceivedFromAnotherHost(String userId, String userName, String pkRoomId) {
+
+    }
+
+    @Override
+    public void onRtmPkAcceptedByTargetHost(String userId, String userName, String pkRoomId) {
+
+    }
+
+    @Override
+    public void onRtmPkRejectedByTargetHost(String userId, String userName, String pkRoomId) {
 
     }
 
@@ -432,7 +409,7 @@ public abstract class LiveBaseActivity extends BaseActivity
     }
 
     @Override
-    public void onRtmPkStateChanged(PKMessage.PKMessageData messageData) {
+    public void onRtmReceivePKEvent(PKStateMessage.PKStateMessageBody messageData) {
 
     }
 
@@ -443,6 +420,16 @@ public abstract class LiveBaseActivity extends BaseActivity
 
     @Override
     public void onRtmChannelNotification(int total, List<NotificationMessage.NotificationItem> list) {
+
+    }
+
+    @Override
+    public void onRtmProductPurchased(String productId, int count) {
+
+    }
+
+    @Override
+    public void onRtmProductStateChanged(String productId, int state) {
 
     }
 
@@ -487,9 +474,14 @@ public abstract class LiveBaseActivity extends BaseActivity
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
     public void finish() {
         super.finish();
-        removeRtcHandler(this);
         rtcEngine().leaveChannel();
 
         if (mMessageManager != null) {

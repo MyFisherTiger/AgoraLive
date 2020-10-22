@@ -26,7 +26,8 @@
             android:layout_below="@id/dialog_title"
             android:textSize="@dimen/text_size_medium"
             android:textAlignment="gravity"
-            android:gravity="center_horizontal|top"/>
+            android:gravity="center_horizontal|top"
+            android:textColor="@color/gray"/>
     </LinearLayout>
 
     <View

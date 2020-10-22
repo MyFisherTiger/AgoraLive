@@ -27,7 +27,8 @@
             android:paddingEnd="@dimen/dialog_message_padding"
             android:textSize="@dimen/text_size_medium"
             android:textAlignment="gravity"
-            android:gravity="center_horizontal|top"/>
+            android:gravity="center_horizontal|top"
+            android:textColor="@color/gray"/>
     </LinearLayout>
     <View
         android:id="@+id/dialog_divider"

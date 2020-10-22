@@ -3,27 +3,25 @@ package io.agora.vlive;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+import android.text.TextUtils;
 
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.XLog;
-import com.elvishew.xlog.flattener.DefaultFlattener;
 import com.elvishew.xlog.flattener.PatternFlattener;
-import com.elvishew.xlog.formatter.border.DefaultBorderFormatter;
 import com.elvishew.xlog.formatter.message.json.DefaultJsonFormatter;
 import com.elvishew.xlog.formatter.message.throwable.DefaultThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.DefaultXmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.DefaultStackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.DefaultThreadFormatter;
 import com.elvishew.xlog.printer.AndroidPrinter;
-import com.elvishew.xlog.printer.ConsolePrinter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy;
 import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy;
 import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
 import com.faceunity.FURenderer;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import io.agora.capture.video.camera.CameraManager;
 import io.agora.framework.PreprocessorFaceUnity;
@@ -31,7 +29,7 @@ import io.agora.rtc.RtcEngine;
 import io.agora.rtm.RtmClient;
 import io.agora.vlive.agora.AgoraEngine;
 import io.agora.vlive.agora.rtc.RtcEventHandler;
-import io.agora.vlive.proxy.ClientProxy;
+import io.agora.vlive.protocol.ClientProxy;
 import io.agora.vlive.utils.Global;
 import io.agora.vlive.utils.UserUtil;
 
@@ -50,6 +48,7 @@ public class AgoraLiveApplication extends Application {
         mConfig = new Config(this);
         initXLog();
         initVideoGlobally();
+        initCrashReport();
         XLog.i("onApplicationCreate");
     }
 
@@ -132,6 +131,16 @@ public class AgoraLiveApplication extends Application {
                 config,                                                         // Specify the log configuration, if not specified, will use new LogConfiguration.Builder().build()
                 androidPrinter,
                 filePrinter);
+    }
+
+    private void initCrashReport() {
+        String buglyAppId = getResources().getString(R.string.bugly_app_id);
+        if (TextUtils.isEmpty(buglyAppId)) {
+            XLog.i("Bugly app id not found, crash report initialize skipped");
+        } else {
+            CrashReport.initCrashReport(getApplicationContext(),
+                    buglyAppId, BuildConfig.DEBUG);
+        }
     }
 
     @Override

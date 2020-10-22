@@ -13,6 +13,9 @@ public class DisclaimerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_disclaimer);
         hideStatusBar(true);
+
+        findViewById(R.id.disclaimer_activity_close)
+                .setOnClickListener(view -> finish());
     }
 
     @Override

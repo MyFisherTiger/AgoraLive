@@ -55,6 +55,6 @@
             android:textAlignment="gravity"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:background="@drawable/live_room_list_item_room_name_background"/>
+            android:background="@drawable/mask_background"/>
     </io.agora.vlive.ui.components.SquareRelativeLayout>
 </androidx.cardview.widget.CardView>

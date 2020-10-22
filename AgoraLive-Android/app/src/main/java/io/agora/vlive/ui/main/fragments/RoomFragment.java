@@ -28,7 +28,7 @@ import io.agora.vlive.utils.Global;
 import io.agora.vlive.R;
 
 public class RoomFragment extends AbstractFragment implements View.OnClickListener {
-    private static final int TAB_COUNT = 4;
+    private static final int TAB_COUNT = 5;
     private static final int TAB_TEXT_VIEW_INDEX = 1;
 
     private int mCurrentTap;
@@ -170,6 +170,7 @@ public class RoomFragment extends AbstractFragment implements View.OnClickListen
                 case 1: return new SingleHostFragment();
                 case 2: return new PKHostInFragment();
                 case 3: return new VirtualHostFragment();
+                case 4: return new ECommerceFragment();
                 default: return new HostInFragment();
             }
         }

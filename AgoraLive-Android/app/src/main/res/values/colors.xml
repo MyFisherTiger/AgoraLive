@@ -27,4 +27,18 @@
 
     <color name="virtual_image_top">#9ED5FF</color>
     <color name="virtual_image_bottom">#F3FAFF</color>
+
+    <color name="product_orange_start">#FFFF4B00</color>
+    <color name="product_orange_end">#FFFF8763</color>
+
+    <color name="product_purple_start">#FF6E3588</color>
+    <color name="product_purple_end">#FFFF087D</color>
+
+    <color name="product_round_purple_start">#FF972985</color>
+    <color name="product_round_purple_end">#FFEB0F7F</color>
+
+    <color name="product_buy_now_bg_start_color">#FFFF4B00</color>
+    <color name="product_buy_now_bg_end_color">#FFFF8200</color>
+
+    <color name="new_message_hint_color">#FFFF097E</color>
 </resources>

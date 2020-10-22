@@ -7,6 +7,10 @@ import io.agora.vlive.R;
 
 public class Global {
     public static class Constants {
+        public static final int ROLE_AUDIENCE = 0;
+        public static final int ROLE_HOST = 1;
+        public static final int ROLE_OWNER = 2;
+
         // Shared reference keys
         public static final String SF_NAME = "sf-agora-live";
         public static final String KEY_BEAUTY_ENABLED = "key-beauty-enabled";
@@ -24,6 +28,7 @@ public class Global {
         public static final int TAB_ID_SINGLE = 1;
         public static final int TAB_ID_PK = 2;
         public static final int TAB_ID_VIRTUAL = 3;
+        public static final int TAB_ECOMMERCE = 4;
 
         public static final String KEY_ROOM_ID = "room-id";
         public static final String KEY_ROOM_NAME = "room-name";
@@ -67,7 +72,8 @@ public class Global {
                 R.string.home_category_title_multi,
                 R.string.home_category_title_single,
                 R.string.home_category_title_pk,
-                R.string.home_category_title_virtual_host
+                R.string.home_category_title_virtual_host,
+                R.string.home_category_title_ecommerce
         };
 
         public static final String[] RESOLUTIONS_MULTI_HOST_TEXT = {
@@ -96,7 +102,7 @@ public class Global {
         };
 
         public static final VideoEncoderConfiguration.VideoDimensions[] RESOLUTIONS_PK_HOST = {
-                VideoEncoderConfiguration.VD_640x360
+                new VideoEncoderConfiguration.VideoDimensions(360, 640)
         };
 
         public static final VideoEncoderConfiguration.VideoDimensions[] RESOLUTIONS_VIRTUAL_IMAGE = {
@@ -104,6 +110,14 @@ public class Global {
         };
 
         public static final String[] RESOLUTIONS_VIRTUAL_IMAGE_TEXT = {
+                "720x1280"
+        };
+
+        public static final VideoEncoderConfiguration.VideoDimensions[] RESOLUTIONS_ECOMMERCE = {
+                new VideoEncoderConfiguration.VideoDimensions(720, 1280)
+        };
+
+        public static final String[] RESOLUTIONS_ECOMMERCE_TEXT = {
                 "720x1280"
         };
 

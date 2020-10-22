@@ -20,7 +20,7 @@ import java.util.List;
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.vlive.R;
 import io.agora.vlive.agora.rtm.model.SeatStateMessage;
-import io.agora.vlive.proxy.struts.model.SeatInfo;
+import io.agora.vlive.protocol.model.model.SeatInfo;
 import io.agora.vlive.utils.Global;
 import io.agora.vlive.utils.UserUtil;
 
@@ -428,7 +428,7 @@ public class LiveMultiHostSeatLayout extends RelativeLayout {
             } else if (item.seatState == SEAT_CLOSED) {
                 item.operationIcon.setImageResource(R.drawable.live_seat_close);
                 item.operationText.setVisibility(VISIBLE);
-                item.operationText.setText(R.string.live_host_in_seat_state_closed);
+                item.operationText.setText(R.string.live_host_in_seat_state_blocked);
             }
         }
 

@@ -260,6 +260,9 @@ public class LivePrepareActivity extends LiveBaseActivity implements View.OnClic
             case Config.LIVE_TYPE_VIRTUAL_HOST:
                 intent = new Intent(this, VirtualHostLiveActivity.class);
                 break;
+            case Config.LIVE_TYPE_ECOMMERCE:
+                intent = new Intent(this, ECommerceLiveActivity.class);
+                break;
             default: return;
         }
 
@@ -333,8 +336,8 @@ public class LivePrepareActivity extends LiveBaseActivity implements View.OnClic
             return;
         }
 
-        mExitDialog = showDialog(R.string.finish_broadcast_title_owner,
-                R.string.finish_broadcast_message_owner, view -> {
+        mExitDialog = showDialog(R.string.end_live_streaming_title_owner,
+                R.string.end_live_streaming_message_owner, view -> {
                     dismissDialog();
                     finish();
                 });

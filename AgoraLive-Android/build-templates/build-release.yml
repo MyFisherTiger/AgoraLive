@@ -48,6 +48,7 @@ jobs:
           keystore: $(downloadReleaseKeystore.secureFilePath)
           password: $(keystore.pass)
           alias: $(keystore.alias)
+          bugly: $(bugly_appId_android)
           authpack: $(downloadAuthpack.secureFilePath)
           bg: $(downloadBgBundle.secureFilePath)
           girl: $(downloadGirlBundle.secureFilePath)

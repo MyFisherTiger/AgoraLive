@@ -23,11 +23,11 @@ import java.util.List;
 
 import io.agora.vlive.Config;
 import io.agora.vlive.R;
-import io.agora.vlive.proxy.ClientProxy;
-import io.agora.vlive.proxy.struts.model.RoomInfo;
-import io.agora.vlive.proxy.struts.request.Request;
-import io.agora.vlive.proxy.struts.request.RoomListRequest;
-import io.agora.vlive.proxy.struts.response.RoomListResponse;
+import io.agora.vlive.protocol.ClientProxy;
+import io.agora.vlive.protocol.model.model.RoomInfo;
+import io.agora.vlive.protocol.model.request.Request;
+import io.agora.vlive.protocol.model.request.RoomListRequest;
+import io.agora.vlive.protocol.model.response.RoomListResponse;
 import io.agora.vlive.ui.components.SquareRelativeLayout;
 import io.agora.vlive.utils.Global;
 import io.agora.vlive.utils.UserUtil;
@@ -191,26 +191,25 @@ public abstract class AbsPageFragment extends AbstractFragment implements SwipeR
         });
     }
 
-    private class RoomListAdapter extends RecyclerView.Adapter {
+    private class RoomListAdapter extends RecyclerView.Adapter<RoomListItemViewHolder> {
         private List<RoomInfo> mRoomList = new ArrayList<>();
 
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public RoomListItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new RoomListItemViewHolder(LayoutInflater.from(getContext()).
                     inflate(R.layout.live_room_list_item, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull RoomListItemViewHolder holder, final int position) {
             if (mRoomList.size() <= position) return;
 
             RoomInfo info = mRoomList.get(position);
-            RoomListItemViewHolder itemHolder = (RoomListItemViewHolder) holder;
-            itemHolder.name.setText(info.roomName);
-            itemHolder.count.setText(String.valueOf(info.currentUsers));
-            itemHolder.layout.setBackgroundResource(UserUtil.getUserProfileIcon(info.roomId));
-            itemHolder.itemView.setOnClickListener((view) -> {
+            holder.name.setText(info.roomName);
+            holder.count.setText(String.valueOf(info.currentUsers));
+            holder.layout.setBackgroundResource(UserUtil.getUserProfileIcon(info.roomId));
+            holder.itemView.setOnClickListener((view) -> {
                 if (config().appIdObtained() && position < mRoomList.size()) {
                     goLiveRoom(mRoomList.get(position),
                             serverTypeToTabType(onGetRoomListType()));
@@ -234,6 +233,7 @@ public abstract class AbsPageFragment extends AbstractFragment implements SwipeR
                 case ClientProxy.ROOM_TYPE_SINGLE: return Config.LIVE_TYPE_SINGLE_HOST;
                 case ClientProxy.ROOM_TYPE_PK: return Config.LIVE_TYPE_PK_HOST;
                 case ClientProxy.ROOM_TYPE_VIRTUAL_HOST: return Config.LIVE_TYPE_VIRTUAL_HOST;
+                case ClientProxy.ROOM_TYPE_ECOMMERCE: return Config.LIVE_TYPE_ECOMMERCE;
                 case ClientProxy.ROOM_TYPE_HOST_IN:
                 default: return Config.LIVE_TYPE_MULTI_HOST;
             }

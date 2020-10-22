@@ -201,15 +201,23 @@ public class LiveRoomSettingActionSheet extends AbstractActionSheet implements V
     }
 
     private String getResolutionText() {
+        int savedIndex = application().config().resolutionIndex();
         switch (mLiveType) {
             case Config.LIVE_TYPE_MULTI_HOST:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_MULTI_HOST_TEXT.length)
                 return Global.Constants.RESOLUTIONS_MULTI_HOST_TEXT[application().config().resolutionIndex()];
             case Config.LIVE_TYPE_SINGLE_HOST:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_SINGLE_HOST_TEXT.length)
                 return Global.Constants.RESOLUTIONS_SINGLE_HOST_TEXT[application().config().resolutionIndex()];
             case Config.LIVE_TYPE_PK_HOST:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_PK_HOST_TEXT.length)
                 return Global.Constants.RESOLUTIONS_PK_HOST_TEXT[application().config().resolutionIndex()];
             case Config.LIVE_TYPE_VIRTUAL_HOST:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_VIRTUAL_IMAGE_TEXT.length)
                 return Global.Constants.RESOLUTIONS_VIRTUAL_IMAGE_TEXT[application().config().resolutionIndex()];
+            case Config.LIVE_TYPE_ECOMMERCE:
+                if (0 <= savedIndex && savedIndex < Global.Constants.RESOLUTIONS_ECOMMERCE_TEXT.length)
+                return Global.Constants.RESOLUTIONS_ECOMMERCE_TEXT[application().config().resolutionIndex()];
             default: return null;
         }
     }
@@ -277,6 +285,10 @@ public class LiveRoomSettingActionSheet extends AbstractActionSheet implements V
                     break;
                 case Config.LIVE_TYPE_VIRTUAL_HOST:
                     resolutionHolder.textView.setText(Global.Constants.RESOLUTIONS_VIRTUAL_IMAGE_TEXT[position]);
+                    break;
+                case Config.LIVE_TYPE_ECOMMERCE:
+                    resolutionHolder.textView.setText(Global.Constants.RESOLUTIONS_ECOMMERCE_TEXT[position]);
+                    break;
                 default: break;
             }
 
@@ -295,6 +307,8 @@ public class LiveRoomSettingActionSheet extends AbstractActionSheet implements V
                     return Global.Constants.RESOLUTIONS_PK_HOST.length;
                 case Config.LIVE_TYPE_VIRTUAL_HOST:
                     return Global.Constants.RESOLUTIONS_VIRTUAL_IMAGE.length;
+                case Config.LIVE_TYPE_ECOMMERCE:
+                    return Global.Constants.RESOLUTIONS_ECOMMERCE.length;
                 default: return 0;
             }
         }

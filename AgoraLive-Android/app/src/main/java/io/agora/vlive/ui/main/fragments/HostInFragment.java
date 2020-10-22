@@ -1,6 +1,6 @@
 package io.agora.vlive.ui.main.fragments;
 
-import io.agora.vlive.proxy.ClientProxy;
+import io.agora.vlive.protocol.ClientProxy;
 import io.agora.vlive.ui.live.MultiHostLiveActivity;
 
 public class HostInFragment extends AbsPageFragment {

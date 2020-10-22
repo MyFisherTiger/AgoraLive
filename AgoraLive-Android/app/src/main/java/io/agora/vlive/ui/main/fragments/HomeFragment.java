@@ -40,6 +40,7 @@ public class HomeFragment extends AbstractFragment implements View.OnClickListen
         view.findViewById(R.id.home_category_single_layout).setOnClickListener(this);
         view.findViewById(R.id.home_category_pk_layout).setOnClickListener(this);
         view.findViewById(R.id.home_category_virtual_host_layout).setOnClickListener(this);
+        view.findViewById(R.id.home_category_ecommerce_layout).setOnClickListener(this);
         return view;
     }
 
@@ -62,6 +63,11 @@ public class HomeFragment extends AbstractFragment implements View.OnClickListen
         image.setLayoutParams(params);
 
         image = container.findViewById(R.id.home_category_virtual_host_image);
+        params = (RelativeLayout.LayoutParams) image.getLayoutParams();
+        params.height = (int) (image.getMeasuredWidth() * ratio);
+        image.setLayoutParams(params);
+
+        image = container.findViewById(R.id.home_category_ecommerce_image);
         params = (RelativeLayout.LayoutParams) image.getLayoutParams();
         params.height = (int) (image.getMeasuredWidth() * ratio);
         image.setLayoutParams(params);
@@ -91,6 +97,9 @@ public class HomeFragment extends AbstractFragment implements View.OnClickListen
                 break;
             case R.id.home_category_virtual_host_layout:
                 tabId = Global.Constants.TAB_ID_VIRTUAL;
+                break;
+            case R.id.home_category_ecommerce_layout:
+                tabId = Global.Constants.TAB_ECOMMERCE;
                 break;
             default:
                 tabId = Global.Constants.TAB_ID_MULTI;

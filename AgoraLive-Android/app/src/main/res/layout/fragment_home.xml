@@ -153,28 +153,39 @@
                         android:textColor="@android:color/white"/>
                 </RelativeLayout>
             </RelativeLayout>
-            <!--<RelativeLayout
-                android:id="@+id/home_category_blind_date_layout"
+            <RelativeLayout
+                android:id="@+id/home_category_ecommerce_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/home_category_pk_layout">
+                android:layout_below="@id/home_category_virtual_host_layout">
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/home_category_blind_date_image"
+                    android:id="@+id/home_category_ecommerce_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/home_category_blind_date"
+                    android:src="@drawable/home_category_ecommerce"
                     android:scaleType="fitCenter"/>
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/home_category_title_blind_date"
+                <RelativeLayout
                     android:layout_width="@dimen/home_category_title_width"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/text_content_padding"
-                    android:text="@string/home_category_title_blind_date"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/text_size_normal"/>
-            </RelativeLayout>-->
+                    android:layout_marginEnd="@dimen/text_content_padding">
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/home_category_title_eshop"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_category_title_ecommerce"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_size_large"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/home_category_title_eshop"
+                        android:layout_marginTop="@dimen/text_line_padding"
+                        android:text="@string/home_category_desp_ecommerce"
+                        android:textColor="@android:color/white"/>
+                </RelativeLayout>
+            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

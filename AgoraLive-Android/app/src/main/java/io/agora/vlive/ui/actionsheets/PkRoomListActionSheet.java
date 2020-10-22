@@ -1,7 +1,6 @@
 package io.agora.vlive.ui.actionsheets;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import io.agora.vlive.R;
-import io.agora.vlive.proxy.ClientProxy;
-import io.agora.vlive.proxy.struts.model.RoomInfo;
-import io.agora.vlive.proxy.struts.model.UserProfile;
-import io.agora.vlive.proxy.struts.request.Request;
-import io.agora.vlive.proxy.struts.request.RoomListRequest;
-import io.agora.vlive.proxy.struts.response.RoomListResponse;
+import io.agora.vlive.protocol.ClientProxy;
+import io.agora.vlive.protocol.model.model.RoomInfo;
+import io.agora.vlive.protocol.model.request.Request;
+import io.agora.vlive.protocol.model.request.RoomListRequest;
+import io.agora.vlive.protocol.model.response.RoomListResponse;
 import io.agora.vlive.utils.UserUtil;
 
 public class PkRoomListActionSheet extends AbstractActionSheet {
@@ -38,6 +36,7 @@ public class PkRoomListActionSheet extends AbstractActionSheet {
     private PkRoomListAdapter mAdapter;
     private String mToken;
     private ClientProxy mProxy;
+    private int mRoomType;
     private AppCompatTextView mTitle;
     private String mTitleFormat;
 
@@ -77,14 +76,15 @@ public class PkRoomListActionSheet extends AbstractActionSheet {
         });
     }
 
-    public void setup(ClientProxy proxy, String token) {
+    public void setup(ClientProxy proxy, String token, int roomType) {
         mProxy = proxy;
         mToken = token;
+        mRoomType = roomType;
     }
 
     public void requestMorePkRoom() {
         RoomListRequest request = new RoomListRequest(mToken, mAdapter.getLastRoomId(),
-                ROOM_REQUEST_COUNT, ClientProxy.ROOM_TYPE_PK, ClientProxy.PK_WAIT);
+                ROOM_REQUEST_COUNT, mRoomType, ClientProxy.PK_WAIT);
         mProxy.sendRequest(Request.ROOM_LIST, request);
     }
 

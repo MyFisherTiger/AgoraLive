@@ -12,9 +12,9 @@ import java.util.List;
 import io.agora.capture.video.camera.Constant;
 import io.agora.framework.PreprocessorFaceUnity;
 import io.agora.rtc.video.VideoEncoderConfiguration;
-import io.agora.vlive.proxy.struts.model.AppVersionInfo;
-import io.agora.vlive.proxy.struts.model.GiftInfo;
-import io.agora.vlive.proxy.struts.model.MusicInfo;
+import io.agora.vlive.protocol.model.model.AppVersionInfo;
+import io.agora.vlive.protocol.model.model.GiftInfo;
+import io.agora.vlive.protocol.model.model.MusicInfo;
 import io.agora.vlive.utils.GiftUtil;
 import io.agora.vlive.utils.Global;
 
@@ -102,6 +102,7 @@ public class Config {
     public static final int LIVE_TYPE_SINGLE_HOST = 2;
     public static final int LIVE_TYPE_PK_HOST = 3;
     public static final int LIVE_TYPE_VIRTUAL_HOST = 4;
+    public static final int LIVE_TYPE_ECOMMERCE = 5;
 
     private AgoraLiveApplication mApplication;
 
@@ -271,6 +272,7 @@ public class Config {
                         Global.Constants.RESOLUTIONS_MULTI_HOST[0],
                         Global.Constants.FRAME_RATES[0],
                         VideoEncoderConfiguration.STANDARD_BITRATE,
+
                         VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE);
             case LIVE_TYPE_SINGLE_HOST:
                 return new VideoEncoderConfiguration(
@@ -287,6 +289,12 @@ public class Config {
             case LIVE_TYPE_VIRTUAL_HOST:
                 return new VideoEncoderConfiguration(
                         Global.Constants.RESOLUTIONS_VIRTUAL_IMAGE[0],
+                        VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
+                        VideoEncoderConfiguration.STANDARD_BITRATE,
+                        VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT);
+            case LIVE_TYPE_ECOMMERCE:
+                return new VideoEncoderConfiguration(
+                        Global.Constants.RESOLUTIONS_ECOMMERCE[0],
                         VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
                         VideoEncoderConfiguration.STANDARD_BITRATE,
                         VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT);
